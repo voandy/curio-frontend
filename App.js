@@ -4,14 +4,11 @@ import * as Font from 'expo-font';
 
 export default class App extends React.Component {
 
-    constructor(){
-        super();
-        this.state = {
-            fontLoaded: false
-        };
-    }
+    state = {
+        fontLoaded: false
+    };
 
-    // load fonts
+    // load fonts TODO
     async componentDidMount() {
       await Font.loadAsync({
         'HindSiliguri-Bold': require('./assets/fonts/HindSiliguri-Bold.ttf'),

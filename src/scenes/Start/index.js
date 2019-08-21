@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
 
     buttonText: {
         fontSize: 18,
-        fontFamily: 'HindSiliguri-Regular'
+        // fontFamily: 'HindSiliguri-Regular'
     },
 
     imageStyle: {
