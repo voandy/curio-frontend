@@ -3,7 +3,8 @@ import PropTypes from "prop-types"
 import { connect } from "react-redux"
 import {
   View,
-  Button,
+  TouchableOpacity,
+  Dimensions,
   TextInput,
   StyleSheet,
   Text,
@@ -20,9 +21,17 @@ const initialState = {
 }
 
 class Register extends Component {
+
   constructor() {
     super();
     this.state = initialState;
+  }
+
+  // Nav bar details
+  static navigationOptions = {
+    headerStyle: {
+        elevation: 0, // remove shadow on Android
+      },
   }
 
   componentWillReceiveProps(nextProps) {
@@ -64,79 +73,156 @@ class Register extends Component {
     
     return (
       <View style={styles.container}>
-        <Text style = {styles.title}> Register </Text>
 
-        <TextInput
-          style={styles.input}
-          placeholder='Name'
-          autoCapitalize="none"
-          placeholderTextColor='white'
-          onChangeText={val => this.onChangeText('name', val)}
-        />
-        <Text style = {styles.error}> {errors.name} </Text>
+        {/* heading */}
+        <Text style = {styles.titleText}> Welcome, </Text>
+        <Text style = {styles.subTitleText}> Enter your details to signup. </Text>
 
-        <TextInput
-          style={styles.input}
-          placeholder='Email'
-          autoCapitalize="none"
-          placeholderTextColor='white'
-          onChangeText={val => this.onChangeText('email', val)}
-        />
-        <Text style = {styles.error}> {errors.email} </Text>
+        {/* main card view */}
+        <View style= { styles.card }>
 
-        <TextInput
-          style={styles.input}
-          placeholder='Password'
-          secureTextEntry={true}
-          autoCapitalize="none"
-          placeholderTextColor='white'
-          onChangeText={val => this.onChangeText('password', val)}
-        />
-        <Text style = {styles.error}> {errors.password} </Text>
-        
-        <TextInput
-          style={styles.input}
-          placeholder='Confirm Password'
-          secureTextEntry={true}
-          autoCapitalize="none"
-          placeholderTextColor='white'
-          onChangeText={val => this.onChangeText('passwordCfm', val)}
-        />
-        <Text style = {styles.error}> {errors.passwordCfm} </Text>
-        
-        <Button
-          title='Sign Up'
-          onPress={this.onSubmit}
-        />
+          {/* name */}
+          <Text style = { styles.inputText }> Hey, first tell us your name! </Text> 
+          <TextInput
+            style={styles.input}
+            placeholder='Jon Snow'
+            autoCapitalize="none"
+            placeholderTextColor='#868686'
+            onChangeText={val => this.onChangeText('name', val)}
+          />
+          <Text style = {styles.error}> {errors.name} </Text>
+
+          {/* button */}
+          <TouchableOpacity 
+            onPress={ (this.onSubmit)} 
+            style={styles.button}
+          >
+            <Text style={styles.buttonText}>NEXT</Text>
+          </TouchableOpacity>
+
+          {/* <TextInput
+            style={styles.input}
+            placeholder='Email'
+            autoCapitalize="none"
+            placeholderTextColor='white'
+            onChangeText={val => this.onChangeText('email', val)}
+          />
+          <Text style = {styles.error}> {errors.email} </Text>
+
+          <TextInput
+            style={styles.input}
+            placeholder='Password'
+            secureTextEntry={true}
+            autoCapitalize="none"
+            placeholderTextColor='white'
+            onChangeText={val => this.onChangeText('password', val)}
+          />
+          <Text style = {styles.error}> {errors.password} </Text>
+          
+          <TextInput
+            style={styles.input}
+            placeholder='Confirm Password'
+            secureTextEntry={true}
+            autoCapitalize="none"
+            placeholderTextColor='white'
+            onChangeText={val => this.onChangeText('passwordCfm', val)}
+          />
+          <Text style = {styles.error}> {errors.passwordCfm} </Text>
+          
+          <Button
+            title='Sign Up'
+            onPress={this.onSubmit}
+          /> */}
+        </View>
+
       </View>
     )
   }
 }
 
+const mapStateToProps = state => ({
+  auth: state.auth,
+  errors: state.errors
+});
+
 const styles = StyleSheet.create({
-  title: {
-    fontSize: 50,
-    marginBottom: 30,
-  },
-  input: {
-    width: 350,
-    height: 55,
-    backgroundColor: '#42A5F5',
-    margin: 10,
-    padding: 8,
-    color: 'white',
-    borderRadius: 14,
-    fontSize: 18,
-    fontWeight: '500',
-  },
-  error : {
-    color: 'red'
-  },
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center'
-  }
+  },
+  
+  titleText: {
+    fontSize: 30,
+    fontWeight: 'bold',
+    alignSelf: 'flex-start',
+    marginLeft: Dimensions.get('window').width * 0.07,
+    // fontFamily: 'HindSiliguri-Bold'
+  },
+
+  subTitleText: {
+    fontSize: 25,
+    marginBottom: 50,
+    fontWeight: 'bold',
+    alignSelf: 'flex-start',
+    marginLeft: Dimensions.get('window').width * 0.07,
+    // fontFamily: 'HindSiliguri-Bold'
+  },
+
+  card: {
+    width: Dimensions.get('window').width * 0.9,
+    height: Dimensions.get('window').height * 0.6,
+    borderColor: '#E2E2E2',
+    borderRadius: 30,
+    borderTopWidth: 0.5,
+    borderRightWidth: 2,
+    borderLeftWidth: 0.5,
+    borderBottomWidth: 2,
+    marginBottom: 50,
+    alignContent: 'center',
+    alignItems: 'center',
+  },
+
+  input: {
+    width: Dimensions.get('window').width * 0.78,
+    height: 30,
+    marginTop: 20,
+    backgroundColor: 'white',
+    borderBottomWidth: 0.5,
+    fontSize: 16
+  },
+
+  inputText: {
+    fontWeight: 'bold',
+    alignSelf: 'flex-start',
+    marginLeft: Dimensions.get('window').width * 0.05,
+    marginTop: 40,
+    fontSize: 20
+  },
+
+  button: {
+    justifyContent: 'center',
+    backgroundColor: '#FF6E6E',
+    width: Dimensions.get('window').width * 0.4,
+    height: 50,
+    margin: 10,
+    borderRadius: 40,
+    elevation: 3, 
+    position: 'absolute',
+    bottom:40,
+  },
+
+  buttonText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    alignSelf: 'center',
+    color: 'white',
+    // fontFamily: 'HindSiliguri-Regular'
+  },
+
+  error : {
+    color: 'red'
+  },
 })
 
 Register.propTypes = {
@@ -144,11 +230,6 @@ Register.propTypes = {
   auth: PropTypes.object.isRequired,
   errors: PropTypes.object.isRequired
 };
-
-const mapStateToProps = state => ({
-  auth: state.auth,
-  errors: state.errors
-});
 
 export default connect(
   mapStateToProps,

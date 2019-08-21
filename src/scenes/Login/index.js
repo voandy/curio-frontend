@@ -28,7 +28,9 @@ class Login extends Component {
 
   // nav details
   static navigationOptions = {
-    header : null
+    headerStyle: {
+      elevation: 0, // remove shadow on Android
+    },
 }
 
   componentWillReceiveProps(nextProps) {
@@ -165,6 +167,7 @@ const styles = StyleSheet.create({
     borderRightWidth: 2,
     borderLeftWidth: 0.5,
     borderBottomWidth: 2,
+    marginBottom: 50,
     alignContent: 'center',
     alignItems: 'center',
   },
