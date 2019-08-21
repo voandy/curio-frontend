@@ -1,6 +1,7 @@
 import axios from "axios";
 import setAuthToken from "../utils/auth/setAuthToken";
 import jwt_decode from "jwt-decode";
+import { AsyncStorage } from "react-native";
 import {
   GET_ERRORS,
   SET_CURRENT_USER,
@@ -27,10 +28,10 @@ export const loginUser = userData => dispatch => {
     .post("http://curioapp.herokuapp.com/api/login", userData)
     .then(res => {
 
-      // Save to localStorage
-      // Set token to localStorage
+      // Save to AsyncStorage
+      // Set token to AsyncStorage
       const { token } = res.data;
-      localStorage.setItem("jwtToken", token);
+      AsyncStorage.setItem("userToken", token);
 
       // Set token to Auth header
       setAuthToken(token);
@@ -66,10 +67,32 @@ export const setUserLoading = () => {
 
 // Log user out
 export const logoutUser = () => dispatch => {
-  // Remove token from local storage
-  localStorage.removeItem("jwtToken");
-  // Remove auth header for future requests
-  setAuthToken(false);
-  // Set current user to empty object {} which will set isAuthenticated to false
-  dispatch(setCurrentUser({}));
+  return new Promise(
+    function (resolve, reject) {
+        var logoutIsSuccess;
+
+        try {
+          // Remove token from AsyncStorage
+          AsyncStorage.removeItem("userToken")
+          // Remove auth header for future requests
+          setAuthToken(false);
+          // Set current user to empty object {} which will set isAuthenticated to false
+          dispatch(setCurrentUser({}));
+
+          // logout is successful
+          logoutIsSuccess = true;
+        }
+        catch {
+
+          // logout is unsuccessful
+          logoutIsSuccess = false;
+        }
+
+        if (logoutIsSuccess) {
+            resolve("logout succeeds"); // fulfilled
+        } else {
+            reject(new Error('logout fails')); // reject
+        }
+    }
+  );
 };
