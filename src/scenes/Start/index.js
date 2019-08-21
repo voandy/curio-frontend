@@ -3,14 +3,15 @@ import {Dimensions,
         StyleSheet,
         TouchableOpacity,
         View,
-        Text,
-        Button } 
-        from 'react-native';
+        Text
+        }from 'react-native';
 
-export default class Links extends Component {
+export default class Start extends Component {
 
+    // Nav bar details
     static navigationOptions = {
-        title: 'Links'
+        title: 'Start',
+        header: null
     }
 
     render() {
@@ -19,12 +20,17 @@ export default class Links extends Component {
         return(
             <View style={styles.container}>
 
+                {/* Logo */}
+                {/* <Image style={styles.imageStyle} source={require('../../assets/Images/logo.png')} /> */}
+                <Text style={styles.subTitleText }>Welcome To</Text>
+                <Text style={styles.titleText }>Curio</Text>
+
                 {/* Register Button */}
                 <TouchableOpacity 
                     onPress={ () => navigate('Register')} 
                     style={styles.button}
                 >
-                    <Text style={styles.buttonText}>Register</Text>
+                    <Text style={styles.buttonText}>Sign Up</Text>
                 </TouchableOpacity>
 
                 {/* Login Button */}
@@ -52,14 +58,33 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#DDDDDD',
-        width: Dimensions.get('window').width * 0.7,
-        height: 50,
+        width: Dimensions.get('window').width * 0.3,
+        height: 40,
         margin: 10,
         borderRadius: 5,
         elevation: 3, 
     },
 
     buttonText: {
-        fontSize: 20,
+        fontSize: 18,
+        fontFamily: 'HindSiliguri-Regular'
+    },
+
+    imageStyle: {
+        width: 150,
+        height: 150,
+        resizeMode: 'contain',
+    },
+
+    subTitleText: {
+        fontSize: 15,
+        color: 'gray',
+        // fontFamily: 'HindSiliguri-Regular'
+    },
+
+    titleText: {
+        fontSize: 70,
+        marginBottom: 250,
+        // fontFamily: 'HindSiliguri-Bold'
     }
 })
