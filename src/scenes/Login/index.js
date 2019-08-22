@@ -70,8 +70,6 @@ class Login extends Component {
         {/* main card view */}
         <View style={ styles.card }>
 
-          {/* login form  */}
-
           {/* Email */}
           <Text style = { styles.inputText }> EMAIL ADDRESS </Text> 
           <TextInput

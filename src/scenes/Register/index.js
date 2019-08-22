@@ -11,12 +11,15 @@ import {
 } from 'react-native'
 
 import { registerUser } from "../../actions/authActions"
+import * as ImagePicker from 'expo-image-picker';
 
 const initialState = {
   name: '',
   email: '',
   password: '',
   passwordCfm: '',
+  photo: null,
+  stage: 0,
   errors: {}
 }
 
@@ -32,6 +35,40 @@ class Register extends Component {
     headerStyle: {
         elevation: 0, // remove shadow on Android
       },
+  }
+
+  // image picker (camera roll)
+  handleChoosePhoto = () =>{
+    const option = {
+      noData: true
+    };
+    ImagePicker.launchImageLibrary(option, response =>{
+      console.log("Camera Roll", response)
+
+      // saving the selected photo
+      if(response.uri){
+        this.setState({ photo:response })
+      }
+    })
+  }
+
+  // show profile picture
+  renderProfile(){
+
+    const { photo } = this.state;
+
+    // photo selected
+    if(this.state.photo){
+      return(
+        <Image source={{ uri:photo.uri }} style={styles.photo} />
+      )
+    }
+    // default pic
+    else{
+      return(
+        <Image source={ require('../../assets/Images/default_profile.jpg') } style={styles.photo} />
+      )
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -67,6 +104,95 @@ class Register extends Component {
         }
       });
   }
+
+  nextPage() {
+    this.setState.stage = 1;
+    console.log(this.state.stage);
+  }
+
+  // Load new page after each completed stage in sign up
+  loadPage(errors) {
+
+    switch (this.state.stage) {
+      case 0:
+        return (
+          <View>
+            {/* name */}
+            <Text style = { styles.inputText }> Hey, first tell us your name! </Text> 
+            <TextInput
+              style={styles.input}
+              placeholder='Jon Snow'
+              autoCapitalize="none"
+              placeholderTextColor='#868686'
+              onChangeText={val => this.onChangeText('name', val)}
+            />
+            <Text style = {styles.error}> {errors.name} </Text>
+          </View>
+        );
+      case 1:
+        return (
+          <View>
+            {/* email */}
+            <Text style = { styles.inputText }> Now, enter your email address! </Text> 
+              <TextInput
+                style={styles.input}
+                placeholder='abc@email.com'
+                autoCapitalize="none"
+                placeholderTextColor='#868686'
+                onChangeText={val => this.onChangeText('email', val)}
+              />
+            <Text style = {styles.error}> {errors.email} </Text>
+          </View>
+        );
+      case 2:
+        return (
+          <View>
+            <Text style = { [styles.inputText, styles.passwordSpacing] }> Great, create your unique password! </Text> 
+         
+              {/* password */}
+              <Text style = { [styles.inputText, styles.password] }> Password: </Text> 
+              <TextInput
+                style={styles.input}
+                secureTextEntry={true}
+                autoCapitalize="none"
+                placeholderTextColor='#868686'
+                onChangeText={val => this.onChangeText('password', val)}
+              />
+            <Text style = {styles.error}> {errors.password} </Text>
+              
+            {/* Cfm password */}
+            <Text style = { [styles.inputText, styles.password] }> Confirm Password: </Text> 
+            <TextInput
+                style={styles.input}
+                secureTextEntry={true}
+                autoCapitalize="none"
+                placeholderTextColor='#868686'
+                onChangeText={val => this.onChangeText('passwordCfm', val)}
+            />
+         <Text style = {styles.error}> {errors.passwordCfm} </Text>
+
+
+
+          </View>
+          );
+      case 3:
+        return (
+          <View>
+
+
+
+          </View>
+        );
+      default:
+        return (
+          <View>
+            <Text>error 404</Text>
+          </View>
+          );
+    }
+  }
+
+
  
   render() {
     const { errors } = this.state;
@@ -81,58 +207,42 @@ class Register extends Component {
         {/* main card view */}
         <View style= { styles.card }>
 
-          {/* name */}
-          <Text style = { styles.inputText }> Hey, first tell us your name! </Text> 
+          
+          <Text style = { [styles.inputText, styles.passwordSpacing] }> Great, create your unique password! </Text> 
+         
+          {/* password */}
+          <Text style = { [styles.inputText, styles.password] }> Password: </Text> 
           <TextInput
             style={styles.input}
-            placeholder='Jon Snow'
-            autoCapitalize="none"
-            placeholderTextColor='#868686'
-            onChangeText={val => this.onChangeText('name', val)}
-          />
-          <Text style = {styles.error}> {errors.name} </Text>
-
-          {/* button */}
-          <TouchableOpacity 
-            onPress={ (this.onSubmit)} 
-            style={styles.button}
-          >
-            <Text style={styles.buttonText}>NEXT</Text>
-          </TouchableOpacity>
-
-          {/* <TextInput
-            style={styles.input}
-            placeholder='Email'
-            autoCapitalize="none"
-            placeholderTextColor='white'
-            onChangeText={val => this.onChangeText('email', val)}
-          />
-          <Text style = {styles.error}> {errors.email} </Text>
-
-          <TextInput
-            style={styles.input}
-            placeholder='Password'
             secureTextEntry={true}
             autoCapitalize="none"
-            placeholderTextColor='white'
+            placeholderTextColor='#868686'
             onChangeText={val => this.onChangeText('password', val)}
           />
           <Text style = {styles.error}> {errors.password} </Text>
           
+          {/* Cfm password */}
+          <Text style = { [styles.inputText, styles.password] }> Confirm Password: </Text> 
           <TextInput
             style={styles.input}
-            placeholder='Confirm Password'
             secureTextEntry={true}
             autoCapitalize="none"
-            placeholderTextColor='white'
+            placeholderTextColor='#868686'
             onChangeText={val => this.onChangeText('passwordCfm', val)}
           />
           <Text style = {styles.error}> {errors.passwordCfm} </Text>
-          
-          <Button
-            title='Sign Up'
-            onPress={this.onSubmit}
-          /> */}
+
+
+          {/* { this.loadPage(errors) } */}
+
+          {/* button */}
+          <TouchableOpacity 
+            onPress={ (this.nextPage()) } 
+            style={styles.button}
+          >
+            <Text style={styles.buttonText}>NEXT</Text>
+          </TouchableOpacity>
+      
         </View>
 
       </View>
@@ -196,7 +306,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     alignSelf: 'flex-start',
     marginLeft: Dimensions.get('window').width * 0.05,
-    marginTop: 40,
+    marginTop: 30,
     fontSize: 20
   },
 
@@ -219,6 +329,15 @@ const styles = StyleSheet.create({
     color: 'white',
     // fontFamily: 'HindSiliguri-Regular'
   },
+
+  passwordSpacing: {
+    marginBottom: 30,
+  },  
+
+  password: {
+    marginTop: 5,
+    fontSize: 16,
+  },  
 
   error : {
     color: 'red'
