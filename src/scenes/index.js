@@ -1,15 +1,14 @@
 import React from 'react'
 import {createSwitchNavigator, createAppContainer, createStackNavigator} from 'react-navigation'
 
-import LinksScreen from './Links'
+import StartScreen from './Start'
 import RegisterScreen from './Register'
 import LoginScreen from './Login'
 import DashboardScreen from './Dashboard'
 import AuthLoadingScreen from './AuthLoadingScreen'
 
-const AuthStack = createStackNavigator({ 
-	Links: {screen: LinksScreen},
-	Login: {screen: LoginScreen},
+const AppStack = createStackNavigator({
+	Start: {screen: StartScreen},
 	Register: {screen: RegisterScreen},
 });
 
