@@ -41,7 +41,7 @@ class Register extends Component {
   }
 
   // send new user data
-  onSubmit = (e) => {
+  onSubmit = async() => {
 
     const { navigate } = this.props.navigation;
 

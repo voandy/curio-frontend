@@ -7,9 +7,10 @@ import LoginScreen from './Login'
 import DashboardScreen from './Dashboard'
 import AuthLoadingScreen from './AuthLoadingScreen'
 
-const AppStack = createStackNavigator({
+const AuthStack = createStackNavigator({
 	Start: {screen: StartScreen},
 	Register: {screen: RegisterScreen},
+	Login: {screen: LoginScreen}
 });
 
 const AppStack = createStackNavigator({

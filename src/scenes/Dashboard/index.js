@@ -10,7 +10,7 @@ import {
   } from 'react-native'
 
 class Dashboard extends Component {
-  onLogoutClick = e => {
+  onLogoutClick = async() => {
 
     const { navigate } = this.props.navigation;
 

@@ -34,12 +34,12 @@ class Login extends Component {
   onChangeText = (key, val) => {
     this.setState({ 
       [key]: val,
-      errors: {}
+      // errors: {}
     })
   }
 
   // send user data
-  onSubmit = (e) => {
+  onSubmit = async () => {
 
     const { navigate } = this.props.navigation;
 
