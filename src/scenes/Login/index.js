@@ -48,13 +48,21 @@ class Login extends Component {
   // send user data
   onSubmit = (e) => {
 
+    const { navigate } = this.props.navigation;
+
     // logged-in user
     const user = {
         email: this.state.email,
         password: this.state.password,
     };
 
-    this.props.loginUser(user, this.props.history); 
+    this.props.loginUser(user, this.props.history)
+      .then(res => {
+        if (Object.keys(this.state.errors).length === 0) {
+          navigate("App");
+          this.state = initialState;
+        }
+      });
   }
  
   render() {
@@ -113,9 +121,7 @@ class Login extends Component {
           </TouchableOpacity>
 
         </View>
-
-
-
+        
       </View>
     )
   }
