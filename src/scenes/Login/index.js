@@ -32,7 +32,10 @@ class Login extends Component {
   };
   
   onChangeText = (key, val) => {
-    this.setState({ [key]: val })
+    this.setState({ 
+      [key]: val,
+      errors: {}
+    })
   }
 
   // send user data
