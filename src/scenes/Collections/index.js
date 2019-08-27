@@ -10,7 +10,9 @@ import {
     Dimensions,
     TouchableOpacity,
   } from 'react-native'
+
 import { white, black } from "ansi-colors";
+import CardCarousel from "../../component/CardCarousel";
 
 
 class Collections extends Component {
@@ -45,6 +47,26 @@ class Collections extends Component {
               >
                 <Text style={ styles.headerButtonText }>Private</Text>
               </TouchableOpacity>
+            </View>
+
+            {/* carousel pinned collections */}
+            <View style={{height: 130, marginTop: 20 }}>
+              <ScrollView 
+              horizontal={ true }
+              showsHorizontalScrollIndicator={ false }>
+                {/* <CardCarousel/> */}
+                <View style={ styles.CardCarousel }>
+                  <Text>Hellooo</Text>
+                </View>
+
+                <View style={ styles.CardCarousel }>
+                  <Text>Hellooo</Text>
+                </View>
+
+                <View style={ styles.CardCarousel }>
+                  <Text>Hellooo</Text>
+                </View>
+              </ScrollView>
             </View>
 
           </View>
@@ -120,6 +142,16 @@ const styles = StyleSheet.create({
     // marginBottom: 50,
     // fontFamily: 'HindSiliguri-Bold'
   },
+
+  CardCarousel: {
+    width: Dimensions.get('window').width * 0.9,
+    height: 130,
+    borderColor: '#E2E2E2',
+    borderRadius: 30,
+    borderWidth: 1,
+    alignContent: 'center',
+    alignItems: 'center',
+  }
 
 });
 
