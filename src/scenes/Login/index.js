@@ -31,7 +31,7 @@ class Login extends Component {
     headerStyle: {
       elevation: 0, // remove shadow on Android
     },
-}
+  }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.errors) {
