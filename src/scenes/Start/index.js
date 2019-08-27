@@ -25,7 +25,7 @@ export default class Start extends Component {
                 <Text style = {styles.titleText}>Welcome to Curio! </Text>
 
                 {/* start image */}
-                <Image style={styles.imageStyle} source={require('../../../assets/images/welcome_start.png')} />
+                <Image style={styles.imageStyle} source={require('../../../assets/images/welcome-start.png')} />
 
                 {/* Login Button */}
                 <TouchableOpacity 

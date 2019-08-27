@@ -8,22 +8,24 @@ import DashboardScreen from './Dashboard'
 import AuthLoadingScreen from './AuthLoadingScreen'
 
 
-const AppStack = createStackNavigator(
-	{
+// const AppStack = createStackNavigator(
+// 	{
+// 		Start: {screen: StartScreen},
+// 		Register: {screen: RegisterScreen},
+// 		Login: {screen: LoginScreen},
+// 	});
+
+const AuthStack = createStackNavigator(
+	{ 
 		Start: {screen: StartScreen},
 		Register: {screen: RegisterScreen},
 		Login: {screen: LoginScreen},
 	});
 
-const AuthStack = createStackNavigator({ 
-	// Links: {screen: LinksScreen},
-	Login: {screen: LoginScreen},
-	Register: {screen: RegisterScreen},
-});
-
-const AppStack = createStackNavigator({
-	Dashboard: {screen: DashboardScreen},
-});
+const AppStack = createStackNavigator(
+	{
+		Dashboard: {screen: DashboardScreen},
+	});
 
 export default createAppContainer(createSwitchNavigator(
   {

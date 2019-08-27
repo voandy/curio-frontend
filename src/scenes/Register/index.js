@@ -66,7 +66,7 @@ class Register extends Component {
     // default pic
     else{
       return(
-        <Image source={ require('../../assets/Images/default_profile.jpg') } style={styles.photo} />
+        <Image source={ require('../../../assets/images/default-profile-pic.png') } style={styles.photo} />
       )
     }
   }
