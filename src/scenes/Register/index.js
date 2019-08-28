@@ -12,6 +12,7 @@ import {
 
 import { registerUser } from "../../actions/authActions"
 import * as ImagePicker from 'expo-image-picker';
+import MyButton from "../../component/MyButton";
 
 const initialState = {
   name: '',
@@ -236,12 +237,8 @@ class Register extends Component {
           {/* { this.loadPage(errors) } */}
 
           {/* button */}
-          <TouchableOpacity 
-            onPress={ (this.nextPage()) } 
-            style={styles.button}
-          >
-            <Text style={styles.buttonText}>NEXT</Text>
-          </TouchableOpacity>
+          <MyButton onPress={ (this.onSubmit) } text="NEXT" />
+
       
         </View>
 

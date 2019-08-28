@@ -11,6 +11,7 @@ import {
 } from 'react-native'
 
 import { loginUser } from "../../actions/authActions"
+import MyButton from "../../component/MyButton"
 
 // state
 const initialState = {
@@ -113,12 +114,7 @@ class Login extends Component {
           </TouchableOpacity>
 
           {/* button */}
-          <TouchableOpacity 
-              onPress={ (this.onSubmit)} 
-              style={styles.button}
-          >
-              <Text style={styles.buttonText}>LOG IN</Text>
-          </TouchableOpacity>
+          <MyButton onPress={ (this.onSubmit) } text="LOG IN" />
 
         </View>
         
