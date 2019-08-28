@@ -73,7 +73,7 @@ export const logoutUser = () => dispatch => {
 
         try {
           // Remove token from AsyncStorage
-          AsyncStorage.removeItem("userToken")
+          AsyncStorage.removeItem("userToken");
           // Remove auth header for future requests
           setAuthToken(false);
           // Set current user to empty object {} which will set isAuthenticated to false

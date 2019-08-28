@@ -7,6 +7,7 @@ import {
   TextInput,
   StyleSheet,
   Text,
+  AsyncStorage
 } from 'react-native'
 
 import { loginUser } from "../../actions/authActions"
@@ -32,7 +33,7 @@ class Login extends Component {
   };
   
   onChangeText = (key, val) => {
-    this.setState({ 
+    this.setState({
       [key]: val,
       errors: {}
     })
@@ -51,10 +52,13 @@ class Login extends Component {
 
     this.props.loginUser(user, this.props.history)
       .then(res => {
-        if (Object.keys(this.state.errors).length === 0) {
-          navigate("App");
-          this.state = initialState;
-        }
+        AsyncStorage.getItem('userToken')
+          .then((res) => {
+            if (res !== null) {
+              navigate("App");
+              this.state = initialState;
+            }
+          });
       });
   }
  
@@ -72,9 +76,9 @@ class Login extends Component {
           placeholderTextColor='white'
           onChangeText={val => this.onChangeText('email', val)}
         />
-        <Text style={styles.error}> 
+        <Text style = {styles.error}> 
           {errors.email} 
-          {errors.emailnotfound}  
+          {errors.emailnotfound}
         </Text>
 
         <TextInput
@@ -86,9 +90,9 @@ class Login extends Component {
           onChangeText={val => this.onChangeText('password', val)}
         />
 
-        <Text style={styles.error}> 
-          {errors.password}
-          {errors.passwordincorrect} 
+        <Text style = {styles.error}> 
+          {errors.password} 
+          {errors.passwordincorrect}
         </Text>
         
         <Button
