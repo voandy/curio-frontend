@@ -12,7 +12,8 @@ import {
   } from 'react-native'
 
 import { white, black } from "ansi-colors";
-import CardCarousel from "../../component/CardCarousel";
+import CardCarousel from "../../component/CardCarousel"
+import Header from "../../component/Header"
 
 
 class Collections extends Component {
@@ -24,51 +25,19 @@ class Collections extends Component {
     return (
         <View style={styles.container}>
 
-          {/* header */}
-          <View style={ styles.header }>
+          <Header title="Collections" tab1="Public" tab2="Private"/>         
 
-            {/* header text */}
-            <View style={{ flexDirection: 'row' }}>
-              <Text style={ styles.headerText }>Collections</Text>
-            </View>
+          {/* carousel pinned collections */}
+          <View style={{height: 130, marginTop: 20}}>
+            <ScrollView  
+            horizontal={ true }
+            showsHorizontalScrollIndicator={ false }
+            >
+              <CardCarousel text="page 1"/>
+              <CardCarousel text="page 2"/>
+              <CardCarousel text="page 3"/>
 
-            {/* header tab */}
-            <View style={{flexDirection: 'row' }}>
-              <TouchableOpacity
-                // onPress
-                style= { styles.headerButton }
-              >
-                <Text style={ styles.headerButtonText }>Public</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                // onPress
-                style= { styles.headerButton }
-              >
-                <Text style={ styles.headerButtonText }>Private</Text>
-              </TouchableOpacity>
-            </View>
-
-            {/* carousel pinned collections */}
-            <View style={{height: 130, marginTop: 20 }}>
-              <ScrollView 
-              horizontal={ true }
-              showsHorizontalScrollIndicator={ false }>
-                {/* <CardCarousel/> */}
-                <View style={ styles.CardCarousel }>
-                  <Text>Hellooo</Text>
-                </View>
-
-                <View style={ styles.CardCarousel }>
-                  <Text>Hellooo</Text>
-                </View>
-
-                <View style={ styles.CardCarousel }>
-                  <Text>Hellooo</Text>
-                </View>
-              </ScrollView>
-            </View>
-
+            </ScrollView>
           </View>
 
           <Text style = {styles.titleText}>COLLECTIONS</Text>
@@ -117,7 +86,6 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     borderBottomWidth: 3,
     justifyContent: 'center',
-    // borderBottomColor: '#FF6E6E',
   },
 
   headerButtonText: {
@@ -134,7 +102,7 @@ const styles = StyleSheet.create({
 
   titleText: {
     fontSize: 30,
-    marginTop: 210,
+    marginTop: 100,
     fontWeight: 'bold',
     alignItems: 'center',
     justifyContent: 'center',
@@ -142,16 +110,6 @@ const styles = StyleSheet.create({
     // marginBottom: 50,
     // fontFamily: 'HindSiliguri-Bold'
   },
-
-  CardCarousel: {
-    width: Dimensions.get('window').width * 0.9,
-    height: 130,
-    borderColor: '#E2E2E2',
-    borderRadius: 30,
-    borderWidth: 1,
-    alignContent: 'center',
-    alignItems: 'center',
-  }
 
 });
 
