@@ -1,12 +1,12 @@
 import axios from "axios";
 
 import {
-  SET_CURRENT_USER_DATA
+  SET_CURRENT_USER_DATA,
 } from "./dataTypes";
 
 // Get User Data
 export const getUserData = userId => dispatch => {
-  return axios
+    return axios
     .get("http://curioapp.herokuapp.com/api/user/id/" + userId)
     .then(res => {
       dispatch(setCurrentUserData(res.data));

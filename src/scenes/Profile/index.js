@@ -26,13 +26,15 @@ class Profile extends Component {
         // get user authentication data
         const { user } = this.props.auth;
 
-        this.props.getUserData(user.id)
+        this.props.getUserData(user.id);
+    }
 
-        const { userData } = this.props.data;
-
-        this.setState({
-            userData
-        })
+    componentWillUpdate(nextProps) {
+        if (Object.keys(this.state.userData).length === 0) {
+            this.setState({
+                userData: nextProps.data.userData
+            })
+        }
     }
 
     // logout button
@@ -45,8 +47,9 @@ class Profile extends Component {
     };    
 
     render() {
-
+        console.log(this.state.userData);
         return(
+
             <View style={styles.container}>
 
                 <Header title="Profile" tab1="" tab2=""/>         
@@ -104,7 +107,8 @@ const styles = StyleSheet.create({
 Profile.propTypes = {
     logoutUser: PropTypes.func.isRequired,
     getUserData: PropTypes.func.isRequired,
-    auth: PropTypes.object.isRequired
+    auth: PropTypes.object.isRequired,
+    data: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => ({
