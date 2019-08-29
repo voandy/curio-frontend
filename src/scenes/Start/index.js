@@ -45,14 +45,6 @@ export default class Start extends Component {
             <Text style={styles.signupTextButton}>Create account</Text>
           </TouchableOpacity>
         </View>
-        {/* <TouchableOpacity
-          onPress={() => navigate("Register")}
-          style={[styles.button, styles.buttonSignUp]}
-        >
-          <Text style={[styles.buttonText, styles.buttonTextSignUp]}>
-            SIGN UP
-          </Text>
-        </TouchableOpacity> */}
       </View>
     );
   }
@@ -62,9 +54,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: "column",
-    alignItems: "center",
-    width: Dimensions.get("window").width,
-    height: Dimensions.get("window").height
+    alignItems: "center"
   },
 
   titleContainer: {
@@ -74,21 +64,22 @@ const styles = StyleSheet.create({
   },
 
   titleText: {
-    fontSize: 35,
+    fontSize: Dimensions.get("window").width * 0.08,
     fontWeight: "bold",
     paddingTop: Dimensions.get("window").width * 0.008,
-    textShadowColor: "rgba(0, 0, 0, 0.08)",
+    textShadowColor: "rgba(0, 0, 0, 0.13)",
     textShadowOffset: { width: 0, height: 3 },
     textShadowRadius: 40
     // fontFamily: 'HindSiliguri-Bold'
   },
 
   imageStyle: {
+    alignSelf: "center",
     width: Dimensions.get("window").width * 0.85,
     height: Dimensions.get("window").width * 0.85,
     resizeMode: "contain",
     marginTop: Dimensions.get("window").height * 0.03,
-    marginBottom: 10
+    marginBottom: Dimensions.get("window").height * 0.01
   },
 
   loginButton: {
@@ -98,12 +89,12 @@ const styles = StyleSheet.create({
     width: Dimensions.get("window").width * 0.7,
     height: Dimensions.get("window").height * 0.065,
     borderRadius: 540,
-    elevation: 6,
+    elevation: 7,
     marginTop: Dimensions.get("window").height * 0.065
   },
 
   loginButtonText: {
-    fontSize: 16,
+    fontSize: Dimensions.get("window").width * 0.035,
     fontWeight: "bold",
     alignSelf: "center",
     color: "black"
@@ -118,7 +109,7 @@ const styles = StyleSheet.create({
   },
 
   signupText: {
-    fontSize: 18,
+    fontSize: Dimensions.get("window").width * 0.035,
     fontWeight: "bold",
     color: "#FF6E6E"
     // fontFamily: 'HindSiliguri-Regular'

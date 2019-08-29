@@ -1,0 +1,6 @@
+export const C = {
+  GET_NAME: "GET_NAME",
+  GET_EMAIL: "GET_EMAIL",
+  GET_PASSWORD: "GET_PASSWORD",
+  GET_PHOTO: "GET_PHOTO"
+};
