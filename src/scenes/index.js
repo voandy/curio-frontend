@@ -31,7 +31,7 @@ const AppStack = createBottomTabNavigator(
 			screen: CollectionsScreen,
 			navigationOptions: {
 				tabBarIcon: ({ tintColor}) => (
-					<Image source={ require('../../assets/images/icons/collection.png') } 
+					<Image source={ require('../../assets/images/icons/group.png') } 
 					style = {{ height:24, width:24, tintColor: tintColor }}/>
 				)
 			}},
@@ -39,7 +39,7 @@ const AppStack = createBottomTabNavigator(
 			screen: ArtifactsScreen,
 			navigationOptions: {
 				tabBarIcon: ({ tintColor}) => (
-					<Image source={ require('../../assets/images/icons/artefact.png') } 
+					<Image source={ require('../../assets/images/icons/artefacts.png') } 
 					style = {{ height:24, width:24, tintColor: tintColor }}/>
 				)
 			}},
