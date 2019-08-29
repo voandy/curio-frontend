@@ -21,7 +21,6 @@ const initialState = {
   errors: {}
 }
 
-
 class Login extends Component {
   constructor() {
     super();
