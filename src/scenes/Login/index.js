@@ -114,7 +114,6 @@ class Login extends Component {
           </Text>
 
           <TouchableOpacity 
-              // onPress={ } 
               style={styles.forgot}
           >
               <Text style={styles.forgotText}>Forgot Password?</Text>
