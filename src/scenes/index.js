@@ -9,7 +9,7 @@ import AuthLoadingScreen from './AuthLoadingScreen'
 import ProfileScreen from './Profile'
 import NotificationScreen from './Notification'
 import ArtifactsScreen from './Artifacts'
-import { white } from 'ansi-colors';
+import { white } from 'ansi-colors'
 
 import {
 	Image

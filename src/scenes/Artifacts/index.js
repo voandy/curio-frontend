@@ -21,8 +21,6 @@ export default class Artifacts extends Component {
 
                 {/* heading */}
                 <Text style = {styles.titleText}>ARTIFACTS</Text>
-
-     
             </View>
         );
     }

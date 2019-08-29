@@ -1,8 +1,9 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { logoutUser } from "../../actions/authActions";
-
+import React, { Component } from "react"
+import PropTypes from "prop-types"
+import { connect } from "react-redux"
+import { logoutUser } from "../../actions/authActions"
+import { getUserData } from "../../actions/dataActions"
+import axios from "axios"
 import {Dimensions, 
         StyleSheet,
         TouchableOpacity,
@@ -14,26 +15,47 @@ import {Dimensions,
 import Header from "../../component/Header"
 
 class Profile extends Component {
+    constructor() {
+        super();
+        this.state = {
+            userData: {}
+        };
+    }
+    
+    componentDidMount() {
+        // get user authentication data
+        const { user } = this.props.auth;
+
+        this.props.getUserData(user.id)
+
+        const { userData } = this.props.data;
+
+        this.setState({
+            userData
+        })
+    }
 
     // logout button
-    onLogoutClick = e => {
+    onLogoutClick = () => {
         const { navigate } = this.props.navigation;
         this.props.logoutUser()
         .then(res => {
             navigate("Auth");
         });
-    };
+    };    
 
     render() {
 
-        const { navigate } = this.props.navigation;
         return(
             <View style={styles.container}>
 
                 <Header title="Profile" tab1="" tab2=""/>         
 
                 {/* heading */}
-                <Text style = {styles.titleText}>PROFILE</Text>
+                <Text style = {styles.titleText}> 
+                    Hi {this.state.userData.name} {"\n"}
+                    You have joined since {this.state.userData.dateJoined} {"\n"}
+                </Text>
   
                 <TouchableOpacity 
                     onPress={this.onLogoutClick}
@@ -45,16 +67,6 @@ class Profile extends Component {
         );
     }
 }
-
-
-Profile.propTypes = {
-    logoutUser: PropTypes.func.isRequired,
-    auth: PropTypes.object.isRequired
-};
-
-const mapStateToProps = state => ({
-    auth: state.auth
-});
 
 const styles = StyleSheet.create({
     container: {
@@ -89,8 +101,20 @@ const styles = StyleSheet.create({
       },
 })
 
+Profile.propTypes = {
+    logoutUser: PropTypes.func.isRequired,
+    getUserData: PropTypes.func.isRequired,
+    auth: PropTypes.object.isRequired
+};
+
+const mapStateToProps = state => ({
+    auth: state.auth,
+    data: state.data
+});
+
 //  export
 export default connect(
     mapStateToProps,
-    { logoutUser }
-  )(Profile);
+    { logoutUser, getUserData }
+)(Profile);
+

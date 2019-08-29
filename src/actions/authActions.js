@@ -6,10 +6,10 @@ import {
   GET_ERRORS,
   SET_CURRENT_USER,
   USER_LOADING
-} from "./types";
+} from "./authTypes";
 
 // Register User
-export const registerUser = (userData, history) => dispatch => {
+export const registerUser = userData => dispatch => {
   return axios
     .post("http://curioapp.herokuapp.com/api/register", userData)
     .then(res => console.log(res.data))
@@ -50,21 +50,6 @@ export const loginUser = userData => dispatch => {
     );
 };
 
-// Set logged in user
-export const setCurrentUser = decoded => {
-  return {
-    type: SET_CURRENT_USER,
-    payload: decoded
-  };
-};
-
-// User loading
-export const setUserLoading = () => {
-  return {
-    type: USER_LOADING
-  };
-};
-
 // Log user out
 export const logoutUser = () => dispatch => {
   return new Promise(
@@ -95,4 +80,34 @@ export const logoutUser = () => dispatch => {
         }
     }
   );
+};
+
+// Get User Data
+export const getUserData = userId => dispatch => {
+  return axios
+    .get("http://curioapp.herokuapp.com/api/user/id/" + userId)
+    .then(res => {
+      dispatch(setCurrentUserData(res));
+    })
+    .catch(err =>
+      dispatch({
+        type: GET_ERRORS,
+        payload: err.response.data
+      })
+  );
+}
+
+// Set logged in user
+export const setCurrentUser = decoded => {
+  return {
+    type: SET_CURRENT_USER,
+    payload: decoded
+  };
+};
+
+// User loading
+export const setUserLoading = () => {
+  return {
+    type: USER_LOADING
+  };
 };
