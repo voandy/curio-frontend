@@ -240,7 +240,7 @@ class Register extends Component {
           {/* { this.loadPage(errors) } */}
 
           {/* button */}
-          <MyButton onPress={ (this.onSubmit) } text="NEXT" />
+          <MyButton onPress={ (this.onSubmit) } text="NEXT"/>
 
       
         </View>

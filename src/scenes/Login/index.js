@@ -121,7 +121,7 @@ class Login extends Component {
           </TouchableOpacity>
 
           {/* button */}
-          <MyButton onPress={ (this.onSubmit) } text="LOG IN" />
+          <MyButton onPress={ (this.onSubmit) } text="LOG IN"/>
 
         </View>
       </View>

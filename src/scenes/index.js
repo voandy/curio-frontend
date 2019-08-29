@@ -15,8 +15,6 @@ import {
 	Image
   } from 'react-native'
 
-const defaultTintColor = '#E2E2E2';
-
 // login / signup stack
 const AuthStack = createStackNavigator(
 	{ 
@@ -25,6 +23,7 @@ const AuthStack = createStackNavigator(
 		Login: {screen: LoginScreen},
 	});
 
+	
 // default app stack
 const AppStack = createBottomTabNavigator(
 	{
@@ -33,7 +32,7 @@ const AppStack = createBottomTabNavigator(
 			navigationOptions: {
 				tabBarIcon: ({ tintColor}) => (
 					<Image source={ require('../../assets/images/icons/collection.png') } 
-					style = {{ height:24, width:24, tintColor:defaultTintColor}}/>
+					style = {{ height:24, width:24, tintColor: tintColor }}/>
 				)
 			}},
 		Artifacts: {
@@ -41,7 +40,7 @@ const AppStack = createBottomTabNavigator(
 			navigationOptions: {
 				tabBarIcon: ({ tintColor}) => (
 					<Image source={ require('../../assets/images/icons/artefact.png') } 
-					style = {{ height:24, width:30, tintColor:defaultTintColor}}/>
+					style = {{ height:24, width:24, tintColor: tintColor }}/>
 				)
 			}},
 		Notification: {
@@ -49,7 +48,7 @@ const AppStack = createBottomTabNavigator(
 			navigationOptions: {
 				tabBarIcon: ({ tintColor}) => (
 					<Image source={ require('../../assets/images/icons/notification.png') } 
-					style = {{ height:24, width:30, tintColor:defaultTintColor }}/>
+					style = {{ height:24, width:24, tintColor: tintColor }}/>
 				)
 			}},
 		Profile: {
@@ -57,7 +56,7 @@ const AppStack = createBottomTabNavigator(
 			navigationOptions: {
 				tabBarIcon: ({ tintColor}) => (
 					<Image source={ require('../../assets/images/icons/profile.png') } 
-					style = {{ height:24, width:24, tintColor:defaultTintColor }}/>
+					style = {{ height:24, width:24, tintColor: tintColor }}/>
 				)
 			}},
 	},
@@ -72,7 +71,6 @@ const AppStack = createBottomTabNavigator(
 				backgroundColor: white,
 				borderTopWidth: 0,
 				height: 60,
-				
 			},		
 		}
 	}
