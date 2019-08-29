@@ -1,111 +1,130 @@
-import React, { Component } from 'react';
-import {Dimensions, 
-        StyleSheet,
-        TouchableOpacity,
-        View,
-        Image,
-        Text
-        }from 'react-native';
+import React, { Component } from "react";
+import {
+  Dimensions,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  Image,
+  Text
+} from "react-native";
 
 export default class Start extends Component {
+  // Nav bar details
+  static navigationOptions = {
+    header: null
+  };
 
-    // Nav bar details
-    static navigationOptions = {
-        header: null,
-    }
+  render() {
+    const { navigate } = this.props.navigation;
+    return (
+      <View style={styles.container}>
+        {/* heading */}
+        <View style={styles.titleContainer}>
+          <Text style={styles.titleText}>Hello there, </Text>
+          <Text style={styles.titleText}>Welcome to Curio. </Text>
+        </View>
 
-    render() {
+        {/* start image */}
+        <Image
+          style={styles.imageStyle}
+          source={require("../../../assets/images/welcome-start.png")}
+        />
 
-        const { navigate } = this.props.navigation;
-        return(
-            <View style={styles.container}>
+        {/* Login Button */}
+        <TouchableOpacity
+          onPress={() => navigate("Login")}
+          style={styles.loginButton}
+        >
+          <Text style={styles.loginButtonText}>LOGIN</Text>
+        </TouchableOpacity>
 
-                {/* heading */}
-                <Text style = {styles.titleText}>Hello there, </Text>
-                <Text style = {styles.titleText}>Welcome to Curio! </Text>
-
-                {/* start image */}
-                <Image style={styles.imageStyle} source={require('../../../assets/images/welcome-start.png')} />
-
-                {/* Login Button */}
-                <TouchableOpacity 
-                    onPress={ () => navigate('Login')} 
-                    style={styles.button}
-                >
-                    <Text style={styles.buttonText}>LOG IN</Text>
-                </TouchableOpacity>
-
-                {/* Register Button */}
-                <TouchableOpacity 
-                    onPress={ () => navigate('Register')} 
-                    style={[styles.button, styles.buttonSignUp]}
-                >
-                    <Text style={[styles.buttonText, styles.buttonTextSignUp]}>SIGN UP</Text>
-                </TouchableOpacity>
-     
-            </View>
-        );
-    }
+        {/* Register Button */}
+        <View style={styles.signupContainer}>
+          <Text styles={styles.signupText}>Don't have account yet? </Text>
+          <TouchableOpacity onPress={() => navigate("Register")}>
+            <Text style={styles.signupTextButton}>Create account</Text>
+          </TouchableOpacity>
+        </View>
+        {/* <TouchableOpacity
+          onPress={() => navigate("Register")}
+          style={[styles.button, styles.buttonSignUp]}
+        >
+          <Text style={[styles.buttonText, styles.buttonTextSignUp]}>
+            SIGN UP
+          </Text>
+        </TouchableOpacity> */}
+      </View>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
+  container: {
+    flex: 1,
+    flexDirection: "column",
+    alignItems: "center",
+    width: Dimensions.get("window").width,
+    height: Dimensions.get("window").height
+  },
 
-    titleText: {
-        fontSize: 30,
-        fontWeight: 'bold',
-        alignSelf: 'flex-start',
-        marginLeft: Dimensions.get('window').width * 0.07,
-        // marginBottom: 50,
-        // fontFamily: 'HindSiliguri-Bold'
-      },
+  titleContainer: {
+    alignSelf: "flex-start",
+    marginLeft: Dimensions.get("window").width * 0.095,
+    paddingTop: Dimensions.get("window").height * 0.13
+  },
 
-    imageStyle: {
-        width: Dimensions.get('window').width * 0.9,
-        height: Dimensions.get('window').width * 0.9,
-        resizeMode: 'contain',
-        marginTop: 40,
-        marginBottom: 10,
-    },
+  titleText: {
+    fontSize: 35,
+    fontWeight: "bold",
+    paddingTop: Dimensions.get("window").width * 0.008,
+    textShadowColor: "rgba(0, 0, 0, 0.08)",
+    textShadowOffset: { width: 0, height: 3 },
+    textShadowRadius: 40
+    // fontFamily: 'HindSiliguri-Bold'
+  },
 
-    button : {
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: '#FF6E6E',
-        width: Dimensions.get('window').width * 0.8,
-        height: 50,
-        margin: 10,
-        borderRadius: 540,
-        elevation: 3, 
-    },
+  imageStyle: {
+    width: Dimensions.get("window").width * 0.85,
+    height: Dimensions.get("window").width * 0.85,
+    resizeMode: "contain",
+    marginTop: Dimensions.get("window").height * 0.03,
+    marginBottom: 10
+  },
 
-    buttonText : {
-        fontSize: 18,
-        fontWeight: 'bold',
-        alignSelf: 'center',
-        color: 'white',
-        // fontFamily: 'HindSiliguri-Regular'
-    },
+  loginButton: {
+    alignSelf: "center",
+    justifyContent: "center",
+    backgroundColor: "white",
+    width: Dimensions.get("window").width * 0.7,
+    height: Dimensions.get("window").height * 0.065,
+    borderRadius: 540,
+    elevation: 6,
+    marginTop: Dimensions.get("window").height * 0.065
+  },
 
-    buttonSignUp: {
-        backgroundColor: 'white',
-        width: Dimensions.get('window').width * 0.8,
-        borderWidth: 2,
-        borderColor: '#FF6E6E'
-    },
+  loginButtonText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    alignSelf: "center",
+    color: "black"
+    // fontFamily: 'HindSiliguri-Regular'
+  },
 
-    buttonTextSignUp: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        alignSelf: 'center',
-        color: '#FF6E6E',
-        // fontFamily: 'HindSiliguri-Regular'
-    },
+  signupContainer: {
+    flex: 1,
+    flexDirection: "row",
+    alignSelf: "center",
+    paddingTop: Dimensions.get("window").height * 0.02
+  },
 
+  signupText: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#FF6E6E"
+    // fontFamily: 'HindSiliguri-Regular'
+  },
 
-})
+  signupTextButton: {
+    textDecorationLine: "underline"
+  }
+});
