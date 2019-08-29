@@ -8,6 +8,7 @@ import {
   TextInput,
   StyleSheet,
   Text,
+  AsyncStorage
 } from 'react-native'
 
 import { loginUser } from "../../actions/authActions"
@@ -43,11 +44,14 @@ class Login extends Component {
   };
   
   onChangeText = (key, val) => {
-    this.setState({ [key]: val })
+    this.setState({
+      [key]: val,
+      errors: {}
+    })
   }
 
   // send user data
-  onSubmit = (e) => {
+  onSubmit = async() => {
 
     const { navigate } = this.props.navigation;
 
@@ -59,10 +63,13 @@ class Login extends Component {
 
     this.props.loginUser(user, this.props.history)
       .then(res => {
-        if (Object.keys(this.state.errors).length === 0) {
-          navigate("App");
-          this.state = initialState;
-        }
+        AsyncStorage.getItem('userToken')
+          .then((res) => {
+            if (res !== null) {
+              navigate("App");
+              this.state = initialState;
+            }
+          });
       });
   }
  
@@ -117,7 +124,6 @@ class Login extends Component {
           <MyButton onPress={ (this.onSubmit) } text="LOG IN" />
 
         </View>
-        
       </View>
     )
   }

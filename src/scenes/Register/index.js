@@ -81,11 +81,14 @@ class Register extends Component {
   }
 
   onChangeText = (key, val) => {
-    this.setState({ [key]: val })
+    this.setState({ 
+      [key]: val,
+      errors: {}
+    })
   }
 
   // send new user data
-  onSubmit = (e) => {
+  onSubmit = async() => {
 
     const { navigate } = this.props.navigation;
 

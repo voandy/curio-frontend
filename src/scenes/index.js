@@ -11,7 +11,6 @@ import NotificationScreen from './Notification'
 import ArtifactsScreen from './Artifacts'
 import { white } from 'ansi-colors';
 
-
 // login / signup stack
 const AuthStack = createStackNavigator(
 	{ 
