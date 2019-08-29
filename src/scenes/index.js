@@ -32,7 +32,7 @@ const AppStack = createBottomTabNavigator(
 			navigationOptions: {
 				tabBarIcon: ({ tintColor}) => (
 					<Image source={ require('../../assets/images/icons/group.png') } 
-					style = {{ height:24, width:24, tintColor: tintColor }}/>
+					style = {{ height:30, width:30, tintColor: tintColor }}/>
 				)
 			}},
 		Artifacts: {
@@ -40,7 +40,7 @@ const AppStack = createBottomTabNavigator(
 			navigationOptions: {
 				tabBarIcon: ({ tintColor}) => (
 					<Image source={ require('../../assets/images/icons/artefacts.png') } 
-					style = {{ height:24, width:24, tintColor: tintColor }}/>
+					style = {{ height:30, width:30, tintColor: tintColor }}/>
 				)
 			}},
 		Notification: {
@@ -48,7 +48,7 @@ const AppStack = createBottomTabNavigator(
 			navigationOptions: {
 				tabBarIcon: ({ tintColor}) => (
 					<Image source={ require('../../assets/images/icons/notification.png') } 
-					style = {{ height:24, width:24, tintColor: tintColor }}/>
+					style = {{ height:30, width:30, tintColor: tintColor }}/>
 				)
 			}},
 		Profile: {
@@ -56,7 +56,7 @@ const AppStack = createBottomTabNavigator(
 			navigationOptions: {
 				tabBarIcon: ({ tintColor}) => (
 					<Image source={ require('../../assets/images/icons/profile.png') } 
-					style = {{ height:24, width:24, tintColor: tintColor }}/>
+					style = {{ height:30, width:30, tintColor: tintColor }}/>
 				)
 			}},
 	},
@@ -64,7 +64,7 @@ const AppStack = createBottomTabNavigator(
 	{
 		tabBarOptions:{
 			activeTintColor: '#FF6E6E',
-			inactiveTintColor: '#E2E2E2',
+			inactiveTintColor: '#737373',
 			showLabel: false,
 			style: {
 				elevation: 1,
