@@ -152,6 +152,12 @@ class Register extends Component {
             photoURLHandler={this.photoURLHandler}
             stageHandler={this.stageHandler}
           />
+          {/* <Text style={styles.error}> {errors.passwordCfm} </Text> */}
+
+          {/* { this.loadPage(errors) } */}
+
+          {/* button */}
+          <MyButton onPress={this.onSubmit} text="NEXT" />
         </View>
       </View>
     );

@@ -21,7 +21,6 @@ const initialState = {
   errors: {}
 }
 
-
 class Login extends Component {
   constructor() {
     super();
@@ -114,14 +113,13 @@ class Login extends Component {
           </Text>
 
           <TouchableOpacity 
-              // onPress={ } 
               style={styles.forgot}
           >
               <Text style={styles.forgotText}>Forgot Password?</Text>
           </TouchableOpacity>
 
           {/* button */}
-          <MyButton onPress={ (this.onSubmit) } text="LOG IN" />
+          <MyButton onPress={ (this.onSubmit) } text="LOG IN"/>
 
         </View>
       </View>

@@ -18,7 +18,6 @@ import Header from "../../component/Header";
 class Collections extends Component {
   render() {
     const { user } = this.props.auth;
-    console.log("user is" + user);
 
     return (
       <View style={styles.container}>
