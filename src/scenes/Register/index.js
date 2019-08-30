@@ -14,10 +14,15 @@ import { registerUser } from "../../actions/authActions";
 import * as ImagePicker from "expo-image-picker";
 import RegisterManager from "./registerManager";
 import { C } from "../../actions/registerTypes";
+// import widht/height responsive functions
+import {
+  deviceHeigthDimension as hp,
+  deviceWidthDimension as wd
+} from "../../utils/responsiveDesign";
 
 class Register extends Component {
   state = {
-    register_stage: C.GET_NAME,
+    registerStage: C.GET_NAME,
     name: "",
     email: "",
     password: "",
@@ -42,6 +47,11 @@ class Register extends Component {
 
   photoURLHandler = photoURL => {
     this.setState({ ...this.state, photoURL });
+  };
+
+  stageHandler = registerStage => {
+    this.setState({ ...this.state, registerStage });
+    console.log(this.state);
   };
   // // image picker (camera roll)
   // handleChoosePhoto = () => {
@@ -135,11 +145,12 @@ class Register extends Component {
         {/* main card view */}
         <View style={styles.card}>
           <RegisterManager
-            registerStage={this.state.register_stage}
+            registerStage={this.state.registerStage}
             nameHandler={this.nameHandler}
             emailHandler={this.emailHandler}
             passwordHandler={this.passwordHandler}
             photoURLHandler={this.photoURLHandler}
+            stageHandler={this.stageHandler}
           />
         </View>
       </View>
@@ -163,7 +174,7 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontWeight: "bold",
     alignSelf: "flex-start",
-    marginLeft: Dimensions.get("window").width * 0.07
+    marginLeft: wd(0.07)
     // fontFamily: 'HindSiliguri-Bold'
   },
 
@@ -172,72 +183,20 @@ const styles = StyleSheet.create({
     marginBottom: 50,
     fontWeight: "bold",
     alignSelf: "flex-start",
-    marginLeft: Dimensions.get("window").width * 0.07
+    marginLeft: wd(0.07)
     // fontFamily: 'HindSiliguri-Bold'
   },
 
   card: {
-    width: Dimensions.get("window").width * 0.9,
-    height: Dimensions.get("window").height * 0.6,
+    width: wd(0.9),
+    height: hp(0.6),
     borderColor: "#E2E2E2",
     borderRadius: 30,
     borderTopWidth: 0.5,
     borderRightWidth: 2,
     borderLeftWidth: 0.5,
     borderBottomWidth: 2,
-    marginBottom: 50,
-    alignContent: "center",
-    alignItems: "center"
-  },
-
-  input: {
-    width: Dimensions.get("window").width * 0.78,
-    height: 30,
-    marginTop: 20,
-    backgroundColor: "white",
-    borderBottomWidth: 0.5,
-    fontSize: 16
-  },
-
-  inputText: {
-    fontWeight: "bold",
-    alignSelf: "flex-start",
-    marginLeft: Dimensions.get("window").width * 0.05,
-    marginTop: 30,
-    fontSize: 20
-  },
-
-  button: {
-    justifyContent: "center",
-    backgroundColor: "#FF6E6E",
-    width: Dimensions.get("window").width * 0.4,
-    height: 50,
-    margin: 10,
-    borderRadius: 40,
-    elevation: 3,
-    position: "absolute",
-    bottom: 40
-  },
-
-  buttonText: {
-    fontSize: 18,
-    fontWeight: "bold",
-    alignSelf: "center",
-    color: "white"
-    // fontFamily: 'HindSiliguri-Regular'
-  },
-
-  passwordSpacing: {
-    marginBottom: 30
-  },
-
-  password: {
-    marginTop: 5,
-    fontSize: 16
-  },
-
-  error: {
-    color: "red"
+    marginBottom: 50
   }
 });
 

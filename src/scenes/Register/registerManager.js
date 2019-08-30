@@ -8,14 +8,22 @@ import {
   StyleSheet,
   Text
 } from "react-native";
+// import all register Constants
 import { C } from "../../actions/registerTypes";
-import {
-  getName,
-  getEmail,
-  getPassword,
-  getPhoto
-} from "../../actions/registerActions";
+// import {
+//   getName,
+//   getEmail,
+//   getPassword,
+//   getPhoto
+// } from "../../actions/registerActions";
+// import reusable component
 import MyButton from "../../component/MyButton";
+// import widht/height responsive functions
+import {
+  deviceHeigthDimension as hp,
+  deviceWidthDimension as wd,
+  setToBottom
+} from "../../utils/responsiveDesign";
 
 // Load new page after each completed stage in sign up
 class RegisterManager extends Component {
@@ -23,22 +31,96 @@ class RegisterManager extends Component {
     switch (this.props.registerStage) {
       case C.GET_NAME:
         return (
-          <View>
+          <View style={styles.cardContainer}>
             {/* name */}
             <Text style={styles.inputText}>Hey, first tell us your name!</Text>
             <TextInput
-              style={styles.input}
+              style={styles.inputField}
               placeholder="Jon Snow"
               autoCapitalize="none"
               placeholderTextColor="#868686"
               onChangeText={val => this.props.nameHandler(val)}
             />
             {/* <Text style={styles.error}> {errors.name} </Text> */}
-            <View styles={styles.nextButtonContainer}>
-              <MyButton text="Next" />
-            </View>
+            {setToBottom(
+              <MyButton
+                onPress={() => this.props.stageHandler(C.GET_EMAIL)}
+                text="Next"
+              />
+            )}
           </View>
         );
+      case C.GET_EMAIL:
+        return (
+          <View style={styles.cardContainer}>
+            {/* email */}
+            <Text style={styles.inputText}>Now, enter your email address!</Text>
+            <TextInput
+              style={styles.inputField}
+              placeholder="abc@email.com"
+              autoCapitalize="none"
+              placeholderTextColor="#868686"
+              onChangeText={val => this.props.emailHandler(val)}
+            />
+            {/* <Text style={styles.error}> {errors.email} </Text> */}
+            {setToBottom(
+              <MyButton
+                onPress={() => this.props.stageHandler(C.GET_PASSWORD)}
+                text="Next"
+              />
+            )}
+          </View>
+        );
+      case C.GET_PASSWORD:
+        return (
+          <View style={styles.cardContainer}>
+            <Text style={[styles.inputText, styles.passwordTitle]}>
+              Great, create your unique password!
+            </Text>
+
+            {/* password */}
+            <Text style={[styles.inputText, styles.passwordFieldTitle]}>
+              {" "}
+              Password:{" "}
+            </Text>
+            <TextInput
+              style={[styles.inputField, styles.passwordField]}
+              secureTextEntry={true}
+              autoCapitalize="none"
+              placeholderTextColor="#868686"
+              onChangeText={val => this.onChangeText("password", val)}
+            />
+            {/* <Text style={styles.error}> {errors.password} </Text> */}
+
+            {/* Cfm password */}
+            <Text style={[styles.inputText, styles.passwordFieldTitle]}>
+              {" "}
+              Confirm Password:{" "}
+            </Text>
+            <TextInput
+              style={[styles.inputField, styles.passwordField]}
+              secureTextEntry={true}
+              autoCapitalize="none"
+              placeholderTextColor="#868686"
+              onChangeText={val => this.onChangeText("passwordCfm", val)}
+            />
+            {/* <Text style={styles.error}> {errors.passwordCfm} </Text> */}
+            {setToBottom(
+              <MyButton
+                onPress={() => this.props.stageHandler(C.GET_PHOTO)}
+                text="Next"
+              />
+            )}
+          </View>
+        );
+
+      case C.GET_PHOTO:
+        return (
+          <View>
+            <Text>Get Photo Stage</Text>
+          </View>
+        );
+
       default:
         return (
           <View>
@@ -81,7 +163,7 @@ class RegisterManager extends Component {
   // case 2:
   //   return (
   //     <View>
-  //       <Text style={[styles.inputText, styles.passwordSpacing]}>
+  //       <Text style={[styles.inputText, styles.passwordTitle]}>
   //         {" "}
   //         Great, create your unique password!{" "}
   //       </Text>
@@ -124,85 +206,42 @@ class RegisterManager extends Component {
 }
 
 const styles = StyleSheet.create({
-  // container: {
-  //   flex: 1,
-  //   justifyContent: "center",
-  //   alignItems: "center"
-  // },
-  // titleText: {
-  //   fontSize: 30,
-  //   fontWeight: "bold",
-  //   alignSelf: "flex-start",
-  //   marginLeft: Dimensions.get("window").width * 0.07
-  //   // fontFamily: 'HindSiliguri-Bold'
-  // },
-  // subTitleText: {
-  //   fontSize: 25,
-  //   marginBottom: 50,
-  //   fontWeight: "bold",
-  //   alignSelf: "flex-start",
-  //   marginLeft: Dimensions.get("window").width * 0.07
-  //   // fontFamily: 'HindSiliguri-Bold'
-  // },
-  // card: {
-  //   width: Dimensions.get("window").width * 0.9,
-  //   height: Dimensions.get("window").height * 0.6,
-  //   borderColor: "#E2E2E2",
-  //   borderRadius: 30,
-  //   borderTopWidth: 0.5,
-  //   borderRightWidth: 2,
-  //   borderLeftWidth: 0.5,
-  //   borderBottomWidth: 2,
-  //   marginBottom: 50,
-  //   alignContent: "center",
-  //   alignItems: "center"
-  // },
-  input: {
-    width: Dimensions.get("window").width * 0.78,
-    height: 30,
+  cardContainer: {
+    flex: 1,
+    flexDirection: "column",
+    padding: wd(0.05)
+  },
+  inputField: {
+    textAlign: "center",
+    width: wd(0.7),
+    height: hp(0.05),
     marginTop: 20,
     backgroundColor: "white",
     borderBottomWidth: 0.5,
-    fontSize: 16
+    fontSize: 16,
+    alignSelf: "center"
   },
   inputText: {
     fontWeight: "bold",
-    alignSelf: "flex-start",
-    marginLeft: Dimensions.get("window").width * 0.05,
-    marginTop: 30,
-    fontSize: 20
+    alignSelf: "center",
+    fontSize: hp(0.026)
   },
-  nextButtonContainer: {
-    flex: 1,
-    justifyContent: "flex-end",
-    alignItems: "flex-end",
-    backgroundColor: "red"
+
+  passwordTitle: {
+    marginBottom: hp(0.024),
+    fontSize: hp(0.024)
+  },
+  passwordFieldTitle: {
+    fontSize: hp(0.022),
+    alignSelf: "flex-start",
+    marginLeft: wd(0.015)
+  },
+  passwordField: {
+    marginTop: hp(0.01),
+    fontSize: hp(0.02),
+    height: hp(0.03),
+    marginBottom: hp(0.05)
   }
-  // button: {
-  //   justifyContent: "center",
-  //   backgroundColor: "#FF6E6E",
-  //   width: Dimensions.get("window").width * 0.4,
-  //   height: 50,
-  //   margin: 10,
-  //   borderRadius: 40,
-  //   elevation: 3,
-  //   position: "absolute",
-  //   bottom: 40
-  // },
-  // buttonText: {
-  //   fontSize: 18,
-  //   fontWeight: "bold",
-  //   alignSelf: "center",
-  //   color: "white"
-  //   // fontFamily: 'HindSiliguri-Regular'
-  // },
-  // passwordSpacing: {
-  //   marginBottom: 30
-  // },
-  // password: {
-  //   marginTop: 5,
-  //   fontSize: 16
-  // },
   // error: {
   //   color: "red"
   // }
