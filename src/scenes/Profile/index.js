@@ -7,6 +7,7 @@ import axios from "axios"
 import {Dimensions, 
         StyleSheet,
         TouchableOpacity,
+        ScrollView,
         View,
         Image,
         Text
@@ -52,19 +53,32 @@ class Profile extends Component {
 
             <View style={styles.container}>
 
-                <Header title="Profile" tab1="" tab2=""/>         
+                <Header title="Profile" tab1="" tab2=""/> 
 
-                {/* heading */}
-                <Text style = {styles.titleText}> 
-                    Hi {this.state.userData.name} {"\n"}
-                    You have joined since {this.state.userData.dateJoined} {"\n"}
-                </Text>
-  
-                <TouchableOpacity 
-                    onPress={this.onLogoutClick}
-                    style={ styles.button }>
-                    <Text style= { styles.buttonText }>Log Out</Text>
-                </TouchableOpacity>  
+                {/* scrollable area for CONTENT */}
+                <ScrollView
+                    showsVerticalScrollIndicator={false}
+                    scrollEventThrottle={16}>   
+
+                    {/* TODO add user image */}
+                    <Image style= { styles.profilePic }
+                        source={require('../../../assets/images/default-profile-pic.png')} />
+
+                    {/* user heading */}
+                    <Text style = {styles.userName}> 
+                        {this.state.userData.name}
+                    </Text>
+                    <Text style = {styles.userDetails}>
+                        You have joined since {this.state.userData.dateJoined} {"\n"}
+                    </Text>
+    
+                    <TouchableOpacity 
+                        onPress={this.onLogoutClick}
+                        style={ styles.button }>
+                        <Text style= { styles.buttonText }>Log Out</Text>
+                    </TouchableOpacity>  
+
+                </ScrollView>
      
             </View>
         );
@@ -76,16 +90,29 @@ const styles = StyleSheet.create({
         flex: 1,
     },
 
-    titleText: {
-        fontSize: 30,
-        marginTop: 250,
+    userName: {
+        fontSize: 24,
+        marginTop: 10,
         fontWeight: 'bold',
-        alignSelf: 'flex-start',
-        marginLeft: Dimensions.get('window').width * 0.07,
+        alignSelf: 'center',
         // fontFamily: 'HindSiliguri-Bold'
-      },
+    },
 
-      button: {
+    userDetails: {
+        fontSize: 14,
+        marginTop: 3,
+        alignSelf: 'center',
+    },  
+
+    profilePic: {
+        width: Dimensions.get('window').width * 0.45,
+        height: Dimensions.get('window').width * 0.45,
+        borderRadius: Dimensions.get('window').width * 0.45/2,
+        alignSelf: 'center',
+        marginTop: 50,
+    },
+
+    button: {
         justifyContent: 'center',
         backgroundColor: '#FF6E6E',
         width: Dimensions.get('window').width * 0.4,
@@ -93,15 +120,15 @@ const styles = StyleSheet.create({
         margin: 10,
         borderRadius: 40,
         elevation: 3, 
-      },
-    
-      buttonText: {
+    },
+
+    buttonText: {
         fontSize: 18,
         fontWeight: 'bold',
         alignSelf: 'center',
         color: 'white',
         // fontFamily: 'HindSiliguri-Regular'
-      },
+    },
 })
 
 Profile.propTypes = {

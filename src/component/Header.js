@@ -4,7 +4,7 @@ import {
   StyleSheet,
   Text,
   Dimensions,
-  Image,
+  Animated,
   TouchableOpacity
 } from "react-native";
 

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {Dimensions, 
         StyleSheet,
         TouchableOpacity,
+        ScrollView,
         View,
         Image,
         Text
@@ -17,10 +18,21 @@ export default class Artifacts extends Component {
         return(
             <View style={styles.container}>
 
-                <Header title="Artifacts" tab1="All" tab2=""/>         
+                <Header title="Artifacts" tab1="All" tab2="null"/>   
 
-                {/* heading */}
-                <Text style = {styles.titleText}>ARTIFACTS</Text>
+                {/* scrollable area for CONTENT */}
+                <ScrollView 
+                    showsVerticalScrollIndicator={false}
+                    scrollEventThrottle={16}>
+
+                    {/* heading */}
+                    <Text style = {styles.titleText}>ARTIFACTS</Text>
+                    <Text style = {styles.titleText}>ARTIFACTS</Text>
+                    <Text style = {styles.titleText}>ARTIFACTS</Text>
+                    <Text style = {styles.titleText}>ARTIFACTS</Text>
+                    <Text style = {styles.titleText}>ARTIFACTS</Text>
+
+                </ScrollView>    
             </View>
         );
     }
