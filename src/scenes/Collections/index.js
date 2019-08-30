@@ -13,8 +13,18 @@ import {
 import { white, black } from "ansi-colors";
 import CardCarousel from "../../component/CardCarousel";
 import Header from "../../component/Header";
+import * as Font from 'expo-font';
+
 
 class Collections extends Component {
+
+  componentDidMount() {
+    // font
+    Font.loadAsync({
+        'HindSiliguri-Bold': require('../../../assets/fonts/HindSiliguri-Bold.ttf'),
+        'HindSiliguri-Regular': require('../../../assets/fonts/HindSiliguri-Regular.ttf'),
+    });
+  }
 
   render() {
     const { user } = this.props.auth;
@@ -105,9 +115,8 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     alignItems: "center",
     justifyContent: "center",
-    marginLeft: Dimensions.get("window").width * 0.07
-    // marginBottom: 50,
-    // fontFamily: 'HindSiliguri-Bold'
+    marginLeft: Dimensions.get("window").width * 0.07,
+    fontFamily: 'HindSiliguri-Bold'
   }
 });
 

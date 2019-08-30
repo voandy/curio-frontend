@@ -4,17 +4,27 @@ import {
   StyleSheet,
   Text,
   Dimensions,
-  Animated,
   TouchableOpacity
 } from "react-native";
+import * as Font from 'expo-font';
+
 
 class Header extends Component {
+
+  componentDidMount() {
+    // font
+    Font.loadAsync({
+        'HindSiliguri-Bold': require('../../assets/fonts/HindSiliguri-Bold.ttf'),
+        'HindSiliguri-Regular': require('../../assets/fonts/HindSiliguri-Regular.ttf'),
+    });
+  }
+
   render() {
     return (
       <View style={styles.header}>
         {/* header text */}
         <View style={{ flexDirection: "row" }}>
-          <Text style={styles.headerText}> {this.props.title} </Text>
+          <Text style={[styles.headerText, styles.font]}> {this.props.title} </Text>
         </View>
 
         {/* header tab */}
@@ -23,14 +33,14 @@ class Header extends Component {
             // onPress
             style={styles.headerButton}
           >
-            <Text style={styles.headerButtonText}> {this.props.tab1} </Text>
+            <Text style={[styles.headerButtonText, styles.font]}> {this.props.tab1} </Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             // onPress
             style={styles.headerButton}
           >
-            <Text style={styles.headerButtonText}> {this.props.tab2} </Text>
+            <Text style={[styles.headerButtonText, styles.font]}> {this.props.tab2} </Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -39,6 +49,11 @@ class Header extends Component {
 }
 
 const styles = StyleSheet.create({
+
+  font: {
+    fontFamily: "HindSiliguri-Bold",
+  },
+
   header: {
     height: 130,
     elevation: 2,
@@ -50,7 +65,6 @@ const styles = StyleSheet.create({
     fontSize: 24,
     marginTop: 40,
     marginLeft: 30,
-    fontWeight: "bold"
   },
 
   headerButton: {
@@ -66,7 +80,6 @@ const styles = StyleSheet.create({
 
   headerButtonText: {
     fontSize: 18,
-    fontWeight: "bold"
   }
 });
 

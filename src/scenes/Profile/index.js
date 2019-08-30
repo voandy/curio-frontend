@@ -4,6 +4,9 @@ import { connect } from "react-redux"
 import { logoutUser } from "../../actions/authActions"
 import { getUserData } from "../../actions/dataActions"
 import axios from "axios"
+import Moment from 'moment';
+import * as Font from 'expo-font';
+
 import {Dimensions, 
         StyleSheet,
         TouchableOpacity,
@@ -13,7 +16,7 @@ import {Dimensions,
         Text
         }from 'react-native';
 
-import Header from "../../component/Header"
+import SimpleHeader from "../../component/SimpleHeader"
 
 class Profile extends Component {
     constructor() {
@@ -26,8 +29,13 @@ class Profile extends Component {
     componentDidMount() {
         // get user authentication data
         const { user } = this.props.auth;
-
         this.props.getUserData(user.id);
+
+        // font
+        Font.loadAsync({
+            'HindSiliguri-Bold': require('../../../assets/fonts/HindSiliguri-Bold.ttf'),
+            'HindSiliguri-Regular': require('../../../assets/fonts/HindSiliguri-Regular.ttf'),
+        });
     }
 
     componentWillUpdate(nextProps) {
@@ -49,11 +57,16 @@ class Profile extends Component {
 
     render() {
         console.log(this.state.userData);
+
+        // date format
+        Moment.locale('en');
+        const dt = this.state.userData.dateJoined;
+
         return(
 
             <View style={styles.container}>
 
-                <Header title="Profile" tab1="" tab2=""/> 
+                <SimpleHeader title="Profile" /> 
 
                 {/* scrollable area for CONTENT */}
                 <ScrollView
@@ -69,9 +82,19 @@ class Profile extends Component {
                         {this.state.userData.name}
                     </Text>
                     <Text style = {styles.userDetails}>
-                        You have joined since {this.state.userData.dateJoined} {"\n"}
-                    </Text>
-    
+                        joined since {Moment(dt).format('Do MMMM YYYY')}
+                    </Text>   
+                    
+                    {/* line separator */}
+                    <View style={ styles.line } />  
+
+                    {/* TODO REPLACE THIS  */}
+                    <View style={ {height: 350, justifyContent:"center"} }>
+                        <Text style={{ fontFamily: 'HindSiliguri-Regular', alignSelf:'center'}}>Whoops, Looks like you dont have any Artefacts</Text>
+                        <Text style={{ fontFamily: 'HindSiliguri-Regular', alignSelf:'center'}}>Create a collection now !</Text>
+                    </View>
+
+
                     <TouchableOpacity 
                         onPress={this.onLogoutClick}
                         style={ styles.button }>
@@ -92,28 +115,39 @@ const styles = StyleSheet.create({
 
     userName: {
         fontSize: 24,
-        marginTop: 10,
-        fontWeight: 'bold',
+        marginTop: 5,
         alignSelf: 'center',
-        // fontFamily: 'HindSiliguri-Bold'
+        fontFamily: 'HindSiliguri-Bold'
     },
 
     userDetails: {
         fontSize: 14,
         marginTop: 3,
+        marginBottom: 10,
         alignSelf: 'center',
+        color: "#939090",
+        fontFamily: 'HindSiliguri-Regular'
     },  
 
     profilePic: {
+        marginTop: 30,
         width: Dimensions.get('window').width * 0.45,
         height: Dimensions.get('window').width * 0.45,
         borderRadius: Dimensions.get('window').width * 0.45/2,
         alignSelf: 'center',
-        marginTop: 50,
     },
+
+    line: {
+        marginTop: 10,
+        borderBottomColor: '#939090', 
+        borderBottomWidth: 0.4, 
+        width: Dimensions.get('window').width * 0.8,
+        alignSelf: 'center',
+    },  
 
     button: {
         justifyContent: 'center',
+        alignSelf: "center",
         backgroundColor: '#FF6E6E',
         width: Dimensions.get('window').width * 0.4,
         height: 50,
@@ -127,7 +161,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         alignSelf: 'center',
         color: 'white',
-        // fontFamily: 'HindSiliguri-Regular'
+        fontFamily: 'HindSiliguri-Regular'
     },
 })
 

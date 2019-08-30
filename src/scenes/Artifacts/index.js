@@ -7,10 +7,21 @@ import {Dimensions,
         Image,
         Text
         }from 'react-native';
+        
 import Header from "../../component/Header"
+import * as Font from 'expo-font';
+
 
 
 export default class Artifacts extends Component {
+
+    componentDidMount() {
+        // font
+        Font.loadAsync({
+            'HindSiliguri-Bold': require('../../../assets/fonts/HindSiliguri-Bold.ttf'),
+            'HindSiliguri-Regular': require('../../../assets/fonts/HindSiliguri-Regular.ttf'),
+        });
+    }
 
     render() {
 
@@ -49,7 +60,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         alignSelf: 'flex-start',
         marginLeft: Dimensions.get('window').width * 0.07,
-        // fontFamily: 'HindSiliguri-Bold'
+        fontFamily: 'HindSiliguri-Bold'
       },
 
     button : {
