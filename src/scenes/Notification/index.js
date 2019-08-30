@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {Dimensions, 
         StyleSheet,
         TouchableOpacity,
+        ScrollView,
         View,
         Image,
         Text
@@ -17,11 +18,21 @@ export default class Notification extends Component {
             
             <View style={styles.container}>
 
-                <Header title="Notification" tab1="All" tab2=""/>         
+                <Header title="Notification" tab1="All" tab2=""/>  
 
-                {/* heading */}
-                <Text style = {styles.titleText}>NOTIFICATION</Text>
+                {/* scrollable area for CONTENT */}
+                <ScrollView
+                    showsVerticalScrollIndicator={false}
+                    scrollEventThrottle={16}>  
 
+                    {/* heading */}
+                    <Text style = {styles.titleText}>NOTIFICATION</Text>
+                    <Text style = {styles.titleText}>NOTIFICATION</Text>
+                    <Text style = {styles.titleText}>NOTIFICATION</Text>
+                    <Text style = {styles.titleText}>NOTIFICATION</Text>
+                    <Text style = {styles.titleText}>NOTIFICATION</Text>
+
+                </ScrollView>
      
             </View>
         );

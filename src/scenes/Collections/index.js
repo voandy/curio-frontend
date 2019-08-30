@@ -4,11 +4,10 @@ import { connect } from "react-redux";
 import { logoutUser } from "../../actions/authActions";
 import {
   View,
-  ScrollView,
-  StyleSheet,
   Text,
+  StyleSheet,
+  ScrollView,
   Dimensions,
-  TouchableOpacity
 } from "react-native";
 
 import { white, black } from "ansi-colors";
@@ -16,6 +15,7 @@ import CardCarousel from "../../component/CardCarousel";
 import Header from "../../component/Header";
 
 class Collections extends Component {
+
   render() {
     const { user } = this.props.auth;
 
@@ -23,16 +23,27 @@ class Collections extends Component {
       <View style={styles.container}>
         <Header title="Collections" tab1="Public" tab2="Private" />
 
-        {/* carousel pinned collections */}
-        <View style={{ height: 130, marginTop: 20 }}>
-          <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-            <CardCarousel text="page 1" />
-            <CardCarousel text="page 2" />
-            <CardCarousel text="page 3" />
-          </ScrollView>
-        </View>
+        {/* scrollable area for CONTENT */}
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          scrollEventThrottle={16}
+        >
+          {/* carousel pinned collections */}
+          <View style={{ height: 130, marginTop: 20 }}>
+            <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+              <CardCarousel text="page 1" />
+              <CardCarousel text="page 2" />
+              <CardCarousel text="page 3" />
+            </ScrollView>
+          </View>
 
-        <Text style={styles.titleText}>COLLECTIONS</Text>
+          <Text style={styles.titleText}>COLLECTIONS</Text>
+          <Text style={styles.titleText}>COLLECTIONS</Text>
+          <Text style={styles.titleText}>COLLECTIONS</Text>
+          <Text style={styles.titleText}>COLLECTIONS</Text>
+          <Text style={styles.titleText}>COLLECTIONS</Text>
+
+        </ScrollView>
       </View>
     );
   }
