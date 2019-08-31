@@ -78,69 +78,6 @@ const AppStack = createBottomTabNavigator(
 	}
 	);
 
-export default createAppContainer(createSwitchNavigator(
-  {
-    Collections: {
-      screen: CollectionsScreen,
-      navigationOptions: {
-        tabBarIcon: ({ tintColor }) => (
-          <Image
-            source={require("../../assets/images/icons/collection.png")}
-            style={{ height: 24, width: 24, tintColor: defaultTintColor }}
-          />
-        )
-      }
-    },
-    Artifacts: {
-      screen: ArtifactsScreen,
-      navigationOptions: {
-        tabBarIcon: ({ tintColor }) => (
-          <Image
-            source={require("../../assets/images/icons/artefact.png")}
-            style={{ height: 24, width: 30, tintColor: defaultTintColor }}
-          />
-        )
-      }
-    },
-    Notification: {
-      screen: NotificationScreen,
-      navigationOptions: {
-        tabBarIcon: ({ tintColor }) => (
-          <Image
-            source={require("../../assets/images/icons/notification.png")}
-            style={{ height: 24, width: 30, tintColor: defaultTintColor }}
-          />
-        )
-      }
-    },
-    Profile: {
-      screen: ProfileScreen,
-      navigationOptions: {
-        tabBarIcon: ({ tintColor }) => (
-          <Image
-            source={require("../../assets/images/icons/profile.png")}
-            style={{ height: 24, width: 24, tintColor: defaultTintColor }}
-          />
-        )
-      }
-    }
-  },
-  // styling for the tab bar
-  {
-    tabBarOptions: {
-      activeTintColor: "#FF6E6E",
-      inactiveTintColor: "#E2E2E2",
-      showLabel: false,
-      style: {
-        elevation: 1,
-        backgroundColor: white,
-        borderTopWidth: 0,
-        height: 60
-      }
-    }
-  }
-);
-
 export default createAppContainer(
   createSwitchNavigator(
     {
