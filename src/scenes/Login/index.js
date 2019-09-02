@@ -13,6 +13,7 @@ import {
 
 import { loginUser } from "../../actions/authActions"
 import MyButton from "../../component/MyButton"
+import * as Font from 'expo-font';
 
 // state
 const initialState = {
@@ -32,6 +33,14 @@ class Login extends Component {
     headerStyle: {
       elevation: 0, // remove shadow on Android
     },
+  }
+
+  async componentDidMount() {
+    // font
+    await Font.loadAsync({
+        'HindSiliguri-Bold': require('../../../assets/fonts/HindSiliguri-Bold.ttf'),
+        'HindSiliguri-Regular': require('../../../assets/fonts/HindSiliguri-Regular.ttf'),
+    });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -150,7 +159,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     alignSelf: 'flex-start',
     marginLeft: Dimensions.get('window').width * 0.07,
-    // fontFamily: 'HindSiliguri-Bold'
+    fontFamily: 'HindSiliguri-Bold'
   },
 
   subTitleText: {
@@ -159,7 +168,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     alignSelf: 'flex-start',
     marginLeft: Dimensions.get('window').width * 0.07,
-    // fontFamily: 'HindSiliguri-Bold'
+    fontFamily: 'HindSiliguri-Bold'
   },
 
   card: {
@@ -210,7 +219,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     alignSelf: 'center',
     color: 'white',
-    // fontFamily: 'HindSiliguri-Regular'
+    fontFamily: 'HindSiliguri-Regular'
   },
 
   forgot : {

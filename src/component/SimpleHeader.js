@@ -10,13 +10,13 @@ import * as Font from 'expo-font';
 
 class SimpleHeader extends Component {
 
-    componentDidMount() {
-        // font
-        Font.loadAsync({
-            'HindSiliguri-Bold': require('../../assets/fonts/HindSiliguri-Bold.ttf'),
-            'HindSiliguri-Regular': require('../../assets/fonts/HindSiliguri-Regular.ttf'),
-        });
-    }
+  async componentDidMount() {
+    // font
+    await Font.loadAsync({
+        'HindSiliguri-Bold': require('../../assets/fonts/HindSiliguri-Bold.ttf'),
+        'HindSiliguri-Regular': require('../../assets/fonts/HindSiliguri-Regular.ttf'),
+    });
+  }
 
     render() {
         return (

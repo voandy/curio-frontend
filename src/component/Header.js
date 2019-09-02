@@ -11,9 +11,9 @@ import * as Font from 'expo-font';
 
 class Header extends Component {
 
-  componentDidMount() {
+  async componentDidMount() {
     // font
-    Font.loadAsync({
+    await Font.loadAsync({
         'HindSiliguri-Bold': require('../../assets/fonts/HindSiliguri-Bold.ttf'),
         'HindSiliguri-Regular': require('../../assets/fonts/HindSiliguri-Regular.ttf'),
     });
@@ -23,7 +23,7 @@ class Header extends Component {
     return (
       <View style={styles.header}>
         {/* header text */}
-        <View style={{ flexDirection: "row" }}>
+        <View>
           <Text style={[styles.headerText, styles.font]}> {this.props.title} </Text>
         </View>
 
@@ -56,9 +56,9 @@ const styles = StyleSheet.create({
 
   header: {
     height: 130,
-    elevation: 2,
-    borderBottomColor: "black",
-    borderRadius: 1
+    // elevation: 2,
+    // borderBottomColor: "black",
+    // borderRadius: 1
   },
 
   headerText: {
@@ -69,9 +69,8 @@ const styles = StyleSheet.create({
 
   headerButton: {
     alignContent: "center",
-    marginTop: 20,
+    marginTop: 10,
     marginLeft: 30,
-    padding: 5,
     borderColor: "#FF6E6E",
     borderWidth: 0,
     borderBottomWidth: 3,

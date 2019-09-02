@@ -14,6 +14,8 @@ import { registerUser } from "../../actions/authActions";
 import * as ImagePicker from "expo-image-picker";
 import RegisterManager from "./registerManager";
 import { C } from "../../actions/registerTypes";
+import * as Font from 'expo-font';
+
 // import widht/height responsive functions
 import {
   deviceHeigthDimension as hp,
@@ -31,6 +33,14 @@ class Register extends Component {
 
   constructor() {
     super();
+  }
+
+  async componentDidMount() {
+    // font
+    await Font.loadAsync({
+        'HindSiliguri-Bold': require('../../../assets/fonts/HindSiliguri-Bold.ttf'),
+        'HindSiliguri-Regular': require('../../../assets/fonts/HindSiliguri-Regular.ttf'),
+    });
   }
 
   nameHandler = name => {
@@ -175,8 +185,8 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontWeight: "bold",
     alignSelf: "flex-start",
-    marginLeft: wd(0.07)
-    // fontFamily: 'HindSiliguri-Bold'
+    marginLeft: wd(0.07),
+    fontFamily: 'HindSiliguri-Bold'
   },
 
   subTitleText: {
@@ -184,8 +194,8 @@ const styles = StyleSheet.create({
     marginBottom: 50,
     fontWeight: "bold",
     alignSelf: "flex-start",
-    marginLeft: wd(0.07)
-    // fontFamily: 'HindSiliguri-Bold'
+    marginLeft: wd(0.07),
+    fontFamily: 'HindSiliguri-Bold'
   },
 
   card: {
