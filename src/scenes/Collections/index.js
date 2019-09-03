@@ -40,7 +40,7 @@ class Collections extends Component {
           {/* carousel pinned collections */}
           <View style={{ height: 130, marginTop: 20 }}>
             <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}
-                  decelerationRate={0} snapToAlignment={"center"}
+                  decelerationRate={0.8} snapToAlignment={"center"}
                   snapToInterval={Dimensions.get('window').width * 0.85} >
               <CardCarousel text="page 1" />
               <CardCarousel text="page 2" />
