@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+
 import {Dimensions, 
         StyleSheet,
         TouchableOpacity,
@@ -10,7 +11,6 @@ import {Dimensions,
         
 import Header from "../../component/Header"
 import * as Font from 'expo-font';
-
 
 
 export default class Artifacts extends Component {
@@ -29,7 +29,7 @@ export default class Artifacts extends Component {
         return(
             <View style={styles.container}>
 
-                <Header title="Artifacts" tab1="All" tab2="null"/>   
+                <Header title="Artifacts" tab1="All" tab2="Mine"/>   
 
                 {/* scrollable area for CONTENT */}
                 <ScrollView 

@@ -4,8 +4,6 @@ import { connect } from "react-redux"
 import { logoutUser } from "../../actions/authActions"
 import { getUserData } from "../../actions/dataActions"
 import axios from "axios"
-import Moment from 'moment';
-import * as Font from 'expo-font';
 
 import {Dimensions, 
         StyleSheet,
@@ -17,6 +15,8 @@ import {Dimensions,
         }from 'react-native';
 
 import SimpleHeader from "../../component/SimpleHeader"
+import Moment from 'moment';
+import * as Font from 'expo-font';
 
 class Profile extends Component {
     constructor() {

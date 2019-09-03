@@ -5,6 +5,7 @@ import {
   Text,
   Dimensions,
 } from "react-native";
+
 import * as Font from 'expo-font';
 
 

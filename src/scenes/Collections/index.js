@@ -10,7 +10,6 @@ import {
   Dimensions,
 } from "react-native";
 
-import { white, black } from "ansi-colors";
 import CardCarousel from "../../component/CardCarousel";
 import Header from "../../component/Header";
 import * as Font from 'expo-font';
@@ -31,7 +30,7 @@ class Collections extends Component {
 
     return (
       <View style={styles.container}>
-        <Header title="Collections" tab1="Public" tab2="Private" />
+        <Header tab1="Public" tab2="Private" />
 
         {/* scrollable area for CONTENT */}
         <ScrollView

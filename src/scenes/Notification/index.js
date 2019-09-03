@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+
 import {Dimensions, 
         StyleSheet,
         TouchableOpacity,
@@ -7,7 +8,8 @@ import {Dimensions,
         Image,
         Text
         }from 'react-native';
-import Header from "../../component/Header"
+
+import SimpleHeader from "../../component/SimpleHeader"
 import * as Font from 'expo-font';
 
 export default class Notification extends Component {
@@ -27,7 +29,7 @@ export default class Notification extends Component {
             
             <View style={styles.container}>
 
-                <Header title="Notification" tab1="All" tab2=""/>  
+                <SimpleHeader title="Notification" />  
 
                 {/* scrollable area for CONTENT */}
                 <ScrollView
