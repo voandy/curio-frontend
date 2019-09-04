@@ -35,9 +35,11 @@ class Register extends Component {
     super();
   }
 
-  // Nav bar details
+  // nav details
   static navigationOptions = {
-    header: null
+    headerStyle: {
+      elevation: 0, // remove shadow on Android
+    },
   }
 
   async componentDidMount() {

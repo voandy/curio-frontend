@@ -1,7 +1,4 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { logoutUser } from "../../actions/authActions";
 import {
   View,
   Text,
@@ -11,12 +8,9 @@ import {
 } from "react-native";
 
 import CardCarousel from "../../component/CardCarousel";
-import Header from "../../component/Header";
-import Tabs from './collectionManager'
 import * as Font from 'expo-font';
 
-
-class Collections extends Component {
+class Mine extends Component {
 
   componentDidMount() {
     // font
@@ -27,50 +21,25 @@ class Collections extends Component {
   }
 
   render() {
-    const { user } = this.props.auth;
-
     return (
       <View style={styles.container}>
-        <Header tab1="Public" tab2="Private" />
 
         {/* scrollable area for CONTENT */}
         <ScrollView
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={16}
         >
-          {/* carousel pinned collections */}
-          <View style={{ height: 130, marginTop: 20 }}>
-            <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}
-                  decelerationRate={0.8} snapToAlignment={"center"}
-                  snapToInterval={Dimensions.get('window').width * 0.85} >
-              <CardCarousel text="page 1" />
-              <CardCarousel text="page 2" />
-              <CardCarousel text="page 3" />
-            </ScrollView>
-          </View>
-
-          <Text style={styles.titleText}>COLLECTIONS</Text>
-          <Text style={styles.titleText}>COLLECTIONS</Text>
-          <Text style={styles.titleText}>COLLECTIONS</Text>
-          <Text style={styles.titleText}>COLLECTIONS</Text>
-          <Text style={styles.titleText}>COLLECTIONS</Text>
+          <Text style={styles.titleText}>MINE</Text>
+          <Text style={styles.titleText}>MINE</Text>
+          <Text style={styles.titleText}>MINE</Text>
+          <Text style={styles.titleText}>MINE</Text>
+          <Text style={styles.titleText}>MINE</Text>
 
         </ScrollView>
-
-        {/* <Tabs /> */}
       </View>
     );
   }
 }
-
-Collections.propTypes = {
-  logoutUser: PropTypes.func.isRequired,
-  auth: PropTypes.object.isRequired
-};
-
-const mapStateToProps = state => ({
-  auth: state.auth
-});
 
 const styles = StyleSheet.create({
   container: {
@@ -125,7 +94,4 @@ const styles = StyleSheet.create({
 });
 
 //  export
-export default connect(
-  mapStateToProps,
-  { logoutUser }
-)(Collections);
+export default Mine
