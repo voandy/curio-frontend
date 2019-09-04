@@ -11,7 +11,6 @@ import {
 } from "react-native";
 
 import { registerUser } from "../../actions/authActions";
-import * as ImagePicker from "expo-image-picker";
 import RegisterManager from "./registerManager";
 import { C } from "../../actions/registerTypes";
 import * as Font from 'expo-font';
@@ -23,6 +22,7 @@ import {
 } from "../../utils/responsiveDesign";
 
 class Register extends Component {
+  
   state = {
     registerStage: C.GET_NAME,
     name: "",
@@ -33,6 +33,11 @@ class Register extends Component {
 
   constructor() {
     super();
+  }
+
+  // Nav bar details
+  static navigationOptions = {
+    header: null
   }
 
   async componentDidMount() {
@@ -63,20 +68,8 @@ class Register extends Component {
     this.setState({ ...this.state, registerStage });
     console.log(this.state);
   };
-  // // image picker (camera roll)
-  // handleChoosePhoto = () => {
-  //   const option = {
-  //     noData: true
-  //   };
-  //   ImagePicker.launchImageLibrary(option, response => {
-  //     console.log("Camera Roll", response);
 
-  //     // saving the selected photo
-  //     if (response.uri) {
-  //       // this.setState({ photo: response });
-  //     }
-  //   });
-  // };
+
 
   // // show profile picture
   // renderProfile() {

@@ -73,9 +73,11 @@ class Profile extends Component {
                     showsVerticalScrollIndicator={false}
                     scrollEventThrottle={16}>   
 
-                    {/* TODO add user image */}
-                    <Image style= { styles.profilePic }
-                        source={require('../../../assets/images/default-profile-pic.png')} />
+                    {/* user profile picture */}
+                    {this.state.userData.profilePic != null? 
+                        <Image style= { styles.profilePic } source= {{uri: this.state.userData.profilePic}} /> :
+                        <Image style= { styles.profilePic } source={require('../../../assets/images/default-profile-pic.png')} />
+                    }
 
                     {/* user heading */}
                     <Text style = {styles.userName}> 
