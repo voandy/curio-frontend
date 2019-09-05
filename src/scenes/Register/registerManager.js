@@ -21,7 +21,7 @@ import * as ImagePicker from 'expo-image-picker';
 // } from "../../actions/registerActions";
 // import reusable component
 import MyButton from "../../component/MyButton";
-// import widht/height responsive functions
+// import width/height responsive functions
 import {
   deviceHeigthDimension as hp,
   deviceWidthDimension as wd,
@@ -98,11 +98,12 @@ class RegisterManager extends Component {
               onChangeText={val => this.props.nameHandler(val)}
             />
             {/* <Text style={styles.error}> {errors.name} </Text> */}
-            {setToBottom(
-              <MyButton
-                onPress={() => this.props.stageHandler(C.GET_EMAIL)}
-                text="Next"
-              />
+            {setToBottom(            
+                <MyButton
+                  style={ styles.nextButton }
+                  onPress={() => this.props.stageHandler(C.GET_EMAIL)}
+                  text="Next"
+                />
             )}
           </View>
         );
@@ -121,10 +122,17 @@ class RegisterManager extends Component {
             />
             {/* <Text style={styles.error}> {errors.email} </Text> */}
             {setToBottom(
-              <MyButton
-                onPress={() => this.props.stageHandler(C.GET_PASSWORD)}
-                text="Next"
-              />
+              <View style={ styles.buttom }>
+                <TouchableOpacity onPress={() => this.props.stageHandler(C.GET_NAME)}>
+                  <Text style={ styles.backButton }>Back</Text>
+                </TouchableOpacity>
+                
+                <MyButton
+                  style={ styles.nextButton }
+                  onPress={() => this.props.stageHandler(C.GET_PASSWORD)}
+                  text="Next"
+                />
+              </View>
             )}
           </View>
         );
@@ -164,10 +172,17 @@ class RegisterManager extends Component {
             />
             {/* <Text style={styles.error}> {errors.passwordCfm} </Text> */}
             {setToBottom(
-              <MyButton
-                onPress={() => this.props.stageHandler(C.GET_PHOTO)}
-                text="Next"
-              />
+              <View style={ styles.buttom }>
+                <TouchableOpacity onPress={() => this.props.stageHandler(C.GET_EMAIL)}>
+                  <Text style={ styles.backButton }>Back</Text>
+                </TouchableOpacity>
+                
+                <MyButton
+                  style={ styles.nextButton }
+                  onPress={() => this.props.stageHandler(C.GET_PHOTO)}
+                  text="Next"
+                />
+              </View>
             )}
           </View>
         );
@@ -194,17 +209,18 @@ class RegisterManager extends Component {
                 }
             </TouchableOpacity>
 
-            {/* photo upload button */}
-            {/* {this.state.userData.profilePic != null? 
-              <Image style= { styles.profilePic } source= {{uri: this.state.userData.profilePic}} /> :
-              <Image style= { styles.profilePic } source={require('../../../assets/images/default-profile-pic.png')} />
-            } */}
-
-
             {setToBottom(
-              <MyButton
-                text="Next"
-              />
+              <View style={ styles.buttom }>
+                <TouchableOpacity onPress={() => this.props.stageHandler(C.GET_PASSWORD)}>
+                  <Text style={ styles.backButton }>Back</Text>
+                </TouchableOpacity>
+                
+                <MyButton
+                  style={ styles.nextButton }
+                  onPress={() => this.props.stageHandler(C.GET_PHOTO)}
+                  text="Next"
+                />
+              </View>
             )}
           </View>
         );
@@ -353,6 +369,28 @@ const styles = StyleSheet.create({
     borderRadius: Dimensions.get('window').width * 0.35/2,
     alignSelf: 'center',
   },
+
+  buttom: {
+    alignSelf:"center", 
+    flexDirection:"row", 
+    width: wd(0.7935), 
+    alignItems:"center" ,
+    justifyContent:"space-between"
+  },  
+
+  backButton: {
+    fontSize: hp(0.022),
+    alignSelf: "center",
+    marginLeft: wd(0.03),
+    textDecorationLine: "underline",
+    color: "#FF6E6E",
+    fontFamily: 'HindSiliguri-Regular'
+  },
+
+  nextButton: {
+    alignSelf: "flex-end",
+  },
+
   // error: {
   //   color: "red"
   // }

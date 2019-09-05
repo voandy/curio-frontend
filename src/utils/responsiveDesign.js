@@ -11,7 +11,9 @@ export const deviceWidthDimension = percentage => {
 
 // Reusable CSS rule that set a component at the bottom right of the screen
 export const setToBottom = component => {
-  return <View style={styles.container}>{component}</View>;
+  return (
+    <View style={styles.container}>{component}</View>
+  )
 };
 
 const styles = StyleSheet.create({
