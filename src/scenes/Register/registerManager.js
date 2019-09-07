@@ -34,8 +34,10 @@ import {
 // Load new page after each completed stage in sign up
 class RegisterManager extends Component {
 
+  // TODO migrate to register-index
   state = {
     photo: null,
+    name: "",
   };
 
   componentDidMount() {
@@ -68,7 +70,7 @@ class RegisterManager extends Component {
     }
   };
 
-  // image picker (camera roll)
+  // image picker (camera roll) TODO migrate to register-index
   handleChoosePhoto = () => {
     const option = {
       noData: true
@@ -80,6 +82,10 @@ class RegisterManager extends Component {
         this.setState({ photo: response });
       }
     });
+  };
+
+  handleNameChange = event => {
+    this.setState({ name: event.target.value });
   };
 
   render() {
@@ -96,8 +102,10 @@ class RegisterManager extends Component {
               autoCapitalize="none"
               placeholderTextColor="#868686"
               onChangeText={val => this.props.nameHandler(val)}
+              value= { this.props.name }
+              // onChangeText={ this.handleNameChange }
             />
-            {/* <Text style={styles.error}> {errors.name} </Text> */}
+
             {setToBottom(            
                 <MyButton
                   style={ styles.nextButton }
@@ -120,7 +128,9 @@ class RegisterManager extends Component {
               placeholderTextColor="#868686"
               onChangeText={val => this.props.emailHandler(val)}
             />
+
             {/* <Text style={styles.error}> {errors.email} </Text> */}
+
             {setToBottom(
               <View style={ styles.buttom }>
                 <TouchableOpacity onPress={() => this.props.stageHandler(C.GET_NAME)}>
@@ -156,6 +166,7 @@ class RegisterManager extends Component {
               placeholderTextColor="#868686"
               onChangeText={val => this.onChangeText("password", val)}
             />
+
             {/* <Text style={styles.error}> {errors.password} </Text> */}
 
             {/* Cfm password */}
@@ -170,7 +181,9 @@ class RegisterManager extends Component {
               placeholderTextColor="#868686"
               onChangeText={val => this.onChangeText("passwordCfm", val)}
             />
+
             {/* <Text style={styles.error}> {errors.passwordCfm} </Text> */}
+
             {setToBottom(
               <View style={ styles.buttom }>
                 <TouchableOpacity onPress={() => this.props.stageHandler(C.GET_EMAIL)}>
@@ -204,7 +217,7 @@ class RegisterManager extends Component {
              activeOpacity={0.5}
              onPress={this._pickImage}>        
                 {this.state.photo != null?
-                  <Image style= { styles.profilePic } source={ {uri:this.state.photo.uri} } /> :
+                  <Image style= { [styles.profilePic, styles.profilePicBorder] } source={ {uri:this.state.photo.uri} } /> :
                   <Image style= { styles.profilePic } source={require('../../../assets/images/default-profile-pic.png')} />
                 }
             </TouchableOpacity>
@@ -364,10 +377,13 @@ const styles = StyleSheet.create({
 
   profilePic: {
     marginTop: 30,
-    width: Dimensions.get('window').width * 0.35,
-    height: Dimensions.get('window').width * 0.35,
-    borderRadius: Dimensions.get('window').width * 0.35/2,
+    width: wd(0.3),
+    height: wd(0.3),
     alignSelf: 'center',
+  },
+
+  profilePicBorder: {
+    borderRadius: wd(0.3)/2,
   },
 
   buttom: {
