@@ -28,9 +28,6 @@ import {
   setToBottom
 } from "../../utils/responsiveDesign";
 
-
-
-
 // Load new page after each completed stage in sign up
 class RegisterManager extends Component {
 
@@ -84,11 +81,10 @@ class RegisterManager extends Component {
     });
   };
 
-  handleNameChange = event => {
-    this.setState({ name: event.target.value });
-  };
-
   render() {
+
+    // console.log(this.props.state.name)
+
     switch (this.props.registerStage) {
       case C.GET_NAME:
         return (
@@ -103,7 +99,6 @@ class RegisterManager extends Component {
               placeholderTextColor="#868686"
               onChangeText={val => this.props.nameHandler(val)}
               value= { this.props.name }
-              // onChangeText={ this.handleNameChange }
             />
 
             {setToBottom(            
@@ -215,7 +210,7 @@ class RegisterManager extends Component {
             {/* Image button */}
             <TouchableOpacity
              activeOpacity={0.5}
-             onPress={this._pickImage}>        
+             onPress={this._pickImage}>
                 {this.state.photo != null?
                   <Image style= { [styles.profilePic, styles.profilePicBorder] } source={ {uri:this.state.photo.uri} } /> :
                   <Image style= { styles.profilePic } source={require('../../../assets/images/default-profile-pic.png')} />
