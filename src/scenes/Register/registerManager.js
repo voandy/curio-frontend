@@ -31,12 +31,6 @@ import {
 // Load new page after each completed stage in sign up
 class RegisterManager extends Component {
 
-  // TODO migrate to register-index
-  state = {
-    photo: null,
-    name: "",
-  };
-
   componentDidMount() {
     this.getPermissionAsync();
   }
@@ -56,34 +50,16 @@ class RegisterManager extends Component {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
-      aspect: [3, 3],
+      aspect: [4, 4],
     });
 
     // set image 
-    this.setState({ photo:result })
-
     if (!result.cancelled) {
-      this.setState({ image: result.uri });
+      this.props.photoURLHandler(result.uri);
     }
   };
 
-  // image picker (camera roll) TODO migrate to register-index
-  handleChoosePhoto = () => {
-    const option = {
-      noData: true
-    };
-    ImagePicker.launchImageLibrary(option, response => {
-
-      // saving the selected photo
-      if (response.uri) {
-        this.setState({ photo: response });
-      }
-    });
-  };
-
   render() {
-
-    // console.log(this.props.state.name)
 
     switch (this.props.registerStage) {
       case C.GET_NAME:
@@ -122,6 +98,7 @@ class RegisterManager extends Component {
               autoCapitalize="none"
               placeholderTextColor="#868686"
               onChangeText={val => this.props.emailHandler(val)}
+              value={ this.props.email }
             />
 
             {/* <Text style={styles.error}> {errors.email} </Text> */}
@@ -160,6 +137,7 @@ class RegisterManager extends Component {
               autoCapitalize="none"
               placeholderTextColor="#868686"
               onChangeText={val => this.onChangeText("password", val)}
+              value={ this.props.password }
             />
 
             {/* <Text style={styles.error}> {errors.password} </Text> */}
@@ -211,8 +189,8 @@ class RegisterManager extends Component {
             <TouchableOpacity
              activeOpacity={0.5}
              onPress={this._pickImage}>
-                {this.state.photo != null?
-                  <Image style= { [styles.profilePic, styles.profilePicBorder] } source={ {uri:this.state.photo.uri} } /> :
+                {this.props.photoURL != null?
+                  <Image style= { [styles.profilePic, styles.profilePicBorder] } source={ {uri:this.props.photoURL} } /> :
                   <Image style= { styles.profilePic } source={require('../../../assets/images/default-profile-pic.png')} />
                 }
             </TouchableOpacity>

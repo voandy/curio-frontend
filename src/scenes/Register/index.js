@@ -28,7 +28,7 @@ class Register extends Component {
     name: "",
     email: "",
     password: "",
-    photoURL: ""
+    photoURL: null,
   };
 
   constructor() {
@@ -70,27 +70,6 @@ class Register extends Component {
     this.setState({ ...this.state, registerStage });
     console.log(this.state);
   };
-
-
-
-  // // show profile picture
-  // renderProfile() {
-  //   const { photo } = this.state;
-
-  //   // photo selected
-  //   if (this.state.photo) {
-  //     return <Image source={{ uri: photo.uri }} style={styles.photo} />;
-  //   }
-  //   // default pic
-  //   else {
-  //     return (
-  //       <Image
-  //         source={require("../../../assets/images/default-profile-pic.png")}
-  //         style={styles.photo}
-  //       />
-  //     );
-  //   }
-  // }
 
   // componentWillReceiveProps(nextProps) {
   //   if (nextProps.errors) {
@@ -157,6 +136,10 @@ class Register extends Component {
             passwordHandler={this.passwordHandler}
             photoURLHandler={this.photoURLHandler}
             stageHandler={this.stageHandler}
+            name={this.state.name}
+            email={this.state.email}
+            password={this.state.password}
+            photoURL={this.state.photoURL}
           />
           {/* <Text style={styles.error}> {errors.passwordCfm} </Text> */}
         </View>
