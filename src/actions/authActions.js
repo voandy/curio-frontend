@@ -82,21 +82,6 @@ export const logoutUser = () => dispatch => {
   );
 };
 
-// Get User Data
-export const getUserData = userId => dispatch => {
-  return axios
-    .get("http://curioapp.herokuapp.com/api/user/id/" + userId)
-    .then(res => {
-      dispatch(setCurrentUserData(res));
-    })
-    .catch(err =>
-      dispatch({
-        type: GET_ERRORS,
-        payload: err.response.data
-      })
-  );
-}
-
 // Set logged in user
 export const setCurrentUser = decoded => {
   return {
