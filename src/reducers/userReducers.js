@@ -1,7 +1,7 @@
 import {
     SET_CURRENT_USER_DATA,
     USER_DATA_LOADING,
-  } from "../actions/dataTypes";
+  } from "../actions/userTypes";
 
   const initialState = {
     userData: {},

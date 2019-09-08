@@ -2,7 +2,7 @@ import React, { Component } from "react"
 import PropTypes from "prop-types"
 import { connect } from "react-redux"
 import { logoutUser } from "../../actions/authActions"
-import { getUserData } from "../../actions/dataActions"
+import { getUserData } from "../../actions/userActions"
 import axios from "axios"
 
 import {Dimensions, 
@@ -41,7 +41,7 @@ class Profile extends Component {
     componentWillUpdate(nextProps) {
         if (Object.keys(this.state.userData).length === 0) {
             this.setState({
-                userData: nextProps.data.userData
+                userData: nextProps.user.userData
             })
         }
     }
@@ -171,12 +171,12 @@ Profile.propTypes = {
     logoutUser: PropTypes.func.isRequired,
     getUserData: PropTypes.func.isRequired,
     auth: PropTypes.object.isRequired,
-    data: PropTypes.object.isRequired
+    user: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => ({
     auth: state.auth,
-    data: state.data
+    user: state.user
 });
 
 //  export
