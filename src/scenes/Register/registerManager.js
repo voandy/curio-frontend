@@ -4,14 +4,12 @@ import {
   View,
   TouchableOpacity,
   Image,
-  Dimensions,
   TextInput,
   StyleSheet,
   Text
 } from "react-native";
-// import all register Constants
-import { C } from "../../actions/registerTypes";
-import * as ImagePicker from 'expo-image-picker';
+import * as ImagePicker from "expo-image-picker";
+import * as Permissions from "expo-permissions";
 
 // import {
 //   getName,
@@ -19,8 +17,13 @@ import * as ImagePicker from 'expo-image-picker';
 //   getPassword,
 //   getPhoto
 // } from "../../actions/registerActions";
-// import reusable component
+
+// import all register Constants
+import { C } from "../../actions/registerTypes";
+
+// import reusable button component
 import MyButton from "../../component/MyButton";
+
 // import width/height responsive functions
 import {
   deviceHeigthDimension as hp,
@@ -30,30 +33,28 @@ import {
 
 // Load new page after each completed stage in sign up
 class RegisterManager extends Component {
-
   componentDidMount() {
     this.getPermissionAsync();
   }
 
   // camera roll permissions
   getPermissionAsync = async () => {
-      const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
-      if (status !== 'granted') {
-        alert('Sorry, we need camera roll permissions to make this work!');
-      }
-  }
+    const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+    if (status !== "granted") {
+      alert("Sorry, we need camera roll permissions to make this work!");
+    }
+  };
 
   // access camera roll
   _pickImage = async () => {
-
     // obtain image
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
-      aspect: [4, 4],
+      aspect: [4, 4]
     });
 
-    // set image 
+    // set image
     if (!result.cancelled) {
       this.props.photoURLHandler(result.uri);
     }
@@ -61,17 +62,14 @@ class RegisterManager extends Component {
 
   // Skip button for photos
   skipPhotoText(photo) {
-    if(photo != null){
-      return "Next"
-    }
-    else{
-      return "Skip"
+    if (photo != null) {
+      return "Next";
+    } else {
+      return "Skip";
     }
   }
 
-
   render() {
-
     switch (this.props.registerStage) {
       case C.GET_NAME:
         return (
@@ -85,15 +83,15 @@ class RegisterManager extends Component {
               autoCapitalize="none"
               placeholderTextColor="#868686"
               onChangeText={val => this.props.nameHandler(val)}
-              value= { this.props.name }
+              value={this.props.name}
             />
 
-            {setToBottom(            
-                <MyButton
-                  style={ styles.nextButton }
-                  onPress={() => this.props.stageHandler(C.GET_EMAIL)}
-                  text="Next"
-                />
+            {setToBottom(
+              <MyButton
+                style={styles.nextButton}
+                onPress={() => this.props.stageHandler(C.GET_EMAIL)}
+                text="Next"
+              />
             )}
           </View>
         );
@@ -109,19 +107,21 @@ class RegisterManager extends Component {
               autoCapitalize="none"
               placeholderTextColor="#868686"
               onChangeText={val => this.props.emailHandler(val)}
-              value={ this.props.email }
+              value={this.props.email}
             />
 
             {/* <Text style={styles.error}> {errors.email} </Text> */}
 
             {setToBottom(
-              <View style={ styles.buttom }>
-                <TouchableOpacity onPress={() => this.props.stageHandler(C.GET_NAME)}>
-                  <Text style={ styles.backButton }>Back</Text>
+              <View style={styles.buttom}>
+                <TouchableOpacity
+                  onPress={() => this.props.stageHandler(C.GET_NAME)}
+                >
+                  <Text style={styles.backButton}>Back</Text>
                 </TouchableOpacity>
-                
+
                 <MyButton
-                  style={ styles.nextButton }
+                  style={styles.nextButton}
                   onPress={() => this.props.stageHandler(C.GET_PASSWORD)}
                   text="Next"
                 />
@@ -148,7 +148,7 @@ class RegisterManager extends Component {
               autoCapitalize="none"
               placeholderTextColor="#868686"
               onChangeText={val => this.onChangeText("password", val)}
-              value={ this.props.password }
+              value={this.props.password}
             />
 
             {/* <Text style={styles.error}> {errors.password} </Text> */}
@@ -169,13 +169,15 @@ class RegisterManager extends Component {
             {/* <Text style={styles.error}> {errors.passwordCfm} </Text> */}
 
             {setToBottom(
-              <View style={ styles.buttom }>
-                <TouchableOpacity onPress={() => this.props.stageHandler(C.GET_EMAIL)}>
-                  <Text style={ styles.backButton }>Back</Text>
+              <View style={styles.buttom}>
+                <TouchableOpacity
+                  onPress={() => this.props.stageHandler(C.GET_EMAIL)}
+                >
+                  <Text style={styles.backButton}>Back</Text>
                 </TouchableOpacity>
-                
+
                 <MyButton
-                  style={ styles.nextButton }
+                  style={styles.nextButton}
                   onPress={() => this.props.stageHandler(C.GET_PHOTO)}
                   text="Next"
                 />
@@ -188,32 +190,36 @@ class RegisterManager extends Component {
         return (
           <View style={styles.cardContainer}>
             {/* Title */}
-            <Text style={styles.photoMainTitle}>
-              Almost there!
-            </Text>
+            <Text style={styles.photoMainTitle}>Almost there!</Text>
             <Text style={styles.photoSubTitle}>
               Take a minute to upload a photo.
             </Text>
 
-
             {/* Image button */}
-            <TouchableOpacity
-             activeOpacity={0.5}
-             onPress={this._pickImage}>
-                {this.props.photoURL != null?
-                  <Image style= { [styles.profilePic, styles.profilePicBorder] } source={ {uri:this.props.photoURL} } /> :
-                  <Image style= { styles.profilePic } source={require('../../../assets/images/default-profile-pic.png')} />
-                }
+            <TouchableOpacity activeOpacity={0.5} onPress={this._pickImage}>
+              {this.props.photoURL != null ? (
+                <Image
+                  style={[styles.profilePic, styles.profilePicBorder]}
+                  source={{ uri: this.props.photoURL }}
+                />
+              ) : (
+                <Image
+                  style={styles.profilePic}
+                  source={require("../../../assets/images/default-profile-pic.png")}
+                />
+              )}
             </TouchableOpacity>
 
             {setToBottom(
-              <View style={ styles.buttom }>
-                <TouchableOpacity onPress={() => this.props.stageHandler(C.GET_PASSWORD)}>
-                  <Text style={ styles.backButton }>Back</Text>
+              <View style={styles.buttom}>
+                <TouchableOpacity
+                  onPress={() => this.props.stageHandler(C.GET_PASSWORD)}
+                >
+                  <Text style={styles.backButton}>Back</Text>
                 </TouchableOpacity>
-                
+
                 <MyButton
-                  style={ styles.nextButton }
+                  style={styles.nextButton}
                   onPress={() => this.props.stageHandler(C.LAST_STAGE)}
                   // text="Next"
                   text={this.skipPhotoText(this.props.photoURL)}
@@ -339,7 +345,7 @@ const styles = StyleSheet.create({
   photoMainTitle: {
     fontWeight: "bold",
     fontSize: hp(0.028),
-    marginBottom: hp(0.02),
+    marginBottom: hp(0.02)
   },
 
   photoSubTitle: {
@@ -364,20 +370,20 @@ const styles = StyleSheet.create({
     marginTop: 30,
     width: wd(0.3),
     height: wd(0.3),
-    alignSelf: 'center',
+    alignSelf: "center"
   },
 
   profilePicBorder: {
-    borderRadius: wd(0.3)/2,
+    borderRadius: wd(0.3) / 2
   },
 
   buttom: {
-    alignSelf:"center", 
-    flexDirection:"row", 
-    width: wd(0.7935), 
-    alignItems:"center" ,
-    justifyContent:"space-between"
-  },  
+    alignSelf: "center",
+    flexDirection: "row",
+    width: wd(0.7935),
+    alignItems: "center",
+    justifyContent: "space-between"
+  },
 
   backButton: {
     fontSize: hp(0.022),
@@ -385,12 +391,12 @@ const styles = StyleSheet.create({
     marginLeft: wd(0.03),
     textDecorationLine: "underline",
     color: "#FF6E6E",
-    fontFamily: 'HindSiliguri-Regular'
+    fontFamily: "HindSiliguri-Regular"
   },
 
   nextButton: {
-    alignSelf: "flex-end",
-  },
+    alignSelf: "flex-end"
+  }
 
   // error: {
   //   color: "red"
