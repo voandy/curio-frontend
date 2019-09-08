@@ -59,6 +59,17 @@ class RegisterManager extends Component {
     }
   };
 
+  // Skip button for photos
+  skipPhotoText(photo) {
+    if(photo != null){
+      return "Next"
+    }
+    else{
+      return "Skip"
+    }
+  }
+
+
   render() {
 
     switch (this.props.registerStage) {
@@ -203,8 +214,9 @@ class RegisterManager extends Component {
                 
                 <MyButton
                   style={ styles.nextButton }
-                  onPress={() => this.props.stageHandler(C.GET_PHOTO)}
-                  text="Next"
+                  onPress={() => this.props.stageHandler(C.LAST_STAGE)}
+                  // text="Next"
+                  text={this.skipPhotoText(this.props.photoURL)}
                 />
               </View>
             )}
