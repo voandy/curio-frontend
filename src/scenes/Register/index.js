@@ -120,8 +120,7 @@ class Register extends Component {
 
     switch (this.state.registerStage) {
       // once registered
-      // case C.LAST_STAGE:
-      case C.GET_NAME:
+      case C.LAST_STAGE:
         return(
           <View style={styles.lastContainer}>
     
@@ -129,14 +128,15 @@ class Register extends Component {
               <Text style={styles.titleText}> All done! </Text>
               <Text style={styles.subTitleText}> Welcome {this.state.name}. </Text>
 
-              {/* <Image style= { styles.profilePic } source={ {uri:this.state.photoURL} } /> */}
-              <Image style= { styles.profilePic } source={require('../../../assets/images/default-profile-pic.png')} />
+              <Image style= { styles.profilePic } source={ {uri:this.state.photoURL} } />
               {/* button to collection/group page */}
               {setToBottom(
-                <MyButton
-                  style={ styles.button }
-                  text="Get Started"
-                />
+                <View style={ styles.bottom }>
+                  <MyButton
+                    text="Get Started"
+                    // onPress={{ navigate("App") }}    TODO add navigation and verification
+                  />
+                </View>
               )}
 
           </View>
@@ -222,18 +222,18 @@ const styles = StyleSheet.create({
   },
 
   profilePic: {
-    marginTop: 50,
+    marginTop: 40,
     width: wd(0.4),
     height: wd(0.4),
     alignSelf: 'center',
     borderRadius: wd(0.4)/2,
   },
 
-  button: {
-    alignSelf: "flex-end",
-    marginRight: 50
-  },
-
+  bottom: {
+    width: wd(0.8),
+    height: wd(0.3),
+    alignItems: "flex-end",
+  },  
 });
 
 Register.propTypes = {
