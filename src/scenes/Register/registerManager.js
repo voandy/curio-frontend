@@ -147,7 +147,7 @@ class RegisterManager extends Component {
               secureTextEntry={true}
               autoCapitalize="none"
               placeholderTextColor="#868686"
-              onChangeText={val => this.onChangeText("password", val)}
+              onChangeText={val => this.props.passwordHandler(val)}
               value={this.props.password}
             />
 
@@ -163,7 +163,7 @@ class RegisterManager extends Component {
               secureTextEntry={true}
               autoCapitalize="none"
               placeholderTextColor="#868686"
-              onChangeText={val => this.onChangeText("passwordCfm", val)}
+              // onChangeText={val => this.onChangeText("passwordCfm", val)}
             />
 
             {/* <Text style={styles.error}> {errors.passwordCfm} </Text> */}
