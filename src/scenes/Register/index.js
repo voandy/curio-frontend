@@ -30,6 +30,7 @@ class Register extends Component {
     name: "",
     email: "",
     password: "",
+    passwordCfm: "",    // DO NOT SEND THIS AFTER REGISTRATION
     photoURL: null,
   };
 
@@ -52,6 +53,7 @@ class Register extends Component {
     });
   }
 
+  // state data handler
   nameHandler = name => {
     this.setState({ ...this.state, name });
   };
@@ -163,6 +165,7 @@ class Register extends Component {
                   name={this.state.name}
                   email={this.state.email}
                   password={this.state.password}
+                  passwordCfm={this.passwordCfm}
                   photoURL={this.state.photoURL}
                 />
                 {/* <Text style={styles.error}> {errors.passwordCfm} </Text> */}

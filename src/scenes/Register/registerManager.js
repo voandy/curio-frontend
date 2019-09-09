@@ -11,18 +11,14 @@ import {
 import * as ImagePicker from "expo-image-picker";
 import * as Permissions from "expo-permissions";
 
-// import {
-//   getName,
-//   getEmail,
-//   getPassword,
-//   getPhoto
-// } from "../../actions/registerActions";
-
 // import all register Constants
 import { C } from "../../actions/registerTypes";
 
 // import reusable button component
 import MyButton from "../../component/MyButton";
+
+// import entry field validators
+import {validateName, validateEmail, validatePassword } from "./registerValidator";
 
 // import width/height responsive functions
 import {
@@ -33,6 +29,13 @@ import {
 
 // Load new page after each completed stage in sign up
 class RegisterManager extends Component {
+
+  state = {
+    nameError: "",
+    emailError: "",
+    pwdError: "",
+  };
+
   componentDidMount() {
     this.getPermissionAsync();
   }
@@ -69,6 +72,41 @@ class RegisterManager extends Component {
     }
   }
 
+  // error handlers
+  errorName() {
+    this.setState({
+      nameError: validateName(this.props.name)
+    })
+
+    // with no errors, proceed to next page
+    if(this.state.nameError !== "") {
+      this.props.stageHandler(C.GET_EMAIL)
+    }
+  }
+
+  errorEmail() {
+    this.setState({
+      emailError: validateEmail(this.props.email)
+    })
+
+    // with no errors, proceed to next page
+    if(this.state.emailError !== "") {
+      this.props.stageHandler(C.GET_PASSWORD)
+    }
+  }
+
+  errorPwd() {
+    this.setState({
+      pwdError: validatePassword(this.props.password)
+    })
+
+    // with no errors, proceed to next page
+    if(this.state.pwdError !== "") {
+      this.props.stageHandler(C.GET_PHOTO)
+    }
+  }
+
+
   render() {
     switch (this.props.registerStage) {
       case C.GET_NAME:
@@ -84,12 +122,17 @@ class RegisterManager extends Component {
               placeholderTextColor="#868686"
               onChangeText={val => this.props.nameHandler(val)}
               value={this.props.name}
+              onSubmitEditing={() => this.errorName()}
             />
+
+            {this.state.nameError !== "" && 
+              <Text style={styles.error}> {this.state.nameError} </Text>
+            }
 
             {setToBottom(
               <MyButton
                 style={styles.nextButton}
-                onPress={() => this.props.stageHandler(C.GET_EMAIL)}
+                onPress={() => this.errorName()}
                 text="Next"
               />
             )}
@@ -108,9 +151,12 @@ class RegisterManager extends Component {
               placeholderTextColor="#868686"
               onChangeText={val => this.props.emailHandler(val)}
               value={this.props.email}
+              onSubmitEditing={() => this.errorEmail()}
             />
 
-            {/* <Text style={styles.error}> {errors.email} </Text> */}
+            {this.state.emailError !== "" && 
+              <Text style={styles.error}> {this.state.emailError} </Text>
+            }
 
             {setToBottom(
               <View style={styles.buttom}>
@@ -122,7 +168,7 @@ class RegisterManager extends Component {
 
                 <MyButton
                   style={styles.nextButton}
-                  onPress={() => this.props.stageHandler(C.GET_PASSWORD)}
+                  onPress={() => this.errorEmail()}
                   text="Next"
                 />
               </View>
@@ -151,7 +197,9 @@ class RegisterManager extends Component {
               value={this.props.password}
             />
 
-            {/* <Text style={styles.error}> {errors.password} </Text> */}
+            {this.state.emailError !== "" && 
+              <Text style={styles.error}> {this.state.emailError} </Text>
+            }
 
             {/* Cfm password */}
             <Text style={[styles.inputText, styles.passwordFieldTitle]}>
@@ -163,6 +211,7 @@ class RegisterManager extends Component {
               secureTextEntry={true}
               autoCapitalize="none"
               placeholderTextColor="#868686"
+              onSubmitEditing={() => this.errorPwd()}
               // onChangeText={val => this.onChangeText("passwordCfm", val)}
             />
 
@@ -178,7 +227,7 @@ class RegisterManager extends Component {
 
                 <MyButton
                   style={styles.nextButton}
-                  onPress={() => this.props.stageHandler(C.GET_PHOTO)}
+                  onPress={() => this.errorPwd()}
                   text="Next"
                 />
               </View>
@@ -396,11 +445,12 @@ const styles = StyleSheet.create({
 
   nextButton: {
     alignSelf: "flex-end"
-  }
+  },
 
-  // error: {
-  //   color: "red"
-  // }
+  error: {
+    color: "red",
+    alignSelf: "center"
+  }
 });
 
 export default RegisterManager;
