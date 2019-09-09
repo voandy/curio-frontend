@@ -13,17 +13,16 @@ import * as Permissions from "expo-permissions";
 
 // import all register Constants
 import { C } from "../../types/registerTypes";
-import * as ImagePicker from "expo-image-picker";
 
 // import reusable button component
 import MyButton from "../../component/MyButton";
 
 // import entry field validators
-// import {
-//   validateName,
-//   validateEmail,
-//   validatePassword
-// } from "./registerValidator";
+import {
+  validateName,
+  validateEmail,
+  validatePassword
+} from "./registerValidator";
 
 // import width/height responsive functions
 import {

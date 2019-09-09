@@ -13,7 +13,7 @@ import {
 import { registerUser } from "../../actions/authActions";
 import RegisterManager from "./registerManager";
 import { C } from "../../types/registerTypes";
-import * as Font from "expo-font";
+import CustomFontText from "../../utils/customFontText";
 
 // import widht/height responsive functions
 import {
@@ -42,14 +42,6 @@ class Register extends Component {
       elevation: 0 // remove shadow on Android
     }
   };
-
-  async componentDidMount() {
-    // font
-    await Font.loadAsync({
-      "HindSiliguri-Bold": require("../../../assets/fonts/HindSiliguri-Bold.ttf"),
-      "HindSiliguri-Regular": require("../../../assets/fonts/HindSiliguri-Regular.ttf")
-    });
-  }
 
   // state data handler
   nameHandler = name => {
@@ -127,11 +119,10 @@ class Register extends Component {
         return (
           <View style={styles.lastContainer}>
             {/* heading */}
-            <Text style={styles.titleText}> All done! </Text>
-            <Text style={styles.subTitleText}>
-              {" "}
-              Welcome {this.state.name}.{" "}
-            </Text>
+            <CustomFontText style={styles.titleText}>All done!</CustomFontText>
+            <CustomFontText style={styles.subTitleText}>
+              Welcome {this.state.name}
+            </CustomFontText>
 
             <Image
               style={styles.profilePic}
@@ -154,11 +145,11 @@ class Register extends Component {
         return (
           <View style={styles.container}>
             {/* heading */}
-            <Text style={styles.titleText}> Welcome, </Text>
-            <Text style={styles.subTitleText}>
+            <CustomFontText style={styles.titleText}> Welcome, </CustomFontText>
+            <CustomFontText style={styles.subTitleText}>
               {" "}
               Enter your details to signup.{" "}
-            </Text>
+            </CustomFontText>
 
             {/* main card view */}
             <View style={styles.card}>
@@ -176,7 +167,7 @@ class Register extends Component {
                 passwordCfm={this.state.passwordCfm}
                 photoURL={this.state.photoURL}
               />
-              {/* <Text style={styles.error}> {errors.passwordCfm} </Text> */}
+              {/* <CustomFontText style={styles.error}> {errors.passwordCfm} </CustomFontText> */}
             </View>
           </View>
         );

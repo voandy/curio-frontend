@@ -1,19 +1,17 @@
-import { C } from "../actions/loadFontTypes";
+import { C } from "../types/fontLoaderTypes";
 
 const initialState = {
   fontLoaded: false
 };
 
-export default loadFontReducer = (state = initialState, action) => {
+export default fontLoaderReducer = (state = initialState, action) => {
   switch (action.type) {
     case C.LOAD_FONT:
       return {
-        ...state,
         fontLoaded: true
       };
-    case C.NOT_READY_YET:
+    case C.DISCARD_FONT:
       return {
-        ...state,
         fontLoaded: false
       };
     default:
