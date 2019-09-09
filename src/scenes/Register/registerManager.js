@@ -4,23 +4,26 @@ import {
   View,
   TouchableOpacity,
   Image,
-  Dimensions,
   TextInput,
   StyleSheet,
   Text
 } from "react-native";
+import * as ImagePicker from "expo-image-picker";
+import * as Permissions from "expo-permissions";
+
 // import all register Constants
 import { C } from "../../types/registerTypes";
-import * as ImagePicker from 'expo-image-picker';
 
-// import {
-//   getName,
-//   getEmail,
-//   getPassword,
-//   getPhoto
-// } from "../../actions/registerActions";
-// import reusable component
+// import reusable button component
 import MyButton from "../../component/MyButton";
+
+// import entry field validators
+import {
+  validateName,
+  validateEmail,
+  validatePassword
+} from "./registerValidator";
+
 // import width/height responsive functions
 import {
   deviceHeigthDimension as hp,
@@ -28,16 +31,12 @@ import {
   setToBottom
 } from "../../utils/responsiveDesign";
 
-
-
-
 // Load new page after each completed stage in sign up
 class RegisterManager extends Component {
-
-  // TODO migrate to register-index
   state = {
-    photo: null,
-    name: "",
+    nameErrorMessage: "",
+    emailErrorMessage: "",
+    pwdErrorMessage: ""
   };
 
   componentDidMount() {
@@ -46,47 +45,72 @@ class RegisterManager extends Component {
 
   // camera roll permissions
   getPermissionAsync = async () => {
-      const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
-      if (status !== 'granted') {
-        alert('Sorry, we need camera roll permissions to make this work!');
-      }
-  }
+    const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+    if (status !== "granted") {
+      alert("Sorry, we need camera roll permissions to make this work!");
+    }
+  };
 
   // access camera roll
   _pickImage = async () => {
-
     // obtain image
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
-      aspect: [3, 3],
+      aspect: [4, 4]
     });
 
-    // set image 
-    this.setState({ photo:result })
-
+    // set image
     if (!result.cancelled) {
-      this.setState({ image: result.uri });
+      this.props.photoURLHandler(result.uri);
     }
   };
 
-  // image picker (camera roll) TODO migrate to register-index
-  handleChoosePhoto = () => {
-    const option = {
-      noData: true
-    };
-    ImagePicker.launchImageLibrary(option, response => {
+  // Skip button for photos
+  skipPhotoText(photo) {
+    if (photo != null) {
+      return "Next";
+    } else {
+      return "Skip";
+    }
+  }
 
-      // saving the selected photo
-      if (response.uri) {
-        this.setState({ photo: response });
-      }
+  // error handlers
+  async errorName() {
+    this.setState({
+      nameErrorMessage: await validateName(this.props.name)
     });
-  };
 
-  handleNameChange = event => {
-    this.setState({ name: event.target.value });
-  };
+    // with no errors, proceed to next page
+    if (this.state.nameErrorMessage === "") {
+      this.props.stageHandler(C.GET_EMAIL);
+    }
+  }
+
+  async errorEmail() {
+    this.setState({
+      emailErrorMessage: await validateEmail(this.props.email)
+    });
+
+    // with no errors, proceed to next page
+    if (this.state.emailErrorMessage === "") {
+      this.props.stageHandler(C.GET_PASSWORD);
+    }
+  }
+
+  async errorPassword() {
+    this.setState({
+      pwdErrorMessage: await validatePassword(
+        this.props.password,
+        this.props.passwordCfm
+      )
+    });
+
+    // with no errors, proceed to next page
+    if (this.state.pwdErrorMessage === "") {
+      this.props.stageHandler(C.GET_PHOTO);
+    }
+  }
 
   render() {
     switch (this.props.registerStage) {
@@ -102,16 +126,20 @@ class RegisterManager extends Component {
               autoCapitalize="none"
               placeholderTextColor="#868686"
               onChangeText={val => this.props.nameHandler(val)}
-              value= { this.props.name }
-              // onChangeText={ this.handleNameChange }
+              value={this.props.name}
+              onSubmitEditing={() => this.errorName()}
             />
 
-            {setToBottom(            
-                <MyButton
-                  style={ styles.nextButton }
-                  onPress={() => this.props.stageHandler(C.GET_EMAIL)}
-                  text="Next"
-                />
+            {this.state.nameErrorMessage !== "" && (
+              <Text style={styles.error}> {this.state.nameErrorMessage} </Text>
+            )}
+
+            {setToBottom(
+              <MyButton
+                style={styles.nextButton}
+                onPress={() => this.errorName()}
+                text="Next"
+              />
             )}
           </View>
         );
@@ -127,19 +155,25 @@ class RegisterManager extends Component {
               autoCapitalize="none"
               placeholderTextColor="#868686"
               onChangeText={val => this.props.emailHandler(val)}
+              value={this.props.email}
+              onSubmitEditing={() => this.errorEmail()}
             />
 
-            {/* <Text style={styles.error}> {errors.email} </Text> */}
+            {this.state.emailErrorMessage !== "" && (
+              <Text style={styles.error}> {this.state.emailErrorMessage} </Text>
+            )}
 
             {setToBottom(
-              <View style={ styles.buttom }>
-                <TouchableOpacity onPress={() => this.props.stageHandler(C.GET_NAME)}>
-                  <Text style={ styles.backButton }>Back</Text>
+              <View style={styles.buttom}>
+                <TouchableOpacity
+                  onPress={() => this.props.stageHandler(C.GET_NAME)}
+                >
+                  <Text style={styles.backButton}>Back</Text>
                 </TouchableOpacity>
-                
+
                 <MyButton
-                  style={ styles.nextButton }
-                  onPress={() => this.props.stageHandler(C.GET_PASSWORD)}
+                  style={styles.nextButton}
+                  onPress={() => this.errorEmail()}
                   text="Next"
                 />
               </View>
@@ -164,10 +198,9 @@ class RegisterManager extends Component {
               secureTextEntry={true}
               autoCapitalize="none"
               placeholderTextColor="#868686"
-              onChangeText={val => this.onChangeText("password", val)}
+              onChangeText={val => this.props.passwordHandler(val)}
+              value={this.props.password}
             />
-
-            {/* <Text style={styles.error}> {errors.password} </Text> */}
 
             {/* Cfm password */}
             <Text style={[styles.inputText, styles.passwordFieldTitle]}>
@@ -179,20 +212,26 @@ class RegisterManager extends Component {
               secureTextEntry={true}
               autoCapitalize="none"
               placeholderTextColor="#868686"
-              onChangeText={val => this.onChangeText("passwordCfm", val)}
+              onChangeText={val => this.props.passwordCfmHandler(val)}
+              value={this.props.passwordCfm}
+              onSubmitEditing={() => this.errorPassword()}
             />
 
-            {/* <Text style={styles.error}> {errors.passwordCfm} </Text> */}
+            {this.state.pwdErrorMessage !== "" && (
+              <Text style={styles.error}> {this.state.pwdErrorMessage} </Text>
+            )}
 
             {setToBottom(
-              <View style={ styles.buttom }>
-                <TouchableOpacity onPress={() => this.props.stageHandler(C.GET_EMAIL)}>
-                  <Text style={ styles.backButton }>Back</Text>
+              <View style={styles.buttom}>
+                <TouchableOpacity
+                  onPress={() => this.props.stageHandler(C.GET_EMAIL)}
+                >
+                  <Text style={styles.backButton}>Back</Text>
                 </TouchableOpacity>
-                
+
                 <MyButton
-                  style={ styles.nextButton }
-                  onPress={() => this.props.stageHandler(C.GET_PHOTO)}
+                  style={styles.nextButton}
+                  onPress={() => this.errorPassword()}
                   text="Next"
                 />
               </View>
@@ -204,34 +243,39 @@ class RegisterManager extends Component {
         return (
           <View style={styles.cardContainer}>
             {/* Title */}
-            <Text style={styles.photoMainTitle}>
-              Almost there!
-            </Text>
+            <Text style={styles.photoMainTitle}>Almost there!</Text>
             <Text style={styles.photoSubTitle}>
               Take a minute to upload a photo.
             </Text>
 
-
             {/* Image button */}
-            <TouchableOpacity
-             activeOpacity={0.5}
-             onPress={this._pickImage}>        
-                {this.state.photo != null?
-                  <Image style= { [styles.profilePic, styles.profilePicBorder] } source={ {uri:this.state.photo.uri} } /> :
-                  <Image style= { styles.profilePic } source={require('../../../assets/images/default-profile-pic.png')} />
-                }
+            <TouchableOpacity activeOpacity={0.5} onPress={this._pickImage}>
+              {this.props.photoURL != null ? (
+                <Image
+                  style={[styles.profilePic, styles.profilePicBorder]}
+                  source={{ uri: this.props.photoURL }}
+                />
+              ) : (
+                <Image
+                  style={styles.profilePic}
+                  source={require("../../../assets/images/default-profile-pic.png")}
+                />
+              )}
             </TouchableOpacity>
 
             {setToBottom(
-              <View style={ styles.buttom }>
-                <TouchableOpacity onPress={() => this.props.stageHandler(C.GET_PASSWORD)}>
-                  <Text style={ styles.backButton }>Back</Text>
+              <View style={styles.buttom}>
+                <TouchableOpacity
+                  onPress={() => this.props.stageHandler(C.GET_PASSWORD)}
+                >
+                  <Text style={styles.backButton}>Back</Text>
                 </TouchableOpacity>
-                
+
                 <MyButton
-                  style={ styles.nextButton }
-                  onPress={() => this.props.stageHandler(C.GET_PHOTO)}
-                  text="Next"
+                  style={styles.nextButton}
+                  onPress={() => this.props.stageHandler(C.LAST_STAGE)}
+                  // text="Next"
+                  text={this.skipPhotoText(this.props.photoURL)}
                 />
               </View>
             )}
@@ -246,80 +290,6 @@ class RegisterManager extends Component {
         );
     }
   }
-  // switch (register_stage) {
-  //   case C.GET_NAME:
-  //     return (
-  //       <View>
-  //         {/* name */}
-  //         <Text style={styles.inputText}> Hey, first tell us your name! </Text>
-  //         <TextInput
-  //           style={styles.input}
-  //           placeholder="Jon Snow"
-  //           autoCapitalize="none"
-  //           placeholderTextColor="#868686"
-  //           onChangeText={val => this.props.nameHandler(val)}
-  //         />
-  //         {/* <Text style={styles.error}> {errors.name} </Text> */}
-  //       </View>
-  //     );
-  // case 1:
-  //   return (
-  //     <View>
-  //       {/* email */}
-  //       <Text style={styles.inputText}> Now, enter your email address! </Text>
-  //       <TextInput
-  //         style={styles.input}
-  //         placeholder="abc@email.com"
-  //         autoCapitalize="none"
-  //         placeholderTextColor="#868686"
-  //         onChangeText={val => this.onChangeText("email", val)}
-  //       />
-  //       {/* <Text style={styles.error}> {errors.email} </Text> */}
-  //     </View>
-  //   );
-  // case 2:
-  //   return (
-  //     <View>
-  //       <Text style={[styles.inputText, styles.passwordTitle]}>
-  //         {" "}
-  //         Great, create your unique password!{" "}
-  //       </Text>
-
-  //       {/* password */}
-  //       <Text style={[styles.inputText, styles.password]}> Password: </Text>
-  //       <TextInput
-  //         style={styles.input}
-  //         secureTextEntry={true}
-  //         autoCapitalize="none"
-  //         placeholderTextColor="#868686"
-  //         onChangeText={val => this.onChangeText("password", val)}
-  //       />
-  //       {/* <Text style={styles.error}> {errors.password} </Text> */}
-
-  //       {/* Cfm password */}
-  //       <Text style={[styles.inputText, styles.password]}>
-  //         {" "}
-  //         Confirm Password:{" "}
-  //       </Text>
-  //       <TextInput
-  //         style={styles.input}
-  //         secureTextEntry={true}
-  //         autoCapitalize="none"
-  //         placeholderTextColor="#868686"
-  //         onChangeText={val => this.onChangeText("passwordCfm", val)}
-  //       />
-  //       {/* <Text style={styles.error}> {errors.passwordCfm} </Text> */}
-  //     </View>
-  //   );
-  // case 3:
-  //   return <View></View>;
-  //   default:
-  //     return (
-  //       <View>
-  //         <Text>error 404</Text>
-  //       </View>
-  //     );
-  // }
 }
 
 const styles = StyleSheet.create({
@@ -354,7 +324,7 @@ const styles = StyleSheet.create({
   photoMainTitle: {
     fontWeight: "bold",
     fontSize: hp(0.028),
-    marginBottom: hp(0.02),
+    marginBottom: hp(0.02)
   },
 
   photoSubTitle: {
@@ -379,20 +349,20 @@ const styles = StyleSheet.create({
     marginTop: 30,
     width: wd(0.3),
     height: wd(0.3),
-    alignSelf: 'center',
+    alignSelf: "center"
   },
 
   profilePicBorder: {
-    borderRadius: wd(0.3)/2,
+    borderRadius: wd(0.3) / 2
   },
 
   buttom: {
-    alignSelf:"center", 
-    flexDirection:"row", 
-    width: wd(0.7935), 
-    alignItems:"center" ,
-    justifyContent:"space-between"
-  },  
+    alignSelf: "center",
+    flexDirection: "row",
+    width: wd(0.7935),
+    alignItems: "center",
+    justifyContent: "space-between"
+  },
 
   backButton: {
     fontSize: hp(0.022),
@@ -400,16 +370,17 @@ const styles = StyleSheet.create({
     marginLeft: wd(0.03),
     textDecorationLine: "underline",
     color: "#FF6E6E",
-    fontFamily: 'HindSiliguri-Regular'
+    fontFamily: "HindSiliguri-Regular"
   },
 
   nextButton: {
-    alignSelf: "flex-end",
+    alignSelf: "flex-end"
   },
 
-  // error: {
-  //   color: "red"
-  // }
+  error: {
+    color: "red",
+    alignSelf: "center"
+  }
 });
 
 export default RegisterManager;

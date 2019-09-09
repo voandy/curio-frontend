@@ -15,8 +15,13 @@ import ProfileScreen from './Profile'
 import NotificationScreen from './Notification'
 import ArtefactsScreen from './Artefacts'
 
-import { white } from 'ansi-colors'
+import { white } from "ansi-colors";
 import { Image } from "react-native";
+
+import { connect } from "react-redux";
+import { loadFont, discardFont } from "../actions/fontLoaderActions";
+
+import * as Font from "expo-font";
 
 // login / signup stack
 const AuthStack = createStackNavigator({
@@ -24,7 +29,6 @@ const AuthStack = createStackNavigator({
   Register: { screen: RegisterScreen },
   Login: { screen: LoginScreen }
 });
-
 // default app stack
 const AppStack = createBottomTabNavigator(
 	{
@@ -78,23 +82,54 @@ const AppStack = createBottomTabNavigator(
 );
 
 const AppContainer = createAppContainer(
-	createSwitchNavigator(
-	{
-		AuthLoading: AuthLoadingScreen,
-		Auth: AuthStack,
-		App: AppStack
-	},
-	{
-		initialRouteName: "AuthLoading"
-	}
-	)
+  createSwitchNavigator(
+    {
+      AuthLoading: AuthLoadingScreen,
+      Auth: AuthStack,
+      App: AppStack
+    },
+    {
+      initialRouteName: "AuthLoading"
+    }
+  )
 );
 
-export default class Scenes extends React.Component {
+class Scenes extends React.Component {
+  // load fonts TODO
+  async componentDidMount() {
+    this.props.discardFont();
+    console.log("Scenes mounted! Font Loaded: " + this.props.fontLoaded);
+    await Font.loadAsync({
+      "HindSiliguri-Bold": require("../../assets/fonts//HindSiliguri-Bold.ttf"),
+      "HindSiliguri-Light": require("../../assets/fonts/HindSiliguri-Light.ttf"),
+      "HindSiliguri-Regular": require("../../assets/fonts/HindSiliguri-Regular.ttf")
+    }).then(() => {
+      this.props.loadFont();
+      console.log("Font loaded! Font Loaded: " + this.props.fontLoaded);
+    });
+  }
 
-    render() {
-        return (
-			<AppContainer />
-		);
-    }
+  render() {
+    return <AppContainer />;
+  }
 }
+
+const mapStateToProps = state => ({
+  fontLoaded: state.fontLoader.fontLoaded
+});
+
+const mapDispatchToProps = dispatch => {
+  return {
+    loadFont: () => {
+      dispatch(loadFont());
+    },
+    discardFont: () => {
+      dispatch(discardFont());
+    }
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Scenes);
