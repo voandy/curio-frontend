@@ -3,7 +3,6 @@ import PropTypes from "prop-types"
 import { connect } from "react-redux"
 import { logoutUser } from "../../actions/authActions"
 import { getUserData } from "../../actions/userActions"
-import axios from "axios"
 
 import {Dimensions, 
         StyleSheet,
@@ -30,7 +29,7 @@ class Profile extends Component {
         // get user authentication data
         const { user } = this.props.auth;
         this.props.getUserData(user.id);
-
+        
         // font
         Font.loadAsync({
             'HindSiliguri-Bold': require('../../../assets/fonts/HindSiliguri-Bold.ttf'),
@@ -42,7 +41,7 @@ class Profile extends Component {
         if (Object.keys(this.state.userData).length === 0) {
             this.setState({
                 userData: nextProps.user.userData
-            })
+            });
         }
     }
 

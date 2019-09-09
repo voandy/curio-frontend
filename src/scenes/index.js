@@ -25,7 +25,6 @@ const AuthStack = createStackNavigator({
   Login: { screen: LoginScreen }
 });
 
-	
 // default app stack
 const AppStack = createBottomTabNavigator(
 	{
@@ -76,19 +75,26 @@ const AppStack = createBottomTabNavigator(
 			},		
 		}
 	}
-	);
-
-export default createAppContainer(
-  createSwitchNavigator(
-    {
-      AuthLoading: AuthLoadingScreen,
-      Auth: AuthStack,
-      App: AppStack
-    },
-    {
-      initialRouteName: "AuthLoading"
-    }
-  )
 );
 
-// export default AppStack;
+const AppContainer = createAppContainer(
+	createSwitchNavigator(
+	{
+		AuthLoading: AuthLoadingScreen,
+		Auth: AuthStack,
+		App: AppStack
+	},
+	{
+		initialRouteName: "AuthLoading"
+	}
+	)
+);
+
+export default class Scenes extends React.Component {
+
+    render() {
+        return (
+			<AppContainer />
+		);
+    }
+}

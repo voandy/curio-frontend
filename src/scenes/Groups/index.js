@@ -55,7 +55,31 @@ class Groups extends Component {
     return (
       <View style={styles.container}>
         <Header tab1="Public" tab2="Private" />
-        
+
+        {/* scrollable area for CONTENT */}
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          scrollEventThrottle={16}
+        >
+          {/* carousel pinned groups */}
+          <View style={{ height: 130, marginTop: 20 }}>
+            <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}
+                  decelerationRate={0.8} snapToAlignment={"center"}
+                  snapToInterval={Dimensions.get('window').width * 0.85} >
+              <CardCarousel text="page 1" />
+              <CardCarousel text="page 2" />
+              <CardCarousel text="page 3" />
+            </ScrollView>
+          </View>
+
+          <Text style={styles.titleText}>Groups</Text>
+          <Text style={styles.titleText}>Groups</Text>
+          <Text style={styles.titleText}>Groups</Text>
+          <Text style={styles.titleText}>Groups</Text>
+          <Text style={styles.titleText}>Groups</Text>
+
+        </ScrollView>
+
         {/*********************** CHANGE THIS LATER ********************/}
         {/* create new Group */}
         <Button title="Create New Group" onPress={this.toggleModal} />
@@ -87,30 +111,6 @@ class Groups extends Component {
           </View>
         </Modal>
         {/****************************************************************/}
-
-        {/* scrollable area for CONTENT */}
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          scrollEventThrottle={16}
-        >
-          {/* carousel pinned groups */}
-          <View style={{ height: 130, marginTop: 20 }}>
-            <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}
-                  decelerationRate={0.8} snapToAlignment={"center"}
-                  snapToInterval={Dimensions.get('window').width * 0.85} >
-              <CardCarousel text="page 1" />
-              <CardCarousel text="page 2" />
-              <CardCarousel text="page 3" />
-            </ScrollView>
-          </View>
-
-          <Text style={styles.titleText}>Groups</Text>
-          <Text style={styles.titleText}>Groups</Text>
-          <Text style={styles.titleText}>Groups</Text>
-          <Text style={styles.titleText}>Groups</Text>
-          <Text style={styles.titleText}>Groups</Text>
-
-        </ScrollView>
 
         {/* <Tabs /> */}
       </View>
