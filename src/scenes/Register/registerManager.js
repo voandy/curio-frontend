@@ -12,7 +12,8 @@ import * as ImagePicker from "expo-image-picker";
 import * as Permissions from "expo-permissions";
 
 // import all register Constants
-import { C } from "../../actions/registerTypes";
+import { C } from "../../types/registerTypes";
+import * as ImagePicker from "expo-image-picker";
 
 // import reusable button component
 import MyButton from "../../component/MyButton";

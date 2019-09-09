@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold"
   },
 
-  mainCollectionContainer: {
+  mainGroupContainer: {
     height: Dimensions.get("window").height * 0.3,
     top: 0,
     position: "absolute",

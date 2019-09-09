@@ -12,8 +12,7 @@ import {
 
 import { registerUser } from "../../actions/authActions";
 import RegisterManager from "./registerManager";
-import { C } from "../../actions/registerTypes";
-import MyButton from "../../component/MyButton";
+import { C } from "../../types/registerTypes";
 import * as Font from "expo-font";
 
 // import widht/height responsive functions

@@ -2,8 +2,7 @@ import React, { Component } from "react"
 import PropTypes from "prop-types"
 import { connect } from "react-redux"
 import { logoutUser } from "../../actions/authActions"
-import { getUserData } from "../../actions/dataActions"
-import axios from "axios"
+import { getUserData } from "../../actions/userActions"
 
 import {Dimensions, 
         StyleSheet,
@@ -30,7 +29,7 @@ class Profile extends Component {
         // get user authentication data
         const { user } = this.props.auth;
         this.props.getUserData(user.id);
-
+        
         // font
         Font.loadAsync({
             'HindSiliguri-Bold': require('../../../assets/fonts/HindSiliguri-Bold.ttf'),
@@ -41,8 +40,8 @@ class Profile extends Component {
     componentWillUpdate(nextProps) {
         if (Object.keys(this.state.userData).length === 0) {
             this.setState({
-                userData: nextProps.data.userData
-            })
+                userData: nextProps.user.userData
+            });
         }
     }
 
@@ -171,12 +170,12 @@ Profile.propTypes = {
     logoutUser: PropTypes.func.isRequired,
     getUserData: PropTypes.func.isRequired,
     auth: PropTypes.object.isRequired,
-    data: PropTypes.object.isRequired
+    user: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => ({
     auth: state.auth,
-    data: state.data
+    user: state.user
 });
 
 //  export
