@@ -65,6 +65,10 @@ class Register extends Component {
     this.setState({ ...this.state, password });
   };
 
+  passwordCfmHandler = passwordCfm => {
+    this.setState({ ...this.state, passwordCfm });
+  };
+
   photoURLHandler = photoURL => {
     this.setState({ ...this.state, photoURL });
   };
@@ -164,12 +168,13 @@ class Register extends Component {
                 nameHandler={this.nameHandler}
                 emailHandler={this.emailHandler}
                 passwordHandler={this.passwordHandler}
+                passwordCfmHandler={this.passwordCfmHandler}
                 photoURLHandler={this.photoURLHandler}
                 stageHandler={this.stageHandler}
                 name={this.state.name}
                 email={this.state.email}
                 password={this.state.password}
-                passwordCfm={this.passwordCfm}
+                passwordCfm={this.state.passwordCfm}
                 photoURL={this.state.photoURL}
               />
               {/* <Text style={styles.error}> {errors.passwordCfm} </Text> */}
