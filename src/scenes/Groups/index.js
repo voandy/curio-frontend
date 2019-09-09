@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
+import Modal from "react-native-modal";
 
 import {
   View,
@@ -9,17 +10,31 @@ import {
   ScrollView,
   Dimensions,
   Button,
+  TextInput
 } from "react-native";
 
 import { logoutUser } from "../../actions/authActions";
 import CardCarousel from "../../component/CardCarousel";
 import Header from "../../component/Header";
-import Tabs from './groupManager';
+import Tabs from './groupManager'
 import * as Font from 'expo-font';
+
+// CHANGE THIS LATER
+import {
+  deviceHeigthDimension as hp,
+  deviceWidthDimension as wd,
+  setToBottom
+} from "../../utils/responsiveDesign";
+
+const newGroup = {
+  title: "",
+  description: ""
+}
 
 class Groups extends Component {
   state = {
-    isModalVisible: false
+    isModalVisible: false,
+    newGroup
   };
 
   componentDidMount() {
@@ -29,13 +44,49 @@ class Groups extends Component {
         'HindSiliguri-Regular': require('../../../assets/fonts/HindSiliguri-Regular.ttf'),
     });
   }
-  
+
+  toggleModal = () => {
+    this.setState({ isModalVisible: !this.state.isModalVisible });
+  };
+
   render() {
     const { user } = this.props.auth;
 
     return (
       <View style={styles.container}>
         <Header tab1="Public" tab2="Private" />
+        
+        {/*********************** CHANGE THIS LATER ********************/}
+        {/* create new Group */}
+        <Button title="Create New Group" onPress={this.toggleModal} />
+        <Modal isVisible={this.state.isModalVisible}>
+          <View style={{ backgroundColor: "white", flex: 1 }}>
+            <Button title="Close" onPress={this.toggleModal} />
+          
+            <TextInput
+              style={styles.inputField}
+              placeholder="Title"
+              autoCapitalize="none"
+              placeholderTextColor="#868686"
+              onChangeText={val => this.props.nameHandler(val)}
+              value= { this.props.name }
+            />
+
+            <TextInput
+              style={styles.inputField}
+              placeholder="Description"
+              autoCapitalize="none"
+              placeholderTextColor="#868686"
+              onChangeText={val => this.props.nameHandler(val)}
+              value= { this.props.name }
+            />
+            
+            <Button 
+              title= "Create Group"
+            />
+          </View>
+        </Modal>
+        {/****************************************************************/}
 
         {/* scrollable area for CONTENT */}
         <ScrollView
@@ -50,7 +101,6 @@ class Groups extends Component {
               <CardCarousel text="page 1" />
               <CardCarousel text="page 2" />
               <CardCarousel text="page 3" />
-              
             </ScrollView>
           </View>
 
@@ -78,6 +128,19 @@ const mapStateToProps = state => ({
 });
 
 const styles = StyleSheet.create({
+
+  // CHANGE THIS LATER
+  inputField: {
+    textAlign: "center",
+    width: wd(0.7),
+    height: hp(0.05),
+    marginTop: 20,
+    backgroundColor: "white",
+    borderBottomWidth: 0.5,
+    fontSize: 16,
+    alignSelf: "center"
+  },
+
   container: {
     flex: 1
   },
@@ -126,7 +189,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginLeft: Dimensions.get("window").width * 0.07,
     fontFamily: 'HindSiliguri-Bold'
-  }
+  },
 });
 
 //  export
