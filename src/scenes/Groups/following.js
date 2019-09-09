@@ -1,7 +1,4 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { logoutUser } from "../../actions/authActions";
 import {
   View,
   Text,
@@ -11,12 +8,9 @@ import {
 } from "react-native";
 
 import CardCarousel from "../../component/CardCarousel";
-import Header from "../../component/Header";
-import Tabs from './collectionManager'
 import * as Font from 'expo-font';
 
-
-class Collections extends Component {
+class Following extends Component {
 
   componentDidMount() {
     // font
@@ -27,18 +21,15 @@ class Collections extends Component {
   }
 
   render() {
-    const { user } = this.props.auth;
-
     return (
       <View style={styles.container}>
-        <Header tab1="Public" tab2="Private" />
 
         {/* scrollable area for CONTENT */}
         <ScrollView
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={16}
         >
-          {/* carousel pinned collections */}
+          {/* carousel pinned groups */}
           <View style={{ height: 130, marginTop: 20 }}>
             <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}
                   decelerationRate={0.8} snapToAlignment={"center"}
@@ -49,28 +40,17 @@ class Collections extends Component {
             </ScrollView>
           </View>
 
-          <Text style={styles.titleText}>COLLECTIONS</Text>
-          <Text style={styles.titleText}>COLLECTIONS</Text>
-          <Text style={styles.titleText}>COLLECTIONS</Text>
-          <Text style={styles.titleText}>COLLECTIONS</Text>
-          <Text style={styles.titleText}>COLLECTIONS</Text>
+          <Text style={styles.titleText}>Groups</Text>
+          <Text style={styles.titleText}>Groups</Text>
+          <Text style={styles.titleText}>GroupS</Text>
+          <Text style={styles.titleText}>GroupS</Text>
+          <Text style={styles.titleText}>GroupS</Text>
 
         </ScrollView>
-
-        {/* <Tabs /> */}
       </View>
     );
   }
 }
-
-Collections.propTypes = {
-  logoutUser: PropTypes.func.isRequired,
-  auth: PropTypes.object.isRequired
-};
-
-const mapStateToProps = state => ({
-  auth: state.auth
-});
 
 const styles = StyleSheet.create({
   container: {
@@ -106,7 +86,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold"
   },
 
-  mainCollectionContainer: {
+  mainGroupContainer: {
     height: Dimensions.get("window").height * 0.3,
     top: 0,
     position: "absolute",
@@ -125,7 +105,4 @@ const styles = StyleSheet.create({
 });
 
 //  export
-export default connect(
-  mapStateToProps,
-  { logoutUser }
-)(Collections);
+export default Following

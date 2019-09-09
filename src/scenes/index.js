@@ -9,7 +9,7 @@ import {
 import StartScreen from './Start'
 import RegisterScreen from './Register'
 import LoginScreen from './Login'
-import CollectionsScreen from './Collections'
+import GroupsScreen from './Groups'
 import AuthLoadingScreen from './AuthLoadingScreen'
 import ProfileScreen from './Profile'
 import NotificationScreen from './Notification'
@@ -29,8 +29,8 @@ const AuthStack = createStackNavigator({
 // default app stack
 const AppStack = createBottomTabNavigator(
 	{
-		Collections: {
-			screen: CollectionsScreen,
+		Groups: {
+			screen: GroupsScreen,
 			navigationOptions: {
 				tabBarIcon: ({ tintColor}) => (
 					<Image source={ require('../../assets/images/icons/group.png') } 

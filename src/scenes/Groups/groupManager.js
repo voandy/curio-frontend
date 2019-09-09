@@ -6,7 +6,7 @@ import {
 import followingScreen from './following'
 import mineScreen from './mine'
   
- const collectionsTabs = createMaterialTopTabNavigator ({
+ const groupsTabs = createMaterialTopTabNavigator ({
     Following:{
         screen: followingScreen,
         navigationOptions:{
@@ -21,4 +21,4 @@ import mineScreen from './mine'
         initialRouteName: "Following"
     });
 
-export default collectionsTabs
+export default groupsTabs

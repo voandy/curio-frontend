@@ -10,7 +10,7 @@ import {
 import CardCarousel from "../../component/CardCarousel";
 import * as Font from 'expo-font';
 
-class Following extends Component {
+class Mine extends Component {
 
   componentDidMount() {
     // font
@@ -29,22 +29,11 @@ class Following extends Component {
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={16}
         >
-          {/* carousel pinned collections */}
-          <View style={{ height: 130, marginTop: 20 }}>
-            <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}
-                  decelerationRate={0.8} snapToAlignment={"center"}
-                  snapToInterval={Dimensions.get('window').width * 0.85} >
-              <CardCarousel text="page 1" />
-              <CardCarousel text="page 2" />
-              <CardCarousel text="page 3" />
-            </ScrollView>
-          </View>
-
-          <Text style={styles.titleText}>COLLECTIONS</Text>
-          <Text style={styles.titleText}>COLLECTIONS</Text>
-          <Text style={styles.titleText}>COLLECTIONS</Text>
-          <Text style={styles.titleText}>COLLECTIONS</Text>
-          <Text style={styles.titleText}>COLLECTIONS</Text>
+          <Text style={styles.titleText}>MINE</Text>
+          <Text style={styles.titleText}>MINE</Text>
+          <Text style={styles.titleText}>MINE</Text>
+          <Text style={styles.titleText}>MINE</Text>
+          <Text style={styles.titleText}>MINE</Text>
 
         </ScrollView>
       </View>
@@ -86,7 +75,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold"
   },
 
-  mainCollectionContainer: {
+  mainGroupContainer: {
     height: Dimensions.get("window").height * 0.3,
     top: 0,
     position: "absolute",
@@ -105,4 +94,4 @@ const styles = StyleSheet.create({
 });
 
 //  export
-export default Following
+export default Mine
