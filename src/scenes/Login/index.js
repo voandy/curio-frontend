@@ -14,6 +14,7 @@ import {
 import { loginUser } from "../../actions/authActions"
 import MyButton from "../../component/MyButton"
 import * as Font from 'expo-font';
+import { setToBottom } from '../../utils/responsiveDesign'
 
 // state
 const initialState = {
@@ -128,7 +129,11 @@ class Login extends Component {
           </TouchableOpacity>
 
           {/* button */}
-          <MyButton onPress={ (this.onSubmit) } text="LOG IN"/>
+          {setToBottom(
+            <View style={ {marginBottom:30 }}>
+              <MyButton onPress={ (this.onSubmit) } text="LOG IN"/>
+            </View>
+          )}
 
         </View>
       </View>
