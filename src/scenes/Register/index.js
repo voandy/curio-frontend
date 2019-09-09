@@ -7,14 +7,14 @@ import {
   Dimensions,
   Image,
   StyleSheet,
-  Text,
+  Text
 } from "react-native";
 
 import { registerUser } from "../../actions/authActions";
 import RegisterManager from "./registerManager";
 import { C } from "../../actions/registerTypes";
 import MyButton from "../../component/MyButton";
-import * as Font from 'expo-font';
+import * as Font from "expo-font";
 
 // import widht/height responsive functions
 import {
@@ -24,14 +24,13 @@ import {
 } from "../../utils/responsiveDesign";
 
 class Register extends Component {
-  
   state = {
     registerStage: C.GET_NAME,
     name: "",
     email: "",
     password: "",
-    passwordCfm: "",    // DO NOT SEND THIS AFTER REGISTRATION
-    photoURL: null,
+    passwordCfm: "", // DO NOT SEND THIS AFTER REGISTRATION
+    photoURL: null
   };
 
   constructor() {
@@ -41,15 +40,15 @@ class Register extends Component {
   // nav details
   static navigationOptions = {
     headerStyle: {
-      elevation: 0, // remove shadow on Android
-    },
-  }
+      elevation: 0 // remove shadow on Android
+    }
+  };
 
   async componentDidMount() {
     // font
     await Font.loadAsync({
-        'HindSiliguri-Bold': require('../../../assets/fonts/HindSiliguri-Bold.ttf'),
-        'HindSiliguri-Regular': require('../../../assets/fonts/HindSiliguri-Regular.ttf'),
+      "HindSiliguri-Bold": require("../../../assets/fonts/HindSiliguri-Bold.ttf"),
+      "HindSiliguri-Regular": require("../../../assets/fonts/HindSiliguri-Regular.ttf")
     });
   }
 
@@ -119,28 +118,31 @@ class Register extends Component {
   // };
 
   render() {
-
     switch (this.state.registerStage) {
       // once registered
       case C.LAST_STAGE:
-        return(
+        return (
           <View style={styles.lastContainer}>
-    
-              {/* heading */}
-              <Text style={styles.titleText}> All done! </Text>
-              <Text style={styles.subTitleText}> Welcome {this.state.name}. </Text>
+            {/* heading */}
+            <Text style={styles.titleText}> All done! </Text>
+            <Text style={styles.subTitleText}>
+              {" "}
+              Welcome {this.state.name}.{" "}
+            </Text>
 
-              <Image style= { styles.profilePic } source={ {uri:this.state.photoURL} } />
-              {/* button to collection/group page */}
-              {setToBottom(
-                <View style={ styles.bottom }>
-                  <MyButton
-                    text="Get Started"
-                    // onPress={{ navigate("App") }}    TODO add navigation and verification
-                  />
-                </View>
-              )}
-
+            <Image
+              style={styles.profilePic}
+              source={{ uri: this.state.photoURL }}
+            />
+            {/* button to collection/group page */}
+            {setToBottom(
+              <View style={styles.bottom}>
+                <MyButton
+                  text="Get Started"
+                  // onPress={{ navigate("App") }}    TODO add navigation and verification
+                />
+              </View>
+            )}
           </View>
         );
 
@@ -148,33 +150,33 @@ class Register extends Component {
       default:
         return (
           <View style={styles.container}>
-    
-              {/* heading */}
-              <Text style={styles.titleText}> Welcome, </Text>
-              <Text style={styles.subTitleText}> Enter your details to signup. </Text>
-    
-              {/* main card view */}
-              <View style={styles.card}>
-                <RegisterManager
-                  registerStage={this.state.registerStage}
-                  nameHandler={this.nameHandler}
-                  emailHandler={this.emailHandler}
-                  passwordHandler={this.passwordHandler}
-                  photoURLHandler={this.photoURLHandler}
-                  stageHandler={this.stageHandler}
-                  name={this.state.name}
-                  email={this.state.email}
-                  password={this.state.password}
-                  passwordCfm={this.passwordCfm}
-                  photoURL={this.state.photoURL}
-                />
-                {/* <Text style={styles.error}> {errors.passwordCfm} </Text> */}
-              </View>
+            {/* heading */}
+            <Text style={styles.titleText}> Welcome, </Text>
+            <Text style={styles.subTitleText}>
+              {" "}
+              Enter your details to signup.{" "}
+            </Text>
+
+            {/* main card view */}
+            <View style={styles.card}>
+              <RegisterManager
+                registerStage={this.state.registerStage}
+                nameHandler={this.nameHandler}
+                emailHandler={this.emailHandler}
+                passwordHandler={this.passwordHandler}
+                photoURLHandler={this.photoURLHandler}
+                stageHandler={this.stageHandler}
+                name={this.state.name}
+                email={this.state.email}
+                password={this.state.password}
+                passwordCfm={this.passwordCfm}
+                photoURL={this.state.photoURL}
+              />
+              {/* <Text style={styles.error}> {errors.passwordCfm} </Text> */}
+            </View>
           </View>
         );
     }
-
-
   }
 }
 
@@ -187,7 +189,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "center"
   },
 
   titleText: {
@@ -195,7 +197,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     alignSelf: "flex-start",
     marginLeft: wd(0.07),
-    fontFamily: 'HindSiliguri-Bold'
+    fontFamily: "HindSiliguri-Bold"
   },
 
   subTitleText: {
@@ -204,7 +206,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     alignSelf: "flex-start",
     marginLeft: wd(0.07),
-    fontFamily: 'HindSiliguri-Bold'
+    fontFamily: "HindSiliguri-Bold"
   },
 
   card: {
@@ -219,24 +221,24 @@ const styles = StyleSheet.create({
     marginBottom: 50
   },
 
-  lastContainer:{
+  lastContainer: {
     flex: 1,
-    alignItems: "center",
+    alignItems: "center"
   },
 
   profilePic: {
     marginTop: 40,
     width: wd(0.4),
     height: wd(0.4),
-    alignSelf: 'center',
-    borderRadius: wd(0.4)/2,
+    alignSelf: "center",
+    borderRadius: wd(0.4) / 2
   },
 
   bottom: {
     width: wd(0.8),
     height: wd(0.3),
-    alignItems: "flex-end",
-  },  
+    alignItems: "flex-end"
+  }
 });
 
 Register.propTypes = {

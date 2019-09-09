@@ -18,7 +18,11 @@ import { C } from "../../actions/registerTypes";
 import MyButton from "../../component/MyButton";
 
 // import entry field validators
-import {validateName, validateEmail, validatePassword } from "./registerValidator";
+// import {
+//   validateName,
+//   validateEmail,
+//   validatePassword
+// } from "./registerValidator";
 
 // import width/height responsive functions
 import {
@@ -29,11 +33,10 @@ import {
 
 // Load new page after each completed stage in sign up
 class RegisterManager extends Component {
-
   state = {
     nameError: "",
     emailError: "",
-    pwdError: "",
+    pwdError: ""
   };
 
   componentDidMount() {
@@ -76,36 +79,35 @@ class RegisterManager extends Component {
   errorName() {
     this.setState({
       nameError: validateName(this.props.name)
-    })
+    });
 
     // with no errors, proceed to next page
-    if(this.state.nameError !== "") {
-      this.props.stageHandler(C.GET_EMAIL)
+    if (this.state.nameError !== "") {
+      this.props.stageHandler(C.GET_EMAIL);
     }
   }
 
   errorEmail() {
     this.setState({
       emailError: validateEmail(this.props.email)
-    })
+    });
 
     // with no errors, proceed to next page
-    if(this.state.emailError !== "") {
-      this.props.stageHandler(C.GET_PASSWORD)
+    if (this.state.emailError !== "") {
+      this.props.stageHandler(C.GET_PASSWORD);
     }
   }
 
   errorPwd() {
     this.setState({
       pwdError: validatePassword(this.props.password)
-    })
+    });
 
     // with no errors, proceed to next page
-    if(this.state.pwdError !== "") {
-      this.props.stageHandler(C.GET_PHOTO)
+    if (this.state.pwdError !== "") {
+      this.props.stageHandler(C.GET_PHOTO);
     }
   }
-
 
   render() {
     switch (this.props.registerStage) {
@@ -125,9 +127,9 @@ class RegisterManager extends Component {
               onSubmitEditing={() => this.errorName()}
             />
 
-            {this.state.nameError !== "" && 
+            {this.state.nameError !== "" && (
               <Text style={styles.error}> {this.state.nameError} </Text>
-            }
+            )}
 
             {setToBottom(
               <MyButton
@@ -154,9 +156,9 @@ class RegisterManager extends Component {
               onSubmitEditing={() => this.errorEmail()}
             />
 
-            {this.state.emailError !== "" && 
+            {this.state.emailError !== "" && (
               <Text style={styles.error}> {this.state.emailError} </Text>
-            }
+            )}
 
             {setToBottom(
               <View style={styles.buttom}>
@@ -197,9 +199,9 @@ class RegisterManager extends Component {
               value={this.props.password}
             />
 
-            {this.state.emailError !== "" && 
+            {this.state.emailError !== "" && (
               <Text style={styles.error}> {this.state.emailError} </Text>
-            }
+            )}
 
             {/* Cfm password */}
             <Text style={[styles.inputText, styles.passwordFieldTitle]}>
