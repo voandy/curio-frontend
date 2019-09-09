@@ -6,12 +6,12 @@ import {
   GET_ERRORS,
   SET_CURRENT_USER,
   USER_LOADING
-} from "./authTypes";
+} from "../types/authTypes";
 
 // Register User
 export const registerUser = userData => dispatch => {
   return axios
-    .post("http://curioapp.herokuapp.com/api/register", userData)
+    .post("http://curioapp.herokuapp.com/api/email/id/:id", userData)
     .then(res => console.log(res.data))
     .catch(err =>
       dispatch({

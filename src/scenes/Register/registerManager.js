@@ -10,7 +10,7 @@ import {
   Text
 } from "react-native";
 // import all register Constants
-import { C } from "../../actions/registerTypes";
+import { C } from "../../types/registerTypes";
 import * as ImagePicker from 'expo-image-picker';
 
 // import {

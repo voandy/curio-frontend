@@ -2,7 +2,7 @@ import axios from "axios";
 
 import {
   SET_CURRENT_USER_DATA,
-} from "./userTypes";
+} from "../types/userTypes";
 
 // Get User Data
 export const getUserData = userId => dispatch => {
