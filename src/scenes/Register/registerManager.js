@@ -31,9 +31,9 @@ import {
 class RegisterManager extends Component {
 
   state = {
-    nameError: "",
-    emailError: "",
-    pwdError: "",
+    nameErrorMessage: "",
+    emailErrorMessage: "",
+    pwdErrorMessage: "",
   };
 
   componentDidMount() {
@@ -73,39 +73,39 @@ class RegisterManager extends Component {
   }
 
   // error handlers
-  errorName() {
+  async errorName() {
     this.setState({
-      nameError: validateName(this.props.name)
+      nameErrorMessage: await validateName(this.props.name)
     })
 
     // with no errors, proceed to next page
-    if(this.state.nameError !== "") {
+    if(this.state.nameErrorMessage === "") {
       this.props.stageHandler(C.GET_EMAIL)
     }
   }
 
-  errorEmail() {
+  async errorEmail() {
     this.setState({
-      emailError: validateEmail(this.props.email)
+      emailErrorMessage: await validateEmail(this.props.email)
     })
 
     // with no errors, proceed to next page
-    if(this.state.emailError !== "") {
+    if(this.state.emailErrorMessage === "") {
       this.props.stageHandler(C.GET_PASSWORD)
     }
   }
 
-  errorPwd() {
+  async errorPassword() {
+
     this.setState({
-      pwdError: validatePassword(this.props.password)
+      pwdErrorMessage: await validatePassword(this.props.password, this.props.passwordCfm)
     })
 
     // with no errors, proceed to next page
-    if(this.state.pwdError !== "") {
+    if(this.state.pwdErrorMessage === "") {
       this.props.stageHandler(C.GET_PHOTO)
     }
   }
-
 
   render() {
     switch (this.props.registerStage) {
@@ -125,8 +125,8 @@ class RegisterManager extends Component {
               onSubmitEditing={() => this.errorName()}
             />
 
-            {this.state.nameError !== "" && 
-              <Text style={styles.error}> {this.state.nameError} </Text>
+            {this.state.nameErrorMessage !== "" && 
+              <Text style={styles.error}> {this.state.nameErrorMessage} </Text>
             }
 
             {setToBottom(
@@ -154,8 +154,8 @@ class RegisterManager extends Component {
               onSubmitEditing={() => this.errorEmail()}
             />
 
-            {this.state.emailError !== "" && 
-              <Text style={styles.error}> {this.state.emailError} </Text>
+            {this.state.emailErrorMessage !== "" && 
+              <Text style={styles.error}> {this.state.emailErrorMessage} </Text>
             }
 
             {setToBottom(
@@ -194,12 +194,8 @@ class RegisterManager extends Component {
               autoCapitalize="none"
               placeholderTextColor="#868686"
               onChangeText={val => this.props.passwordHandler(val)}
-              value={this.props.password}
-            />
-
-            {this.state.emailError !== "" && 
-              <Text style={styles.error}> {this.state.emailError} </Text>
-            }
+              value={ this.props.password }
+            />          
 
             {/* Cfm password */}
             <Text style={[styles.inputText, styles.passwordFieldTitle]}>
@@ -211,11 +207,14 @@ class RegisterManager extends Component {
               secureTextEntry={true}
               autoCapitalize="none"
               placeholderTextColor="#868686"
-              onSubmitEditing={() => this.errorPwd()}
-              // onChangeText={val => this.onChangeText("passwordCfm", val)}
+              onChangeText={val => this.props.passwordCfmHandler(val)}
+              value={ this.props.passwordCfm }
+              onSubmitEditing={() => this.errorPassword()}
             />
 
-            {/* <Text style={styles.error}> {errors.passwordCfm} </Text> */}
+            {this.state.pwdErrorMessage !== "" && 
+              <Text style={styles.error}> {this.state.pwdErrorMessage} </Text>
+            }
 
             {setToBottom(
               <View style={styles.buttom}>
@@ -227,7 +226,7 @@ class RegisterManager extends Component {
 
                 <MyButton
                   style={styles.nextButton}
-                  onPress={() => this.errorPwd()}
+                  onPress={() => this.errorPassword()}
                   text="Next"
                 />
               </View>
@@ -286,80 +285,6 @@ class RegisterManager extends Component {
         );
     }
   }
-  // switch (register_stage) {
-  //   case C.GET_NAME:
-  //     return (
-  //       <View>
-  //         {/* name */}
-  //         <Text style={styles.inputText}> Hey, first tell us your name! </Text>
-  //         <TextInput
-  //           style={styles.input}
-  //           placeholder="Jon Snow"
-  //           autoCapitalize="none"
-  //           placeholderTextColor="#868686"
-  //           onChangeText={val => this.props.nameHandler(val)}
-  //         />
-  //         {/* <Text style={styles.error}> {errors.name} </Text> */}
-  //       </View>
-  //     );
-  // case 1:
-  //   return (
-  //     <View>
-  //       {/* email */}
-  //       <Text style={styles.inputText}> Now, enter your email address! </Text>
-  //       <TextInput
-  //         style={styles.input}
-  //         placeholder="abc@email.com"
-  //         autoCapitalize="none"
-  //         placeholderTextColor="#868686"
-  //         onChangeText={val => this.onChangeText("email", val)}
-  //       />
-  //       {/* <Text style={styles.error}> {errors.email} </Text> */}
-  //     </View>
-  //   );
-  // case 2:
-  //   return (
-  //     <View>
-  //       <Text style={[styles.inputText, styles.passwordTitle]}>
-  //         {" "}
-  //         Great, create your unique password!{" "}
-  //       </Text>
-
-  //       {/* password */}
-  //       <Text style={[styles.inputText, styles.password]}> Password: </Text>
-  //       <TextInput
-  //         style={styles.input}
-  //         secureTextEntry={true}
-  //         autoCapitalize="none"
-  //         placeholderTextColor="#868686"
-  //         onChangeText={val => this.onChangeText("password", val)}
-  //       />
-  //       {/* <Text style={styles.error}> {errors.password} </Text> */}
-
-  //       {/* Cfm password */}
-  //       <Text style={[styles.inputText, styles.password]}>
-  //         {" "}
-  //         Confirm Password:{" "}
-  //       </Text>
-  //       <TextInput
-  //         style={styles.input}
-  //         secureTextEntry={true}
-  //         autoCapitalize="none"
-  //         placeholderTextColor="#868686"
-  //         onChangeText={val => this.onChangeText("passwordCfm", val)}
-  //       />
-  //       {/* <Text style={styles.error}> {errors.passwordCfm} </Text> */}
-  //     </View>
-  //   );
-  // case 3:
-  //   return <View></View>;
-  //   default:
-  //     return (
-  //       <View>
-  //         <Text>error 404</Text>
-  //       </View>
-  //     );
-  // }
 }
 
 const styles = StyleSheet.create({

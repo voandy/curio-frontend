@@ -24,7 +24,6 @@ const AuthStack = createStackNavigator({
   Register: { screen: RegisterScreen },
   Login: { screen: LoginScreen }
 });
-
 	
 // default app stack
 const AppStack = createBottomTabNavigator(
