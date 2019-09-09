@@ -253,7 +253,7 @@ class RegisterManager extends Component {
               ) : (
                 <Image
                   style={styles.profilePic}
-                  source={require("../../../assets/images/default-profile-pic.png")}
+                  source={require("../../../assets/images/plus-profile-pic.png")}
                 />
               )}
             </TouchableOpacity>
@@ -268,8 +268,7 @@ class RegisterManager extends Component {
 
                 <MyButton
                   style={styles.nextButton}
-                  onPress={() => this.props.stageHandler(C.LAST_STAGE)}
-                  // text="Next"
+                  //onPress={() => this.props.onSubmit }  // moves to welcome page and will be logged in
                   text={this.skipPhotoText(this.props.photoURL)}
                 />
               </View>

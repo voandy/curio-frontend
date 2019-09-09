@@ -9,6 +9,8 @@ import {
 import StartScreen from './Start'
 import RegisterScreen from './Register'
 import LoginScreen from './Login'
+import WelcomeScreen from './Welcome'
+
 import CollectionsScreen from './Collections'
 import AuthLoadingScreen from './AuthLoadingScreen'
 import ProfileScreen from './Profile'
@@ -22,7 +24,8 @@ import { Image } from "react-native";
 const AuthStack = createStackNavigator({
   Start: { screen: StartScreen },
   Register: { screen: RegisterScreen },
-  Login: { screen: LoginScreen }
+  Login: { screen: LoginScreen },
+//   Welcome: { screen: WelcomeScreen }
 });
 	
 // default app stack

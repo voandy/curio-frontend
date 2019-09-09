@@ -3,9 +3,8 @@ import PropTypes from "prop-types";
 import { connect, useSelector, useDispatch } from "react-redux";
 import {
   View,
-  TouchableOpacity,
-  Dimensions,
-  Image,
+  ActivityIndicator,
+  StatusBar,
   StyleSheet,
   Text,
 } from "react-native";
@@ -16,12 +15,15 @@ import { C } from "../../actions/registerTypes";
 import MyButton from "../../component/MyButton";
 import * as Font from 'expo-font';
 
-// import widht/height responsive functions
+// import width/height responsive functions
 import {
   deviceHeigthDimension as hp,
   deviceWidthDimension as wd,
   setToBottom
 } from "../../utils/responsiveDesign";
+
+
+
 
 class Register extends Component {
   
@@ -79,114 +81,67 @@ class Register extends Component {
     console.log(this.state);
   };
 
-  // componentWillReceiveProps(nextProps) {
-  //   if (nextProps.errors) {
-  //     this.setState({
-  //       errors: nextProps.errors
-  //     });
-  //   }
-  // }
+  // send new user data
+  onSubmit = (e) => {
 
-  // onChangeText = (key, val) => {
-  //   this.setState({
-  //     [key]: val,
-  //     errors: {}
-  //   });
-  // };
+    const { navigate } = this.props.navigation;
 
-  // // send new user data
-  // onSubmit = () => {
-  //   const { stage } = this.state.stage;
-  //   if (stage < 4) {
-  //     this.setState({
-  //       ...state,
-  //       stage: stage + 1
-  //     });
-  //   } else {
-  //     const { navigate } = this.props.navigation;
+    // create new user
+    const newUser = {
+        name: this.state.name,
+        email: this.state.email,
+        password: this.state.password,
+        passwordCfm: this.state.passwordCfm,
+        profilePic: this.state.photoURL,    // use "profilePic" as the default naming? since the photos in it is already named this way
+    };
 
-  //     // create new user
-  //     const newUser = {
-  //       name: this.state.name,
-  //       email: this.state.email,
-  //       password: this.state.password,
-  //       passwordCfm: this.state.passwordCfm
-  //     };
-
-  //     this.props.registerUser(newUser, this.props.history).then(res => {
-  //       if (Object.keys(this.state.errors).length === 0) {
-  //         navigate("Login");
-  //         this.state = initialState;
-  //       }
-  //     });
-  //   }
-  // };
+    // include default photo for those who skipped the selection TODO
+    // if(newUser.profilePic === null){
+    //   newUser.profilePic = require("../../../assets/images/default-profile-pic.png")
+    // }
+    
+    this.props.registerUser(newUser, this.props.history)
+      .then(res => {
+        console.log(res);
+        if (Object.keys(this.state.errors).length === 0) {
+          // go to different screen and reset state
+          navigate("Welcome")
+          this.state = initialState;
+        }
+      });
+  }
 
   render() {
 
-    switch (this.state.registerStage) {
-      // once registered
-      case C.LAST_STAGE:
-        return(
-          <View style={styles.lastContainer}>
-    
-              {/* heading */}
-              <Text style={styles.titleText}> All done! </Text>
-              <Text style={styles.subTitleText}> Welcome {this.state.name}. </Text>
-
-              <Image style= { styles.profilePic } source={ {uri:this.state.photoURL} } />
-              {/* button to collection/group page */}
-              {setToBottom(
-                <View style={ styles.bottom }>
-                  <MyButton
-                    text="Get Started"
-                    // onPress={{ navigate("App") }}    TODO add navigation and verification
-                  />
-                </View>
-              )}
-
-          </View>
-        );
-
-      // register pages
-      default:
-        return (
-          <View style={styles.container}>
-    
-              {/* heading */}
-              <Text style={styles.titleText}> Welcome, </Text>
-              <Text style={styles.subTitleText}> Enter your details to signup. </Text>
-    
-              {/* main card view */}
-              <View style={styles.card}>
-                <RegisterManager
-                  registerStage={this.state.registerStage}
-                  nameHandler={this.nameHandler}
-                  emailHandler={this.emailHandler}
-                  passwordHandler={this.passwordHandler}
-                  passwordCfmHandler={this.passwordCfmHandler}
-                  photoURLHandler={this.photoURLHandler}
-                  stageHandler={this.stageHandler}
-                  name={this.state.name}
-                  email={this.state.email}
-                  password={this.state.password}
-                  passwordCfm={this.state.passwordCfm}
-                  photoURL={this.state.photoURL}
-                />
-                {/* <Text style={styles.error}> {errors.passwordCfm} </Text> */}
-              </View>
-          </View>
-        );
-    }
-
-
+      return (
+        <View style={styles.container}>
+  
+            {/* heading */}
+            <Text style={styles.titleText}> Welcome, </Text>
+            <Text style={styles.subTitleText}> Enter your details to signup. </Text>
+  
+            {/* main card view */}
+            <View style={styles.card}>
+              <RegisterManager
+                registerStage={this.state.registerStage}
+                nameHandler={this.nameHandler}
+                emailHandler={this.emailHandler}
+                passwordHandler={this.passwordHandler}
+                passwordCfmHandler={this.passwordCfmHandler}
+                photoURLHandler={this.photoURLHandler}
+                stageHandler={this.stageHandler}
+                name={this.state.name}
+                email={this.state.email}
+                password={this.state.password}
+                passwordCfm={this.state.passwordCfm}
+                photoURL={this.state.photoURL}
+              />
+              {/* <Text style={styles.error}> {errors.passwordCfm} </Text> */}
+            </View>
+        </View>
+      );
   }
 }
-
-const mapStateToProps = state => ({
-  auth: state.auth,
-  errors: state.errors
-});
 
 const styles = StyleSheet.create({
   container: {
@@ -250,7 +205,15 @@ Register.propTypes = {
   errors: PropTypes.object.isRequired
 };
 
+const mapStateToProps = state => ({
+  auth: state.auth,
+  errors: state.errors
+});
+
+// export
 export default connect(
   mapStateToProps,
   { registerUser }
 )(Register);
+
+
