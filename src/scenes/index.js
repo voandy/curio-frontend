@@ -13,7 +13,7 @@ import GroupsScreen from './Groups'
 import AuthLoadingScreen from './AuthLoadingScreen'
 import ProfileScreen from './Profile'
 import NotificationScreen from './Notification'
-import ArtifactsScreen from './Artifacts'
+import ArtefactsScreen from './Artefacts'
 
 import { white } from 'ansi-colors'
 import { Image } from "react-native";
@@ -36,8 +36,8 @@ const AppStack = createBottomTabNavigator(
 					style = {{ height:30, width:30, tintColor: tintColor }}/>
 				)
 			}},
-		Artifacts: {
-			screen: ArtifactsScreen,
+		Artefacts: {
+			screen: ArtefactsScreen,
 			navigationOptions: {
 				tabBarIcon: ({ tintColor}) => (
 					<Image source={ require('../../assets/images/icons/artefacts.png') } 

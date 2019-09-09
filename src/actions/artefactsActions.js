@@ -2,6 +2,7 @@ import axios from "axios";
 
 import {
   SET_USER_ARTEFACTS,
+  
 } from "../types/artefactsTypes";
 
 // get user artefacts

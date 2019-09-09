@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+import PropTypes from "prop-types"
+import { connect } from "react-redux"
+import { getUserArtefacts } from "../../actions/artefactsActions"
 
 import {Dimensions, 
         StyleSheet,
@@ -12,8 +15,7 @@ import {Dimensions,
 import Header from "../../component/Header"
 import * as Font from 'expo-font';
 
-
-export default class Artifacts extends Component {
+class Artefacts extends Component {
 
     componentDidMount() {
         // font
@@ -29,12 +31,13 @@ export default class Artifacts extends Component {
         return(
             <View style={styles.container}>
 
-                <Header title="Artifacts" tab1="All" tab2="Mine"/>   
+                <Header title="Artefacts" tab1="All" tab2="Mine"/>   
 
                 {/* scrollable area for CONTENT */}
                 <ScrollView 
                     showsVerticalScrollIndicator={false}
                     scrollEventThrottle={16}>
+                    
 
                     {/* heading */}
                     <Text style = {styles.titleText}>ARTIFACTS</Text>
@@ -75,3 +78,18 @@ const styles = StyleSheet.create({
     },
 
 })
+
+Artefacts.propTypes = {
+    getUserArtefacts: PropTypes.func.isRequired,
+    artefacts: PropTypes.object.isRequired
+};
+
+const mapStateToProps = state => ({
+    artefacts: state.artefacts
+});
+
+//  export
+export default connect(
+    mapStateToProps,
+    { getUserArtefacts }
+)(Artefacts);
