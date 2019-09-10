@@ -68,8 +68,8 @@ const AppStack = createBottomTabNavigator(
         )
       }
     },
-    Artifacts: {
-      screen: ArtifactsScreen,
+    Artefacts: {
+      screen: ArtefactsScreen,
       navigationOptions: {
         tabBarIcon: ({ tintColor }) => (
           <Image
