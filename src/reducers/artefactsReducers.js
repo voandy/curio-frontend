@@ -1,5 +1,5 @@
 import {
-    SET_USER_ARTEFACTS
+    SET_USER_ARTEFACTS, ADD_NEW_ARTEFACT
   } from "../types/artefactsTypes";
 
   const initialState = {
@@ -13,6 +13,11 @@ import {
           ...state,
           userArtefacts: action.payload
         };
+      case ADD_NEW_ARTEFACT:
+        return {
+          ...state,
+          userArtefacts: state.userArtefacts.concat(action.payload)
+        }
       default:
         return state;
     }
