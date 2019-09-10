@@ -188,7 +188,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginLeft: Dimensions.get("window").width * 0.07,
-    fontFamily: 'HindSiliguri-Bold'
+    // fontFamily: 'HindSiliguri-Bold'
   },
 });
 

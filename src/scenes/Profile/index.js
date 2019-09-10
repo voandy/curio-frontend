@@ -31,24 +31,24 @@ class Profile extends Component {
         await this.props.getUserData(user.id);
         
         // font
-        Font.loadAsync({
-            'HindSiliguri-Bold': require('../../../assets/fonts/HindSiliguri-Bold.ttf'),
-            'HindSiliguri-Regular': require('../../../assets/fonts/HindSiliguri-Regular.ttf'),
-        });
+        // Font.loadAsync({
+        //     'HindSiliguri-Bold': require('../../../assets/fonts/HindSiliguri-Bold.ttf'),
+        //     'HindSiliguri-Regular': require('../../../assets/fonts/HindSiliguri-Regular.ttf'),
+        // });
     }
 
-    componentWillUpdate(nextProps) {
+    async componentWillUpdate(nextProps) {
         if (Object.keys(this.state.userData).length === 0) {
-            this.setState({
+            await this.setState({
                 userData: nextProps.user.userData
             });
         }
     }
 
     // logout button
-    onLogoutClick = () => {
+    onLogoutClick = async () => {
         const { navigate } = this.props.navigation;
-        this.props.logoutUser()
+        await this.props.logoutUser()
         .then(res => {
             navigate("Auth");
         });
@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
         fontSize: 24,
         marginTop: 5,
         alignSelf: 'center',
-        fontFamily: 'HindSiliguri-Bold'
+        // fontFamily: 'HindSiliguri-Bold'
     },
 
     userDetails: {
@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         alignSelf: 'center',
         color: "#939090",
-        fontFamily: 'HindSiliguri-Regular'
+        // fontFamily: 'HindSiliguri-Regular'
     },  
 
     profilePic: {
@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         alignSelf: 'center',
         color: 'white',
-        fontFamily: 'HindSiliguri-Regular'
+        // fontFamily: 'HindSiliguri-Regular'
     },
 })
 

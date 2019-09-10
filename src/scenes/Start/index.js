@@ -1,12 +1,13 @@
 import React, { Component } from "react";
 import {
-  Dimensions,
-  StyleSheet,
+  StyleSheet, //
   TouchableOpacity,
   View,
   Image
 } from "react-native";
 import { connect } from "react-redux";
+
+// import reusable components
 import {
   deviceHeigthDimension as hp,
   deviceWidthDimension as wd
@@ -15,7 +16,7 @@ import CustomFontText from "../../utils/customFontText";
 
 class Start extends Component {
   componentDidMount() {
-    console.log("Start here! Font Loaded: " + this.props.fontLoader.fontLoaded);
+    console.log("Start Page mounted! Font Loaded: " + this.props.fontLoaded);
   }
 
   // Nav bar details
@@ -69,8 +70,9 @@ class Start extends Component {
   }
 }
 
+// Connect to redux store
 const mapStateToProps = state => ({
-  fontLoader: state.fontLoader
+  fontLoaded: state.fontLoader.fontLoaded
 });
 
 export default connect(
@@ -78,6 +80,7 @@ export default connect(
   null
 )(Start);
 
+// Component Stylesheet Rules
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -98,9 +101,6 @@ const styles = StyleSheet.create({
   titleText: {
     fontSize: wd(0.08),
     paddingTop: wd(0.008),
-    // textShadowColor: "rgba(0, 0, 0, 0.13)",
-    // textShadowOffset: { width: 0, height: 3 },
-    // textShadowRadius: 40,
     fontWeight: "bold"
   },
 

@@ -13,6 +13,7 @@ import {Dimensions,
         }from 'react-native';
         
 import Header from "../../component/Header"
+import ArtefactFeed from "../../component/ArtefactFeed"
 import * as Font from 'expo-font';
 
 class Artefacts extends Component {
@@ -29,22 +30,21 @@ class Artefacts extends Component {
         await this.props.getUserArtefacts(user.id);
         
         // font
-        Font.loadAsync({
-            'HindSiliguri-Bold': require('../../../assets/fonts/HindSiliguri-Bold.ttf'),
-            'HindSiliguri-Regular': require('../../../assets/fonts/HindSiliguri-Regular.ttf'),
-        });
+        // Font.loadAsync({
+        //     'HindSiliguri-Bold': require('../../../assets/fonts/HindSiliguri-Bold.ttf'),
+        //     'HindSiliguri-Regular': require('../../../assets/fonts/HindSiliguri-Regular.ttf'),
+        // });
     }
 
-    componentWillUpdate(nextProps) {
+    async componentWillUpdate(nextProps) {
         if (Object.keys(this.state.userArtefacts).length === 0) {
-            this.setState({
+            await this.setState({
                 userArtefacts: nextProps.artefacts.userArtefacts
             });
         }
     }
 
     render() {
-
         const { navigate } = this.props.navigation;
         
         return(
@@ -57,20 +57,16 @@ class Artefacts extends Component {
                     showsVerticalScrollIndicator={false}
                     scrollEventThrottle={16}>
                     
-
                     {/* heading */}
-                    <Text style = {styles.titleText}>ARTIFACTS</Text>
-                    <Text style = {styles.titleText}>ARTIFACTS</Text>
-                    <Text style = {styles.titleText}>ARTIFACTS</Text>
-                    <Text style = {styles.titleText}>ARTIFACTS</Text>
-                    <Text style = {styles.titleText}>ARTIFACTS</Text>
+                    {Object.keys(this.state.userArtefacts).length !== 0 && 
+                        <View>
+                            <ArtefactFeed image= {{uri: this.state.userArtefacts[0].imageURLs[0]}} /> 
+                            <ArtefactFeed image= {{uri: this.state.userArtefacts[0].imageURLs[0]}} />
+                        </View>
+                    }
                 
                 </ScrollView>  
-                
-                  
-            </View>
-
-            
+            </View>            
         );
     }
 }

@@ -16,10 +16,10 @@ export default class Notification extends Component {
 
     componentDidMount() {
         // font
-        Font.loadAsync({
-            'HindSiliguri-Bold': require('../../../assets/fonts/HindSiliguri-Bold.ttf'),
-            'HindSiliguri-Regular': require('../../../assets/fonts/HindSiliguri-Regular.ttf'),
-        });
+        // Font.loadAsync({
+        //     'HindSiliguri-Bold': require('../../../assets/fonts/HindSiliguri-Bold.ttf'),
+        //     'HindSiliguri-Regular': require('../../../assets/fonts/HindSiliguri-Regular.ttf'),
+        // });
     }
 
     render() {
@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
         marginTop: 250,
         alignSelf: 'flex-start',
         marginLeft: Dimensions.get('window').width * 0.07,
-        fontFamily: 'HindSiliguri-Bold'
+        // fontFamily: 'HindSiliguri-Bold'
       },
 
     button : {
