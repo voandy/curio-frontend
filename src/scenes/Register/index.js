@@ -108,8 +108,11 @@ class Register extends Component {
     return (
       <View style={styles.container}>
         {/* heading */}
-        <Text style={styles.titleText}> Welcome, </Text>
-        <Text style={styles.subTitleText}> Enter your details to signup. </Text>
+        <CustomFontText style={styles.titleText}> Welcome, </CustomFontText>
+        <CustomFontText style={styles.subTitleText}>
+          {" "}
+          Enter your details to signup.{" "}
+        </CustomFontText>
 
         {/* main card view */}
         <View style={styles.card}>

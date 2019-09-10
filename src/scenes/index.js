@@ -13,7 +13,7 @@ import GroupsScreen from "./Groups";
 import AuthLoadingScreen from "./AuthLoadingScreen";
 import ProfileScreen from "./Profile";
 import NotificationScreen from "./Notification";
-import ArtifactsScreen from "./Artifacts";
+import ArtefactsScreen from "./Artefacts";
 import WelcomeScreen from "./Welcome";
 
 import { white } from "ansi-colors";

@@ -1,40 +1,23 @@
 import React, { Component } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  Dimensions,
-} from "react-native";
+import { View, Text, StyleSheet, ScrollView, Dimensions } from "react-native";
 
 import CardCarousel from "../../component/CardCarousel";
-import * as Font from 'expo-font';
+import CustomFontText from "../../utils/customFontText";
 
 class Mine extends Component {
-
-  componentDidMount() {
-    // font
-    Font.loadAsync({
-        'HindSiliguri-Bold': require('../../../assets/fonts/HindSiliguri-Bold.ttf'),
-        'HindSiliguri-Regular': require('../../../assets/fonts/HindSiliguri-Regular.ttf'),
-    });
-  }
-
   render() {
     return (
       <View style={styles.container}>
-
         {/* scrollable area for CONTENT */}
         <ScrollView
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={16}
         >
-          <Text style={styles.titleText}>MINE</Text>
-          <Text style={styles.titleText}>MINE</Text>
-          <Text style={styles.titleText}>MINE</Text>
-          <Text style={styles.titleText}>MINE</Text>
-          <Text style={styles.titleText}>MINE</Text>
-
+          <CustomFontText style={styles.titleText}>MINE</CustomFontText>
+          <CustomFontText style={styles.titleText}>MINE</CustomFontText>
+          <CustomFontText style={styles.titleText}>MINE</CustomFontText>
+          <CustomFontText style={styles.titleText}>MINE</CustomFontText>
+          <CustomFontText style={styles.titleText}>MINE</CustomFontText>
         </ScrollView>
       </View>
     );
@@ -89,9 +72,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginLeft: Dimensions.get("window").width * 0.07,
-    fontFamily: 'HindSiliguri-Bold'
+    fontFamily: "HindSiliguri-Bold"
   }
 });
 
 //  export
-export default Mine
+export default Mine;

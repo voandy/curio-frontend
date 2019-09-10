@@ -30,6 +30,8 @@ import {
   setToBottom
 } from "../../utils/responsiveDesign";
 
+import CustomFontText from "../../utils/customFontText";
+
 // Load new page after each completed stage in sign up
 class RegisterManager extends Component {
   state = {
@@ -117,7 +119,9 @@ class RegisterManager extends Component {
         return (
           <View style={styles.cardContainer}>
             {/* title */}
-            <Text style={styles.inputText}>Hey, first tell us your name!</Text>
+            <CustomFontText style={styles.inputText}>
+              Hey, first tell us your name!
+            </CustomFontText>
 
             <TextInput
               style={styles.inputField}
@@ -130,7 +134,10 @@ class RegisterManager extends Component {
             />
 
             {this.state.nameErrorMessage !== "" && (
-              <Text style={styles.error}> {this.state.nameErrorMessage} </Text>
+              <CustomFontText style={styles.error}>
+                {" "}
+                {this.state.nameErrorMessage}{" "}
+              </CustomFontText>
             )}
 
             {setToBottom(
@@ -146,7 +153,9 @@ class RegisterManager extends Component {
         return (
           <View style={styles.cardContainer}>
             {/* title */}
-            <Text style={styles.inputText}>Now, enter your email address!</Text>
+            <CustomFontText style={styles.inputText}>
+              Now, enter your email address!
+            </CustomFontText>
 
             <TextInput
               style={styles.inputField}
@@ -159,7 +168,10 @@ class RegisterManager extends Component {
             />
 
             {this.state.emailErrorMessage !== "" && (
-              <Text style={styles.error}> {this.state.emailErrorMessage} </Text>
+              <CustomFontText style={styles.error}>
+                {" "}
+                {this.state.emailErrorMessage}{" "}
+              </CustomFontText>
             )}
 
             {setToBottom(
@@ -167,7 +179,9 @@ class RegisterManager extends Component {
                 <TouchableOpacity
                   onPress={() => this.props.stageHandler(C.GET_NAME)}
                 >
-                  <Text style={styles.backButton}>Back</Text>
+                  <CustomFontText style={styles.backButton}>
+                    Back
+                  </CustomFontText>
                 </TouchableOpacity>
 
                 <MyButton
@@ -183,15 +197,17 @@ class RegisterManager extends Component {
         return (
           <View style={styles.cardContainer}>
             {/* Title */}
-            <Text style={[styles.inputText, styles.passwordTitle]}>
+            <CustomFontText style={[styles.inputText, styles.passwordTitle]}>
               Great, create your unique password!
-            </Text>
+            </CustomFontText>
 
             {/* password */}
-            <Text style={[styles.inputText, styles.passwordFieldTitle]}>
+            <CustomFontText
+              style={[styles.inputText, styles.passwordFieldTitle]}
+            >
               {" "}
               Password:{" "}
-            </Text>
+            </CustomFontText>
             <TextInput
               style={[styles.inputField, styles.passwordField]}
               secureTextEntry={true}
@@ -202,10 +218,12 @@ class RegisterManager extends Component {
             />
 
             {/* Cfm password */}
-            <Text style={[styles.inputText, styles.passwordFieldTitle]}>
+            <CustomFontText
+              style={[styles.inputText, styles.passwordFieldTitle]}
+            >
               {" "}
               Confirm Password:{" "}
-            </Text>
+            </CustomFontText>
             <TextInput
               style={[styles.inputField, styles.passwordField]}
               secureTextEntry={true}
@@ -217,7 +235,10 @@ class RegisterManager extends Component {
             />
 
             {this.state.pwdErrorMessage !== "" && (
-              <Text style={styles.error}> {this.state.pwdErrorMessage} </Text>
+              <CustomFontText style={styles.error}>
+                {" "}
+                {this.state.pwdErrorMessage}{" "}
+              </CustomFontText>
             )}
 
             {setToBottom(
@@ -225,7 +246,9 @@ class RegisterManager extends Component {
                 <TouchableOpacity
                   onPress={() => this.props.stageHandler(C.GET_EMAIL)}
                 >
-                  <Text style={styles.backButton}>Back</Text>
+                  <CustomFontText style={styles.backButton}>
+                    Back
+                  </CustomFontText>
                 </TouchableOpacity>
 
                 <MyButton
@@ -242,10 +265,12 @@ class RegisterManager extends Component {
         return (
           <View style={styles.cardContainer}>
             {/* Title */}
-            <Text style={styles.photoMainTitle}>Almost there!</Text>
-            <Text style={styles.photoSubTitle}>
+            <CustomFontText style={styles.photoMainTitle}>
+              Almost there!
+            </CustomFontText>
+            <CustomFontText style={styles.photoSubTitle}>
               Take a minute to upload a photo.
-            </Text>
+            </CustomFontText>
 
             {/* Image button */}
             <TouchableOpacity activeOpacity={0.5} onPress={this._pickImage}>
@@ -267,13 +292,15 @@ class RegisterManager extends Component {
                 <TouchableOpacity
                   onPress={() => this.props.stageHandler(C.GET_PASSWORD)}
                 >
-                  <Text style={styles.backButton}>Back</Text>
+                  <CustomFontText style={styles.backButton}>
+                    Back
+                  </CustomFontText>
                 </TouchableOpacity>
 
                 <MyButton
                   style={styles.nextButton}
                   text={this.skipPhotoText(this.props.photoURL)}
-                  onPress={() => this.props.onSubmit() }  // moves to welcome page and will be logged in
+                  onPress={() => this.props.onSubmit()} // moves to welcome page and will be logged in
                 />
               </View>
             )}
@@ -283,7 +310,7 @@ class RegisterManager extends Component {
       default:
         return (
           <View>
-            <Text>error 404</Text>
+            <CustomFontText>error 404</CustomFontText>
           </View>
         );
     }

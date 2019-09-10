@@ -14,9 +14,9 @@ import {
   Text
 } from "react-native";
 
-import SimpleHeader from "../../component/SimpleHeader";
 import Moment from "moment";
-import * as Font from "expo-font";
+import SimpleHeader from "../../component/SimpleHeader";
+import CustomFontText from "../../utils/customFontText";
 
 class Profile extends Component {
   constructor() {
@@ -30,12 +30,6 @@ class Profile extends Component {
     // get user authentication data
     const { user } = this.props.auth;
     this.props.getUserData(user.id);
-
-    // font
-    Font.loadAsync({
-      "HindSiliguri-Bold": require("../../../assets/fonts/HindSiliguri-Bold.ttf"),
-      "HindSiliguri-Regular": require("../../../assets/fonts/HindSiliguri-Regular.ttf")
-    });
   }
 
   componentWillUpdate(nextProps) {
@@ -84,36 +78,38 @@ class Profile extends Component {
           )}
 
           {/* user heading */}
-          <Text style={styles.userName}>{this.state.userData.name}</Text>
-          <Text style={styles.userDetails}>
+          <CustomFontText style={styles.userName}>
+            {this.state.userData.name}
+          </CustomFontText>
+          <CustomFontText style={styles.userDetails}>
             joined since {Moment(dt).format("Do MMMM YYYY")}
-          </Text>
+          </CustomFontText>
 
           {/* line separator */}
           <View style={styles.line} />
 
           {/* TODO REPLACE THIS  */}
           <View style={{ height: 350, justifyContent: "center" }}>
-            <Text
+            <CustomFontText
               style={{
                 fontFamily: "HindSiliguri-Regular",
                 alignSelf: "center"
               }}
             >
               Whoops, Looks like you dont have any Artefacts
-            </Text>
-            <Text
+            </CustomFontText>
+            <CustomFontText
               style={{
                 fontFamily: "HindSiliguri-Regular",
                 alignSelf: "center"
               }}
             >
               Create a collection now !
-            </Text>
+            </CustomFontText>
           </View>
 
           <TouchableOpacity onPress={this.onLogoutClick} style={styles.button}>
-            <Text style={styles.buttonText}>Log Out</Text>
+            <CustomFontText style={styles.buttonText}>Log Out</CustomFontText>
           </TouchableOpacity>
         </ScrollView>
       </View>

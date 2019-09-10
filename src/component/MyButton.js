@@ -7,6 +7,8 @@ import {
   TouchableOpacity
 } from "react-native";
 
+import CustomFontText from "../utils/customFontText";
+
 class MyButton extends Component {
   constructor(props) {
     super(props);
@@ -15,7 +17,9 @@ class MyButton extends Component {
   render() {
     return (
       <TouchableOpacity onPress={this.props.onPress} style={styles.button}>
-        <Text style={styles.buttonText}>{this.props.text}</Text>
+        <CustomFontText style={styles.buttonText}>
+          {this.props.text}
+        </CustomFontText>
       </TouchableOpacity>
     );
   }

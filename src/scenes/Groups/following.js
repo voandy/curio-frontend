@@ -1,29 +1,13 @@
 import React, { Component } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  Dimensions,
-} from "react-native";
+import { View, Text, StyleSheet, ScrollView, Dimensions } from "react-native";
 
 import CardCarousel from "../../component/CardCarousel";
-import * as Font from 'expo-font';
+import CustomFontText from "../../utils/customFontText";
 
 class Following extends Component {
-
-  componentDidMount() {
-    // font
-    Font.loadAsync({
-        'HindSiliguri-Bold': require('../../../assets/fonts/HindSiliguri-Bold.ttf'),
-        'HindSiliguri-Regular': require('../../../assets/fonts/HindSiliguri-Regular.ttf'),
-    });
-  }
-
   render() {
     return (
       <View style={styles.container}>
-
         {/* scrollable area for CONTENT */}
         <ScrollView
           showsVerticalScrollIndicator={false}
@@ -31,21 +15,24 @@ class Following extends Component {
         >
           {/* carousel pinned groups */}
           <View style={{ height: 130, marginTop: 20 }}>
-            <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}
-                  decelerationRate={0.8} snapToAlignment={"center"}
-                  snapToInterval={Dimensions.get('window').width * 0.85} >
+            <ScrollView
+              horizontal={true}
+              showsHorizontalScrollIndicator={false}
+              decelerationRate={0.8}
+              snapToAlignment={"center"}
+              snapToInterval={Dimensions.get("window").width * 0.85}
+            >
               <CardCarousel text="page 1" />
               <CardCarousel text="page 2" />
               <CardCarousel text="page 3" />
             </ScrollView>
           </View>
 
-          <Text style={styles.titleText}>Groups</Text>
-          <Text style={styles.titleText}>Groups</Text>
-          <Text style={styles.titleText}>GroupS</Text>
-          <Text style={styles.titleText}>GroupS</Text>
-          <Text style={styles.titleText}>GroupS</Text>
-
+          <CustomFontText style={styles.titleText}>Groups</CustomFontText>
+          <CustomFontText style={styles.titleText}>Groups</CustomFontText>
+          <CustomFontText style={styles.titleText}>GroupS</CustomFontText>
+          <CustomFontText style={styles.titleText}>GroupS</CustomFontText>
+          <CustomFontText style={styles.titleText}>GroupS</CustomFontText>
         </ScrollView>
       </View>
     );
@@ -100,9 +87,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginLeft: Dimensions.get("window").width * 0.07,
-    fontFamily: 'HindSiliguri-Bold'
+    fontFamily: "HindSiliguri-Bold"
   }
 });
 
 //  export
-export default Following
+export default Following;
