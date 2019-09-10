@@ -32,13 +32,14 @@ const newGroup = {
 }
 
 class Groups extends Component {
+  // CHANGE THIS LATER
+  toggleModal = () => {
+    this.setState({ isModalVisible: !this.state.isModalVisible });
+  };
+
   state = {
     isModalVisible: false,
     newGroup
-  };
-
-  toggleModal = () => {
-    this.setState({ isModalVisible: !this.state.isModalVisible });
   };
 
   render() {

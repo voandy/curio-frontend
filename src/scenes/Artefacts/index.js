@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { getUserArtefacts } from "../../actions/artefactsActions";
+import Modal from "react-native-modal";
 
 import {
   Dimensions,
@@ -9,7 +10,9 @@ import {
   TouchableOpacity,
   ScrollView,
   View,
-  Text
+  Text,
+  Button,
+  TextInput
 } from "react-native";
 
 //  custom components
@@ -17,11 +20,31 @@ import Header from "../../component/Header";
 import ArtefactFeed from "../../component/ArtefactFeed";
 import CustomFontText from "../../utils/customFontText";
 
+// CHANGE THIS LATER
+import {
+    deviceHeigthDimension as hp,
+    deviceWidthDimension as wd,
+    setToBottom
+  } from "../../utils/responsiveDesign";
+
+const newArtefact = {
+    title: "",
+    description: "",
+    category: ""
+}
+
 class Artefacts extends Component {
+    // CHANGE THIS LATER
+    toggleModal = () => {
+        this.setState({ isModalVisible: !this.state.isModalVisible });
+    };
+
     constructor() {
         super();
         this.state = {
-            userArtefacts: {}
+            userArtefacts: {},
+            isModalVisible: false,
+            newArtefact
         };
     }
 
@@ -47,6 +70,34 @@ class Artefacts extends Component {
         </>
     );
 
+    onTitleChange = (title) => {
+        this.setState({
+            newArtefact: { 
+                ...this.state.newArtefact,
+                title
+            }
+        });
+    };
+
+    onDescriptionChange = description => {
+        this.setState({
+            newArtefact: { 
+                ...this.state.newArtefact,
+                description
+            }
+        });
+    };
+
+    onCategoryChange = category => {
+        this.setState({
+            newArtefact: { 
+                ...this.state.newArtefact,
+                category
+            }
+        });
+    };
+
+
 
   render() {
 
@@ -66,12 +117,65 @@ class Artefacts extends Component {
           }
           
         </ScrollView>
+
+        {/*********************** CHANGE THIS LATER ********************/}
+        {/* create new Group */}
+        <Button title="Post New Artefact" onPress={this.toggleModal} />
+        <Modal isVisible={this.state.isModalVisible}>
+          <View style={{ backgroundColor: "white", flex: 1 }}>
+            <Button title="Close" onPress={this.toggleModal} />
+          
+            <TextInput
+              style={styles.inputField}
+              placeholder="Title"
+              autoCapitalize="none"
+              placeholderTextColor="#868686"
+              onChangeText={ () => this.onTitleChange() }
+              value={this.state.newArtefact.title}
+            />
+
+            <TextInput
+              style={styles.inputField}
+              placeholder="Description"
+              autoCapitalize="none"
+              placeholderTextColor="#868686"
+              onChangeText={ () => this.onDescriptionChange() }
+              value={this.state.newArtefact.description}
+            />
+
+            <TextInput
+              style={styles.inputField}
+              placeholder="Category"
+              autoCapitalize="none"
+              placeholderTextColor="#868686"
+              onChangeText={ () => this.onCategoryChange() }
+              value={this.state.newArtefact.category}
+            />
+            
+            <Button 
+              title= "Post Artefact"
+            />
+          </View>
+        </Modal>
+        {/****************************************************************/}
       </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
+  // CHANGE THIS LATER
+  inputField: {
+    textAlign: "center",
+    width: wd(0.7),
+    height: hp(0.05),
+    marginTop: 20,
+    backgroundColor: "white",
+    borderBottomWidth: 0.5,
+    fontSize: 16,
+    alignSelf: "center"
+  },
+
   container: {
     flex: 1
   },
