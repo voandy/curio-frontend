@@ -1,11 +1,5 @@
 import React, { Component } from "react";
-import {
-  Dimensions,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-  Image
-} from "react-native";
+import { StyleSheet, TouchableOpacity, View, Image } from "react-native";
 import { connect } from "react-redux";
 import {
   deviceHeigthDimension as hp,
@@ -15,7 +9,9 @@ import CustomFontText from "../../utils/customFontText";
 
 class Start extends Component {
   componentDidMount() {
-    console.log("Start here! Font Loaded: " + this.props.fontLoader.fontLoaded);
+    console.log(
+      "Start Page mounted! Font Loaded: " + this.props.fontLoader.fontLoaded
+    );
   }
 
   // Nav bar details
