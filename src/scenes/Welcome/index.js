@@ -1,20 +1,13 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { getUserData } from "../../actions/dataActions"
-import {
-  View,
-  Image,
-  StyleSheet,
-  Text,
-} from "react-native";
+import { getUserData } from "../../actions/userActions";
+import { View, Image, StyleSheet, Text } from "react-native";
 
 // get user data
 
-
 // custom components
 import MyButton from "../../component/MyButton";
-import * as Font from 'expo-font';
 
 // import width/height responsive functions
 import {
@@ -23,9 +16,7 @@ import {
   setToBottom
 } from "../../utils/responsiveDesign";
 
-
 class Welcome extends Component {
-
   constructor() {
     super();
     this.state = {
@@ -36,61 +27,54 @@ class Welcome extends Component {
   // remove nav details
   static navigationOptions = {
     header: null
-  }
+  };
 
   componentDidMount() {
-
-    console.log("0000")
+    console.log("0000");
 
     // get user authentication data
     const { user } = this.props.auth;
     this.props.getUserData(user.id);
-    console.log("123")
-
-    // font
-    Font.loadAsync({
-      'HindSiliguri-Bold': require('../../../assets/fonts/HindSiliguri-Bold.ttf'),
-      'HindSiliguri-Regular': require('../../../assets/fonts/HindSiliguri-Regular.ttf'),
-    });
+    console.log("123");
   }
 
   componentWillUpdate(nextProps) {
-    console.log("789 UPDATE")
+    console.log("789 UPDATE");
 
     if (Object.keys(this.state.userData).length === 0) {
       this.setState({
         userData: nextProps.data.userData
-      })
-      console.log("456")
+      });
+      console.log("456");
     }
   }
 
   render() {
-
     const { navigate } = this.props.navigation;
 
     return (
       <View style={styles.container}>
-
         {/* heading */}
         <Text style={styles.titleText}> All done! </Text>
-        <Text style={styles.subTitleText}> Welcome {this.state.userData.name}. </Text>
+        <Text style={styles.subTitleText}>
+          {" "}
+          Welcome {this.state.userData.name}.{" "}
+        </Text>
         {/* <Text style={styles.subTitleText}> Welcome hue. </Text> */}
 
-        <Image style= { styles.profilePic } source={ {uri:this.state.userData.profilePic } } />
+        <Image
+          style={styles.profilePic}
+          source={{ uri: this.state.userData.profilePic }}
+        />
         {/* <Image style={styles.profilePic} source={require("../../../assets/images/default-profile-pic.png")} /> */}
         {/* button to collection/group page */}
         {setToBottom(
           <View style={styles.bottom}>
-            <MyButton
-              text="Get Started"
-              onPress={ () => navigate("App") } 
-            />
+            <MyButton text="Get Started" onPress={() => navigate("App")} />
           </View>
         )}
-
       </View>
-    )
+    );
   }
 }
 
@@ -98,7 +82,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "center"
   },
 
   titleText: {
@@ -106,7 +90,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     alignSelf: "flex-start",
     marginTop: wd(0.25),
-    marginLeft: wd(0.07),
+    marginLeft: wd(0.07)
     // fontFamily: 'HindSiliguri-Bold'
   },
 
@@ -115,7 +99,7 @@ const styles = StyleSheet.create({
     marginBottom: 50,
     fontWeight: "bold",
     alignSelf: "flex-start",
-    marginLeft: wd(0.07),
+    marginLeft: wd(0.07)
     // fontFamily: 'HindSiliguri-Bold'
   },
 
@@ -123,15 +107,15 @@ const styles = StyleSheet.create({
     marginTop: 40,
     width: wd(0.4),
     height: wd(0.4),
-    alignSelf: 'center',
-    borderRadius: wd(0.4) / 2,
+    alignSelf: "center",
+    borderRadius: wd(0.4) / 2
   },
 
   bottom: {
     width: wd(0.8),
     height: wd(0.35),
-    alignItems: "flex-end",
-  },
+    alignItems: "flex-end"
+  }
 });
 
 Welcome.propTypes = {
@@ -149,5 +133,3 @@ export default connect(
   mapStateToProps,
   { getUserData }
 )(Welcome);
-
-
