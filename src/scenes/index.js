@@ -14,6 +14,7 @@ import AuthLoadingScreen from "./AuthLoadingScreen";
 import ProfileScreen from "./Profile";
 import NotificationScreen from "./Notification";
 import ArtefactsScreen from "./Artefacts";
+import WelcomeScreen from "./Welcome";
 
 import { white } from "ansi-colors";
 import { Image } from "react-native";
@@ -50,7 +51,8 @@ class Scenes extends React.Component {
 const AuthStack = createStackNavigator({
   Start: { screen: StartScreen },
   Register: { screen: RegisterScreen },
-  Login: { screen: LoginScreen }
+  Login: { screen: LoginScreen },
+  Welcome: { screen: WelcomeScreen }
 });
 // default app stack
 const AppStack = createBottomTabNavigator(

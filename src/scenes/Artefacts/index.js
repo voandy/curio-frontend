@@ -1,20 +1,21 @@
-import React, { Component } from 'react';
-import PropTypes from "prop-types"
-import { connect } from "react-redux"
-import { getUserArtefacts } from "../../actions/artefactsActions"
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { getUserArtefacts } from "../../actions/artefactsActions";
 
-import {Dimensions, 
-        StyleSheet,
-        TouchableOpacity,
-        ScrollView,
-        View,
-        Image,
-        Text
-        }from 'react-native';
-        
-import Header from "../../component/Header"
-import ArtefactFeed from "../../component/ArtefactFeed"
-import * as Font from 'expo-font';
+import {
+  Dimensions,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+  View,
+  Text
+} from "react-native";
+
+//  custom components
+import Header from "../../component/Header";
+import ArtefactsFeed from "../../component/ArtefactFeed";
+import CustomFontText from "../../utils/customFontText";
 
 class Artefacts extends Component {
     constructor() {
@@ -28,12 +29,6 @@ class Artefacts extends Component {
         // get user authentication data
         const { user } = this.props.auth;
         await this.props.getUserArtefacts(user.id);
-        
-        // font
-        // Font.loadAsync({
-        //     'HindSiliguri-Bold': require('../../../assets/fonts/HindSiliguri-Bold.ttf'),
-        //     'HindSiliguri-Regular': require('../../../assets/fonts/HindSiliguri-Regular.ttf'),
-        // });
     }
 
     async componentWillUpdate(nextProps) {
@@ -44,58 +39,69 @@ class Artefacts extends Component {
         }
     }
 
-    render() {
-        const { navigate } = this.props.navigation;
-        
-        return(
-            <View style={styles.container}>
+    showArtefacts = (artefacts) => (
+        <>
+          {artefacts.map(artefact => (
+            <ArtefactsFeed key={artefact._id} image={{uri: artefact.imageURLs[0]}} />
+          ))}
+        </>
+    );
 
-                <Header title="Artefacts" tab1="All" tab2="Mine"/>   
 
-                {/* scrollable area for CONTENT */}
-                <ScrollView 
-                    showsVerticalScrollIndicator={false}
-                    scrollEventThrottle={16}>
-                    
-                    {/* heading */}
-                    {Object.keys(this.state.userArtefacts).length !== 0 && 
-                        <View>
-                            <ArtefactFeed image= {{uri: this.state.userArtefacts[0].imageURLs[0]}} /> 
-                            <ArtefactFeed image= {{uri: this.state.userArtefacts[0].imageURLs[0]}} />
-                        </View>
-                    }
-                
-                </ScrollView>  
-            </View>            
-        );
-    }
+  render() {
+
+    return (
+      <View style={styles.container}>
+        <Header title="Artefacts" tab1="All" tab2="Mine" />
+
+        {/* scrollable area for CONTENT */}
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          scrollEventThrottle={16}
+        >
+          {Object.keys(this.state.userArtefacts).length !== 0 &&
+            <View>
+                {this.showArtefacts(this.state.userArtefacts)}
+            </View>
+          }
+          
+        </ScrollView>
+      </View>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-    },
+  container: {
+    flex: 1
+  },
 
-    titleText: {
-        fontSize: 30,
-        marginTop: 250,
-        fontWeight: 'bold',
-        alignSelf: 'flex-start',
-        marginLeft: Dimensions.get('window').width * 0.07,
-        // fontFamily: 'HindSiliguri-Bold'
-      },
+  feed: {
+    flexDirection: "row",
+    marginLeft: Dimensions.get("window").width * 0.032,
+    marginRight: Dimensions.get("window").width * 0.032
+  },
 
-    button : {
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: '#FF6E6E',
-        width: Dimensions.get('window').width * 0.4,
-        height: 50,
-        margin: 10,
-        borderRadius: 540,
-        elevation: 3, 
-    },
-})
+  titleText: {
+    fontSize: 30,
+    marginTop: 250,
+    fontWeight: "bold",
+    alignSelf: "flex-start",
+    marginLeft: Dimensions.get("window").width * 0.07,
+    fontFamily: "HindSiliguri-Bold"
+  },
+
+  button: {
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#FF6E6E",
+    width: Dimensions.get("window").width * 0.4,
+    height: 50,
+    margin: 10,
+    borderRadius: 540,
+    elevation: 3
+  }
+});
 
 Artefacts.propTypes = {
     getUserArtefacts: PropTypes.func.isRequired,
@@ -108,7 +114,7 @@ const mapStateToProps = state => ({
     auth: state.auth,
 });
 
-//  export
+// export
 export default connect(
     mapStateToProps,
     { getUserArtefacts }

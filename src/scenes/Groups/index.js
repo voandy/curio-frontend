@@ -37,14 +37,6 @@ class Groups extends Component {
     newGroup
   };
 
-  componentDidMount() {
-    // font
-    Font.loadAsync({
-        'HindSiliguri-Bold': require('../../../assets/fonts/HindSiliguri-Bold.ttf'),
-        'HindSiliguri-Regular': require('../../../assets/fonts/HindSiliguri-Regular.ttf'),
-    });
-  }
-
   toggleModal = () => {
     this.setState({ isModalVisible: !this.state.isModalVisible });
   };
@@ -188,7 +180,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginLeft: Dimensions.get("window").width * 0.07,
-    // fontFamily: 'HindSiliguri-Bold'
+    fontFamily: 'HindSiliguri-Bold'
   },
 });
 

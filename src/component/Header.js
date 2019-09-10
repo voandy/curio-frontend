@@ -9,32 +9,25 @@ import {
   TouchableOpacity
 } from "react-native";
 
-import * as Font from 'expo-font';
-
+import CustomFontText from "../utils/customFontText";
 
 class Header extends Component {
-
-  async componentDidMount() {
-    // font
-    await Font.loadAsync({
-        'HindSiliguri-Bold': require('../../assets/fonts/HindSiliguri-Bold.ttf'),
-        'HindSiliguri-Regular': require('../../assets/fonts/HindSiliguri-Regular.ttf'),
-    });
-  }
-
   render() {
     return (
       <View style={styles.header}>
         {/* header search */}
-        <View style={ styles.search }>
-          {/* <Text style={[styles.headerText, styles.font]}> {this.props.title} </Text> */}
-          <TextInput 
+        <View style={styles.search}>
+          {/* <CustomFontText style={[styles.headerText, styles.font]}> {this.props.title} </CustomFontText > */}
+          <TextInput
             underlineColorAndroid="transparent"
             placeholder="Search"
             placeholderTextColor="#707070"
-            style= { [styles.searchText, styles.font] }/>
-          <Image style= { styles.searchIcon }
-            source={require('../../assets/images/icons/search.png')} />
+            style={[styles.searchText, styles.font]}
+          />
+          <Image
+            style={styles.searchIcon}
+            source={require("../../assets/images/icons/search.png")}
+          />
         </View>
 
         {/* header tab */}
@@ -43,14 +36,20 @@ class Header extends Component {
             // onPress
             style={styles.headerButton}
           >
-            <Text style={[styles.headerButtonText, styles.font]}> {this.props.tab1} </Text>
+            <CustomFontText style={[styles.headerButtonText, styles.font]}>
+              {" "}
+              {this.props.tab1}{" "}
+            </CustomFontText>
           </TouchableOpacity>
 
           <TouchableOpacity
             // onPress
             style={styles.headerButton}
           >
-            <Text style={[styles.headerButtonText, styles.font]}> {this.props.tab2} </Text>
+            <CustomFontText style={[styles.headerButtonText, styles.font]}>
+              {" "}
+              {this.props.tab2}{" "}
+            </CustomFontText>
           </TouchableOpacity>
         </View>
       </View>
@@ -59,36 +58,35 @@ class Header extends Component {
 }
 
 const styles = StyleSheet.create({
-
   font: {
-    fontFamily: "HindSiliguri-Bold",
+    fontFamily: "HindSiliguri-Bold"
   },
 
   header: {
-    height: 130,
+    height: 130
   },
 
   search: {
-    flexDirection: 'row',
-    marginHorizontal: Dimensions.get('window').width * 0.07,
+    flexDirection: "row",
+    marginHorizontal: Dimensions.get("window").width * 0.07,
     backgroundColor: "white",
     elevation: 9,
     marginTop: 40,
     height: 45,
-    borderRadius: 10,
+    borderRadius: 10
   },
 
   searchText: {
     flex: 1,
-    marginLeft: 20,
+    marginLeft: 20
   },
 
   searchIcon: {
     width: 20,
     height: 20,
-    alignSelf: 'center',
+    alignSelf: "center",
     marginRight: 20,
-    tintColor: '#707070',
+    tintColor: "#707070"
   },
 
   // headerText: {
@@ -103,12 +101,12 @@ const styles = StyleSheet.create({
     marginHorizontal: 15,
     borderColor: "#FF6E6E",
     borderWidth: 0,
-    borderBottomWidth: 3,
+    borderBottomWidth: 3
     // justifyContent: "center"
   },
 
   headerButtonText: {
-    fontSize: 18,
+    fontSize: 18
   }
 });
 

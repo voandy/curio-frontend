@@ -1,39 +1,34 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { connect, useSelector, useDispatch } from "react-redux";
-import {
-  View,
-  TouchableOpacity,
-  Dimensions,
-  Image,
-  StyleSheet,
-  Text
-} from "react-native";
+import { connect } from "react-redux";
+import { View, StyleSheet, Text, AsyncStorage } from "react-native";
 
-import { registerUser } from "../../actions/authActions";
+import { registerUser, loginUser } from "../../actions/authActions";
 import RegisterManager from "./registerManager";
 import { C } from "../../types/registerTypes";
 import CustomFontText from "../../utils/customFontText";
 
-// import widht/height responsive functions
+// import width/height responsive functions
 import {
   deviceHeigthDimension as hp,
   deviceWidthDimension as wd,
   setToBottom
 } from "../../utils/responsiveDesign";
 
-class Register extends Component {
-  state = {
-    registerStage: C.GET_NAME,
-    name: "",
-    email: "",
-    password: "",
-    passwordCfm: "", // DO NOT SEND THIS AFTER REGISTRATION
-    photoURL: null
-  };
+// state
+const initialState = {
+  registerStage: C.GET_NAME,
+  name: "",
+  email: "",
+  password: "",
+  passwordCfm: "",
+  photoURL: null
+};
 
+class Register extends Component {
   constructor() {
     super();
+    this.state = initialState;
   }
 
   // nav details
@@ -69,116 +64,137 @@ class Register extends Component {
     console.log(this.state);
   };
 
-  // componentWillReceiveProps(nextProps) {
-  //   if (nextProps.errors) {
-  //     this.setState({
-  //       errors: nextProps.errors
-  //     });
-  //   }
-  // }
+  // send new user data
+  onSubmit = e => {
+    const { navigate } = this.props.navigation;
 
-  // onChangeText = (key, val) => {
-  //   this.setState({
-  //     [key]: val,
-  //     errors: {}
-  //   });
-  // };
+    // create new user
+    const newUser = {
+      name: this.state.name,
+      email: this.state.email,
+      password: this.state.password,
+      passwordCfm: this.state.passwordCfm,
+      profilePic: this.state.photoURL
+    };
 
-  // // send new user data
-  // onSubmit = () => {
-  //   const { stage } = this.state.stage;
-  //   if (stage < 4) {
-  //     this.setState({
-  //       ...state,
-  //       stage: stage + 1
-  //     });
-  //   } else {
-  //     const { navigate } = this.props.navigation;
+    // include default photo for those who skipped the selection TODO
+    if (newUser.profilePic === null) {
+      newUser.profilePic = require("../../../assets/images/default-profile-pic.png");
+    }
 
-  //     // create new user
-  //     const newUser = {
-  //       name: this.state.name,
-  //       email: this.state.email,
-  //       password: this.state.password,
-  //       passwordCfm: this.state.passwordCfm
-  //     };
+    // register user
+    this.props.registerUser(newUser, this.props.history).then(res => {
+      // login details
+      const user = {
+        email: newUser.email,
+        password: newUser.password
+      };
 
-  //     this.props.registerUser(newUser, this.props.history).then(res => {
-  //       if (Object.keys(this.state.errors).length === 0) {
-  //         navigate("Login");
-  //         this.state = initialState;
-  //       }
-  //     });
-  //   }
-  // };
+      // login user directly
+      this.props.loginUser(user, this.props.history).then(res => {
+        AsyncStorage.getItem("userToken").then(res => {
+          // navigate user to Welcome page if no errors
+          if (res !== null) {
+            navigate("Welcome");
+          }
+        });
+      });
+    });
+    // reset state
+    this.state = initialState;
+  };
 
   render() {
-    switch (this.state.registerStage) {
-      // once registered
-      case C.LAST_STAGE:
-        return (
-          <View style={styles.lastContainer}>
-            {/* heading */}
-            <CustomFontText style={styles.titleText}>All done!</CustomFontText>
-            <CustomFontText style={styles.subTitleText}>
-              Welcome {this.state.name}
-            </CustomFontText>
+    return (
+      <View style={styles.container}>
+        {/* heading */}
+        <CustomFontText style={styles.titleText}> Welcome, </CustomFontText>
+        <CustomFontText style={styles.subTitleText}>
+          {" "}
+          Enter your details to signup.{" "}
+        </CustomFontText>
 
-            <Image
-              style={styles.profilePic}
-              source={{ uri: this.state.photoURL }}
-            />
-            {/* button to collection/group page */}
-            {setToBottom(
-              <View style={styles.bottom}>
-                <MyButton
-                  text="Get Started"
-                  // onPress={{ navigate("App") }}    TODO add navigation and verification
-                />
-              </View>
-            )}
-          </View>
-        );
+        {/* main card view */}
+        <View style={styles.card}>
+          <RegisterManager
+            registerStage={this.state.registerStage}
+            nameHandler={this.nameHandler}
+            emailHandler={this.emailHandler}
+            passwordHandler={this.passwordHandler}
+            passwordCfmHandler={this.passwordCfmHandler}
+            photoURLHandler={this.photoURLHandler}
+            stageHandler={this.stageHandler}
+            name={this.state.name}
+            email={this.state.email}
+            password={this.state.password}
+            passwordCfm={this.state.passwordCfm}
+            photoURL={this.state.photoURL}
+            onSubmit={this.onSubmit}
+          />
+        </View>
+      </View>
+    );
+    // switch (this.state.registerStage) {
+    //   // once registered
+    //   case C.LAST_STAGE:
+    //     return (
+    //       <View style={styles.lastContainer}>
+    //         {/* heading */}
+    //         <CustomFontText style={styles.titleText}>All done!</CustomFontText>
+    //         <CustomFontText style={styles.subTitleText}>
+    //           Welcome {this.state.name}
+    //         </CustomFontText>
 
-      // register pages
-      default:
-        return (
-          <View style={styles.container}>
-            {/* heading */}
-            <CustomFontText style={styles.titleText}> Welcome, </CustomFontText>
-            <CustomFontText style={styles.subTitleText}>
-              {" "}
-              Enter your details to signup.{" "}
-            </CustomFontText>
+    //         <Image
+    //           style={styles.profilePic}
+    //           source={{ uri: this.state.photoURL }}
+    //         />
+    //         {/* button to collection/group page */}
+    //         {setToBottom(
+    //           <View style={styles.bottom}>
+    //             <MyButton
+    //               text="Get Started"
+    //               // onPress={{ navigate("App") }}    TODO add navigation and verification
+    //             />
+    //           </View>
+    //         )}
+    //       </View>
+    //     );
 
-            {/* main card view */}
-            <View style={styles.card}>
-              <RegisterManager
-                registerStage={this.state.registerStage}
-                nameHandler={this.nameHandler}
-                emailHandler={this.emailHandler}
-                passwordHandler={this.passwordHandler}
-                passwordCfmHandler={this.passwordCfmHandler}
-                photoURLHandler={this.photoURLHandler}
-                stageHandler={this.stageHandler}
-                name={this.state.name}
-                email={this.state.email}
-                password={this.state.password}
-                passwordCfm={this.state.passwordCfm}
-                photoURL={this.state.photoURL}
-              />
-              {/* <CustomFontText style={styles.error}> {errors.passwordCfm} </CustomFontText> */}
-            </View>
-          </View>
-        );
-    }
+    //   // register pages
+    //   default:
+    //     return (
+    //       <View style={styles.container}>
+    //         {/* heading */}
+    //         <CustomFontText style={styles.titleText}> Welcome, </CustomFontText>
+    //         <CustomFontText style={styles.subTitleText}>
+    //           {" "}
+    //           Enter your details to signup.{" "}
+    //         </CustomFontText>
+
+    //         {/* main card view */}
+    //         <View style={styles.card}>
+    //           <RegisterManager
+    //             registerStage={this.state.registerStage}
+    //             nameHandler={this.nameHandler}
+    //             emailHandler={this.emailHandler}
+    //             passwordHandler={this.passwordHandler}
+    //             passwordCfmHandler={this.passwordCfmHandler}
+    //             photoURLHandler={this.photoURLHandler}
+    //             stageHandler={this.stageHandler}
+    //             name={this.state.name}
+    //             email={this.state.email}
+    //             password={this.state.password}
+    //             passwordCfm={this.state.passwordCfm}
+    //             photoURL={this.state.photoURL}
+    //           />
+    //           {/* <CustomFontText style={styles.error}> {errors.passwordCfm} </CustomFontText> */}
+    //         </View>
+    //       </View>
+    //     );
+    // }
   }
 }
-
-const mapStateToProps = state => ({
-  auth: state.auth,
-  errors: state.errors
-});
 
 const styles = StyleSheet.create({
   container: {
@@ -237,12 +253,19 @@ const styles = StyleSheet.create({
 });
 
 Register.propTypes = {
+  loginUser: PropTypes.func.isRequired,
   registerUser: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
   errors: PropTypes.object.isRequired
 };
 
+const mapStateToProps = state => ({
+  auth: state.auth,
+  errors: state.errors
+});
+
+// export
 export default connect(
   mapStateToProps,
-  { registerUser }
+  { registerUser, loginUser }
 )(Register);

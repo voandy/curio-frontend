@@ -1,34 +1,20 @@
 import React, { Component } from "react";
-import {
-  View,
-  StyleSheet,
-  Text,
-  Dimensions,
-} from "react-native";
-
-import * as Font from 'expo-font';
-
+import { View, StyleSheet, Text, Dimensions } from "react-native";
+import CustomFontText from "../utils/customFontText";
 
 class SimpleHeader extends Component {
-
-  async componentDidMount() {
-    // font
-    await Font.loadAsync({
-        'HindSiliguri-Bold': require('../../assets/fonts/HindSiliguri-Bold.ttf'),
-        'HindSiliguri-Regular': require('../../assets/fonts/HindSiliguri-Regular.ttf'),
-    });
-  }
-
-    render() {
-        return (
-        <View style={styles.header}>
-            {/* header text */}
-            <View style={{ flexDirection: "row" }}>
-            <Text style={styles.headerText}> {this.props.title} </Text>
-            </View>
+  render() {
+    return (
+      <View style={styles.header}>
+        {/* header text */}
+        <View style={{ flexDirection: "row" }}>
+          <CustomFontText style={styles.headerText}>
+            {this.props.title}
+          </CustomFontText>
         </View>
-        );
-    }
+      </View>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
@@ -42,8 +28,8 @@ const styles = StyleSheet.create({
     fontSize: 24,
     marginTop: 40,
     marginLeft: 30,
-    fontFamily: "HindSiliguri-Bold",
-  },
+    fontFamily: "HindSiliguri-Bold"
+  }
 });
 
 export default SimpleHeader;
