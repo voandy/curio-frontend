@@ -25,7 +25,7 @@ const AuthStack = createStackNavigator({
   Start: { screen: StartScreen },
   Register: { screen: RegisterScreen },
   Login: { screen: LoginScreen },
-//   Welcome: { screen: WelcomeScreen }
+  Welcome: { screen: WelcomeScreen }
 });
 	
 // default app stack

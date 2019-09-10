@@ -1,18 +1,16 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { connect, useSelector, useDispatch } from "react-redux";
+import { connect } from "react-redux";
 import {
   View,
-  ActivityIndicator,
-  StatusBar,
   StyleSheet,
   Text,
+  AsyncStorage
 } from "react-native";
 
-import { registerUser } from "../../actions/authActions";
+import { registerUser, loginUser } from "../../actions/authActions";
 import RegisterManager from "./registerManager";
 import { C } from "../../actions/registerTypes";
-import MyButton from "../../component/MyButton";
 import * as Font from 'expo-font';
 
 // import width/height responsive functions
@@ -22,22 +20,22 @@ import {
   setToBottom
 } from "../../utils/responsiveDesign";
 
-
+// state
+const initialState = {
+  registerStage: C.GET_NAME,
+  name: "",
+  email: "",
+  password: "",
+  passwordCfm: "",
+  photoURL: null,
+};
 
 
 class Register extends Component {
-  
-  state = {
-    registerStage: C.GET_NAME,
-    name: "",
-    email: "",
-    password: "",
-    passwordCfm: "",    // DO NOT SEND THIS AFTER REGISTRATION
-    photoURL: null,
-  };
 
   constructor() {
     super();
+    this.state = initialState;
   }
 
   // nav details
@@ -50,8 +48,8 @@ class Register extends Component {
   async componentDidMount() {
     // font
     await Font.loadAsync({
-        'HindSiliguri-Bold': require('../../../assets/fonts/HindSiliguri-Bold.ttf'),
-        'HindSiliguri-Regular': require('../../../assets/fonts/HindSiliguri-Regular.ttf'),
+      'HindSiliguri-Bold': require('../../../assets/fonts/HindSiliguri-Bold.ttf'),
+      'HindSiliguri-Regular': require('../../../assets/fonts/HindSiliguri-Regular.ttf'),
     });
   }
 
@@ -88,58 +86,76 @@ class Register extends Component {
 
     // create new user
     const newUser = {
-        name: this.state.name,
-        email: this.state.email,
-        password: this.state.password,
-        passwordCfm: this.state.passwordCfm,
-        profilePic: this.state.photoURL,    // use "profilePic" as the default naming? since the photos in it is already named this way
+      name: this.state.name,
+      email: this.state.email,
+      password: this.state.password,
+      passwordCfm: this.state.passwordCfm,
+      profilePic: this.state.photoURL,
     };
 
     // include default photo for those who skipped the selection TODO
-    // if(newUser.profilePic === null){
-    //   newUser.profilePic = require("../../../assets/images/default-profile-pic.png")
-    // }
-    
+    if (newUser.profilePic === null) {
+      newUser.profilePic = require("../../../assets/images/default-profile-pic.png")
+    };
+
+    // register user
     this.props.registerUser(newUser, this.props.history)
       .then(res => {
-        console.log(res);
-        if (Object.keys(this.state.errors).length === 0) {
-          // go to different screen and reset state
-          navigate("Welcome")
-          this.state = initialState;
+
+        // login details
+        const user = {
+          email: newUser.email,
+          password: newUser.password,
         }
+
+        // login user directly
+        this.props.loginUser(user, this.props.history)
+          .then(res => {
+            AsyncStorage.getItem('userToken')
+              .then((res) => {
+
+                // navigate user to Welcome page if no errors
+                if (res !== null) {
+                  navigate("Welcome");
+                }
+              });
+          });
       });
+    // reset state
+    this.state = initialState;
   }
 
   render() {
 
-      return (
-        <View style={styles.container}>
-  
-            {/* heading */}
-            <Text style={styles.titleText}> Welcome, </Text>
-            <Text style={styles.subTitleText}> Enter your details to signup. </Text>
-  
-            {/* main card view */}
-            <View style={styles.card}>
-              <RegisterManager
-                registerStage={this.state.registerStage}
-                nameHandler={this.nameHandler}
-                emailHandler={this.emailHandler}
-                passwordHandler={this.passwordHandler}
-                passwordCfmHandler={this.passwordCfmHandler}
-                photoURLHandler={this.photoURLHandler}
-                stageHandler={this.stageHandler}
-                name={this.state.name}
-                email={this.state.email}
-                password={this.state.password}
-                passwordCfm={this.state.passwordCfm}
-                photoURL={this.state.photoURL}
-              />
-              {/* <Text style={styles.error}> {errors.passwordCfm} </Text> */}
-            </View>
+    return (
+      <View style={styles.container}>
+
+        {/* heading */}
+        <Text style={styles.titleText}> Welcome, </Text>
+        <Text style={styles.subTitleText}> Enter your details to signup. </Text>
+
+        {/* main card view */}
+        <View style={styles.card}>
+          <RegisterManager
+            registerStage={this.state.registerStage}
+            nameHandler={this.nameHandler}
+            emailHandler={this.emailHandler}
+            passwordHandler={this.passwordHandler}
+            passwordCfmHandler={this.passwordCfmHandler}
+            photoURLHandler={this.photoURLHandler}
+            stageHandler={this.stageHandler}
+
+            name={this.state.name}
+            email={this.state.email}
+            password={this.state.password}
+            passwordCfm={this.state.passwordCfm}
+            photoURL={this.state.photoURL}
+
+            onSubmit={this.onSubmit}
+          />
         </View>
-      );
+      </View>
+    );
   }
 }
 
@@ -179,7 +195,7 @@ const styles = StyleSheet.create({
     marginBottom: 50
   },
 
-  lastContainer:{
+  lastContainer: {
     flex: 1,
     alignItems: "center",
   },
@@ -189,17 +205,18 @@ const styles = StyleSheet.create({
     width: wd(0.4),
     height: wd(0.4),
     alignSelf: 'center',
-    borderRadius: wd(0.4)/2,
+    borderRadius: wd(0.4) / 2,
   },
 
   bottom: {
     width: wd(0.8),
     height: wd(0.3),
     alignItems: "flex-end",
-  },  
+  },
 });
 
 Register.propTypes = {
+  loginUser: PropTypes.func.isRequired,
   registerUser: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
   errors: PropTypes.object.isRequired
@@ -213,7 +230,7 @@ const mapStateToProps = state => ({
 // export
 export default connect(
   mapStateToProps,
-  { registerUser }
+  { registerUser, loginUser }
 )(Register);
 
 

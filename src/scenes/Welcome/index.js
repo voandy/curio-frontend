@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { connect, useSelector, useDispatch } from "react-redux";
+import { connect } from "react-redux";
+import { getUserData } from "../../actions/dataActions"
 import {
   View,
   Image,
@@ -8,8 +9,10 @@ import {
   Text,
 } from "react-native";
 
-import { registerUser } from "../../actions/authActions";
-import { C } from "../../actions/registerTypes";
+// get user data
+
+
+// custom components
 import MyButton from "../../component/MyButton";
 import * as Font from 'expo-font';
 
@@ -22,55 +25,73 @@ import {
 
 
 class Welcome extends Component {
-  
-  state = {
-    name: "",
-    email: "",
-    password: "",
-    photoURL: null,
-  };
 
   constructor() {
     super();
+    this.state = {
+      userData: {}
+    };
   }
 
-  // nav details
+  // remove nav details
   static navigationOptions = {
-    headerStyle: {
-      elevation: 0, // remove shadow on Android
-    },
+    header: null
   }
 
-  async componentDidMount() {
+  componentDidMount() {
+
+    console.log("0000")
+
+    // get user authentication data
+    const { user } = this.props.auth;
+    this.props.getUserData(user.id);
+    console.log("123")
+
     // font
-    await Font.loadAsync({
-        'HindSiliguri-Bold': require('../../../assets/fonts/HindSiliguri-Bold.ttf'),
-        'HindSiliguri-Regular': require('../../../assets/fonts/HindSiliguri-Regular.ttf'),
+    Font.loadAsync({
+      'HindSiliguri-Bold': require('../../../assets/fonts/HindSiliguri-Bold.ttf'),
+      'HindSiliguri-Regular': require('../../../assets/fonts/HindSiliguri-Regular.ttf'),
     });
+  }
+
+  componentWillUpdate(nextProps) {
+    console.log("789 UPDATE")
+
+    if (Object.keys(this.state.userData).length === 0) {
+      this.setState({
+        userData: nextProps.data.userData
+      })
+      console.log("456")
+    }
   }
 
   render() {
 
-    return(
-        <View style={styles.container}>
-    
-            {/* heading */}
-            <Text style={styles.titleText}> All done! </Text>
-            <Text style={styles.subTitleText}> Welcome {this.state.name}. </Text>
+    const { navigate } = this.props.navigation;
 
-            <Image style= { styles.profilePic } source={ {uri:this.state.photoURL} } />
-            {/* button to collection/group page */}
-            {setToBottom(
-            <View style={ styles.bottom }>
-                <MyButton
-                text="Get Started"
-                onPress={ this.props.navigation("Login") } 
-                />
-            </View>
-            )}
+    return (
+      <View style={styles.container}>
 
-        </View>
-    )}
+        {/* heading */}
+        <Text style={styles.titleText}> All done! </Text>
+        <Text style={styles.subTitleText}> Welcome {this.state.userData.name}. </Text>
+        {/* <Text style={styles.subTitleText}> Welcome hue. </Text> */}
+
+        <Image style= { styles.profilePic } source={ {uri:this.state.userData.profilePic } } />
+        {/* <Image style={styles.profilePic} source={require("../../../assets/images/default-profile-pic.png")} /> */}
+        {/* button to collection/group page */}
+        {setToBottom(
+          <View style={styles.bottom}>
+            <MyButton
+              text="Get Started"
+              onPress={ () => navigate("App") } 
+            />
+          </View>
+        )}
+
+      </View>
+    )
+  }
 }
 
 const styles = StyleSheet.create({
@@ -84,8 +105,9 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontWeight: "bold",
     alignSelf: "flex-start",
+    marginTop: wd(0.25),
     marginLeft: wd(0.07),
-    fontFamily: 'HindSiliguri-Bold'
+    // fontFamily: 'HindSiliguri-Bold'
   },
 
   subTitleText: {
@@ -94,7 +116,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     alignSelf: "flex-start",
     marginLeft: wd(0.07),
-    fontFamily: 'HindSiliguri-Bold'
+    // fontFamily: 'HindSiliguri-Bold'
   },
 
   profilePic: {
@@ -102,31 +124,30 @@ const styles = StyleSheet.create({
     width: wd(0.4),
     height: wd(0.4),
     alignSelf: 'center',
-    borderRadius: wd(0.4)/2,
+    borderRadius: wd(0.4) / 2,
   },
 
   bottom: {
     width: wd(0.8),
-    height: wd(0.3),
+    height: wd(0.35),
     alignItems: "flex-end",
-  },  
+  },
 });
 
 Welcome.propTypes = {
-  registerUser: PropTypes.func.isRequired,
+  getUserData: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
-  errors: PropTypes.object.isRequired
+  data: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => ({
-  auth: state.auth,
-  errors: state.errors
+  data: state.data,
+  auth: state.auth
 });
 
-// export
 export default connect(
   mapStateToProps,
-  { registerUser }
+  { getUserData }
 )(Welcome);
 
 

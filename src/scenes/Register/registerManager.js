@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { useSelector, useDispatch } from "react-redux";
 import {
   View,
   TouchableOpacity,
@@ -268,8 +267,8 @@ class RegisterManager extends Component {
 
                 <MyButton
                   style={styles.nextButton}
-                  //onPress={() => this.props.onSubmit }  // moves to welcome page and will be logged in
                   text={this.skipPhotoText(this.props.photoURL)}
+                  onPress={() => this.props.onSubmit() }  // moves to welcome page and will be logged in
                 />
               </View>
             )}
