@@ -13,7 +13,7 @@ import GroupsScreen from "./Groups";
 import AuthLoadingScreen from "./AuthLoadingScreen";
 import ProfileScreen from "./Profile";
 import NotificationScreen from "./Notification";
-import ArtifactsScreen from "./Artifacts";
+import ArtefactsScreen from "./Artefacts";
 
 import { white } from "ansi-colors";
 import { Image } from "react-native";
@@ -66,8 +66,8 @@ const AppStack = createBottomTabNavigator(
         )
       }
     },
-    Artifacts: {
-      screen: ArtifactsScreen,
+    Artefacts: {
+      screen: ArtefactsScreen,
       navigationOptions: {
         tabBarIcon: ({ tintColor }) => (
           <Image

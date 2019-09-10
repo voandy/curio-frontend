@@ -13,6 +13,8 @@ class CardCarousel extends Component {
   render() {
       return(
         <View style={ styles.card }>
+          {/* Image source and text title */}
+          
           {/* <Image source={ this.props.imageUri } /> */}
           <Text> { this.props.text } </Text>
         </View>
