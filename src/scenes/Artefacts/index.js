@@ -14,7 +14,7 @@ import {
 
 //  custom components
 import Header from "../../component/Header";
-import ArtefactsFeed from "../../component/ArtefactFeed";
+import ArtefactFeed from "../../component/ArtefactFeed";
 import CustomFontText from "../../utils/customFontText";
 
 class Artefacts extends Component {
@@ -42,7 +42,7 @@ class Artefacts extends Component {
     showArtefacts = (artefacts) => (
         <>
           {artefacts.map(artefact => (
-            <ArtefactsFeed key={artefact._id} image={{uri: artefact.imageURLs[0]}} />
+            <ArtefactFeed key={artefact._id} image={{uri: artefact.imageURLs[0]}} />
           ))}
         </>
     );
