@@ -24,15 +24,18 @@ import { loadFont, discardFont } from "../actions/fontLoaderActions";
 import * as Font from "expo-font";
 
 class Scenes extends React.Component {
-  // load fonts TODO
+  // load required custom font here (root component)
   componentDidMount() {
+    // the app is just launched, so we make sure fontLoaded = false in Redux state
     this.props.discardFont();
     console.log("Scenes mounted! Font Loaded: " + this.props.fontLoaded);
+    // load the font here
     Font.loadAsync({
       "HindSiliguri-Bold": require("../../assets/fonts//HindSiliguri-Bold.ttf"),
       "HindSiliguri-Light": require("../../assets/fonts/HindSiliguri-Light.ttf"),
       "HindSiliguri-Regular": require("../../assets/fonts/HindSiliguri-Regular.ttf")
     }).then(() => {
+      // make sure we set the fontLoaded = true only after loadAsync is completed
       this.props.loadFont();
       console.log("Font loaded! Font Loaded: " + this.props.fontLoaded);
     });
@@ -126,6 +129,7 @@ const AppContainer = createAppContainer(
   )
 );
 
+// connect to redux store for Scenes
 const mapStateToProps = state => ({
   fontLoaded: state.fontLoader.fontLoaded,
   state: state
