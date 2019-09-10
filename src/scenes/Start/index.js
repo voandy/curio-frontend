@@ -1,28 +1,28 @@
 import React, { Component } from "react";
 import {
-  Dimensions,
-  StyleSheet,
+  StyleSheet, //
   TouchableOpacity,
   View,
-  Image,
-  Text
+  Image
 } from "react-native";
-import * as Font from 'expo-font';
+import { connect } from "react-redux";
 
+// import reusable components
+import {
+  deviceHeigthDimension as hp,
+  deviceWidthDimension as wd
+} from "../../utils/responsiveDesign";
+import CustomFontText from "../../utils/customFontText";
 
-export default class Start extends Component {
+class Start extends Component {
+  componentDidMount() {
+    console.log("Start Page mounted! Font Loaded: " + this.props.fontLoaded);
+  }
+
   // Nav bar details
   static navigationOptions = {
     header: null
-  }
-
-  async componentDidMount() {
-    // font
-    await Font.loadAsync({
-        'HindSiliguri-Bold': require('../../../assets/fonts/HindSiliguri-Bold.ttf'),
-        'HindSiliguri-Regular': require('../../../assets/fonts/HindSiliguri-Regular.ttf'),
-    });
-  }
+  };
 
   render() {
     const { navigate } = this.props.navigation;
@@ -30,8 +30,12 @@ export default class Start extends Component {
       <View style={styles.container}>
         {/* heading */}
         <View style={styles.titleContainer}>
-          <Text style={[styles.titleText, styles.font]}>Hello there, </Text>
-          <Text style={styles.titleText}>Welcome to Curio. </Text>
+          <CustomFontText style={[styles.titleText, styles.font]}>
+            Hello there,
+          </CustomFontText>
+          <CustomFontText style={styles.titleText}>
+            Welcome to Curio.
+          </CustomFontText>
         </View>
 
         {/* start image */}
@@ -45,14 +49,20 @@ export default class Start extends Component {
           onPress={() => navigate("Login")}
           style={styles.loginButton}
         >
-          <Text style={[styles.loginButtonText, styles.font]}>LOGIN</Text>
+          <CustomFontText style={[styles.loginButtonText, styles.font]}>
+            LOGIN
+          </CustomFontText>
         </TouchableOpacity>
 
         {/* Register Button */}
         <View style={styles.signupContainer}>
-          <Text styles={styles.signupText}>Don't have account yet? </Text>
+          <CustomFontText styles={styles.signupText}>
+            Don't have account yet?{" "}
+          </CustomFontText>
           <TouchableOpacity onPress={() => navigate("Register")}>
-            <Text style={styles.signupTextButton}>Create account</Text>
+            <CustomFontText style={styles.signupTextButton}>
+              Create account
+            </CustomFontText>
           </TouchableOpacity>
         </View>
       </View>
@@ -60,6 +70,17 @@ export default class Start extends Component {
   }
 }
 
+// Connect to redux store
+const mapStateToProps = state => ({
+  fontLoaded: state.fontLoader.fontLoaded
+});
+
+export default connect(
+  mapStateToProps,
+  null
+)(Start);
+
+// Component Stylesheet Rules
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -68,63 +89,60 @@ const styles = StyleSheet.create({
   },
 
   font: {
-    fontFamily: "HindSiliguri-Bold",
+    fontFamily: "HindSiliguri-Bold"
   },
 
   titleContainer: {
     alignSelf: "flex-start",
-    marginLeft: Dimensions.get("window").width * 0.095,
-    paddingTop: Dimensions.get("window").height * 0.13
+    marginLeft: wd(0.095),
+    paddingTop: hp(0.13)
   },
 
   titleText: {
-    fontSize: Dimensions.get("window").width * 0.08,
-    paddingTop: Dimensions.get("window").width * 0.008,
-    textShadowColor: "rgba(0, 0, 0, 0.13)",
-    textShadowOffset: { width: 0, height: 3 },
-    textShadowRadius: 40,
-    fontWeight: "bold",
+    fontSize: wd(0.08),
+    paddingTop: wd(0.008),
+    fontWeight: "bold"
   },
 
   imageStyle: {
     alignSelf: "center",
-    width: Dimensions.get("window").width * 0.85,
-    height: Dimensions.get("window").width * 0.85,
+    width: wd(0.85),
+    height: wd(0.85),
     resizeMode: "contain",
-    marginTop: Dimensions.get("window").height * 0.03,
-    marginBottom: Dimensions.get("window").height * 0.01
+    marginTop: hp(0.03),
+    marginBottom: hp(0.01)
   },
 
   loginButton: {
     alignSelf: "center",
     justifyContent: "center",
     backgroundColor: "white",
-    width: Dimensions.get("window").width * 0.7,
-    height: Dimensions.get("window").height * 0.065,
+    width: wd(0.7),
+    height: hp(0.065),
     borderRadius: 540,
     elevation: 7,
-    marginTop: Dimensions.get("window").height * 0.065
+    marginTop: hp(0.065)
   },
 
   loginButtonText: {
-    fontSize: Dimensions.get("window").width * 0.035,
+    fontSize: wd(0.035),
     fontWeight: "bold",
     alignSelf: "center",
-    color: "black",
+    color: "black"
   },
 
   signupContainer: {
     flex: 1,
     flexDirection: "row",
     alignSelf: "center",
-    paddingTop: Dimensions.get("window").height * 0.02
+    paddingTop: hp(0.02)
   },
 
   signupText: {
-    fontSize: Dimensions.get("window").width * 0.035,
+    fontSize: wd(0.035),
     fontWeight: "bold",
     color: "#FF6E6E",
-    fontFamily: 'HindSiliguri-Regular'
+    fontFamily: "HindSiliguri-Regular"
   },
 
   signupTextButton: {

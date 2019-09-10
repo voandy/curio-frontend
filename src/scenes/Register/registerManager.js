@@ -11,13 +11,17 @@ import * as ImagePicker from "expo-image-picker";
 import * as Permissions from "expo-permissions";
 
 // import all register Constants
-import { C } from "../../actions/registerTypes";
+import { C } from "../../types/registerTypes";
 
 // import reusable button component
 import MyButton from "../../component/MyButton";
 
 // import entry field validators
-import {validateName, validateEmail, validatePassword } from "./registerValidator";
+import {
+  validateName,
+  validateEmail,
+  validatePassword
+} from "./registerValidator";
 
 // import width/height responsive functions
 import {
@@ -28,11 +32,10 @@ import {
 
 // Load new page after each completed stage in sign up
 class RegisterManager extends Component {
-
   state = {
     nameErrorMessage: "",
     emailErrorMessage: "",
-    pwdErrorMessage: "",
+    pwdErrorMessage: ""
   };
 
   componentDidMount() {
@@ -75,34 +78,36 @@ class RegisterManager extends Component {
   async errorName() {
     this.setState({
       nameErrorMessage: await validateName(this.props.name)
-    })
+    });
 
     // with no errors, proceed to next page
-    if(this.state.nameErrorMessage === "") {
-      this.props.stageHandler(C.GET_EMAIL)
+    if (this.state.nameErrorMessage === "") {
+      this.props.stageHandler(C.GET_EMAIL);
     }
   }
 
   async errorEmail() {
     this.setState({
       emailErrorMessage: await validateEmail(this.props.email)
-    })
+    });
 
     // with no errors, proceed to next page
-    if(this.state.emailErrorMessage === "") {
-      this.props.stageHandler(C.GET_PASSWORD)
+    if (this.state.emailErrorMessage === "") {
+      this.props.stageHandler(C.GET_PASSWORD);
     }
   }
 
   async errorPassword() {
-
     this.setState({
-      pwdErrorMessage: await validatePassword(this.props.password, this.props.passwordCfm)
-    })
+      pwdErrorMessage: await validatePassword(
+        this.props.password,
+        this.props.passwordCfm
+      )
+    });
 
     // with no errors, proceed to next page
-    if(this.state.pwdErrorMessage === "") {
-      this.props.stageHandler(C.GET_PHOTO)
+    if (this.state.pwdErrorMessage === "") {
+      this.props.stageHandler(C.GET_PHOTO);
     }
   }
 
@@ -124,9 +129,9 @@ class RegisterManager extends Component {
               onSubmitEditing={() => this.errorName()}
             />
 
-            {this.state.nameErrorMessage !== "" && 
+            {this.state.nameErrorMessage !== "" && (
               <Text style={styles.error}> {this.state.nameErrorMessage} </Text>
-            }
+            )}
 
             {setToBottom(
               <MyButton
@@ -153,9 +158,9 @@ class RegisterManager extends Component {
               onSubmitEditing={() => this.errorEmail()}
             />
 
-            {this.state.emailErrorMessage !== "" && 
+            {this.state.emailErrorMessage !== "" && (
               <Text style={styles.error}> {this.state.emailErrorMessage} </Text>
-            }
+            )}
 
             {setToBottom(
               <View style={styles.buttom}>
@@ -193,8 +198,8 @@ class RegisterManager extends Component {
               autoCapitalize="none"
               placeholderTextColor="#868686"
               onChangeText={val => this.props.passwordHandler(val)}
-              value={ this.props.password }
-            />          
+              value={this.props.password}
+            />
 
             {/* Cfm password */}
             <Text style={[styles.inputText, styles.passwordFieldTitle]}>
@@ -207,13 +212,13 @@ class RegisterManager extends Component {
               autoCapitalize="none"
               placeholderTextColor="#868686"
               onChangeText={val => this.props.passwordCfmHandler(val)}
-              value={ this.props.passwordCfm }
+              value={this.props.passwordCfm}
               onSubmitEditing={() => this.errorPassword()}
             />
 
-            {this.state.pwdErrorMessage !== "" && 
+            {this.state.pwdErrorMessage !== "" && (
               <Text style={styles.error}> {this.state.pwdErrorMessage} </Text>
-            }
+            )}
 
             {setToBottom(
               <View style={styles.buttom}>

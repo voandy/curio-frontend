@@ -1,12 +1,19 @@
 import { combineReducers } from "redux";
 import authReducers from "./authReducers";
 import errorReducers from "./errorReducers";
-import dataReducers from "./dataReducers";
+import fontLoaderReducers from "./fontLoaderReducers";
+import userReducers from "./userReducers";
+import groupsReducers from "./groupsReducers";
+import artefactsReducers from "./artefactsReducers";
+
 // import registerReducers from "./registerReducers";
 
 export default combineReducers({
   auth: authReducers,
   errors: errorReducers,
-  data: dataReducers
+  user: userReducers,
+  groups: groupsReducers,
+  artefacts: artefactsReducers,
+  fontLoader: fontLoaderReducers
   // register: registerReducers
 });
