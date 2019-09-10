@@ -16,8 +16,18 @@ import Header from "../../component/Header"
 import * as Font from 'expo-font';
 
 class Artefacts extends Component {
+    constructor() {
+        super();
+        this.state = {
+            userArtefacts: {}
+        };
+    }
 
-    componentDidMount() {
+    async componentDidMount() {
+        // get user authentication data
+        const { user } = this.props.auth;
+        await this.props.getUserArtefacts(user.id);
+        
         // font
         Font.loadAsync({
             'HindSiliguri-Bold': require('../../../assets/fonts/HindSiliguri-Bold.ttf'),
@@ -25,9 +35,18 @@ class Artefacts extends Component {
         });
     }
 
+    componentWillUpdate(nextProps) {
+        if (Object.keys(this.state.userArtefacts).length === 0) {
+            this.setState({
+                userArtefacts: nextProps.artefacts.userArtefacts
+            });
+        }
+    }
+
     render() {
 
         const { navigate } = this.props.navigation;
+        
         return(
             <View style={styles.container}>
 
@@ -45,9 +64,13 @@ class Artefacts extends Component {
                     <Text style = {styles.titleText}>ARTIFACTS</Text>
                     <Text style = {styles.titleText}>ARTIFACTS</Text>
                     <Text style = {styles.titleText}>ARTIFACTS</Text>
-
-                </ScrollView>    
+                
+                </ScrollView>  
+                
+                  
             </View>
+
+            
         );
     }
 }
@@ -63,7 +86,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         alignSelf: 'flex-start',
         marginLeft: Dimensions.get('window').width * 0.07,
-        fontFamily: 'HindSiliguri-Bold'
+        // fontFamily: 'HindSiliguri-Bold'
       },
 
     button : {
@@ -76,16 +99,17 @@ const styles = StyleSheet.create({
         borderRadius: 540,
         elevation: 3, 
     },
-
 })
 
 Artefacts.propTypes = {
     getUserArtefacts: PropTypes.func.isRequired,
-    artefacts: PropTypes.object.isRequired
+    artefacts: PropTypes.object.isRequired,
+    auth: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = state => ({
-    artefacts: state.artefacts
+    artefacts: state.artefacts,
+    auth: state.auth,
 });
 
 //  export

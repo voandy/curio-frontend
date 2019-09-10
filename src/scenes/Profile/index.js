@@ -25,10 +25,10 @@ class Profile extends Component {
         };
     }
     
-    componentDidMount() {
+    async componentDidMount() {
         // get user authentication data
         const { user } = this.props.auth;
-        this.props.getUserData(user.id);
+        await this.props.getUserData(user.id);
         
         // font
         Font.loadAsync({

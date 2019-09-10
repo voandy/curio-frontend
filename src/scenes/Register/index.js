@@ -192,7 +192,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     alignSelf: "flex-start",
     marginLeft: wd(0.07),
-    fontFamily: "HindSiliguri-Bold"
+    // fontFamily: "HindSiliguri-Bold"
   },
 
   subTitleText: {
@@ -201,7 +201,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     alignSelf: "flex-start",
     marginLeft: wd(0.07),
-    fontFamily: "HindSiliguri-Bold"
+    // fontFamily: "HindSiliguri-Bold"
   },
 
   card: {
