@@ -7,10 +7,8 @@ import Modal from "react-native-modal";
 import {
   Dimensions,
   StyleSheet,
-  TouchableOpacity,
   ScrollView,
   View,
-  Text,
   Button,
   TextInput
 } from "react-native";
@@ -26,6 +24,7 @@ import {
   setToBottom
 } from "../../utils/responsiveDesign";
 
+// object with attributes required to create a new artefact
 const newArtefact = {
   title: "",
   description: "",
@@ -42,47 +41,57 @@ class Artefacts extends Component {
     super();
     this.state = {
       userArtefacts: {},
+      newArtefact,
       isModalVisible: false,
-      newArtefact
     };
   }
 
+  // checks if userArtefacts is empty
+  isUserArtefactsEmpty() {
+    if (Object.keys(this.state.userArtefacts).length === 0) {
+        return true;
+    }
+    return false;
+  }
+
   async componentDidMount() {
+
     // get user authentication data
     const { user } = this.props.auth;
     await this.props.getUserArtefacts(user.id);
   }
 
   async componentWillUpdate(nextProps) {
-    if (Object.keys(this.state.userArtefacts).length === 0) {
+
+    // sets user artefacts 
+    if (this.isUserArtefactsEmpty()) {
       await this.setState({
         userArtefacts: nextProps.artefacts.userArtefacts
       });
     }
   }
   
-  artefactsToArtefactFeeds = artefacts => {
+  // return ArtefactFeedRows containing ArtefactFeed in different rows
+  showArtefacts = artefacts => {
     let artefactFeedRows = [];
     let artefactFeeds = [];
     let rowKey = 0;
+
+    // create ArtefactFeed object out of artefact and push it into artefactFeeds array
     for (var i = 0; i < artefacts.length; i++) {
         artefactFeeds.push(<ArtefactFeed key={artefacts[i]._id} image={{uri: artefacts[i].imageURLs[0]}}/>);
-        if (artefactFeeds.length === 3 || i === artefacts.length-1) {
 
+        // create a new row after the previous row has been filled with 3 artefacts and fill the previous row into artefactFeedRows
+        if (artefactFeeds.length === 3 || i === artefacts.length-1) {
             artefactFeedRows.push(<View style={styles.feed} key={rowKey}>{artefactFeeds}</View>)
             artefactFeeds = [];
             rowKey++;
         }
     }
-    return artefactFeedRows;
+    return <>{artefactFeedRows}</>;
   }
 
-  showArtefacts = artefacts => (
-    <>
-      {this.artefactsToArtefactFeeds(artefacts)}
-    </>
-  );
-
+  // change title
   onTitleChange = title => {
     this.setState({
       newArtefact: {
@@ -92,6 +101,7 @@ class Artefacts extends Component {
     });
   };
 
+  // change description
   onDescriptionChange = description => {
     this.setState({
       newArtefact: {
@@ -101,6 +111,7 @@ class Artefacts extends Component {
     });
   };
 
+  // change category
   onCategoryChange = category => {
     this.setState({
       newArtefact: {
@@ -113,23 +124,18 @@ class Artefacts extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Header title="Artefacts" tab1="All" tab2="Mine" />
+        <Header tab1="Public" tab2="Private" />
 
         {/* scrollable area for CONTENT */}
         <ScrollView
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={16}
         >
-          {/* {Object.keys(this.state.userArtefacts).length !== 0 && (
-            <View>{this.showArtefacts(this.state.userArtefacts)}</View>
-          )} */}
           {Object.keys(this.state.userArtefacts).length !== 0 && (
             <View>{this.showArtefacts(this.state.userArtefacts)}</View>
           )}
         </ScrollView>
           
-        
-
         {/*********************** CHANGE THIS LATER ********************/}
         {/* create new Group */}
         <Button title="Post New Artefact" onPress={this.toggleModal} />

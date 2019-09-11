@@ -4,11 +4,13 @@ import {
   SET_NEW_GROUP,
 } from "../types/groupsTypes";
 
-// Create New Group
+// create new group based on adminId
 export const createNewGroup = adminId => dispatch => {
     return axios
       .get("http://curioapp.herokuapp.com/api/'/group/adminId/" + adminId)
       .then(res => {
+
+        // set new group
         dispatch(setNewGroup(res.data));
       })
       .catch(err =>

@@ -25,14 +25,25 @@ class Profile extends Component {
     };
   }
 
-  componentDidMount() {
+  // checks if userData is empty
+  isUserDataEmpty() {
+    if (Object.keys(this.state.userData).length === 0) {
+        return true;
+    }
+    return false;
+  }
+
+  async componentDidMount() {
+
     // get user authentication data
     const { user } = this.props.auth;
-    this.props.getUserData(user.id);
+    await this.props.getUserData(user.id);
   }
 
   componentWillUpdate(nextProps) {
-    if (Object.keys(this.state.userData).length === 0) {
+
+    // sets user data
+    if (this.isUserDataEmpty()) {
       this.setState({
         userData: nextProps.user.userData
       });

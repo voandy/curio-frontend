@@ -47,7 +47,7 @@ class Groups extends Component {
 
     return (
       <View style={styles.container}>
-        <Header tab1="Public" tab2="Private" />
+        <Header/>
 
         {/* scrollable area for CONTENT */}
         <ScrollView

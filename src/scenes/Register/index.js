@@ -203,7 +203,7 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontWeight: "bold",
     alignSelf: "flex-start",
-    marginLeft: wd(0.07)
+    marginLeft: wd(0.07),
     // fontFamily: "HindSiliguri-Bold"
   },
 
@@ -212,7 +212,7 @@ const styles = StyleSheet.create({
     marginBottom: 50,
     fontWeight: "bold",
     alignSelf: "flex-start",
-    marginLeft: wd(0.07)
+    marginLeft: wd(0.07),
     // fontFamily: "HindSiliguri-Bold"
   },
 

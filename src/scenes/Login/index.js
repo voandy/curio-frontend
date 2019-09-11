@@ -35,6 +35,7 @@ class Login extends Component {
     }
   };
 
+  // set error generated from redux store
   componentWillReceiveProps(nextProps) {
     if (nextProps.errors) {
       this.setState({
@@ -43,6 +44,7 @@ class Login extends Component {
     }
   }
 
+  // change text
   onChangeText = (key, val) => {
     this.setState({
       [key]: val,
@@ -60,7 +62,10 @@ class Login extends Component {
       password: this.state.password
     };
 
+    // logs user in
     this.props.loginUser(user, this.props.history).then(res => {
+
+      // navigate to AppStack if there is user token in AsyncStorage
       AsyncStorage.getItem("userToken").then(res => {
         if (res !== null) {
           navigate("App");
