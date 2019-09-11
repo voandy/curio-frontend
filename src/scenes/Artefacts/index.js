@@ -60,15 +60,26 @@ class Artefacts extends Component {
       });
     }
   }
+  
+  artefactsToArtefactFeeds = artefacts => {
+    let artefactFeedRows = [];
+    let artefactFeeds = [];
+    let rowKey = 0;
+    for (var i = 0; i < artefacts.length; i++) {
+        artefactFeeds.push(<ArtefactFeed key={artefacts[i]._id} image={{uri: artefacts[i].imageURLs[0]}}/>);
+        if (artefactFeeds.length === 3 || i === artefacts.length-1) {
+
+            artefactFeedRows.push(<View style={styles.feed} key={rowKey}>{artefactFeeds}</View>)
+            artefactFeeds = [];
+            rowKey++;
+        }
+    }
+    return artefactFeedRows;
+  }
 
   showArtefacts = artefacts => (
     <>
-      {artefacts.map(artefact => (
-        <ArtefactFeed
-          key={artefact._id}
-          image={{ uri: artefact.imageURLs[0] }}
-        />
-      ))}
+      {this.artefactsToArtefactFeeds(artefacts)}
     </>
   );
 
@@ -109,10 +120,15 @@ class Artefacts extends Component {
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={16}
         >
+          {/* {Object.keys(this.state.userArtefacts).length !== 0 && (
+            <View>{this.showArtefacts(this.state.userArtefacts)}</View>
+          )} */}
           {Object.keys(this.state.userArtefacts).length !== 0 && (
             <View>{this.showArtefacts(this.state.userArtefacts)}</View>
           )}
         </ScrollView>
+          
+        
 
         {/*********************** CHANGE THIS LATER ********************/}
         {/* create new Group */}
