@@ -5,6 +5,7 @@ import fontLoaderReducers from "./fontLoaderReducers";
 import userReducers from "./userReducers";
 import groupsReducers from "./groupsReducers";
 import artefactsReducers from "./artefactsReducers";
+import imageReducers from "./imageReducers";
 
 // import registerReducers from "./registerReducers";
 
@@ -14,6 +15,7 @@ export default combineReducers({
   user: userReducers,
   groups: groupsReducers,
   artefacts: artefactsReducers,
-  fontLoader: fontLoaderReducers
+  fontLoader: fontLoaderReducers,
+  image: imageReducers,
   // register: registerReducers
 });
