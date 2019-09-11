@@ -96,26 +96,6 @@ class Profile extends Component {
           {/* line separator */}
           <View style={styles.line} />
 
-          {/* TODO REPLACE THIS  */}
-          <View style={{ height: 350, justifyContent: "center" }}>
-            <Text
-              style={{
-                fontFamily: "HindSiliguri-Regular",
-                alignSelf: "center"
-              }}
-            >
-              Whoops, Looks like you dont have any Artefacts
-            </Text>
-            <Text
-              style={{
-                fontFamily: "HindSiliguri-Regular",
-                alignSelf: "center"
-              }}
-            >
-              Create a collection now !
-            </Text>
-          </View>
-
           <TouchableOpacity onPress={this.onLogoutClick} style={styles.button}>
             <Text style={styles.buttonText}>Log Out</Text>
           </TouchableOpacity>
@@ -194,7 +174,6 @@ const mapStateToProps = state => ({
   user: state.user
 });
 
-//  export
 export default connect(
   mapStateToProps,
   { logoutUser, getUserData }

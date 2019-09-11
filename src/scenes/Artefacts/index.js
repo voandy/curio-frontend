@@ -1,41 +1,42 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { getUserArtefacts } from "../../actions/artefactsActions";
 import Modal from "react-native-modal";
-
+// import DateTimePicker from "react-native-modal-datetime-picker";
+import * as ImagePicker from "expo-image-picker";
+import DatePicker from 'react-native-datepicker'
 import {
   Dimensions,
   StyleSheet,
   ScrollView,
   View,
   Button,
-  TextInput
+  TextInput,
+  TouchableOpacity,
+  Image
 } from "react-native";
 
-//  custom components
 import Header from "../../component/Header";
 import ArtefactFeed from "../../component/ArtefactFeed";
+import { getUserArtefacts, createNewArtefact } from "../../actions/artefactsActions";
 
-// CHANGE THIS LATER
+// import width/height responsive functions
 import {
-  deviceHeigthDimension as hp,
-  deviceWidthDimension as wd,
-  setToBottom
+    deviceHeigthDimension as hp,
+    deviceWidthDimension as wd,
+    setToBottom
 } from "../../utils/responsiveDesign";
 
 // object with attributes required to create a new artefact
 const newArtefact = {
   title: "",
   description: "",
-  category: ""
+  category: "",
+  dateObtained: "",
+  imageURL: null,
 };
 
 class Artefacts extends Component {
-  // CHANGE THIS LATER
-  toggleModal = () => {
-    this.setState({ isModalVisible: !this.state.isModalVisible });
-  };
 
   constructor() {
     super();
@@ -45,6 +46,11 @@ class Artefacts extends Component {
       isModalVisible: false,
     };
   }
+
+  // toggle the modal for new artefact creation
+  toggleModal = () => {
+    this.setState({ isModalVisible: !this.state.isModalVisible });
+  };
 
   // checks if userArtefacts is empty
   isUserArtefactsEmpty() {
@@ -91,6 +97,10 @@ class Artefacts extends Component {
     return <>{artefactFeedRows}</>;
   }
 
+  postNewArtefact = () => {
+    console.log(this.state.newArtefact);
+  }
+
   // change title
   onTitleChange = title => {
     this.setState({
@@ -121,6 +131,51 @@ class Artefacts extends Component {
     });
   };
 
+  // change imageURL
+  onImageURLChange = imageURL => {
+    this.setState({
+      newArtefact: {
+        ...this.state.newArtefact,
+        imageURL
+      }
+    });
+  };
+
+  // change date
+  onDateObtainedChange = dateObtained => {
+      this.setState({
+          newArtefact: {
+              ...this.state.newArtefact,
+              dateObtained
+          }
+      })
+  }
+
+  // change imageURL
+  onImageURLChange = imageURL => {
+    this.setState({
+        newArtefact: {
+            ...this.state.newArtefact,
+            imageURL
+        }
+    })
+  }
+
+  // access camera roll
+  _pickImage = async () => {
+    // obtain image
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 4]
+    });
+
+    // set image
+    if (!result.cancelled) {
+      this.onImageURLChange(result.uri);
+    }
+  };
+
   render() {
     return (
       <View style={styles.container}>
@@ -144,20 +199,18 @@ class Artefacts extends Component {
             <Button title="Close" onPress={this.toggleModal} />
 
             <TextInput
-              style={styles.inputField}
               placeholder="Title"
               autoCapitalize="none"
               placeholderTextColor="#868686"
-              onChangeText={() => this.onTitleChange()}
+              onChangeText={value => this.onTitleChange(value)}
               value={this.state.newArtefact.title}
             />
 
             <TextInput
-              style={styles.inputField}
               placeholder="Description"
               autoCapitalize="none"
               placeholderTextColor="#868686"
-              onChangeText={() => this.onDescriptionChange()}
+              onChangeText={value => this.onDescriptionChange(value)}
               value={this.state.newArtefact.description}
             />
 
@@ -166,11 +219,54 @@ class Artefacts extends Component {
               placeholder="Category"
               autoCapitalize="none"
               placeholderTextColor="#868686"
-              onChangeText={() => this.onCategoryChange()}
+              onChangeText={(value) => this.onCategoryChange(value)}
               value={this.state.newArtefact.category}
             />
 
-            <Button title="Post Artefact" />
+            <DatePicker
+                style={{width: 200}}
+                date={this.state.newArtefact.dateObtained}
+                mode="date"
+                placeholder="select date"
+                format="YYYY-MM-DD"
+                // minDate="2016-05-01"
+                // maxDate="2016-06-01"
+                confirmBtnText="Confirm"
+                cancelBtnText="Cancel"
+                customStyles={{
+                dateIcon: {
+                    position: 'absolute',
+                    left: 0,
+                    top: 4,
+                    marginLeft: 0
+                },
+                dateInput: {
+                    marginLeft: 36
+                }
+                // ... You can check the source to find the other keys.
+                }}
+                onDateChange={(date) => this.onDateObtainedChange(date)}
+            />
+
+            {/* Image button */}
+            <TouchableOpacity activeOpacity={0.5} onPress={this._pickImage}>
+              {this.state.newArtefact.imageURL != null ? (
+                <Image
+                  style={[styles.profilePic, styles.profilePicBorder]}
+                  source={{ uri: this.state.newArtefact.imageURL }}
+                />
+              ) : (
+                <Image
+                  style={styles.profilePic}
+                  source={require("../../../assets/images/plus-profile-pic.png")}
+                />
+              )}
+            </TouchableOpacity>
+            
+            <Button 
+                title="Post Artefact" 
+                onPress={() => this.postNewArtefact()}
+            />
           </View>
         </Modal>
         {/****************************************************************/}
@@ -180,16 +276,15 @@ class Artefacts extends Component {
 }
 
 const styles = StyleSheet.create({
-  // CHANGE THIS LATER
-  inputField: {
-    textAlign: "center",
-    width: wd(0.7),
-    height: hp(0.05),
-    marginTop: 20,
-    backgroundColor: "white",
-    borderBottomWidth: 0.5,
-    fontSize: 16,
+  // CHANGE LATER
+  profilePic: {
+    marginTop: 30,
+    width: wd(0.3),
+    height: wd(0.3),
     alignSelf: "center"
+  },
+  profilePicBorder: {
+    borderRadius: wd(0.3) / 2
   },
 
   container: {
@@ -225,6 +320,7 @@ const styles = StyleSheet.create({
 
 Artefacts.propTypes = {
   getUserArtefacts: PropTypes.func.isRequired,
+  createNewArtefact: PropTypes.func.isRequired,
   artefacts: PropTypes.object.isRequired,
   auth: PropTypes.object.isRequired
 };
@@ -237,5 +333,5 @@ const mapStateToProps = state => ({
 // export
 export default connect(
   mapStateToProps,
-  { getUserArtefacts }
+  { getUserArtefacts, createNewArtefact }
 )(Artefacts);
