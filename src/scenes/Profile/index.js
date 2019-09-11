@@ -16,7 +16,6 @@ import {
 
 import Moment from "moment";
 import SimpleHeader from "../../component/SimpleHeader";
-import CustomFontText from "../../utils/customFontText";
 
 class Profile extends Component {
   constructor() {
@@ -78,38 +77,36 @@ class Profile extends Component {
           )}
 
           {/* user heading */}
-          <CustomFontText style={styles.userName}>
-            {this.state.userData.name}
-          </CustomFontText>
-          <CustomFontText style={styles.userDetails}>
+          <Text style={styles.userName}>{this.state.userData.name}</Text>
+          <Text style={styles.userDetails}>
             joined since {Moment(dt).format("Do MMMM YYYY")}
-          </CustomFontText>
+          </Text>
 
           {/* line separator */}
           <View style={styles.line} />
 
           {/* TODO REPLACE THIS  */}
           <View style={{ height: 350, justifyContent: "center" }}>
-            <CustomFontText
+            <Text
               style={{
                 fontFamily: "HindSiliguri-Regular",
                 alignSelf: "center"
               }}
             >
               Whoops, Looks like you dont have any Artefacts
-            </CustomFontText>
-            <CustomFontText
+            </Text>
+            <Text
               style={{
                 fontFamily: "HindSiliguri-Regular",
                 alignSelf: "center"
               }}
             >
               Create a collection now !
-            </CustomFontText>
+            </Text>
           </View>
 
           <TouchableOpacity onPress={this.onLogoutClick} style={styles.button}>
-            <CustomFontText style={styles.buttonText}>Log Out</CustomFontText>
+            <Text style={styles.buttonText}>Log Out</Text>
           </TouchableOpacity>
         </ScrollView>
       </View>

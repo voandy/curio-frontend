@@ -11,7 +11,6 @@ import {
 } from "react-native";
 
 import SimpleHeader from "../../component/SimpleHeader";
-import CustomFontText from "../../utils/customFontText";
 
 export default class Notification extends Component {
   render() {
@@ -26,11 +25,11 @@ export default class Notification extends Component {
           scrollEventThrottle={16}
         >
           {/* heading */}
-          <CustomFontText style={styles.titleText}>NOTIFICATION</CustomFontText>
-          <CustomFontText style={styles.titleText}>NOTIFICATION</CustomFontText>
-          <CustomFontText style={styles.titleText}>NOTIFICATION</CustomFontText>
-          <CustomFontText style={styles.titleText}>NOTIFICATION</CustomFontText>
-          <CustomFontText style={styles.titleText}>NOTIFICATION</CustomFontText>
+          <Text style={styles.titleText}>NOTIFICATION</Text>
+          <Text style={styles.titleText}>NOTIFICATION</Text>
+          <Text style={styles.titleText}>NOTIFICATION</Text>
+          <Text style={styles.titleText}>NOTIFICATION</Text>
+          <Text style={styles.titleText}>NOTIFICATION</Text>
         </ScrollView>
       </View>
     );

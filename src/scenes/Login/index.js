@@ -14,7 +14,7 @@ import {
 import { loginUser } from "../../actions/authActions";
 import MyButton from "../../component/MyButton";
 import { setToBottom } from "../../utils/responsiveDesign";
-import CustomFontText from "../../utils/customFontText";
+
 // state
 const initialState = {
   email: "",
@@ -76,32 +76,26 @@ class Login extends Component {
     return (
       <View style={styles.container}>
         {/* heading */}
-        <CustomFontText style={styles.titleText}> Alrighty, </CustomFontText>
-        <CustomFontText style={styles.subTitleText}>
-          {" "}
-          Enter your details to login.{" "}
-        </CustomFontText>
+        <Text style={styles.titleText}> Alrighty, </Text>
+        <Text style={styles.subTitleText}> Enter your details to login. </Text>
 
         {/* main card view */}
         <View style={styles.card}>
           {/* Email */}
-          <CustomFontText style={styles.inputText}>
-            {" "}
-            EMAIL ADDRESS{" "}
-          </CustomFontText>
+          <Text style={styles.inputText}> EMAIL ADDRESS </Text>
           <TextInput
             style={styles.input}
             autoCapitalize="none"
             placeholderTextColor="#454545"
             onChangeText={val => this.onChangeText("email", val)}
           />
-          <CustomFontText style={styles.error}>
+          <Text style={styles.error}>
             {errors.email}
             {errors.emailnotfound}
-          </CustomFontText>
+          </Text>
 
           {/* Password */}
-          <CustomFontText style={styles.inputText}> PASSWORD </CustomFontText>
+          <Text style={styles.inputText}> PASSWORD </Text>
           <TextInput
             style={styles.input}
             secureTextEntry={true}
@@ -109,15 +103,13 @@ class Login extends Component {
             placeholderTextColor="#454545"
             onChangeText={val => this.onChangeText("password", val)}
           />
-          <CustomFontText style={styles.error}>
+          <Text style={styles.error}>
             {errors.password}
             {errors.passwordincorrect}
-          </CustomFontText>
+          </Text>
 
           <TouchableOpacity style={styles.forgot}>
-            <CustomFontText style={styles.forgotText}>
-              Forgot Password?
-            </CustomFontText>
+            <Text style={styles.forgotText}>Forgot Password?</Text>
           </TouchableOpacity>
 
           {/* button */}

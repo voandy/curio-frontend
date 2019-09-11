@@ -10,14 +10,14 @@ import {
   ScrollView,
   Dimensions,
   Button,
-  TextInput
+  TextInput,
+  ActivityIndicator
 } from "react-native";
 
 import { logoutUser } from "../../actions/authActions";
 import CardCarousel from "../../component/CardCarousel";
 import Header from "../../component/Header";
-import Tabs from './groupManager'
-import * as Font from 'expo-font';
+import Tabs from "./groupManager";
 
 // CHANGE THIS LATER
 import {
@@ -29,7 +29,7 @@ import {
 const newGroup = {
   title: "",
   description: ""
-}
+};
 
 class Groups extends Component {
   // CHANGE THIS LATER
@@ -56,9 +56,13 @@ class Groups extends Component {
         >
           {/* carousel pinned groups */}
           <View style={{ height: 130, marginTop: 20 }}>
-            <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}
-                  decelerationRate={0.8} snapToAlignment={"center"}
-                  snapToInterval={Dimensions.get('window').width * 0.85} >
+            <ScrollView
+              horizontal={true}
+              showsHorizontalScrollIndicator={false}
+              decelerationRate={0.8}
+              snapToAlignment={"center"}
+              snapToInterval={Dimensions.get("window").width * 0.85}
+            >
               <CardCarousel text="page 1" />
               <CardCarousel text="page 2" />
               <CardCarousel text="page 3" />
@@ -70,7 +74,6 @@ class Groups extends Component {
           <Text style={styles.titleText}>Groups</Text>
           <Text style={styles.titleText}>Groups</Text>
           <Text style={styles.titleText}>Groups</Text>
-
         </ScrollView>
 
         {/*********************** CHANGE THIS LATER ********************/}
@@ -79,14 +82,14 @@ class Groups extends Component {
         <Modal isVisible={this.state.isModalVisible}>
           <View style={{ backgroundColor: "white", flex: 1 }}>
             <Button title="Close" onPress={this.toggleModal} />
-          
+
             <TextInput
               style={styles.inputField}
               placeholder="Title"
               autoCapitalize="none"
               placeholderTextColor="#868686"
               onChangeText={val => this.props.nameHandler(val)}
-              value= { this.props.name }
+              value={this.props.name}
             />
 
             <TextInput
@@ -95,12 +98,10 @@ class Groups extends Component {
               autoCapitalize="none"
               placeholderTextColor="#868686"
               onChangeText={val => this.props.nameHandler(val)}
-              value= { this.props.name }
+              value={this.props.name}
             />
-            
-            <Button 
-              title= "Create Group"
-            />
+
+            <Button title="Create Group" />
           </View>
         </Modal>
         {/****************************************************************/}
@@ -117,11 +118,11 @@ Groups.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  auth: state.auth
+  auth: state.auth,
+  fontLoaded: state.fontLoader.fontLoaded
 });
 
 const styles = StyleSheet.create({
-
   // CHANGE THIS LATER
   inputField: {
     textAlign: "center",
@@ -177,12 +178,11 @@ const styles = StyleSheet.create({
   titleText: {
     fontSize: 30,
     marginTop: 100,
-    fontWeight: "bold",
     alignItems: "center",
     justifyContent: "center",
     marginLeft: Dimensions.get("window").width * 0.07,
-    fontFamily: 'HindSiliguri-Bold'
-  },
+    fontFamily: "HindSiliguri-Bold"
+  }
 });
 
 //  export

@@ -7,7 +7,6 @@ import {
   Image,
   TouchableOpacity
 } from "react-native";
-import CustomFontText from "../utils/customFontText";
 
 class CardCarousel extends Component {
   render() {
@@ -16,7 +15,7 @@ class CardCarousel extends Component {
         {/* Image source and text title */}
 
         {/* <Image source={ this.props.imageUri } /> */}
-        <CustomFontText> {this.props.text} </CustomFontText>
+        <Text> {this.props.text} </Text>
       </View>
     );
   }

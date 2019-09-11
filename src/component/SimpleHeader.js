@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { View, StyleSheet, Text, Dimensions } from "react-native";
-import CustomFontText from "../utils/customFontText";
 
 class SimpleHeader extends Component {
   render() {
@@ -8,9 +7,7 @@ class SimpleHeader extends Component {
       <View style={styles.header}>
         {/* header text */}
         <View style={{ flexDirection: "row" }}>
-          <CustomFontText style={styles.headerText}>
-            {this.props.title}
-          </CustomFontText>
+          <Text style={styles.headerText}>{this.props.title}</Text>
         </View>
       </View>
     );

@@ -12,7 +12,6 @@ import {
   deviceHeigthDimension as hp,
   deviceWidthDimension as wd
 } from "../../utils/responsiveDesign";
-import CustomFontText from "../../utils/customFontText";
 
 class Start extends Component {
   componentDidMount() {
@@ -30,12 +29,8 @@ class Start extends Component {
       <View style={styles.container}>
         {/* heading */}
         <View style={styles.titleContainer}>
-          <CustomFontText style={[styles.titleText, styles.font]}>
-            Hello there,
-          </CustomFontText>
-          <CustomFontText style={styles.titleText}>
-            Welcome to Curio.
-          </CustomFontText>
+          <Text style={[styles.titleText, styles.font]}>Hello there,</Text>
+          <Text style={styles.titleText}>Welcome to Curio.</Text>
         </View>
 
         {/* start image */}
@@ -49,20 +44,14 @@ class Start extends Component {
           onPress={() => navigate("Login")}
           style={styles.loginButton}
         >
-          <CustomFontText style={[styles.loginButtonText, styles.font]}>
-            LOGIN
-          </CustomFontText>
+          <Text style={[styles.loginButtonText, styles.font]}>LOGIN</Text>
         </TouchableOpacity>
 
         {/* Register Button */}
         <View style={styles.signupContainer}>
-          <CustomFontText styles={styles.signupText}>
-            Don't have account yet?{" "}
-          </CustomFontText>
+          <Text styles={styles.signupText}>Don't have account yet? </Text>
           <TouchableOpacity onPress={() => navigate("Register")}>
-            <CustomFontText style={styles.signupTextButton}>
-              Create account
-            </CustomFontText>
+            <Text style={styles.signupTextButton}>Create account</Text>
           </TouchableOpacity>
         </View>
       </View>

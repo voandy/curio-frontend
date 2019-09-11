@@ -16,8 +16,6 @@ import {
   setToBottom
 } from "../../utils/responsiveDesign";
 
-import CustomFontText from "../../utils/customFontText";
-
 class Welcome extends Component {
   constructor() {
     super();
@@ -57,12 +55,12 @@ class Welcome extends Component {
     return (
       <View style={styles.container}>
         {/* heading */}
-        <CustomFontText style={styles.titleText}> All done! </CustomFontText>
-        <CustomFontText style={styles.subTitleText}>
+        <Text style={styles.titleText}> All done! </Text>
+        <Text style={styles.subTitleText}>
           {" "}
           Welcome {this.state.userData.name}.{" "}
-        </CustomFontText>
-        {/* <CustomFontText style={styles.subTitleText}> Welcome hue. </CustomFontText> */}
+        </Text>
+        {/* <Text style={styles.subTitleText}> Welcome hue. </Text> */}
 
         <Image
           style={styles.profilePic}

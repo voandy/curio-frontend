@@ -9,15 +9,13 @@ import {
   TouchableOpacity
 } from "react-native";
 
-import CustomFontText from "../utils/customFontText";
-
 class Header extends Component {
   render() {
     return (
       <View style={styles.header}>
         {/* header search */}
         <View style={styles.search}>
-          {/* <CustomFontText style={[styles.headerText, styles.font]}> {this.props.title} </CustomFontText > */}
+          {/* <Text style={[styles.headerText, styles.font]}> {this.props.title} </Text > */}
           <TextInput
             underlineColorAndroid="transparent"
             placeholder="Search"
@@ -36,20 +34,20 @@ class Header extends Component {
             // onPress
             style={styles.headerButton}
           >
-            <CustomFontText style={[styles.headerButtonText, styles.font]}>
+            <Text style={[styles.headerButtonText, styles.font]}>
               {" "}
               {this.props.tab1}{" "}
-            </CustomFontText>
+            </Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             // onPress
             style={styles.headerButton}
           >
-            <CustomFontText style={[styles.headerButtonText, styles.font]}>
+            <Text style={[styles.headerButtonText, styles.font]}>
               {" "}
               {this.props.tab2}{" "}
-            </CustomFontText>
+            </Text>
           </TouchableOpacity>
         </View>
       </View>

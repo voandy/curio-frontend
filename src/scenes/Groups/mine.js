@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { View, Text, StyleSheet, ScrollView, Dimensions } from "react-native";
 
 import CardCarousel from "../../component/CardCarousel";
-import CustomFontText from "../../utils/customFontText";
 
 class Mine extends Component {
   render() {
@@ -13,11 +12,11 @@ class Mine extends Component {
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={16}
         >
-          <CustomFontText style={styles.titleText}>MINE</CustomFontText>
-          <CustomFontText style={styles.titleText}>MINE</CustomFontText>
-          <CustomFontText style={styles.titleText}>MINE</CustomFontText>
-          <CustomFontText style={styles.titleText}>MINE</CustomFontText>
-          <CustomFontText style={styles.titleText}>MINE</CustomFontText>
+          <Text style={styles.titleText}>MINE</Text>
+          <Text style={styles.titleText}>MINE</Text>
+          <Text style={styles.titleText}>MINE</Text>
+          <Text style={styles.titleText}>MINE</Text>
+          <Text style={styles.titleText}>MINE</Text>
         </ScrollView>
       </View>
     );

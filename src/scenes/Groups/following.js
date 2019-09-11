@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { View, Text, StyleSheet, ScrollView, Dimensions } from "react-native";
 
 import CardCarousel from "../../component/CardCarousel";
-import CustomFontText from "../../utils/customFontText";
 
 class Following extends Component {
   render() {
@@ -28,11 +27,11 @@ class Following extends Component {
             </ScrollView>
           </View>
 
-          <CustomFontText style={styles.titleText}>Groups</CustomFontText>
-          <CustomFontText style={styles.titleText}>Groups</CustomFontText>
-          <CustomFontText style={styles.titleText}>GroupS</CustomFontText>
-          <CustomFontText style={styles.titleText}>GroupS</CustomFontText>
-          <CustomFontText style={styles.titleText}>GroupS</CustomFontText>
+          <Text style={styles.titleText}>Groups</Text>
+          <Text style={styles.titleText}>Groups</Text>
+          <Text style={styles.titleText}>GroupS</Text>
+          <Text style={styles.titleText}>GroupS</Text>
+          <Text style={styles.titleText}>GroupS</Text>
         </ScrollView>
       </View>
     );

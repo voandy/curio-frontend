@@ -18,89 +18,88 @@ import {
 //  custom components
 import Header from "../../component/Header";
 import ArtefactFeed from "../../component/ArtefactFeed";
-import CustomFontText from "../../utils/customFontText";
 
 // CHANGE THIS LATER
 import {
-    deviceHeigthDimension as hp,
-    deviceWidthDimension as wd,
-    setToBottom
-  } from "../../utils/responsiveDesign";
+  deviceHeigthDimension as hp,
+  deviceWidthDimension as wd,
+  setToBottom
+} from "../../utils/responsiveDesign";
 
 const newArtefact = {
-    title: "",
-    description: "",
-    category: ""
-}
+  title: "",
+  description: "",
+  category: ""
+};
 
 class Artefacts extends Component {
-    // CHANGE THIS LATER
-    toggleModal = () => {
-        this.setState({ isModalVisible: !this.state.isModalVisible });
-    };
+  // CHANGE THIS LATER
+  toggleModal = () => {
+    this.setState({ isModalVisible: !this.state.isModalVisible });
+  };
 
-    constructor() {
-        super();
-        this.state = {
-            userArtefacts: {},
-            isModalVisible: false,
-            newArtefact
-        };
+  constructor() {
+    super();
+    this.state = {
+      userArtefacts: {},
+      isModalVisible: false,
+      newArtefact
+    };
+  }
+
+  async componentDidMount() {
+    // get user authentication data
+    const { user } = this.props.auth;
+    await this.props.getUserArtefacts(user.id);
+  }
+
+  async componentWillUpdate(nextProps) {
+    if (Object.keys(this.state.userArtefacts).length === 0) {
+      await this.setState({
+        userArtefacts: nextProps.artefacts.userArtefacts
+      });
     }
+  }
 
-    async componentDidMount() {
-        // get user authentication data
-        const { user } = this.props.auth;
-        await this.props.getUserArtefacts(user.id);
-    }
+  showArtefacts = artefacts => (
+    <>
+      {artefacts.map(artefact => (
+        <ArtefactFeed
+          key={artefact._id}
+          image={{ uri: artefact.imageURLs[0] }}
+        />
+      ))}
+    </>
+  );
 
-    async componentWillUpdate(nextProps) {
-        if (Object.keys(this.state.userArtefacts).length === 0) {
-            await this.setState({
-                userArtefacts: nextProps.artefacts.userArtefacts
-            });
-        }
-    }
+  onTitleChange = title => {
+    this.setState({
+      newArtefact: {
+        ...this.state.newArtefact,
+        title
+      }
+    });
+  };
 
-    showArtefacts = (artefacts) => (
-        <>
-          {artefacts.map(artefact => (
-            <ArtefactFeed key={artefact._id} image={{uri: artefact.imageURLs[0]}} />
-          ))}
-        </>
-    );
+  onDescriptionChange = description => {
+    this.setState({
+      newArtefact: {
+        ...this.state.newArtefact,
+        description
+      }
+    });
+  };
 
-    onTitleChange = (title) => {
-        this.setState({
-            newArtefact: { 
-                ...this.state.newArtefact,
-                title
-            }
-        });
-    };
-
-    onDescriptionChange = description => {
-        this.setState({
-            newArtefact: { 
-                ...this.state.newArtefact,
-                description
-            }
-        });
-    };
-
-    onCategoryChange = category => {
-        this.setState({
-            newArtefact: { 
-                ...this.state.newArtefact,
-                category
-            }
-        });
-    };
-
-
+  onCategoryChange = category => {
+    this.setState({
+      newArtefact: {
+        ...this.state.newArtefact,
+        category
+      }
+    });
+  };
 
   render() {
-
     return (
       <View style={styles.container}>
         <Header title="Artefacts" tab1="All" tab2="Mine" />
@@ -110,12 +109,9 @@ class Artefacts extends Component {
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={16}
         >
-          {Object.keys(this.state.userArtefacts).length !== 0 &&
-            <View>
-                {this.showArtefacts(this.state.userArtefacts)}
-            </View>
-          }
-          
+          {Object.keys(this.state.userArtefacts).length !== 0 && (
+            <View>{this.showArtefacts(this.state.userArtefacts)}</View>
+          )}
         </ScrollView>
 
         {/*********************** CHANGE THIS LATER ********************/}
@@ -124,13 +120,13 @@ class Artefacts extends Component {
         <Modal isVisible={this.state.isModalVisible}>
           <View style={{ backgroundColor: "white", flex: 1 }}>
             <Button title="Close" onPress={this.toggleModal} />
-          
+
             <TextInput
               style={styles.inputField}
               placeholder="Title"
               autoCapitalize="none"
               placeholderTextColor="#868686"
-              onChangeText={ () => this.onTitleChange() }
+              onChangeText={() => this.onTitleChange()}
               value={this.state.newArtefact.title}
             />
 
@@ -139,7 +135,7 @@ class Artefacts extends Component {
               placeholder="Description"
               autoCapitalize="none"
               placeholderTextColor="#868686"
-              onChangeText={ () => this.onDescriptionChange() }
+              onChangeText={() => this.onDescriptionChange()}
               value={this.state.newArtefact.description}
             />
 
@@ -148,13 +144,11 @@ class Artefacts extends Component {
               placeholder="Category"
               autoCapitalize="none"
               placeholderTextColor="#868686"
-              onChangeText={ () => this.onCategoryChange() }
+              onChangeText={() => this.onCategoryChange()}
               value={this.state.newArtefact.category}
             />
-            
-            <Button 
-              title= "Post Artefact"
-            />
+
+            <Button title="Post Artefact" />
           </View>
         </Modal>
         {/****************************************************************/}
@@ -208,18 +202,18 @@ const styles = StyleSheet.create({
 });
 
 Artefacts.propTypes = {
-    getUserArtefacts: PropTypes.func.isRequired,
-    artefacts: PropTypes.object.isRequired,
-    auth: PropTypes.object.isRequired,
+  getUserArtefacts: PropTypes.func.isRequired,
+  artefacts: PropTypes.object.isRequired,
+  auth: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => ({
-    artefacts: state.artefacts,
-    auth: state.auth,
+  artefacts: state.artefacts,
+  auth: state.auth
 });
 
 // export
 export default connect(
-    mapStateToProps,
-    { getUserArtefacts }
+  mapStateToProps,
+  { getUserArtefacts }
 )(Artefacts);

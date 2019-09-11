@@ -6,7 +6,6 @@ import { View, StyleSheet, Text, AsyncStorage } from "react-native";
 import { registerUser, loginUser } from "../../actions/authActions";
 import RegisterManager from "./registerManager";
 import { C } from "../../types/registerTypes";
-import CustomFontText from "../../utils/customFontText";
 
 // import width/height responsive functions
 import {
@@ -108,11 +107,8 @@ class Register extends Component {
     return (
       <View style={styles.container}>
         {/* heading */}
-        <CustomFontText style={styles.titleText}> Welcome, </CustomFontText>
-        <CustomFontText style={styles.subTitleText}>
-          {" "}
-          Enter your details to signup.{" "}
-        </CustomFontText>
+        <Text style={styles.titleText}> Welcome, </Text>
+        <Text style={styles.subTitleText}> Enter your details to signup. </Text>
 
         {/* main card view */}
         <View style={styles.card}>
@@ -140,10 +136,10 @@ class Register extends Component {
     //     return (
     //       <View style={styles.lastContainer}>
     //         {/* heading */}
-    //         <CustomFontText style={styles.titleText}>All done!</CustomFontText>
-    //         <CustomFontText style={styles.subTitleText}>
+    //         <Text style={styles.titleText}>All done!</Text>
+    //         <Text style={styles.subTitleText}>
     //           Welcome {this.state.name}
-    //         </CustomFontText>
+    //         </Text>
 
     //         <Image
     //           style={styles.profilePic}
@@ -166,11 +162,11 @@ class Register extends Component {
     //     return (
     //       <View style={styles.container}>
     //         {/* heading */}
-    //         <CustomFontText style={styles.titleText}> Welcome, </CustomFontText>
-    //         <CustomFontText style={styles.subTitleText}>
+    //         <Text style={styles.titleText}> Welcome, </Text>
+    //         <Text style={styles.subTitleText}>
     //           {" "}
     //           Enter your details to signup.{" "}
-    //         </CustomFontText>
+    //         </Text>
 
     //         {/* main card view */}
     //         <View style={styles.card}>
@@ -188,7 +184,7 @@ class Register extends Component {
     //             passwordCfm={this.state.passwordCfm}
     //             photoURL={this.state.photoURL}
     //           />
-    //           {/* <CustomFontText style={styles.error}> {errors.passwordCfm} </CustomFontText> */}
+    //           {/* <Text style={styles.error}> {errors.passwordCfm} </Text> */}
     //         </View>
     //       </View>
     //     );
@@ -207,7 +203,7 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontWeight: "bold",
     alignSelf: "flex-start",
-    marginLeft: wd(0.07),
+    marginLeft: wd(0.07)
     // fontFamily: "HindSiliguri-Bold"
   },
 
@@ -216,7 +212,7 @@ const styles = StyleSheet.create({
     marginBottom: 50,
     fontWeight: "bold",
     alignSelf: "flex-start",
-    marginLeft: wd(0.07),
+    marginLeft: wd(0.07)
     // fontFamily: "HindSiliguri-Bold"
   },
 
