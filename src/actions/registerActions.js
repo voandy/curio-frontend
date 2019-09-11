@@ -1,4 +1,4 @@
-import { C } from "./registerTypes";
+import { C } from "../types/registerTypes";
 
 export const getName = name => {
   return {
@@ -16,14 +16,28 @@ export const getEmail = email => {
 
 export const getPassword = password => {
   return {
-    type: C.GET_NAME,
+    type: C.GET_PASSWORD,
     payload: password
   };
 };
 
-export const getPhoto = photoURL => {
+export const getPasswordCfm = passwordCfm => {
   return {
-    type: C.GET_NAME,
+    type: C.GET_PASSWORDCFM,
+    payload: passwordCfm
+  };
+};
+
+export const getPhotoURL = photoURL => {
+  return {
+    type: C.GET_PHOTOURL,
     payload: photoURL
+  };
+};
+
+export const setRegisterStage = registerState => {
+  return {
+    type: C.SET_REGISTER_STAGE,
+    payload: registerState
   };
 };

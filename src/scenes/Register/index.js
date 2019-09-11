@@ -14,16 +14,6 @@ import {
   setToBottom
 } from "../../utils/responsiveDesign";
 
-// state
-const initialState = {
-  registerStage: C.GET_NAME,
-  name: "",
-  email: "",
-  password: "",
-  passwordCfm: "",
-  photoURL: null
-};
-
 class Register extends Component {
   constructor() {
     super();
@@ -35,32 +25,6 @@ class Register extends Component {
     headerStyle: {
       elevation: 0 // remove shadow on Android
     }
-  };
-
-  // state data handler
-  nameHandler = name => {
-    this.setState({ ...this.state, name });
-  };
-
-  emailHandler = email => {
-    this.setState({ ...this.state, email });
-  };
-
-  passwordHandler = password => {
-    this.setState({ ...this.state, password });
-  };
-
-  passwordCfmHandler = passwordCfm => {
-    this.setState({ ...this.state, passwordCfm });
-  };
-
-  photoURLHandler = photoURL => {
-    this.setState({ ...this.state, photoURL });
-  };
-
-  stageHandler = registerStage => {
-    this.setState({ ...this.state, registerStage });
-    console.log(this.state);
   };
 
   // send new user data
@@ -130,65 +94,6 @@ class Register extends Component {
         </View>
       </View>
     );
-    // switch (this.state.registerStage) {
-    //   // once registered
-    //   case C.LAST_STAGE:
-    //     return (
-    //       <View style={styles.lastContainer}>
-    //         {/* heading */}
-    //         <Text style={styles.titleText}>All done!</Text>
-    //         <Text style={styles.subTitleText}>
-    //           Welcome {this.state.name}
-    //         </Text>
-
-    //         <Image
-    //           style={styles.profilePic}
-    //           source={{ uri: this.state.photoURL }}
-    //         />
-    //         {/* button to collection/group page */}
-    //         {setToBottom(
-    //           <View style={styles.bottom}>
-    //             <MyButton
-    //               text="Get Started"
-    //               // onPress={{ navigate("App") }}    TODO add navigation and verification
-    //             />
-    //           </View>
-    //         )}
-    //       </View>
-    //     );
-
-    //   // register pages
-    //   default:
-    //     return (
-    //       <View style={styles.container}>
-    //         {/* heading */}
-    //         <Text style={styles.titleText}> Welcome, </Text>
-    //         <Text style={styles.subTitleText}>
-    //           {" "}
-    //           Enter your details to signup.{" "}
-    //         </Text>
-
-    //         {/* main card view */}
-    //         <View style={styles.card}>
-    //           <RegisterManager
-    //             registerStage={this.state.registerStage}
-    //             nameHandler={this.nameHandler}
-    //             emailHandler={this.emailHandler}
-    //             passwordHandler={this.passwordHandler}
-    //             passwordCfmHandler={this.passwordCfmHandler}
-    //             photoURLHandler={this.photoURLHandler}
-    //             stageHandler={this.stageHandler}
-    //             name={this.state.name}
-    //             email={this.state.email}
-    //             password={this.state.password}
-    //             passwordCfm={this.state.passwordCfm}
-    //             photoURL={this.state.photoURL}
-    //           />
-    //           {/* <Text style={styles.error}> {errors.passwordCfm} </Text> */}
-    //         </View>
-    //       </View>
-    //     );
-    // }
   }
 }
 

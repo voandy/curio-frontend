@@ -10,8 +10,7 @@ import {
   ScrollView,
   Dimensions,
   Button,
-  TextInput,
-  ActivityIndicator
+  TextInput
 } from "react-native";
 
 import { logoutUser } from "../../actions/authActions";
@@ -169,7 +168,7 @@ const styles = StyleSheet.create({
   },
 
   mainGroupContainer: {
-    height: Dimensions.get("window").height * 0.3,
+    height: wd(0.3),
     top: 0,
     position: "absolute",
     backgroundColor: "#E2E2E2"
@@ -180,7 +179,7 @@ const styles = StyleSheet.create({
     marginTop: 100,
     alignItems: "center",
     justifyContent: "center",
-    marginLeft: Dimensions.get("window").width * 0.07,
+    marginLeft: wd(0.07),
     fontFamily: "HindSiliguri-Bold"
   }
 });
