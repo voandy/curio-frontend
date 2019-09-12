@@ -10,7 +10,17 @@ import {
   Text
 } from "react-native";
 
+// Custom component
 import SimpleHeader from "../../component/SimpleHeader";
+import NotificationFeed from "../../component/NotificationFeed"
+
+
+const jon = "John snow is not Jon snow, so he knows something";
+const varys = "botak dude that is sometimes a traitor";
+const tormund = "WILD ONE";
+const tyrion = "drunk as always";
+const joffrey = "deserved to die, was a pleasure to watch him chock to his death XD";
+
 
 export default class Notification extends Component {
   render() {
@@ -24,12 +34,21 @@ export default class Notification extends Component {
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={16}
         >
-          {/* heading */}
-          <Text style={styles.titleText}>NOTIFICATION</Text>
-          <Text style={styles.titleText}>NOTIFICATION</Text>
-          <Text style={styles.titleText}>NOTIFICATION</Text>
-          <Text style={styles.titleText}>NOTIFICATION</Text>
-          <Text style={styles.titleText}>NOTIFICATION</Text>
+
+          <NotificationFeed text={jon} image={require("../../../assets/images/default-profile-pic.png")}/>
+          <NotificationFeed text={varys} image={require("../../../assets/images/default-profile-pic.png")}/>
+          <NotificationFeed text={tormund} image={require("../../../assets/images/default-profile-pic.png")}/>
+          <NotificationFeed text={tyrion} image={require("../../../assets/images/default-profile-pic.png")}/>
+          <NotificationFeed text={joffrey} image={require("../../../assets/images/default-profile-pic.png")}/>
+          <NotificationFeed text={tyrion} image={require("../../../assets/images/default-profile-pic.png")}/>
+          <NotificationFeed text={joffrey} image={require("../../../assets/images/default-profile-pic.png")}/>
+          <NotificationFeed text={tyrion} image={require("../../../assets/images/default-profile-pic.png")}/>
+          <NotificationFeed text={joffrey} image={require("../../../assets/images/default-profile-pic.png")}/>
+          <NotificationFeed text={tyrion} image={require("../../../assets/images/default-profile-pic.png")}/>
+
+
+          {/* no more notifications ! */}
+          <Text style={{ alignSelf:"center", justifyContent:"center" }}>  Hooray no more notifications </Text>
         </ScrollView>
       </View>
     );
