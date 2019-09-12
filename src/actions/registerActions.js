@@ -1,36 +1,36 @@
 import { C } from "../types/registerTypes";
 
-export const getName = name => {
+export const setName = name => {
   return {
-    type: C.GET_NAME,
+    type: C.SET_NAME,
     payload: name
   };
 };
 
-export const getEmail = email => {
+export const setEmail = email => {
   return {
-    type: C.GET_EMAIL,
+    type: C.SET_EMAIL,
     payload: email
   };
 };
 
-export const getPassword = password => {
+export const setPassword = password => {
   return {
-    type: C.GET_PASSWORD,
+    type: C.SET_PASSWORD,
     payload: password
   };
 };
 
-export const getPasswordCfm = passwordCfm => {
+export const setPasswordCfm = passwordCfm => {
   return {
-    type: C.GET_PASSWORDCFM,
+    type: C.SET_PASSWORDCFM,
     payload: passwordCfm
   };
 };
 
-export const getPhotoURL = photoURL => {
+export const setPhotoURL = photoURL => {
   return {
-    type: C.GET_PHOTOURL,
+    type: C.SET_PHOTOURL,
     payload: photoURL
   };
 };

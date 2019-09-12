@@ -10,8 +10,10 @@ import {
 import * as ImagePicker from "expo-image-picker";
 import * as Permissions from "expo-permissions";
 
-// import all register Constants
+// redux
+import { connect } from "react-redux";
 import { C } from "../../types/registerTypes";
+import { setName, setEmail, setPassword, setPasswordCfm, setPhotoURL, setRegisterStage } from "../../actions/registerActions";
 
 // import reusable button component
 import MyButton from "../../component/MyButton";
@@ -40,6 +42,11 @@ class RegisterManager extends Component {
 
   componentDidMount() {
     this.getPermissionAsync();
+  }
+
+  componentWillUpdate(nextProps) {
+
+
   }
 
   // camera roll permissions
@@ -76,13 +83,14 @@ class RegisterManager extends Component {
 
   // error handlers
   async errorName() {
+    
     this.setState({
-      nameErrorMessage: await validateName(this.props.name)
+      nameErrorMessage: await validateName(this.props.register.name)
     });
 
     // with no errors, proceed to next page
-    if (this.state.nameErrorMessage === "") {
-      this.props.stageHandler(C.GET_EMAIL);
+    if (this.state.nameErrorMessage === null) {
+      this.props.setRegisterStage(C.SET_EMAIL);
     }
   }
 
@@ -93,27 +101,28 @@ class RegisterManager extends Component {
 
     // with no errors, proceed to next page
     if (this.state.emailErrorMessage === "") {
-      this.props.stageHandler(C.GET_PASSWORD);
+      this.props.setRegisterStage(C.SET_PASSWORD);
     }
   }
 
   async errorPassword() {
     this.setState({
       pwdErrorMessage: await validatePassword(
-        this.props.password,
-        this.props.passwordCfm
+        this.props.register.password,
+        this.props.register.passwordCfm
       )
     });
 
     // with no errors, proceed to next page
     if (this.state.pwdErrorMessage === "") {
-      this.props.stageHandler(C.GET_PHOTO);
+      this.props.setRegisterStage(C.SET_PHOTO);
     }
   }
 
   render() {
-    switch (this.props.registerStage) {
-      case C.GET_NAME:
+
+    switch (this.props.register.register_stage) {
+      case C.SET_NAME:
         return (
           <View style={styles.cardContainer}>
             {/* title */}
@@ -124,8 +133,8 @@ class RegisterManager extends Component {
               placeholder="Jon Snow"
               autoCapitalize="none"
               placeholderTextColor="#868686"
-              onChangeText={val => this.props.nameHandler(val)}
-              value={this.props.name}
+              onChangeText={val => this.props.setName(val)}
+              value={this.props.register.name}
               onSubmitEditing={() => this.errorName()}
             />
 
@@ -142,7 +151,7 @@ class RegisterManager extends Component {
             )}
           </View>
         );
-      case C.GET_EMAIL:
+      case C.SET_EMAIL:
         return (
           <View style={styles.cardContainer}>
             {/* title */}
@@ -153,8 +162,8 @@ class RegisterManager extends Component {
               placeholder="abc@email.com"
               autoCapitalize="none"
               placeholderTextColor="#868686"
-              onChangeText={val => this.props.emailHandler(val)}
-              value={this.props.email}
+              onChangeText={val => this.props.setEmail(val)}
+              value={this.props.register.email}
               onSubmitEditing={() => this.errorEmail()}
             />
 
@@ -165,7 +174,7 @@ class RegisterManager extends Component {
             {setToBottom(
               <View style={styles.buttom}>
                 <TouchableOpacity
-                  onPress={() => this.props.stageHandler(C.GET_NAME)}
+                  onPress={() => this.props.setRegisterStage(C.SET_NAME)}
                 >
                   <Text style={styles.backButton}>Back</Text>
                 </TouchableOpacity>
@@ -179,7 +188,7 @@ class RegisterManager extends Component {
             )}
           </View>
         );
-      case C.GET_PASSWORD:
+      case C.SET_PASSWORD:
         return (
           <View style={styles.cardContainer}>
             {/* Title */}
@@ -197,8 +206,8 @@ class RegisterManager extends Component {
               secureTextEntry={true}
               autoCapitalize="none"
               placeholderTextColor="#868686"
-              onChangeText={val => this.props.passwordHandler(val)}
-              value={this.props.password}
+              onChangeText={val => this.props.setPassword(val)}
+              value={this.props.register.password}
             />
 
             {/* Cfm password */}
@@ -211,8 +220,8 @@ class RegisterManager extends Component {
               secureTextEntry={true}
               autoCapitalize="none"
               placeholderTextColor="#868686"
-              onChangeText={val => this.props.passwordCfmHandler(val)}
-              value={this.props.passwordCfm}
+              onChangeText={val => this.props.setPasswordCfm(val)}
+              value={this.props.register.passwordCfm}
               onSubmitEditing={() => this.errorPassword()}
             />
 
@@ -223,7 +232,7 @@ class RegisterManager extends Component {
             {setToBottom(
               <View style={styles.buttom}>
                 <TouchableOpacity
-                  onPress={() => this.props.stageHandler(C.GET_EMAIL)}
+                  onPress={() => this.props.setRegisterStage(C.SET_EMAIL)}
                 >
                   <Text style={styles.backButton}>Back</Text>
                 </TouchableOpacity>
@@ -238,7 +247,7 @@ class RegisterManager extends Component {
           </View>
         );
 
-      case C.GET_PHOTO:
+      case C.SET_PHOTO:
         return (
           <View style={styles.cardContainer}>
             {/* Title */}
@@ -252,27 +261,27 @@ class RegisterManager extends Component {
               {this.props.photoURL != null ? (
                 <Image
                   style={[styles.profilePic, styles.profilePicBorder]}
-                  source={{ uri: this.props.photoURL }}
+                  source={{ uri: this.props.register.photoURL }}
                 />
               ) : (
-                <Image
-                  style={styles.profilePic}
-                  source={require("../../../assets/images/plus-profile-pic.png")}
-                />
-              )}
+                  <Image
+                    style={styles.profilePic}
+                    source={require("../../../assets/images/plus-profile-pic.png")}
+                  />
+                )}
             </TouchableOpacity>
 
             {setToBottom(
               <View style={styles.buttom}>
                 <TouchableOpacity
-                  onPress={() => this.props.stageHandler(C.GET_PASSWORD)}
+                  onPress={() => this.props.setRegisterStage(C.SET_PASSWORD)}
                 >
                   <Text style={styles.backButton}>Back</Text>
                 </TouchableOpacity>
 
                 <MyButton
                   style={styles.nextButton}
-                  text={this.skipPhotoText(this.props.photoURL)}
+                  text={this.skipPhotoText(this.props.register.photoURL)}
                   onPress={() => this.props.onSubmit()} // moves to welcome page and will be logged in
                 />
               </View>
@@ -381,4 +390,39 @@ const styles = StyleSheet.create({
   }
 });
 
-export default RegisterManager;
+
+const mapStateToProps = state => ({
+  auth: state.auth,
+  register: state.register,
+  errors: state.errors
+});
+
+
+const mapDispatchToProps = dispatch => {
+  return {
+    setName: () => {
+      dispatch(setName());
+    },
+    setEmail: () => {
+      dispatch(setEmail());
+    },
+    setPassword: () => {
+      dispatch(setPassword());
+    },
+    setPasswordCfm: () => {
+      dispatch(setPasswordCfm());
+    },
+    setPhotoURL: () => {
+      dispatch(setPhotoURL());
+    },
+    setRegisterStage: () => {
+      dispatch(setRegisterStage());
+    }
+  };
+};
+
+// connect and export
+export default connect(
+  mapStateToProps, 
+  mapDispatchToProps,
+)(RegisterManager);

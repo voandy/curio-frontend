@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import {
-  StyleSheet, //
+  StyleSheet, 
   TouchableOpacity,
   View,
+  Text,
   Image
 } from "react-native";
 import { connect } from "react-redux";
@@ -61,7 +62,7 @@ class Start extends Component {
 
 // Connect to redux store
 const mapStateToProps = state => ({
-  fontLoaded: state.fontLoader.fontLoaded
+  // fontLoaded: state.fontLoader.fontLoaded
 });
 
 export default connect(

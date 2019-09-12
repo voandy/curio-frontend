@@ -3,9 +3,10 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { View, StyleSheet, Text, AsyncStorage } from "react-native";
 
+// Redux actions
 import { registerUser, loginUser } from "../../actions/authActions";
+
 import RegisterManager from "./registerManager";
-import { C } from "../../types/registerTypes";
 
 // import width/height responsive functions
 import {
@@ -15,10 +16,6 @@ import {
 } from "../../utils/responsiveDesign";
 
 class Register extends Component {
-  constructor() {
-    super();
-    this.state = initialState;
-  }
 
   // nav details
   static navigationOptions = {
@@ -33,17 +30,18 @@ class Register extends Component {
 
     // create new user
     const newUser = {
-      name: this.state.name,
-      email: this.state.email,
-      password: this.state.password,
-      passwordCfm: this.state.passwordCfm,
-      profilePic: this.state.photoURL
+      name: this.props.register.name,
+      email: this.props.register.email,
+      password: this.props.register.password,
+      passwordCfm: this.props.register.passwordCfm,
+      profilePic: this.props.register.photoURL
     };
 
-    // include default photo for those who skipped the selection TODO
-    if (newUser.profilePic === null) {
-      newUser.profilePic = require("../../../assets/images/default-profile-pic.png");
-    }
+    // include default photo for those who skipped the selection 
+    // TODO connect to google cloud
+    // if (newUser.profilePic === null) {
+    //   newUser.profilePic = require("../../../assets/images/default-profile-pic.png");
+    // }
 
     // register user
     this.props.registerUser(newUser, this.props.history).then(res => {
@@ -53,18 +51,21 @@ class Register extends Component {
         password: newUser.password
       };
 
-      // login user directly
-      this.props.loginUser(user, this.props.history).then(res => {
-        AsyncStorage.getItem("userToken").then(res => {
-          // navigate user to Welcome page if no errors
-          if (res !== null) {
-            navigate("Welcome");
-          }
+      // successful registration
+      if (res !== null) {
+
+        // login user directly
+        this.props.loginUser(user, this.props.history).then(res => {
+          AsyncStorage.getItem("userToken").then(res => {
+
+            // navigate user to Welcome page if no errors
+            if (res !== null) {
+              navigate("Welcome");
+            }
+          });
         });
-      });
+      }
     });
-    // reset state
-    this.state = initialState;
   };
 
   render() {
@@ -77,19 +78,7 @@ class Register extends Component {
         {/* main card view */}
         <View style={styles.card}>
           <RegisterManager
-            registerStage={this.state.registerStage}
-            nameHandler={this.nameHandler}
-            emailHandler={this.emailHandler}
-            passwordHandler={this.passwordHandler}
-            passwordCfmHandler={this.passwordCfmHandler}
-            photoURLHandler={this.photoURLHandler}
-            stageHandler={this.stageHandler}
-            name={this.state.name}
-            email={this.state.email}
-            password={this.state.password}
-            passwordCfm={this.state.passwordCfm}
-            photoURL={this.state.photoURL}
-            onSubmit={this.onSubmit}
+          // onSubmit={this.onSubmit}
           />
         </View>
       </View>
@@ -108,7 +97,7 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontWeight: "bold",
     alignSelf: "flex-start",
-    marginLeft: wd(0.07)
+    marginLeft: wd(0.07),
     // fontFamily: "HindSiliguri-Bold"
   },
 
@@ -117,7 +106,7 @@ const styles = StyleSheet.create({
     marginBottom: 50,
     fontWeight: "bold",
     alignSelf: "flex-start",
-    marginLeft: wd(0.07)
+    marginLeft: wd(0.07),
     // fontFamily: "HindSiliguri-Bold"
   },
 
@@ -156,16 +145,14 @@ const styles = StyleSheet.create({
 Register.propTypes = {
   loginUser: PropTypes.func.isRequired,
   registerUser: PropTypes.func.isRequired,
-  auth: PropTypes.object.isRequired,
-  errors: PropTypes.object.isRequired
+  // register: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = state => ({
-  auth: state.auth,
-  errors: state.errors
+  register: state.register,
 });
 
-// export
+// connect and export
 export default connect(
   mapStateToProps,
   { registerUser, loginUser }
