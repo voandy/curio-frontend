@@ -5,12 +5,38 @@ import {
 } from "../types/imageTypes";
 
 // get artefacts of user based on userId
-export const uploadImage = data => dispatch => {
+export const uploadImage = uri => dispatch => {
+  console.log("uri is", uri);
+  const image = {
+    uri: uri,
+    type: 'image/jpeg',
+    name: 'image' + '-' + Date.now() + '.jpg'
+  }
+  // Instantiate a FormData() object
+  const imgBody = new FormData();
+
+  // append the image to the object with the title 'image'
+  imgBody.append('image', image);
+  console.log("imgBody is", imgBody);
+
   return axios
-    .post("http://curioapp.herokuapp.com/img-upload", data)
+    .post(
+      "http://curioapp.herokuapp.com/img-upload", 
+      imgBody,
+      config = {
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'multipart/form-data',
+        }
+      }
+    )
     .then(res => {
-      dispatch(setImage(res.data));
-    })
+
+        console.log("imageURL in action is", res);
+        // set image
+        dispatch(setImage(res));
+      }
+    )
     .catch(err =>
       dispatch({
         type: GET_ERRORS,

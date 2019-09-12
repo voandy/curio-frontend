@@ -19,6 +19,7 @@ import {
 import Header from "../../component/Header";
 import ArtefactFeed from "../../component/ArtefactFeed";
 import { getUserArtefacts, createNewArtefact } from "../../actions/artefactsActions";
+import { uploadImage } from "../../actions/imageActions";
 
 // import width/height responsive functions
 import {
@@ -33,7 +34,7 @@ const newArtefact = {
   description: "",
   category: "",
   dateObtained: "",
-  imageURL: null,
+  imageURL: "",
 };
 
 class Artefacts extends Component {
@@ -70,10 +71,16 @@ class Artefacts extends Component {
   async componentWillUpdate(nextProps) {
 
     // sets user artefacts 
-    if (this.isUserArtefactsEmpty()) {
+    if (this.isUserArtefactsEmpty() && nextProps.artefacts.userArtefacts !== this.state.userArtefacts) {
       await this.setState({
         userArtefacts: nextProps.artefacts.userArtefacts
       });
+    }
+
+    // sets new artefact's imageURL
+    if (this.state.newArtefact.imageURL === "" && nextProps.image.imageURL !== this.state.newArtefact.imageURL) {
+        await this.onImageURLChange(nextProps.image.imageURL);
+        // console.log("imageURL is ", nextProps.image.imageURL);
     }
   }
   
@@ -97,8 +104,24 @@ class Artefacts extends Component {
     return <>{artefactFeedRows}</>;
   }
 
+   // access camera roll
+   _pickImage = async () => {
+    // obtain image
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 4]
+    });
+
+    // set image
+    if (!result.cancelled) {
+      // upload image to Google Cloud Storage
+      await this.props.uploadImage(result.uri);
+    }
+  };
+
   postNewArtefact = () => {
-    console.log(this.state.newArtefact);
+    console.log("new artefact is ", this.state.newArtefact);
   }
 
   // change title
@@ -160,21 +183,6 @@ class Artefacts extends Component {
         }
     })
   }
-
-  // access camera roll
-  _pickImage = async () => {
-    // obtain image
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 4]
-    });
-
-    // set image
-    if (!result.cancelled) {
-      this.onImageURLChange(result.uri);
-    }
-  };
 
   render() {
     return (
@@ -250,17 +258,17 @@ class Artefacts extends Component {
 
             {/* Image button */}
             <TouchableOpacity activeOpacity={0.5} onPress={this._pickImage}>
-              {this.state.newArtefact.imageURL != null ? (
+              {/* {this.state.newArtefact.imageURL !== "" ? (
                 <Image
                   style={[styles.profilePic, styles.profilePicBorder]}
                   source={{ uri: this.state.newArtefact.imageURL }}
                 />
-              ) : (
+              ) : ( */}
                 <Image
                   style={styles.profilePic}
                   source={require("../../../assets/images/plus-profile-pic.png")}
                 />
-              )}
+              {/* )} */}
             </TouchableOpacity>
             
             <Button 
@@ -322,16 +330,18 @@ Artefacts.propTypes = {
   getUserArtefacts: PropTypes.func.isRequired,
   createNewArtefact: PropTypes.func.isRequired,
   artefacts: PropTypes.object.isRequired,
-  auth: PropTypes.object.isRequired
+  auth: PropTypes.object.isRequired,
+  image: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => ({
   artefacts: state.artefacts,
-  auth: state.auth
+  auth: state.auth,
+  image: state.image
 });
 
 // export
 export default connect(
   mapStateToProps,
-  { getUserArtefacts, createNewArtefact }
+  { getUserArtefacts, createNewArtefact, uploadImage }
 )(Artefacts);
