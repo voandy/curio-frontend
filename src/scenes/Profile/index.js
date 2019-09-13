@@ -14,7 +14,10 @@ import {
   Text
 } from "react-native";
 
+// date converter
 import Moment from "moment";
+
+// custom component
 import SimpleHeader from "../../component/SimpleHeader";
 
 class Profile extends Component {

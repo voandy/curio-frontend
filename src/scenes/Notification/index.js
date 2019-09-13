@@ -14,7 +14,6 @@ import {
 import SimpleHeader from "../../component/SimpleHeader";
 import NotificationFeed from "../../component/NotificationFeed"
 
-
 const jon = "John snow is not Jon snow, so he knows something";
 const varys = "botak dude that is sometimes a traitor";
 const tormund = "WILD ONE";
@@ -23,8 +22,15 @@ const joffrey = "deserved to die, was a pleasure to watch him chock to his death
 
 
 export default class Notification extends Component {
+
   render() {
+
+    // date format
+    // const dt = this.state.userData.dateJoined;
+
+    // navigation in app
     const { navigate } = this.props.navigation;
+
     return (
       <View style={styles.container}>
         <SimpleHeader title="Notification" />
@@ -35,20 +41,18 @@ export default class Notification extends Component {
           scrollEventThrottle={16}
         >
 
-          <NotificationFeed text={jon} image={require("../../../assets/images/default-profile-pic.png")}/>
-          <NotificationFeed text={varys} image={require("../../../assets/images/default-profile-pic.png")}/>
-          <NotificationFeed text={tormund} image={require("../../../assets/images/default-profile-pic.png")}/>
-          <NotificationFeed text={tyrion} image={require("../../../assets/images/default-profile-pic.png")}/>
-          <NotificationFeed text={joffrey} image={require("../../../assets/images/default-profile-pic.png")}/>
-          <NotificationFeed text={tyrion} image={require("../../../assets/images/default-profile-pic.png")}/>
-          <NotificationFeed text={joffrey} image={require("../../../assets/images/default-profile-pic.png")}/>
-          <NotificationFeed text={tyrion} image={require("../../../assets/images/default-profile-pic.png")}/>
-          <NotificationFeed text={joffrey} image={require("../../../assets/images/default-profile-pic.png")}/>
-          <NotificationFeed text={tyrion} image={require("../../../assets/images/default-profile-pic.png")}/>
+          <NotificationFeed name={"jon "} text={jon} image={require("../../../assets/images/default-profile-pic.png")} />
+          <NotificationFeed name={"varys "} text={varys} image={require("../../../assets/images/default-profile-pic.png")} />
+          <NotificationFeed name={"tormund "} text={tormund} image={require("../../../assets/images/default-profile-pic.png")} />
+          <NotificationFeed name={"tyrion "} text={tyrion} image={require("../../../assets/images/default-profile-pic.png")} />
+          <NotificationFeed name={"joffrey "} text={joffrey} image={require("../../../assets/images/default-profile-pic.png")} />
+          <NotificationFeed name={"tyrion "} text={tyrion} image={require("../../../assets/images/default-profile-pic.png")} />
+          <NotificationFeed name={"joffrey "} text={joffrey} image={require("../../../assets/images/default-profile-pic.png")} />
+          <NotificationFeed name={"tyrion "} text={tyrion} image={require("../../../assets/images/default-profile-pic.png")} />
 
 
           {/* no more notifications ! */}
-          <Text style={{ alignSelf:"center", justifyContent:"center" }}>  Hooray no more notifications </Text>
+          <Text style={{ alignSelf: "center", justifyContent: "center", marginVertical: 40 }}>  Hooray no more notifications </Text>
         </ScrollView>
       </View>
     );

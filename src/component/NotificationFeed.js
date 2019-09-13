@@ -15,9 +15,17 @@ import {
     setToBottom
 } from "../utils/responsiveDesign"
 
+// date converter 
+import Moment from "moment";
+
 class NotificationFeed extends Component {
 
     render() {
+
+        // date format
+        Moment.locale("en");
+        const dt = this.props.date
+
         return (
             <View style={styles.card}>
 
@@ -31,13 +39,14 @@ class NotificationFeed extends Component {
                         </View>
 
                         {/* Notification */}
-                        <View style={ styles.notificationPlaceholder }>
-                            <View >
-                                <Text style={ styles.title }>{this.props.text}</Text>
+                        <View style={styles.notificationPlaceholder}>
+                            <View style={styles.notification}>
+                                <Text style={styles.notificationTitle}>{this.props.name}{this.props.text}</Text>
                             </View>
 
-                            <View style={{ alignContent:"flex-end" ,backgroundColor: "red" }}>
-                                <Text style={ styles.time }> 16 hours ago </Text>
+                            <View style={styles.time}>
+                                {/* <Text style={styles.timeTitle}> {Moment(dt).format("H")} hours ago </Text> */}
+                                <Text style={styles.timeTitle}> 25 hours ago </Text>
                             </View>
                         </View>
                     </View>
@@ -67,7 +76,6 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
         marginLeft: wd(0.03),
-        backgroundColor: "blue"
     },
 
     photo: {
@@ -79,12 +87,24 @@ const styles = StyleSheet.create({
         width: Dimensions.get('window').width * 0.8,
     },
 
-    title: {
+    notification: {
+        alignContent: "flex-start",
+        marginTop: 15,
+        flex: 0.7,
+    },
+
+    notificationTitle: {
         fontFamily: "HindSiliguri-Bold",
         paddingHorizontal: wd(0.03),
     },
 
     time: {
+        alignContent: "flex-end",
+        flex: 0.3,
+        marginBottom: 10
+    },
+
+    timeTitle: {
         fontFamily: "HindSiliguri-Regular",
         paddingHorizontal: wd(0.03)
     },
