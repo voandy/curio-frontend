@@ -20,6 +20,21 @@ import Moment from "moment";
 
 class NotificationFeed extends Component {
 
+    // unbolds text after notification has been read
+    boldText() {
+
+        if (this.props.hasRead == true) {
+            return {
+                fontFamily: "HindSiliguri-Regular"
+            }
+        }
+        else {
+            return {
+                fontFamily: "HindSiliguri-Bold"
+            }
+        }
+    }
+
     render() {
 
         // date format
@@ -41,7 +56,7 @@ class NotificationFeed extends Component {
                         {/* Notification */}
                         <View style={styles.notificationPlaceholder}>
                             <View style={styles.notification}>
-                                <Text style={styles.notificationTitle}>{this.props.name}{this.props.text}</Text>
+                                <Text style={[styles.notificationTitle, this.boldText()]}>{this.props.name} {this.props.text}</Text>
                             </View>
 
                             <View style={styles.time}>
@@ -94,7 +109,6 @@ const styles = StyleSheet.create({
     },
 
     notificationTitle: {
-        fontFamily: "HindSiliguri-Bold",
         paddingHorizontal: wd(0.03),
     },
 

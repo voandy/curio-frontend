@@ -11,25 +11,33 @@ import {
   Dimensions,
   Button,
   TextInput,
+  Image,
   ActivityIndicator
 } from "react-native";
 
+// custom components
 import { logoutUser } from "../../actions/authActions";
 import CardCarousel from "../../component/CardCarousel";
+import CardGroup from "../../component/CardGroup";
 import Header from "../../component/Header";
 import Tabs from "./groupManager";
 
-// CHANGE THIS LATER
+// Custom respondsive design component
 import {
   deviceHeigthDimension as hp,
   deviceWidthDimension as wd,
   setToBottom
 } from "../../utils/responsiveDesign";
 
+// default gray colour
+const gray = "#F7F7F7"
+
 const newGroup = {
   title: "",
   description: ""
 };
+
+
 
 class Groups extends Component {
   // CHANGE THIS LATER
@@ -47,15 +55,16 @@ class Groups extends Component {
 
     return (
       <View style={styles.container}>
-        <Header/>
+        <Header />
 
         {/* scrollable area for CONTENT */}
         <ScrollView
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={16}
+          style={{ backgroundColor: gray }}
         >
           {/* carousel pinned groups */}
-          <View style={{ height: 130, marginTop: 20 }}>
+          <View style={{ height: wd(0.52), backgroundColor: "white" }}>
             <ScrollView
               horizontal={true}
               showsHorizontalScrollIndicator={false}
@@ -63,17 +72,20 @@ class Groups extends Component {
               snapToAlignment={"center"}
               snapToInterval={Dimensions.get("window").width * 0.85}
             >
-              <CardCarousel text="page 1" />
-              <CardCarousel text="page 2" />
-              <CardCarousel text="page 3" />
+              <CardCarousel image={require("../../../assets/images/test-delete-this/boi1.jpg")} />
+              <CardCarousel image={require("../../../assets/images/test-delete-this/boi2.jpg")} />
+              <CardCarousel image={require("../../../assets/images/test-delete-this/boi3.jpg")} />
+              <CardCarousel image={require("../../../assets/images/test-delete-this/boi4.jpg")} />
             </ScrollView>
           </View>
-
-          <Text style={styles.titleText}>Groups</Text>
-          <Text style={styles.titleText}>Groups</Text>
-          <Text style={styles.titleText}>Groups</Text>
-          <Text style={styles.titleText}>Groups</Text>
-          <Text style={styles.titleText}>Groups</Text>
+          <View>
+            <CardGroup image={ require("../../../assets/images/test-delete-this/boi1.jpg") } />
+            <Text style={styles.titleText}>Groups</Text>
+            <Text style={styles.titleText}>Groups</Text>
+            <Text style={styles.titleText}>Groups</Text>
+            <Text style={styles.titleText}>Groups</Text>
+            <Text style={styles.titleText}>Groups</Text>
+          </View>
         </ScrollView>
 
         {/*********************** CHANGE THIS LATER ********************/}

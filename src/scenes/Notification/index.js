@@ -41,14 +41,14 @@ export default class Notification extends Component {
           scrollEventThrottle={16}
         >
 
-          <NotificationFeed name={"jon "} text={jon} image={require("../../../assets/images/default-profile-pic.png")} />
-          <NotificationFeed name={"varys "} text={varys} image={require("../../../assets/images/default-profile-pic.png")} />
-          <NotificationFeed name={"tormund "} text={tormund} image={require("../../../assets/images/default-profile-pic.png")} />
-          <NotificationFeed name={"tyrion "} text={tyrion} image={require("../../../assets/images/default-profile-pic.png")} />
-          <NotificationFeed name={"joffrey "} text={joffrey} image={require("../../../assets/images/default-profile-pic.png")} />
-          <NotificationFeed name={"tyrion "} text={tyrion} image={require("../../../assets/images/default-profile-pic.png")} />
-          <NotificationFeed name={"joffrey "} text={joffrey} image={require("../../../assets/images/default-profile-pic.png")} />
-          <NotificationFeed name={"tyrion "} text={tyrion} image={require("../../../assets/images/default-profile-pic.png")} />
+          <NotificationFeed name={"jon"} text={jon} hasRead={true} image={require("../../../assets/images/default-profile-pic.png")} />
+          <NotificationFeed name={"varys"} text={varys} hasRead={false} image={require("../../../assets/images/default-profile-pic.png")} />
+          <NotificationFeed name={"tormund"} text={tormund} hasRead={false} image={require("../../../assets/images/default-profile-pic.png")} />
+          <NotificationFeed name={"tyrion"} text={tyrion} hasRead={true} image={require("../../../assets/images/default-profile-pic.png")} />
+          <NotificationFeed name={"joffrey"} text={joffrey} hasRead={true} image={require("../../../assets/images/default-profile-pic.png")} />
+          <NotificationFeed name={"tyrion"} text={tyrion} hasRead={false} image={require("../../../assets/images/default-profile-pic.png")} />
+          <NotificationFeed name={"joffrey"} text={joffrey} hasRead={false} image={require("../../../assets/images/default-profile-pic.png")} />
+          <NotificationFeed name={"tyrion"} text={tyrion} hasRead={true} image={require("../../../assets/images/default-profile-pic.png")} />
 
 
           {/* no more notifications ! */}
