@@ -70,7 +70,7 @@ class Groups extends Component {
               showsHorizontalScrollIndicator={false}
               decelerationRate={0.8}
               snapToAlignment={"center"}
-              snapToInterval={Dimensions.get("window").width * 0.85}
+              snapToInterval={Dimensions.get("window").width}
             >
               <CardCarousel image={require("../../../assets/images/test-delete-this/boi1.jpg")} />
               <CardCarousel image={require("../../../assets/images/test-delete-this/boi2.jpg")} />
@@ -78,14 +78,22 @@ class Groups extends Component {
               <CardCarousel image={require("../../../assets/images/test-delete-this/boi4.jpg")} />
             </ScrollView>
           </View>
-          <View>
-            <CardGroup image={ require("../../../assets/images/test-delete-this/boi1.jpg") } />
-            <Text style={styles.titleText}>Groups</Text>
-            <Text style={styles.titleText}>Groups</Text>
-            <Text style={styles.titleText}>Groups</Text>
-            <Text style={styles.titleText}>Groups</Text>
-            <Text style={styles.titleText}>Groups</Text>
+
+          {/* unpinned groups */}
+          <View style={styles.unpinned}>
+            <View style={styles.unpinnedLeft}>
+              <CardGroup text="You can't fail if you dont enroll" image={require("../../../assets/images/test-delete-this/boi1.jpg")} />
+              <CardGroup text="CooooCOCOCOOOLD" image={require("../../../assets/images/test-delete-this/boi5.png")} />
+            </View>
+            <View style={styles.unpinnedRight}>
+              <CardGroup text="OWH" image={require("../../../assets/images/test-delete-this/boi3.jpg")} />
+            </View>
           </View>
+
+          <Text style={styles.titleText}>Groups</Text>
+          <Text style={styles.titleText}>Groups</Text>
+          <Text style={styles.titleText}>Groups</Text>
+          <Text style={styles.titleText}>Groups</Text>
         </ScrollView>
 
         {/*********************** CHANGE THIS LATER ********************/}
@@ -124,15 +132,6 @@ class Groups extends Component {
   }
 }
 
-Groups.propTypes = {
-  logoutUser: PropTypes.func.isRequired,
-  auth: PropTypes.object.isRequired
-};
-
-const mapStateToProps = state => ({
-  auth: state.auth,
-  fontLoaded: state.fontLoader.fontLoaded
-});
 
 const styles = StyleSheet.create({
   // CHANGE THIS LATER
@@ -194,10 +193,39 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginLeft: Dimensions.get("window").width * 0.07,
     fontFamily: "HindSiliguri-Bold"
+  },
+
+  unpinned: {
+    flexDirection: "row"
+  },
+
+  unpinnedLeft: {
+    flex: 0.5,
+    marginLeft: Dimensions.get("window").width * 0.05,
+  },
+
+  unpinnedRight: {
+    alignItems: "flex-end", 
+    flex: 0.5, 
+    marginRight: Dimensions.get("window").width * 0.05
   }
+
+
+
 });
 
-//  export
+Groups.propTypes = {
+  logoutUser: PropTypes.func.isRequired,
+  auth: PropTypes.object.isRequired
+};
+
+const mapStateToProps = state => ({
+  auth: state.auth,
+  fontLoaded: state.fontLoader.fontLoaded
+});
+
+
+//  connect to redux and export
 export default connect(
   mapStateToProps,
   { logoutUser }

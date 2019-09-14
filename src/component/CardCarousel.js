@@ -33,10 +33,10 @@ class CardCarousel extends Component {
 
 const styles = StyleSheet.create({
   card: {
-    width: Dimensions.get("window").width * 0.85,
-    marginHorizontal: 10,
+    width: Dimensions.get("window").width * 0.9,
+    marginHorizontal: Dimensions.get("window").width * 0.05,
     height: wd(0.45),
-    borderRadius: 30,
+    borderRadius: 15,
     borderWidth: 1,
     borderColor: "#E2E2E2",
     alignContent: "center",
@@ -49,9 +49,9 @@ const styles = StyleSheet.create({
   },
 
   photo:{
-    width: Dimensions.get("window").width * 0.85,
+    width: Dimensions.get("window").width * 0.9,
     height: wd(0.45),
-    borderRadius: 30,
+    borderRadius: 15,
   }
 
 });

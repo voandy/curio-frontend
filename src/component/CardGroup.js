@@ -32,6 +32,10 @@ class CardGroup extends Component {
                     <View style={styles.picPlaceholder}>
                         <Image style={[styles.photo]} source={this.props.image} />
                     </View>
+                    <View style={styles.textPlaceholder}>
+                        {/* CHANGE TO FIT USER DB model (ie. this.props.user.text or something) */}
+                        <Text>{this.props.text}</Text>
+                    </View>
                 </TouchableOpacity>
             </View>
         );
@@ -40,26 +44,34 @@ class CardGroup extends Component {
 
 const styles = StyleSheet.create({
     card: {
-        width: Dimensions.get("window").width * 0.85,
-        marginHorizontal: 10,
-        height: wd(0.45),
-        borderRadius: 30,
+        width: Dimensions.get("window").width * 0.43,
+        // marginHorizontal: Dimensions.get("window").width * 0.05,
+        marginVertical: 10,
+        height: wd(0.5),
+        borderRadius: 15,
         borderWidth: 1,
         borderColor: "#E2E2E2",
         alignContent: "center",
-        alignItems: "center"
+        alignItems: "center",
     },
 
     picPlaceholder: {
+        flex: 0.7,
         alignItems: "center",
         justifyContent: "center",
     },
 
     photo: {
-        width: Dimensions.get("window").width * 0.85,
-        // height: wd(0.45),
-        borderRadius: 30,
-    }
+        width: Dimensions.get("window").width * 0.43,
+        height: wd(0.35),
+        borderTopLeftRadius: 15,
+        borderTopRightRadius: 15
+    },
+
+    textPlaceholder: {
+        flex: 0.3,
+        margin: 5,
+    },  
 
 });
 
