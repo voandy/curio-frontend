@@ -19,6 +19,8 @@ import Moment from "moment";
 
 // custom component
 import SimpleHeader from "../../component/SimpleHeader";
+import MyButton from "../../component/MyButton";
+import ProfileSetting from "../../component/ProfileSetting"
 
 class Profile extends Component {
   constructor() {
@@ -31,7 +33,7 @@ class Profile extends Component {
   // checks if userData is empty
   isUserDataEmpty() {
     if (Object.keys(this.state.userData).length === 0) {
-        return true;
+      return true;
     }
     return false;
   }
@@ -84,11 +86,11 @@ class Profile extends Component {
               source={{ uri: this.state.userData.profilePic }}
             />
           ) : (
-            <Image
-              style={styles.profilePic}
-              source={require("../../../assets/images/default-profile-pic.png")}
-            />
-          )}
+              <Image
+                style={styles.profilePic}
+                source={require("../../../assets/images/default-profile-pic.png")}
+              />
+            )}
 
           {/* user heading */}
           <Text style={styles.userName}>{this.state.userData.name}</Text>
@@ -99,9 +101,18 @@ class Profile extends Component {
           {/* line separator */}
           <View style={styles.line} />
 
-          <TouchableOpacity onPress={this.onLogoutClick} style={styles.button}>
-            <Text style={styles.buttonText}>Log Out</Text>
-          </TouchableOpacity>
+          <ProfileSetting text="Account details"/>
+          <ProfileSetting text="Followers"/>
+          <ProfileSetting text="Delete account"/>
+
+          {/* line separator */}
+          <View style={styles.line} />
+
+          {/* logout button */}
+          <View style={{ alignItems: "center", marginTop: 20 }}>
+            <MyButton onPress={this.onLogoutClick} text="LOG OUT" />
+          </View>
+
         </ScrollView>
       </View>
     );
@@ -138,7 +149,7 @@ const styles = StyleSheet.create({
   },
 
   line: {
-    marginTop: 10,
+    marginTop: 20,
     borderBottomColor: "#939090",
     borderBottomWidth: 0.4,
     width: Dimensions.get("window").width * 0.8,

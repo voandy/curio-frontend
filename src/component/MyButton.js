@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+  import React, { Component } from "react";
 import {
   View,
   StyleSheet,
@@ -34,9 +34,8 @@ const styles = StyleSheet.create({
 
   buttonText: {
     fontSize: 16,
-    fontWeight: "bold",
-    color: "white"
-    // fontFamily: 'HindSiliguri-Regular'
+    color: "white",
+    fontFamily: 'HindSiliguri-Bold'
   }
 });
 
