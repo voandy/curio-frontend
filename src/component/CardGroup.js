@@ -34,7 +34,15 @@ class CardGroup extends Component {
                     </View>
                     <View style={styles.textPlaceholder}>
                         {/* CHANGE TO FIT USER DB model (ie. this.props.user.text or something) */}
-                        <Text>{this.props.text}</Text>
+                        <Text style={[styles.title, styles.font]}>{this.props.text}</Text>
+
+                        {/* <Image style={styles.user} source={this.props.userPic}/> */}
+                        <View style={styles.userProfile}>
+                            <Image style={styles.userProfilePic} source={require("../../assets/images/default-profile-pic.png")} />
+                            <Text style={[styles.userName, styles.font]}>{this.props.userName}</Text>
+                        </View>
+
+
                     </View>
                 </TouchableOpacity>
             </View>
@@ -45,14 +53,18 @@ class CardGroup extends Component {
 const styles = StyleSheet.create({
     card: {
         width: Dimensions.get("window").width * 0.43,
-        // marginHorizontal: Dimensions.get("window").width * 0.05,
         marginVertical: 10,
         height: wd(0.5),
         borderRadius: 15,
-        borderWidth: 1,
+        borderWidth: 0.05,
+        elevation: 1,
         borderColor: "#E2E2E2",
         alignContent: "center",
         alignItems: "center",
+    },
+
+    font:{
+        fontFamily: "HindSiliguri-Regular"
     },
 
     picPlaceholder: {
@@ -62,17 +74,38 @@ const styles = StyleSheet.create({
     },
 
     photo: {
-        width: Dimensions.get("window").width * 0.43,
+        width: Dimensions.get("window").width * 0.425,
         height: wd(0.35),
         borderTopLeftRadius: 15,
-        borderTopRightRadius: 15
+        borderTopRightRadius: 15,
     },
 
     textPlaceholder: {
         flex: 0.3,
         margin: 5,
-    },  
+    },
 
+    title: {
+        flex: 0.4,
+        marginHorizontal: 5,
+        marginTop: 3,
+    },
+
+    userProfile: {
+        flex: 0.6,
+        flexDirection: "row",
+        alignItems: "center"
+    },
+
+    userProfilePic: {
+        width: wd(0.07),
+        height: wd(0.07),
+        marginHorizontal: 5
+    },
+
+    userName:{
+        color: "#939090"
+    }
 });
 
 export default CardGroup;

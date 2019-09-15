@@ -82,11 +82,11 @@ class Groups extends Component {
           {/* unpinned groups */}
           <View style={styles.unpinned}>
             <View style={styles.unpinnedLeft}>
-              <CardGroup text="You can't fail if you dont enroll" image={require("../../../assets/images/test-delete-this/boi1.jpg")} />
-              <CardGroup text="CooooCOCOCOOOLD" image={require("../../../assets/images/test-delete-this/boi5.png")} />
+              <CardGroup text="You can't fail if you dont enroll" userName="Bob" image={require("../../../assets/images/test-delete-this/boi1.jpg")} />
+              <CardGroup text="CooooCOCOCOOOLD" userName="Jon Snow" image={require("../../../assets/images/test-delete-this/boi5.png")} />
             </View>
             <View style={styles.unpinnedRight}>
-              <CardGroup text="OWH" image={require("../../../assets/images/test-delete-this/boi3.jpg")} />
+              <CardGroup text="OWH" userName="Pikaso" image={require("../../../assets/images/test-delete-this/boi3.jpg")} />
             </View>
           </View>
 
