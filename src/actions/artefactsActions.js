@@ -5,7 +5,7 @@ import {
   ADD_NEW_ARTEFACT,
 } from "../types/artefactsTypes";
 
-// get user artefacts
+// get artefacts of user based on userId
 export const getUserArtefacts = userId => dispatch => {
   return axios
     .get("http://curioapp.herokuapp.com/api/artefact/userId/" + userId)
@@ -20,10 +20,10 @@ export const getUserArtefacts = userId => dispatch => {
     );
 }
 
-// Create New Group
-export const createNewArtefact = () => dispatch => {
+// create new artefact for user based on artefactData
+export const createNewArtefact = (artefactData) => dispatch => {
   return axios
-    .post("http://curioapp.herokuapp.com/api/artefact")
+    .post("http://curioapp.herokuapp.com/api/artefact", artefactData)
     .then(res => {
       dispatch(addNewArtefact(res.data));
     })
@@ -35,7 +35,7 @@ export const createNewArtefact = () => dispatch => {
   );
 }
 
-// assign user artefacts
+// assign user artefacts based on decoded
 export const setUserArtefacts = decoded => {
   return {
     type: SET_USER_ARTEFACTS,
@@ -43,10 +43,10 @@ export const setUserArtefacts = decoded => {
   };
 };
 
-// assign new group to user
+// assign new artefact based on decoded
 export const addNewArtefact = decoded => {
-return {
-  type: ADD_NEW_ARTEFACT,
-  payload: decoded
-};
+  return {
+    type: ADD_NEW_ARTEFACT,
+    payload: decoded
+  };
 };

@@ -8,14 +8,24 @@ import {
   TouchableOpacity
 } from "react-native";
 
+// custom responsive design component
+import {
+  deviceHeigthDimension as hp,
+  deviceWidthDimension as wd,
+  setToBottom
+} from "../utils/responsiveDesign"
+
 class CardCarousel extends Component {
   render() {
     return (
       <View style={styles.card}>
-        {/* Image source and text title */}
 
-        {/* <Image source={ this.props.imageUri } /> */}
-        <Text> {this.props.text} </Text>
+        <TouchableOpacity>
+          {/* Image  */}
+          <View style={styles.picPlaceholder}>
+            <Image style={styles.photo} source={this.props.image} />
+          </View>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -23,16 +33,27 @@ class CardCarousel extends Component {
 
 const styles = StyleSheet.create({
   card: {
-    width: Dimensions.get("window").width * 0.85,
-    marginLeft: 10,
-    marginRight: 10,
-    height: 130,
-    borderRadius: 30,
+    width: Dimensions.get("window").width * 0.9,
+    marginHorizontal: Dimensions.get("window").width * 0.05,
+    height: wd(0.45),
+    borderRadius: 15,
     borderWidth: 1,
     borderColor: "#E2E2E2",
     alignContent: "center",
     alignItems: "center"
+  },
+
+  picPlaceholder: {
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  photo:{
+    width: Dimensions.get("window").width * 0.9,
+    height: wd(0.45),
+    borderRadius: 15,
   }
+
 });
 
 export default CardCarousel;

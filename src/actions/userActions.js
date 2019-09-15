@@ -4,7 +4,7 @@ import {
   SET_CURRENT_USER_DATA,
 } from "../types/userTypes";
 
-// Get User Data
+// get user data belonging to userId
 export const getUserData = userId => dispatch => {
     return axios
     .get("http://curioapp.herokuapp.com/api/user/id/" + userId)

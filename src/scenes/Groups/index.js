@@ -10,20 +10,27 @@ import {
   ScrollView,
   Dimensions,
   Button,
-  TextInput
+  TextInput,
+  Image,
+  ActivityIndicator
 } from "react-native";
 
+// custom components
 import { logoutUser } from "../../actions/authActions";
 import CardCarousel from "../../component/CardCarousel";
+import CardGroup from "../../component/CardGroup";
 import Header from "../../component/Header";
 import Tabs from "./groupManager";
 
-// CHANGE THIS LATER
+// Custom respondsive design component
 import {
   deviceHeigthDimension as hp,
   deviceWidthDimension as wd,
   setToBottom
 } from "../../utils/responsiveDesign";
+
+// default gray colour
+const gray = "#F7F7F7";
 
 const newGroup = {
   title: "",
@@ -46,29 +53,58 @@ class Groups extends Component {
 
     return (
       <View style={styles.container}>
-        <Header tab1="Public" tab2="Private" />
+        <Header />
 
         {/* scrollable area for CONTENT */}
         <ScrollView
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={16}
+          style={{ backgroundColor: gray }}
         >
           {/* carousel pinned groups */}
-          <View style={{ height: 130, marginTop: 20 }}>
+          <View style={{ height: wd(0.52), backgroundColor: "white" }}>
             <ScrollView
               horizontal={true}
               showsHorizontalScrollIndicator={false}
               decelerationRate={0.8}
               snapToAlignment={"center"}
-              snapToInterval={Dimensions.get("window").width * 0.85}
+              snapToInterval={Dimensions.get("window").width}
             >
-              <CardCarousel text="page 1" />
-              <CardCarousel text="page 2" />
-              <CardCarousel text="page 3" />
+              <CardCarousel
+                image={require("../../../assets/images/test-delete-this/boi1.jpg")}
+              />
+              <CardCarousel
+                image={require("../../../assets/images/test-delete-this/boi2.jpg")}
+              />
+              <CardCarousel
+                image={require("../../../assets/images/test-delete-this/boi3.jpg")}
+              />
+              <CardCarousel
+                image={require("../../../assets/images/test-delete-this/boi4.jpg")}
+              />
             </ScrollView>
           </View>
 
-          <Text style={styles.titleText}>Groups</Text>
+          {/* unpinned groups */}
+          <View style={styles.unpinned}>
+            <View style={styles.unpinnedLeft}>
+              <CardGroup
+                text="You can't fail if you dont enroll"
+                image={require("../../../assets/images/test-delete-this/boi1.jpg")}
+              />
+              <CardGroup
+                text="CooooCOCOCOOOLD"
+                image={require("../../../assets/images/test-delete-this/boi5.png")}
+              />
+            </View>
+            <View style={styles.unpinnedRight}>
+              <CardGroup
+                text="OWH"
+                image={require("../../../assets/images/test-delete-this/boi3.jpg")}
+              />
+            </View>
+          </View>
+
           <Text style={styles.titleText}>Groups</Text>
           <Text style={styles.titleText}>Groups</Text>
           <Text style={styles.titleText}>Groups</Text>
@@ -110,16 +146,6 @@ class Groups extends Component {
     );
   }
 }
-
-Groups.propTypes = {
-  logoutUser: PropTypes.func.isRequired,
-  auth: PropTypes.object.isRequired
-};
-
-const mapStateToProps = state => ({
-  auth: state.auth,
-  fontLoaded: state.fontLoader.fontLoaded
-});
 
 const styles = StyleSheet.create({
   // CHANGE THIS LATER
@@ -181,10 +207,35 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginLeft: wd(0.07),
     fontFamily: "HindSiliguri-Bold"
+  },
+
+  unpinned: {
+    flexDirection: "row"
+  },
+
+  unpinnedLeft: {
+    flex: 0.5,
+    marginLeft: Dimensions.get("window").width * 0.05
+  },
+
+  unpinnedRight: {
+    alignItems: "flex-end",
+    flex: 0.5,
+    marginRight: Dimensions.get("window").width * 0.05
   }
 });
 
-//  export
+Groups.propTypes = {
+  logoutUser: PropTypes.func.isRequired,
+  auth: PropTypes.object.isRequired
+};
+
+const mapStateToProps = state => ({
+  auth: state.auth,
+  fontLoaded: state.fontLoader.fontLoaded
+});
+
+//  connect to redux and export
 export default connect(
   mapStateToProps,
   { logoutUser }

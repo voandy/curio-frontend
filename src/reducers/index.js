@@ -4,7 +4,9 @@ import errorReducers from "./errorReducers";
 import userReducers from "./userReducers";
 import groupsReducers from "./groupsReducers";
 import artefactsReducers from "./artefactsReducers";
-import registerReducers from "./registerReducers";
+import imageReducers from "./imageReducers";
+
+// import registerReducers from "./registerReducers";
 
 export default combineReducers({
   auth: authReducers,
@@ -12,5 +14,7 @@ export default combineReducers({
   user: userReducers,
   groups: groupsReducers,
   artefacts: artefactsReducers,
-  register: registerReducers
+  fontLoader: fontLoaderReducers,
+  image: imageReducers
+  // register: registerReducers
 });

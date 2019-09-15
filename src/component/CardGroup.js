@@ -1,0 +1,78 @@
+import React, { Component } from "react";
+import {
+    View,
+    StyleSheet,
+    Text,
+    Dimensions,
+    Image,
+    TouchableOpacity
+} from "react-native";
+
+// custom responsive design component
+import {
+    deviceHeigthDimension as hp,
+    deviceWidthDimension as wd,
+    setToBottom
+} from "../utils/responsiveDesign"
+
+class CardGroup extends Component {
+
+    // get height of group image, and dynamically adjust it
+    changeHeight() {
+        // Image.getSize(this.props.image, (width, height) => {this.setState({width, height})});
+    }
+
+    render() {
+
+        return (
+            <View style={styles.card}>
+
+                <TouchableOpacity>
+                    {/* Image  */}
+                    <View style={styles.picPlaceholder}>
+                        <Image style={[styles.photo]} source={this.props.image} />
+                    </View>
+                    <View style={styles.textPlaceholder}>
+                        {/* CHANGE TO FIT USER DB model (ie. this.props.user.text or something) */}
+                        <Text>{this.props.text}</Text>
+                    </View>
+                </TouchableOpacity>
+            </View>
+        );
+    }
+}
+
+const styles = StyleSheet.create({
+    card: {
+        width: Dimensions.get("window").width * 0.43,
+        // marginHorizontal: Dimensions.get("window").width * 0.05,
+        marginVertical: 10,
+        height: wd(0.5),
+        borderRadius: 15,
+        borderWidth: 1,
+        borderColor: "#E2E2E2",
+        alignContent: "center",
+        alignItems: "center",
+    },
+
+    picPlaceholder: {
+        flex: 0.7,
+        alignItems: "center",
+        justifyContent: "center",
+    },
+
+    photo: {
+        width: Dimensions.get("window").width * 0.43,
+        height: wd(0.35),
+        borderTopLeftRadius: 15,
+        borderTopRightRadius: 15
+    },
+
+    textPlaceholder: {
+        flex: 0.3,
+        margin: 5,
+    },  
+
+});
+
+export default CardGroup;

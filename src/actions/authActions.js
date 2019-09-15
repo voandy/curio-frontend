@@ -8,7 +8,7 @@ import {
   USER_LOADING
 } from "../types/authTypes";
 
-// Register User
+// register user based on userData
 export const registerUser = userData => dispatch => {
   return axios
     .post("http://curioapp.herokuapp.com/api/email/id/:id", userData)
@@ -21,7 +21,7 @@ export const registerUser = userData => dispatch => {
     );
 };
 
-// Login - get user token
+// log user in with userData
 export const loginUser = userData => dispatch => {
   
   return axios
@@ -50,7 +50,7 @@ export const loginUser = userData => dispatch => {
     );
 };
 
-// Log user out
+// log user out
 export const logoutUser = () => dispatch => {
   return new Promise(
     function (resolve, reject) {
@@ -73,10 +73,11 @@ export const logoutUser = () => dispatch => {
           logoutIsSuccess = false;
         }
 
+        // checks if logout is successful
         if (logoutIsSuccess) {
-            resolve("logout succeeds"); // fulfilled
+            resolve("logout succeeds");
         } else {
-            reject(new Error('logout fails')); // reject
+            reject(new Error('logout fails'));
         }
     }
   );
@@ -90,7 +91,7 @@ export const setCurrentUser = decoded => {
   };
 };
 
-// User loading
+// loading user
 export const setUserLoading = () => {
   return {
     type: USER_LOADING

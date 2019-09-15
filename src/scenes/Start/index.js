@@ -1,11 +1,5 @@
 import React, { Component } from "react";
-import {
-  StyleSheet, 
-  TouchableOpacity,
-  View,
-  Text,
-  Image
-} from "react-native";
+import { StyleSheet, TouchableOpacity, View, Image, Text } from "react-native";
 import { connect } from "react-redux";
 
 // import reusable components

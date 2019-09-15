@@ -10,11 +10,27 @@ import {
   Text
 } from "react-native";
 
+// Custom component
 import SimpleHeader from "../../component/SimpleHeader";
+import NotificationFeed from "../../component/NotificationFeed"
+
+const jon = "John snow is not Jon snow, so he knows something";
+const varys = "botak dude that is sometimes a traitor";
+const tormund = "WILD ONE";
+const tyrion = "drunk as always";
+const joffrey = "deserved to die, was a pleasure to watch him chock to his death XD";
+
 
 export default class Notification extends Component {
+
   render() {
+
+    // date format
+    // const dt = this.state.userData.dateJoined;
+
+    // navigation in app
     const { navigate } = this.props.navigation;
+
     return (
       <View style={styles.container}>
         <SimpleHeader title="Notification" />
@@ -24,12 +40,19 @@ export default class Notification extends Component {
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={16}
         >
-          {/* heading */}
-          <Text style={styles.titleText}>NOTIFICATION</Text>
-          <Text style={styles.titleText}>NOTIFICATION</Text>
-          <Text style={styles.titleText}>NOTIFICATION</Text>
-          <Text style={styles.titleText}>NOTIFICATION</Text>
-          <Text style={styles.titleText}>NOTIFICATION</Text>
+
+          <NotificationFeed name={"jon"} text={jon} hasRead={true} image={require("../../../assets/images/default-profile-pic.png")} />
+          <NotificationFeed name={"varys"} text={varys} hasRead={false} image={require("../../../assets/images/default-profile-pic.png")} />
+          <NotificationFeed name={"tormund"} text={tormund} hasRead={false} image={require("../../../assets/images/default-profile-pic.png")} />
+          <NotificationFeed name={"tyrion"} text={tyrion} hasRead={true} image={require("../../../assets/images/default-profile-pic.png")} />
+          <NotificationFeed name={"joffrey"} text={joffrey} hasRead={true} image={require("../../../assets/images/default-profile-pic.png")} />
+          <NotificationFeed name={"tyrion"} text={tyrion} hasRead={false} image={require("../../../assets/images/default-profile-pic.png")} />
+          <NotificationFeed name={"joffrey"} text={joffrey} hasRead={false} image={require("../../../assets/images/default-profile-pic.png")} />
+          <NotificationFeed name={"tyrion"} text={tyrion} hasRead={true} image={require("../../../assets/images/default-profile-pic.png")} />
+
+
+          {/* no more notifications ! */}
+          <Text style={{ alignSelf: "center", justifyContent: "center", marginVertical: 40 }}>  Hooray no more notifications </Text>
         </ScrollView>
       </View>
     );
