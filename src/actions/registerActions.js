@@ -41,3 +41,9 @@ export const setRegisterStage = registerState => {
     payload: registerState
   };
 };
+
+export const resetRegisterState = () => {
+  return {
+    type: C.RESET_REGISTER_STATE
+  };
+};

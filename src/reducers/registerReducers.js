@@ -2,7 +2,7 @@ import { C } from "../types/registerTypes";
 
 const initialState = {
   register_stage: C.SET_NAME,
-  names: "",
+  name: "",
   email: "",
   password: "",
   passwordCfm: "",
@@ -41,6 +41,8 @@ export default registerReducer = (state = initialState, action) => {
         ...state,
         register_stage: action.payload
       };
+    case C.RESET_REGISTER_STATE:
+      return initialState;
     default:
       return state;
   }

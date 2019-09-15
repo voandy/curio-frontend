@@ -1,36 +1,27 @@
 import React, { Component } from "react";
-import {
-  View,
-  TouchableOpacity,
-  Image,
-  TextInput,
-  StyleSheet,
-  Text
-} from "react-native";
+import { connect } from "react-redux";
+import { View, TouchableOpacity, Image, TextInput, Text } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import * as Permissions from "expo-permissions";
-
+// import style
+import styles from "./registerManagerStyle";
 // redux
-import { connect } from "react-redux";
 import { C } from "../../types/registerTypes";
-import { setName, setEmail, setPassword, setPasswordCfm, setPhotoURL, setRegisterStage } from "../../actions/registerActions";
-
+import {
+  setName,
+  setEmail,
+  setPassword,
+  setPasswordCfm,
+  setPhotoURL,
+  setRegisterStage,
+  resetRegisterState
+} from "../../actions/registerActions";
 // import reusable button component
 import MyButton from "../../component/MyButton";
-
 // import entry field validators
-import {
-  validateName,
-  validateEmail,
-  validatePassword
-} from "./registerValidator";
-
+import * as validator from "./registerValidator";
 // import width/height responsive functions
-import {
-  deviceHeigthDimension as hp,
-  deviceWidthDimension as wd,
-  setToBottom
-} from "../../utils/responsiveDesign";
+import { setToBottom } from "../../utils/responsiveDesign";
 
 // Load new page after each completed stage in sign up
 class RegisterManager extends Component {
@@ -42,11 +33,8 @@ class RegisterManager extends Component {
 
   componentDidMount() {
     this.getPermissionAsync();
-  }
-
-  componentWillUpdate(nextProps) {
-
-
+    // reset register's state so that the new user can get a fresh state
+    this.props.resetRegisterState();
   }
 
   // camera roll permissions
@@ -65,10 +53,9 @@ class RegisterManager extends Component {
       allowsEditing: true,
       aspect: [4, 4]
     });
-
     // set image
     if (!result.cancelled) {
-      this.props.photoURLHandler(result.uri);
+      // this.props.setPhotoURL(result.uri);
     }
   };
 
@@ -83,44 +70,39 @@ class RegisterManager extends Component {
 
   // error handlers
   async errorName() {
-    
-    this.setState({
-      nameErrorMessage: await validateName(this.props.register.name)
+    await this.setState({
+      nameErrorMessage: validator.validateName(this.props.register.name)
     });
-
     // with no errors, proceed to next page
-    if (this.state.nameErrorMessage === null) {
+    if (!this.state.nameErrorMessage) {
       this.props.setRegisterStage(C.SET_EMAIL);
     }
   }
 
   async errorEmail() {
-    this.setState({
-      emailErrorMessage: await validateEmail(this.props.email)
+    await this.setState({
+      emailErrorMessage: validator.validateEmail(this.props.register.email)
     });
-
     // with no errors, proceed to next page
-    if (this.state.emailErrorMessage === "") {
+    if (!this.state.emailErrorMessage) {
       this.props.setRegisterStage(C.SET_PASSWORD);
     }
   }
 
   async errorPassword() {
-    this.setState({
-      pwdErrorMessage: await validatePassword(
+    await this.setState({
+      pwdErrorMessage: validator.validatePassword(
         this.props.register.password,
         this.props.register.passwordCfm
       )
     });
-
     // with no errors, proceed to next page
-    if (this.state.pwdErrorMessage === "") {
+    if (!this.state.pwdErrorMessage) {
       this.props.setRegisterStage(C.SET_PHOTO);
     }
   }
 
   render() {
-
     switch (this.props.register.register_stage) {
       case C.SET_NAME:
         return (
@@ -264,11 +246,11 @@ class RegisterManager extends Component {
                   source={{ uri: this.props.register.photoURL }}
                 />
               ) : (
-                  <Image
-                    style={styles.profilePic}
-                    source={require("../../../assets/images/plus-profile-pic.png")}
-                  />
-                )}
+                <Image
+                  style={styles.profilePic}
+                  source={require("../../../assets/images/plus-profile-pic.png")}
+                />
+              )}
             </TouchableOpacity>
 
             {setToBottom(
@@ -299,130 +281,22 @@ class RegisterManager extends Component {
   }
 }
 
-const styles = StyleSheet.create({
-  cardContainer: {
-    flex: 1,
-    flexDirection: "column",
-    padding: wd(0.05)
-  },
-
-  inputField: {
-    textAlign: "center",
-    width: wd(0.7),
-    height: hp(0.05),
-    marginTop: 20,
-    backgroundColor: "white",
-    borderBottomWidth: 0.5,
-    fontSize: 16,
-    alignSelf: "center"
-  },
-
-  inputText: {
-    fontWeight: "bold",
-    alignSelf: "center",
-    fontSize: hp(0.026)
-  },
-
-  passwordTitle: {
-    marginBottom: hp(0.024),
-    fontSize: hp(0.024)
-  },
-
-  photoMainTitle: {
-    fontWeight: "bold",
-    fontSize: hp(0.028),
-    marginBottom: hp(0.02)
-  },
-
-  photoSubTitle: {
-    fontWeight: "bold",
-    fontSize: hp(0.024)
-  },
-
-  passwordFieldTitle: {
-    fontSize: hp(0.022),
-    alignSelf: "flex-start",
-    marginLeft: wd(0.015)
-  },
-
-  passwordField: {
-    marginTop: hp(0.01),
-    fontSize: hp(0.02),
-    height: hp(0.03),
-    marginBottom: hp(0.05)
-  },
-
-  profilePic: {
-    marginTop: 30,
-    width: wd(0.3),
-    height: wd(0.3),
-    alignSelf: "center"
-  },
-
-  profilePicBorder: {
-    borderRadius: wd(0.3) / 2
-  },
-
-  buttom: {
-    alignSelf: "center",
-    flexDirection: "row",
-    width: wd(0.7935),
-    alignItems: "center",
-    justifyContent: "space-between"
-  },
-
-  backButton: {
-    fontSize: hp(0.022),
-    alignSelf: "center",
-    marginLeft: wd(0.03),
-    textDecorationLine: "underline",
-    color: "#FF6E6E",
-    fontFamily: "HindSiliguri-Regular"
-  },
-
-  nextButton: {
-    alignSelf: "flex-end"
-  },
-
-  error: {
-    color: "red",
-    alignSelf: "center"
-  }
-});
-
-
 const mapStateToProps = state => ({
   auth: state.auth,
   register: state.register,
   errors: state.errors
 });
 
-
-const mapDispatchToProps = dispatch => {
-  return {
-    setName: () => {
-      dispatch(setName());
-    },
-    setEmail: () => {
-      dispatch(setEmail());
-    },
-    setPassword: () => {
-      dispatch(setPassword());
-    },
-    setPasswordCfm: () => {
-      dispatch(setPasswordCfm());
-    },
-    setPhotoURL: () => {
-      dispatch(setPhotoURL());
-    },
-    setRegisterStage: () => {
-      dispatch(setRegisterStage());
-    }
-  };
-};
-
 // connect and export
 export default connect(
-  mapStateToProps, 
-  mapDispatchToProps,
+  mapStateToProps,
+  {
+    setName,
+    setEmail,
+    setPassword,
+    setPasswordCfm,
+    setPhotoURL,
+    setRegisterStage,
+    resetRegisterState
+  }
 )(RegisterManager);

@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { StyleSheet, TouchableOpacity, View, Image, Text } from "react-native";
-import { connect } from "react-redux";
 
 // import reusable components
 import {
@@ -8,11 +7,7 @@ import {
   deviceWidthDimension as wd
 } from "../../utils/responsiveDesign";
 
-class Start extends Component {
-  componentDidMount() {
-    console.log("Start Page mounted! Font Loaded: " + this.props.fontLoaded);
-  }
-
+export default class Start extends Component {
   // Nav bar details
   static navigationOptions = {
     header: null
@@ -53,16 +48,6 @@ class Start extends Component {
     );
   }
 }
-
-// Connect to redux store
-const mapStateToProps = state => ({
-  // fontLoaded: state.fontLoader.fontLoaded
-});
-
-export default connect(
-  mapStateToProps,
-  null
-)(Start);
 
 // Component Stylesheet Rules
 const styles = StyleSheet.create({

@@ -231,8 +231,7 @@ Groups.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  auth: state.auth,
-  fontLoaded: state.fontLoader.fontLoaded
+  auth: state.auth
 });
 
 //  connect to redux and export
