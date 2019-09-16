@@ -22,8 +22,7 @@ import { Image } from "react-native";
 
 // login / signup stack
 const AuthStack = createStackNavigator({
-  // Start: { screen: StartScreen },
-  Start: { screen: SelectedScreen },
+  Start: { screen: StartScreen },
   Register: { screen: RegisterScreen },
   Login: { screen: LoginScreen },
   Welcome: { screen: WelcomeScreen }
