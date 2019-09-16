@@ -118,7 +118,7 @@ class RegisterManager extends Component {
               autoCapitalize="none"
               placeholderTextColor="#868686"
               onChangeText={val => this.props.setName(val)}
-              value={this.props.register.name}
+              // value={this.props.register.name}
               onSubmitEditing={() => this.errorName()}
             />
 
@@ -147,7 +147,7 @@ class RegisterManager extends Component {
               autoCapitalize="none"
               placeholderTextColor="#868686"
               onChangeText={val => this.props.setEmail(val)}
-              value={this.props.register.email}
+              // value={this.props.register.email}
               onSubmitEditing={() => this.errorEmail()}
             />
 
@@ -191,7 +191,7 @@ class RegisterManager extends Component {
               autoCapitalize="none"
               placeholderTextColor="#868686"
               onChangeText={val => this.props.setPassword(val)}
-              value={this.props.register.password}
+              // value={this.props.register.password}
             />
 
             {/* Cfm password */}
@@ -205,7 +205,7 @@ class RegisterManager extends Component {
               autoCapitalize="none"
               placeholderTextColor="#868686"
               onChangeText={val => this.props.setPasswordCfm(val)}
-              value={this.props.register.passwordCfm}
+              // value={this.props.register.passwordCfm}
               onSubmitEditing={() => this.errorPassword()}
             />
 
