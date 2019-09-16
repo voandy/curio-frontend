@@ -161,12 +161,10 @@ const styles = StyleSheet.create({
 Profile.propTypes = {
   logoutUser: PropTypes.func.isRequired,
   getUserData: PropTypes.func.isRequired,
-  auth: PropTypes.object.isRequired,
   user: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => ({
-  auth: state.auth,
   user: state.user
 });
 

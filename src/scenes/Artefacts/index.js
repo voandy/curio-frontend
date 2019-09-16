@@ -55,12 +55,6 @@ class Artefacts extends Component {
   };
 
   async componentWillUpdate(nextProps) {
-    // sets user artefacts 
-    if (nextProps.artefacts.userArtefacts !== this.props.artefacts.userArtefacts) {
-      await this.setState({
-        userArtefacts: nextProps.artefacts.userArtefacts
-      });
-    }
 
     // sets new artefact's imageURL
     if (nextProps.image.imageURL !== this.props.image.imageURL) {
