@@ -25,6 +25,7 @@ export const createNewArtefact = (artefactData) => dispatch => {
   return axios
     .post("http://curioapp.herokuapp.com/api/artefact", artefactData)
     .then(res => {
+      console.log("response from api is", res);
       dispatch(addNewArtefact(res.data));
     })
     .catch(err =>

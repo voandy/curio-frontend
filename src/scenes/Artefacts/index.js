@@ -32,6 +32,7 @@ import {
 
 // object with attributes required to create a new artefact
 const newArtefact = {
+  userId: "",
   title: "",
   description: "",
   category: "",
@@ -54,14 +55,6 @@ class Artefacts extends Component {
     this.setState({ isModalVisible: !this.state.isModalVisible });
   };
 
-  // checks if userArtefacts is empty
-  isUserArtefactsEmpty() {
-    if (Object.keys(this.props.artefacts.userArtefacts).length === 0) {
-      return true;
-    }
-    return false;
-  }
-
   async componentDidMount() {
 
     // get user authentication data
@@ -71,7 +64,7 @@ class Artefacts extends Component {
 
   async componentWillUpdate(nextProps) {
     // sets user artefacts 
-    if (this.isUserArtefactsEmpty() && nextProps.artefacts.userArtefacts !== this.props.artefacts.userArtefacts) {
+    if (nextProps.artefacts.userArtefacts !== this.props.artefacts.userArtefacts) {
       await this.setState({
         userArtefacts: nextProps.artefacts.userArtefacts
       });
@@ -119,8 +112,9 @@ class Artefacts extends Component {
     }
   };
 
-  postNewArtefact = () => {
-    console.log("new artefact is ", this.state.newArtefact);
+  postNewArtefact = async () => {
+    console.log("new artefact is", this.state.newArtefact);
+    await this.props.createNewArtefact(this.state.newArtefact);
   }
 
   onNewArtefactChange = (key, value) => {
@@ -287,7 +281,8 @@ Artefacts.propTypes = {
 const mapStateToProps = state => ({
   artefacts: state.artefacts,
   auth: state.auth,
-  image: state.image
+  image: state.image,
+  user: state.user
 });
 
 // export
