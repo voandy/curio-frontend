@@ -30,7 +30,11 @@ class RegisterManager extends Component {
   state = {
     nameErrorMessage: "",
     emailErrorMessage: "",
-    pwdErrorMessage: ""
+    pwdErrorMessage: "",
+    name: "",
+    email: "",
+    password: "",
+    passwordCfm: ""
   };
 
   componentDidMount() {
@@ -71,10 +75,26 @@ class RegisterManager extends Component {
     }
   }
 
+  setLocalName = name => {
+    this.setState({ ...this.state, name });
+  };
+
+  setLocalEmail = email => {
+    this.setState({ ...this.state, email });
+  };
+
+  setLocalPassword = password => {
+    this.setState({ ...this.state, password });
+  };
+
+  setLocalPasswordCfm = passwordCfm => {
+    this.setState({ ...this.state, passwordCfm });
+  };
+
   // error handlers
   async errorName() {
     await this.setState({
-      nameErrorMessage: validator.validateName(this.props.register.name)
+      nameErrorMessage: validator.validateName(this.state.name)
     });
     // with no errors, proceed to next page
     if (!this.state.nameErrorMessage) {
@@ -84,7 +104,7 @@ class RegisterManager extends Component {
 
   async errorEmail() {
     await this.setState({
-      emailErrorMessage: validator.validateEmail(this.props.register.email)
+      emailErrorMessage: validator.validateEmail(this.state.email)
     });
     // with no errors, proceed to next page
     if (!this.state.emailErrorMessage) {
@@ -95,8 +115,8 @@ class RegisterManager extends Component {
   async errorPassword() {
     await this.setState({
       pwdErrorMessage: validator.validatePassword(
-        this.props.register.password,
-        this.props.register.passwordCfm
+        this.state.password,
+        this.state.passwordCfm
       )
     });
     // with no errors, proceed to next page
@@ -118,9 +138,12 @@ class RegisterManager extends Component {
               placeholder="Jon Snow"
               autoCapitalize="none"
               placeholderTextColor="#868686"
-              onChangeText={val => this.props.setName(val)}
-              // value={this.props.register.name}
-              onSubmitEditing={() => this.errorName()}
+              onChangeText={val => this.setLocalName(val)}
+              value={this.state.name}
+              onSubmitEditing={() => {
+                this.props.setName(this.state.name);
+                this.errorName();
+              }}
             />
 
             {this.state.nameErrorMessage !== "" && (
@@ -130,7 +153,10 @@ class RegisterManager extends Component {
             {setToBottom(
               <MyButton
                 style={styles.nextButton}
-                onPress={() => this.errorName()}
+                onPress={() => {
+                  this.props.setName(this.state.name);
+                  this.errorName();
+                }}
                 text="Next"
               />
             )}
@@ -147,23 +173,13 @@ class RegisterManager extends Component {
               placeholder="abc@email.com"
               autoCapitalize="none"
               placeholderTextColor="#868686"
-              onChangeText={val => this.props.setEmail(val)}
-              // value={this.props.register.email}
-              onSubmitEditing={() => this.errorEmail()}
+              onChangeText={val => this.setLocalEmail(val)}
+              value={this.state.email}
+              onSubmitEditing={() => {
+                this.props.setEmail(this.state.email);
+                this.errorEmail();
+              }}
             />
-
-            {/* <Text style={[styles.inputText, styles.passwordFieldTitle]}>
-              {" "}
-              Username:{" "}
-            </Text>
-            <TextInput
-              style={[styles.inputField, styles.passwordField]}
-              secureTextEntry={true}
-              autoCapitalize="none"
-              placeholderTextColor="#868686"
-              onChangeText={val => this.props.setUsername(val)}
-              // value={this.props.register.password}
-            /> */}
 
             {this.state.emailErrorMessage !== "" && (
               <Text style={styles.error}> {this.state.emailErrorMessage} </Text>
@@ -179,7 +195,10 @@ class RegisterManager extends Component {
 
                 <MyButton
                   style={styles.nextButton}
-                  onPress={() => this.errorEmail()}
+                  onPress={() => {
+                    this.props.setEmail(this.state.email);
+                    this.errorEmail();
+                  }}
                   text="Next"
                 />
               </View>
@@ -204,7 +223,7 @@ class RegisterManager extends Component {
               secureTextEntry={true}
               autoCapitalize="none"
               placeholderTextColor="#868686"
-              onChangeText={val => this.props.setPassword(val)}
+              onChangeText={val => this.setLocalPassword(val)}
               // value={this.props.register.password}
             />
 
@@ -218,9 +237,8 @@ class RegisterManager extends Component {
               secureTextEntry={true}
               autoCapitalize="none"
               placeholderTextColor="#868686"
-              onChangeText={val => this.props.setPasswordCfm(val)}
-              // value={this.props.register.passwordCfm}
-              onSubmitEditing={() => this.errorPassword()}
+              onChangeText={val => this.setLocalPasswordCfm(val)}
+              value={this.state.passwordCfm}
             />
 
             {this.state.pwdErrorMessage !== "" && (
@@ -237,7 +255,11 @@ class RegisterManager extends Component {
 
                 <MyButton
                   style={styles.nextButton}
-                  onPress={() => this.errorPassword()}
+                  onPress={() => {
+                    this.props.setPassword(this.state.password);
+                    this.props.setPasswordCfm(this.state.passwordCfm);
+                    this.errorPassword();
+                  }}
                   text="Next"
                 />
               </View>
