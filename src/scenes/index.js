@@ -5,6 +5,8 @@ import {
   createStackNavigator,
   createBottomTabNavigator
 } from "react-navigation";
+import { white } from "ansi-colors";
+import { Image } from "react-native";
 
 import StartScreen from "./Start";
 import RegisterScreen from "./Register";
@@ -17,8 +19,26 @@ import ArtefactsScreen from "./Artefacts";
 import WelcomeScreen from "./Welcome";
 import SelectedScreen from "./Artefacts/Selected";
 
-import { white } from "ansi-colors";
-import { Image } from "react-native";
+import { getUserData } from "../../actions/userActions";
+import { getUserArtefacts} from "../../actions/artefactsActions";
+
+export default class Scenes extends Component {
+  async componentDidMount() {
+
+    // get user authentication data
+    const { user } = this.props.auth;
+
+    // get user data and artefacts
+    await this.props.getUserData(user.id);
+    await this.props.getUserArtefacts(user.id);
+  }
+
+  render() {
+    return(
+      <AppContainer />
+    )
+  }
+}
 
 // login / signup stack
 const AuthStack = createStackNavigator({
@@ -91,7 +111,7 @@ const AppStack = createBottomTabNavigator(
   }
 );
 
-export default AppContainer = createAppContainer(
+const AppContainer = createAppContainer(
   createSwitchNavigator(
     {
       AuthLoading: AuthLoadingScreen,
@@ -103,4 +123,23 @@ export default AppContainer = createAppContainer(
     }
   )
 );
+
+Scenes.propTypes = {
+  auth: PropTypes.object.isRequired,
+  user: PropTypes.object.isRequired,
+  artefacts: PropTypes.object.isRequired,
+  getUserData: PropTypes.func.isRequired,
+  getUserArtefacts: Proptypes.func.isRequired
+};
+
+const mapStateToProps = state => ({
+  auth: state.auth,
+  user: state.user,
+  artefacts: state.artefacts
+});
+
+export default connect(
+  mapStateToProps,
+  { getUserData, getUserArtefacts }
+)(Scenes);
 
