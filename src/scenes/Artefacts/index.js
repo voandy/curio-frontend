@@ -70,7 +70,6 @@ class Artefacts extends Component {
   }
 
   async componentWillUpdate(nextProps) {
-
     // sets user artefacts 
     if (this.isUserArtefactsEmpty() && nextProps.artefacts.userArtefacts !== this.props.artefacts.userArtefacts) {
       await this.setState({
@@ -79,9 +78,8 @@ class Artefacts extends Component {
     }
 
     // sets new artefact's imageURL
-    if (this.state.newArtefact.imageURL === "" && nextProps.image.imageURL !== this.state.newArtefact.imageURL) {
-      await this.onNewArtefactChange("imageURL", nextProps.image.imageURL)
-      // console.log("imageURL is ", nextProps.image.imageURL);
+    if (nextProps.image.imageURL !== this.props.image.imageURL) {
+      await this.onNewArtefactChange("imageURL", nextProps.image.imageURL);
     }
   }
 
@@ -186,6 +184,7 @@ class Artefacts extends Component {
               style={{ width: 200 }}
               date={this.state.newArtefact.dateObtained}
               mode="date"
+              value={this.state.newArtefact.dateObtained}
               placeholder="select date"
               format="YYYY-MM-DD"
               // minDate="2016-05-01"
@@ -204,22 +203,22 @@ class Artefacts extends Component {
                 }
                 // ... You can check the source to find the other keys.
               }}
-              onDateChange={(date) => this.onNewArtefactChange("date", date)}
+              onDateChange={(date) => this.onNewArtefactChange("dateObtained", date)}
             />
 
             {/* Image button */}
             <TouchableOpacity activeOpacity={0.5} onPress={this._pickImage}>
-              {/* {this.state.newArtefact.imageURL !== "" ? (
+              {this.state.newArtefact.imageURL !== "" ? (
                 <Image
                   style={[styles.profilePic, styles.profilePicBorder]}
                   source={{ uri: this.state.newArtefact.imageURL }}
                 />
-              ) : ( */}
+              ) : (
               <Image
                 style={styles.profilePic}
                 source={require("../../../assets/images/plus-profile-pic.png")}
               />
-              {/* )} */}
+              )}
             </TouchableOpacity>
 
             <Button

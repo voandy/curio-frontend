@@ -5,7 +5,6 @@ import {
 } from "../types/imageTypes";
 
 export const uploadImage = uri => dispatch => {
-  console.log("uri is", uri);
   const image = {
     uri: uri,
     type: 'image/jpeg',
@@ -16,7 +15,6 @@ export const uploadImage = uri => dispatch => {
 
   // append the image to the object with the title 'image'
   imgBody.append('image', image);
-  console.log("imgBody is", imgBody);
 
   return axios
     .post(
@@ -30,10 +28,9 @@ export const uploadImage = uri => dispatch => {
       }
     )
     .then(res => {
-
-        console.log("imageURL in action is", res);
+      
         // set image
-        dispatch(setImage(res));
+        dispatch(setImage(res.data.imageUrl));
       }
     )
     .catch(err =>
