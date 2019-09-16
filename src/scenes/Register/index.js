@@ -32,42 +32,53 @@ class Register extends Component {
     // get the navigate function from props
     const { navigate } = this.props.navigation;
 
-    // uploadImageToGCS(this.props.register.photoURI).then(res =>
-    //   console.log(res)
-    // );
-
-    // if (!response.error) {
-    //   console.log("pic uploaded!: " + response.imageUrl);
-    //   // create new user
-    //   const newUser = {
-    //     name: this.props.register.name,
-    //     email: this.props.register.email,
-    //     password: this.props.register.password,
-    //     profilePic: response.imageUrl
-    //   };
-    // }
-
-    // // register user
-    // this.props.registerUser(newUser, this.props.history).then(res => {
-    //   // login details
-    //   const user = {
-    //     email: newUser.email,
-    //     password: newUser.password
-    //   };
-
-    //   // successful registration
-    //   if (res !== null) {
-    //     // login user directly
-    //     this.props.loginUser(user, this.props.history).then(res => {
-    //       AsyncStorage.getItem("userToken").then(res => {
-    //         // navigate user to Welcome page if no errors
-    //         if (res !== null) {
-    //           navigate("Welcome");
-    //         }
-    //       });
-    //     });
-    //   }
-    // });
+    uploadImageToGCS(this.props.register.photoURI)
+      .then(imageUrl => {
+        console.log("Image Uploaded: " + imageUrl);
+        // create new user
+        const newUser = {
+          name: this.props.register.name,
+          email: this.props.register.email,
+          password: this.props.register.password,
+          profilePic: imageUrl
+        };
+        console.log("Registering new user: " + newUser);
+        // register user
+        this.props.registerUser(newUser, this.props.history).then(res => {
+          // login details
+          const user = {
+            email: newUser.email,
+            password: newUser.password
+          };
+          // successful registration
+          if (res !== null) {
+            console.log("Register succeeded! Trying to login user now.");
+            // login user directly
+            this.props
+              .loginUser(user, this.props.history)
+              .then(res => {
+                console.log("User is logged in. Trying to get userToken.");
+                AsyncStorage.getItem("userToken")
+                  .then(res => {
+                    console.log("Gotten userToken!:" + JSON.stringify(res));
+                    // navigate user to Welcome page if no errors
+                    if (res !== null) {
+                      navigate("Welcome");
+                    }
+                  })
+                  .catch(err => {
+                    console.log("Failed!: " + err);
+                  });
+              })
+              .catch(err => {
+                console.log("Failed to log user in.");
+              });
+          }
+        });
+      })
+      .catch(err => {
+        console.log(err);
+      });
   };
 
   render() {
