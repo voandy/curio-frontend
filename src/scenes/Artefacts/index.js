@@ -32,6 +32,7 @@ import {
 
 // object with attributes required to create a new artefact
 const newArtefact = {
+  userId: "",
   title: "",
   description: "",
   category: "",
@@ -54,8 +55,14 @@ class Artefacts extends Component {
     this.setState({ isModalVisible: !this.state.isModalVisible });
   };
 
-  async componentWillUpdate(nextProps) {
+  // revert newArtefact to initial state
+  resetNewArtefact = () => {
+    this.setState({
+      newArtefact
+    })
+  }
 
+  async componentWillUpdate(nextProps) {
     // sets new artefact's imageURL
     if (nextProps.image.imageURL !== this.props.image.imageURL) {
       await this.onNewArtefactChange("imageURL", nextProps.image.imageURL);
@@ -98,11 +105,18 @@ class Artefacts extends Component {
     }
   };
 
+  // post new artefact into My Artefacts scene
   postNewArtefact = async () => {
-    console.log("new artefact is", this.state.newArtefact);
+    await this.onNewArtefactChange("userId", this.props.auth.user.id);
+
+    // save new artefact to redux store
     await this.props.createNewArtefact(this.state.newArtefact);
+
+    this.toggleModal();
+    this.resetNewArtefact();
   }
 
+  // new artefact's attribute change
   onNewArtefactChange = (key, value) => {
     this.setState({
       newArtefact: {

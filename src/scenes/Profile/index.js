@@ -46,7 +46,6 @@ class Profile extends Component {
   };
 
   render() {
-    console.log(this.props.user.userData);
 
     // date format
     Moment.locale("en");
