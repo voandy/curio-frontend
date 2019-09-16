@@ -12,10 +12,11 @@ import {
   setEmail,
   setPassword,
   setPasswordCfm,
-  setPhotoURL,
+  setPhotoURI,
   setRegisterStage,
   resetRegisterState
 } from "../../actions/registerActions";
+// import { uploadImageToGCS } from "../../utils/imageUpload";
 // import reusable button component
 import MyButton from "../../component/MyButton";
 // import entry field validators
@@ -48,14 +49,15 @@ class RegisterManager extends Component {
   // access camera roll
   _pickImage = async () => {
     // obtain image
-    let result = await ImagePicker.launchImageLibraryAsync({
+    let response = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [4, 4]
     });
     // set image
-    if (!result.cancelled) {
-      // this.props.setPhotoURL(result.uri);
+    if (!response.cancelled) {
+      this.props.setPhotoURI(response.uri);
+      // this.props.setphotoURI(uploadImageToGCS(response.uri));
     }
   };
 
@@ -240,10 +242,10 @@ class RegisterManager extends Component {
 
             {/* Image button */}
             <TouchableOpacity activeOpacity={0.5} onPress={this._pickImage}>
-              {this.props.photoURL != null ? (
+              {this.props.register.photoURI ? (
                 <Image
                   style={[styles.profilePic, styles.profilePicBorder]}
-                  source={{ uri: this.props.register.photoURL }}
+                  source={{ uri: this.props.register.photoURI }}
                 />
               ) : (
                 <Image
@@ -263,7 +265,7 @@ class RegisterManager extends Component {
 
                 <MyButton
                   style={styles.nextButton}
-                  text={this.skipPhotoText(this.props.register.photoURL)}
+                  text={this.skipPhotoText(this.props.register.photoURI)}
                   onPress={() => this.props.onSubmit()} // moves to welcome page and will be logged in
                 />
               </View>
@@ -284,7 +286,8 @@ class RegisterManager extends Component {
 const mapStateToProps = state => ({
   auth: state.auth,
   register: state.register,
-  errors: state.errors
+  errors: state.errors,
+  image: state.image
 });
 
 // connect and export
@@ -295,7 +298,7 @@ export default connect(
     setEmail,
     setPassword,
     setPasswordCfm,
-    setPhotoURL,
+    setPhotoURI,
     setRegisterStage,
     resetRegisterState
   }

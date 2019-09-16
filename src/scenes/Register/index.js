@@ -15,8 +15,9 @@ import {
   setToBottom
 } from "../../utils/responsiveDesign";
 
-class Register extends Component {
+import { uploadImageToGCS } from "../../utils/imageUpload";
 
+class Register extends Component {
   // nav details
   static navigationOptions = {
     headerStyle: {
@@ -25,47 +26,48 @@ class Register extends Component {
   };
 
   // send new user data
-  onSubmit = e => {
+  onSubmit = async () => {
+    console.log("submit!");
+    console.log("user's pro pic uri: " + this.props.register.photoURI);
+    // get the navigate function from props
     const { navigate } = this.props.navigation;
 
-    // create new user
-    const newUser = {
-      name: this.props.register.name,
-      email: this.props.register.email,
-      password: this.props.register.password,
-      passwordCfm: this.props.register.passwordCfm,
-      profilePic: this.props.register.photoURL
-    };
+    // uploadImageToGCS(this.props.register.photoURI).then(res =>
+    //   console.log(res)
+    // );
 
-    // include default photo for those who skipped the selection 
-    // TODO connect to google cloud
-    // if (newUser.profilePic === null) {
-    //   newUser.profilePic = require("../../../assets/images/default-profile-pic.png");
+    // if (!response.error) {
+    //   console.log("pic uploaded!: " + response.imageUrl);
+    //   // create new user
+    //   const newUser = {
+    //     name: this.props.register.name,
+    //     email: this.props.register.email,
+    //     password: this.props.register.password,
+    //     profilePic: response.imageUrl
+    //   };
     // }
 
-    // register user
-    this.props.registerUser(newUser, this.props.history).then(res => {
-      // login details
-      const user = {
-        email: newUser.email,
-        password: newUser.password
-      };
+    // // register user
+    // this.props.registerUser(newUser, this.props.history).then(res => {
+    //   // login details
+    //   const user = {
+    //     email: newUser.email,
+    //     password: newUser.password
+    //   };
 
-      // successful registration
-      if (res !== null) {
-
-        // login user directly
-        this.props.loginUser(user, this.props.history).then(res => {
-          AsyncStorage.getItem("userToken").then(res => {
-
-            // navigate user to Welcome page if no errors
-            if (res !== null) {
-              navigate("Welcome");
-            }
-          });
-        });
-      }
-    });
+    //   // successful registration
+    //   if (res !== null) {
+    //     // login user directly
+    //     this.props.loginUser(user, this.props.history).then(res => {
+    //       AsyncStorage.getItem("userToken").then(res => {
+    //         // navigate user to Welcome page if no errors
+    //         if (res !== null) {
+    //           navigate("Welcome");
+    //         }
+    //       });
+    //     });
+    //   }
+    // });
   };
 
   render() {
@@ -77,9 +79,7 @@ class Register extends Component {
 
         {/* main card view */}
         <View style={styles.card}>
-          <RegisterManager
-          // onSubmit={this.onSubmit}
-          />
+          <RegisterManager onSubmit={this.onSubmit} />
         </View>
       </View>
     );
@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontWeight: "bold",
     alignSelf: "flex-start",
-    marginLeft: wd(0.07),
+    marginLeft: wd(0.07)
     // fontFamily: "HindSiliguri-Bold"
   },
 
@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
     marginBottom: 50,
     fontWeight: "bold",
     alignSelf: "flex-start",
-    marginLeft: wd(0.07),
+    marginLeft: wd(0.07)
     // fontFamily: "HindSiliguri-Bold"
   },
 
@@ -144,12 +144,12 @@ const styles = StyleSheet.create({
 
 Register.propTypes = {
   loginUser: PropTypes.func.isRequired,
-  registerUser: PropTypes.func.isRequired,
+  registerUser: PropTypes.func.isRequired
   // register: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = state => ({
-  register: state.register,
+  register: state.register
 });
 
 // connect and export

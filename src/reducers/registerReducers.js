@@ -6,7 +6,7 @@ const initialState = {
   email: "",
   password: "",
   passwordCfm: "",
-  photoURL: ""
+  photoURI: ""
 };
 
 export default registerReducer = (state = initialState, action) => {
@@ -31,10 +31,10 @@ export default registerReducer = (state = initialState, action) => {
         ...state,
         passwordCfm: action.payload
       };
-    case C.SET_PHOTO:
+    case C.SET_PHOTO_URI:
       return {
         ...state,
-        photoURL: action.payload
+        photoURI: action.payload
       };
     case C.SET_REGISTER_STAGE:
       return {

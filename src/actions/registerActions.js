@@ -28,10 +28,10 @@ export const setPasswordCfm = passwordCfm => {
   };
 };
 
-export const setPhotoURL = photoURL => {
+export const setPhotoURI = photoURI => {
   return {
-    type: C.SET_PHOTOURL,
-    payload: photoURL
+    type: C.SET_PHOTO_URI,
+    payload: photoURI
   };
 };
 
