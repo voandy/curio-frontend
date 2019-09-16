@@ -309,7 +309,7 @@ const styles = StyleSheet.create({
   },
 
   inputText: {
-    fontWeight: "bold",
+    fontFamily: "HindSiliguri-Regular",
     alignSelf: "center",
     fontSize: hp(0.026)
   },
@@ -320,13 +320,13 @@ const styles = StyleSheet.create({
   },
 
   photoMainTitle: {
-    fontWeight: "bold",
+    fontFamily: "HindSiliguri-Regular",
     fontSize: hp(0.028),
     marginBottom: hp(0.02)
   },
 
   photoSubTitle: {
-    fontWeight: "bold",
+    fontFamily: "HindSiliguri-Regular",
     fontSize: hp(0.024)
   },
 

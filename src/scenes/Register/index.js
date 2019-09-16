@@ -201,19 +201,17 @@ const styles = StyleSheet.create({
 
   titleText: {
     fontSize: 30,
-    fontWeight: "bold",
     alignSelf: "flex-start",
     marginLeft: wd(0.07),
-    // fontFamily: "HindSiliguri-Bold"
+    fontFamily: "HindSiliguri-Bold"
   },
 
   subTitleText: {
     fontSize: 25,
     marginBottom: 50,
-    fontWeight: "bold",
     alignSelf: "flex-start",
     marginLeft: wd(0.07),
-    // fontFamily: "HindSiliguri-Bold"
+    fontFamily: "HindSiliguri-Bold"
   },
 
   card: {

@@ -138,7 +138,6 @@ const styles = StyleSheet.create({
 
   titleText: {
     fontSize: 30,
-    fontWeight: "bold",
     alignSelf: "flex-start",
     marginLeft: Dimensions.get("window").width * 0.07,
     fontFamily: "HindSiliguri-Bold"
@@ -147,7 +146,6 @@ const styles = StyleSheet.create({
   subTitleText: {
     fontSize: 25,
     marginBottom: 50,
-    fontWeight: "bold",
     alignSelf: "flex-start",
     marginLeft: Dimensions.get("window").width * 0.07,
     fontFamily: "HindSiliguri-Bold"
@@ -177,7 +175,7 @@ const styles = StyleSheet.create({
   },
 
   inputText: {
-    fontWeight: "bold",
+    fontFamily: "HindSiliguri-Bold",
     alignSelf: "flex-start",
     marginLeft: Dimensions.get("window").width * 0.05,
     marginTop: 40,
@@ -198,10 +196,9 @@ const styles = StyleSheet.create({
 
   buttonText: {
     fontSize: 18,
-    fontWeight: "bold",
     alignSelf: "center",
     color: "white",
-    fontFamily: "HindSiliguri-Regular"
+    fontFamily: "HindSiliguri-Bold"
   },
 
   forgot: {
@@ -211,7 +208,7 @@ const styles = StyleSheet.create({
 
   forgotText: {
     color: "#868686",
-    fontWeight: "bold"
+    fontFamily: "HindSiliguri-Bold",
   },
 
   error: {

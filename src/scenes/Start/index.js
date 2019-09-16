@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
   titleText: {
     fontSize: wd(0.08),
     paddingTop: wd(0.008),
-    fontWeight: "bold"
+    fontFamily: "HindSiliguri-Regular",
   },
 
   imageStyle: {
@@ -116,7 +116,6 @@ const styles = StyleSheet.create({
 
   loginButtonText: {
     fontSize: wd(0.035),
-    fontWeight: "bold",
     alignSelf: "center",
     color: "black"
   },
@@ -130,12 +129,12 @@ const styles = StyleSheet.create({
 
   signupText: {
     fontSize: wd(0.035),
-    fontWeight: "bold",
     color: "#FF6E6E",
     fontFamily: "HindSiliguri-Regular"
   },
 
   signupTextButton: {
-    textDecorationLine: "underline"
+    textDecorationLine: "underline",
+    fontFamily: "HindSiliguri-Regular"
   }
 });
