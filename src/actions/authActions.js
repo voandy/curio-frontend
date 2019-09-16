@@ -11,7 +11,7 @@ import {
 // register user based on userData
 export const registerUser = userData => dispatch => {
   return axios
-    .post("http://curioapp.herokuapp.com/api/email/id/:id", userData)
+    .post("http://curioapp.herokuapp.com/api/register", userData)
     .then(res => console.log(res.data))
     .catch(err =>
       dispatch({

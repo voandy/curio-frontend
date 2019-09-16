@@ -40,11 +40,14 @@ class Register extends Component {
           name: this.props.register.name,
           email: this.props.register.email,
           password: this.props.register.password,
+          passwordCfm: this.props.register.passwordCfm,
           profilePic: imageUrl
         };
         console.log("Registering new user: " + newUser);
         // register user
         this.props.registerUser(newUser, this.props.history).then(res => {
+          console.log("api call response from register is", res);
+
           // login details
           const user = {
             email: newUser.email,
@@ -57,7 +60,7 @@ class Register extends Component {
             this.props
               .loginUser(user, this.props.history)
               .then(res => {
-                console.log("User is logged in. Trying to get userToken.");
+                console.log("api call response from login is", res);
                 AsyncStorage.getItem("userToken")
                   .then(res => {
                     console.log("Gotten userToken!:" + JSON.stringify(res));
