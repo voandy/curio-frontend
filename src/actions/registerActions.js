@@ -35,6 +35,13 @@ export const setPhotoURI = photoURI => {
   };
 };
 
+export const setUsername = username => {
+  return {
+    type: C.SET_USERNAME,
+    payload: username
+  };
+};
+
 export const setRegisterStage = registerState => {
   return {
     type: C.SET_REGISTER_STAGE,

@@ -14,7 +14,8 @@ import {
   setPasswordCfm,
   setPhotoURI,
   setRegisterStage,
-  resetRegisterState
+  resetRegisterState,
+  setUsername
 } from "../../actions/registerActions";
 // import { uploadImageToGCS } from "../../utils/imageUpload";
 // import reusable button component
@@ -150,6 +151,19 @@ class RegisterManager extends Component {
               // value={this.props.register.email}
               onSubmitEditing={() => this.errorEmail()}
             />
+
+            {/* <Text style={[styles.inputText, styles.passwordFieldTitle]}>
+              {" "}
+              Username:{" "}
+            </Text>
+            <TextInput
+              style={[styles.inputField, styles.passwordField]}
+              secureTextEntry={true}
+              autoCapitalize="none"
+              placeholderTextColor="#868686"
+              onChangeText={val => this.props.setUsername(val)}
+              // value={this.props.register.password}
+            /> */}
 
             {this.state.emailErrorMessage !== "" && (
               <Text style={styles.error}> {this.state.emailErrorMessage} </Text>
@@ -300,6 +314,7 @@ export default connect(
     setPasswordCfm,
     setPhotoURI,
     setRegisterStage,
-    resetRegisterState
+    resetRegisterState,
+    setUsername
   }
 )(RegisterManager);
