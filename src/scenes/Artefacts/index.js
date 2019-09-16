@@ -80,7 +80,7 @@ class Artefacts extends Component {
 
     // sets new artefact's imageURL
     if (this.state.newArtefact.imageURL === "" && nextProps.image.imageURL !== this.state.newArtefact.imageURL) {
-      await this.onImageURLChange(nextProps.image.imageURL);
+      await this.onNewArtefactChange("imageURL", nextProps.image.imageURL)
       // console.log("imageURL is ", nextProps.image.imageURL);
     }
   }
@@ -125,62 +125,11 @@ class Artefacts extends Component {
     console.log("new artefact is ", this.state.newArtefact);
   }
 
-  // change title
-  onTitleChange = title => {
+  onNewArtefactChange = (key, value) => {
     this.setState({
       newArtefact: {
         ...this.state.newArtefact,
-        title
-      }
-    });
-  };
-
-  // change description
-  onDescriptionChange = description => {
-    this.setState({
-      newArtefact: {
-        ...this.state.newArtefact,
-        description
-      }
-    });
-  };
-
-  // change category
-  onCategoryChange = category => {
-    this.setState({
-      newArtefact: {
-        ...this.state.newArtefact,
-        category
-      }
-    });
-  };
-
-  // change imageURL
-  onImageURLChange = imageURL => {
-    this.setState({
-      newArtefact: {
-        ...this.state.newArtefact,
-        imageURL
-      }
-    });
-  };
-
-  // change date
-  onDateObtainedChange = dateObtained => {
-    this.setState({
-      newArtefact: {
-        ...this.state.newArtefact,
-        dateObtained
-      }
-    })
-  }
-
-  // change imageURL
-  onImageURLChange = imageURL => {
-    this.setState({
-      newArtefact: {
-        ...this.state.newArtefact,
-        imageURL
+        [key] : value
       }
     })
   }
@@ -212,7 +161,7 @@ class Artefacts extends Component {
               placeholder="Title"
               autoCapitalize="none"
               placeholderTextColor="#868686"
-              onChangeText={value => this.onTitleChange(value)}
+              onChangeText={value => this.onNewArtefactChange("title", value)}
               value={this.state.newArtefact.title}
             />
 
@@ -220,7 +169,7 @@ class Artefacts extends Component {
               placeholder="Description"
               autoCapitalize="none"
               placeholderTextColor="#868686"
-              onChangeText={value => this.onDescriptionChange(value)}
+              onChangeText={value => this.onNewArtefactChange("description", value)}
               value={this.state.newArtefact.description}
             />
 
@@ -229,7 +178,7 @@ class Artefacts extends Component {
               placeholder="Category"
               autoCapitalize="none"
               placeholderTextColor="#868686"
-              onChangeText={(value) => this.onCategoryChange(value)}
+              onChangeText={(value) => this.onNewArtefactChange("category", value)}
               value={this.state.newArtefact.category}
             />
 
@@ -255,22 +204,22 @@ class Artefacts extends Component {
                 }
                 // ... You can check the source to find the other keys.
               }}
-              onDateChange={(date) => this.onDateObtainedChange(date)}
+              onDateChange={(date) => this.onNewArtefactChange("date", date)}
             />
 
             {/* Image button */}
             <TouchableOpacity activeOpacity={0.5} onPress={this._pickImage}>
-              {this.state.newArtefact.imageURL !== "" ? (
+              {/* {this.state.newArtefact.imageURL !== "" ? (
                 <Image
                   style={[styles.profilePic, styles.profilePicBorder]}
                   source={{ uri: this.state.newArtefact.imageURL }}
                 />
-              ) : (
+              ) : ( */}
               <Image
                 style={styles.profilePic}
                 source={require("../../../assets/images/plus-profile-pic.png")}
               />
-              )} 
+              {/* )} */}
             </TouchableOpacity>
 
             <Button
