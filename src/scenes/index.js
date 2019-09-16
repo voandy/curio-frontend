@@ -15,13 +15,15 @@ import ProfileScreen from "./Profile";
 import NotificationScreen from "./Notification";
 import ArtefactsScreen from "./Artefacts";
 import WelcomeScreen from "./Welcome";
+import SelectedScreen from "./Artefacts/Selected";
 
 import { white } from "ansi-colors";
 import { Image } from "react-native";
 
 // login / signup stack
 const AuthStack = createStackNavigator({
-  Start: { screen: StartScreen },
+  // Start: { screen: StartScreen },
+  Start: { screen: SelectedScreen },
   Register: { screen: RegisterScreen },
   Login: { screen: LoginScreen },
   Welcome: { screen: WelcomeScreen }
@@ -102,3 +104,4 @@ export default AppContainer = createAppContainer(
     }
   )
 );
+

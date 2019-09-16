@@ -16,16 +16,18 @@ import {
   Image
 } from "react-native";
 
+// custom components
 import Header from "../../component/Header";
+import SimpleHeader from "../../component/SimpleHeader"
 import ArtefactFeed from "../../component/ArtefactFeed";
 import { getUserArtefacts, createNewArtefact } from "../../actions/artefactsActions";
 import { uploadImage } from "../../actions/imageActions";
 
 // import width/height responsive functions
 import {
-    deviceHeigthDimension as hp,
-    deviceWidthDimension as wd,
-    setToBottom
+  deviceHeigthDimension as hp,
+  deviceWidthDimension as wd,
+  setToBottom
 } from "../../utils/responsiveDesign";
 
 // object with attributes required to create a new artefact
@@ -56,7 +58,7 @@ class Artefacts extends Component {
   // checks if userArtefacts is empty
   isUserArtefactsEmpty() {
     if (Object.keys(this.state.userArtefacts).length === 0) {
-        return true;
+      return true;
     }
     return false;
   }
@@ -79,11 +81,11 @@ class Artefacts extends Component {
 
     // sets new artefact's imageURL
     if (this.state.newArtefact.imageURL === "" && nextProps.image.imageURL !== this.state.newArtefact.imageURL) {
-        await this.onImageURLChange(nextProps.image.imageURL);
-        // console.log("imageURL is ", nextProps.image.imageURL);
+      await this.onImageURLChange(nextProps.image.imageURL);
+      // console.log("imageURL is ", nextProps.image.imageURL);
     }
   }
-  
+
   // return ArtefactFeedRows containing ArtefactFeed in different rows
   showArtefacts = artefacts => {
     let artefactFeedRows = [];
@@ -92,20 +94,20 @@ class Artefacts extends Component {
 
     // create ArtefactFeed object out of artefact and push it into artefactFeeds array
     for (var i = 0; i < artefacts.length; i++) {
-        artefactFeeds.push(<ArtefactFeed key={artefacts[i]._id} image={{uri: artefacts[i].imageURLs[0]}}/>);
+      artefactFeeds.push(<ArtefactFeed key={artefacts[i]._id} image={{ uri: artefacts[i].imageURLs[0] }} />);
 
-        // create a new row after the previous row has been filled with 3 artefacts and fill the previous row into artefactFeedRows
-        if (artefactFeeds.length === 3 || i === artefacts.length-1) {
-            artefactFeedRows.push(<View style={styles.feed} key={rowKey}>{artefactFeeds}</View>)
-            artefactFeeds = [];
-            rowKey++;
-        }
+      // create a new row after the previous row has been filled with 3 artefacts and fill the previous row into artefactFeedRows
+      if (artefactFeeds.length === 3 || i === artefacts.length - 1) {
+        artefactFeedRows.push(<View style={styles.feed} key={rowKey}>{artefactFeeds}</View>)
+        artefactFeeds = [];
+        rowKey++;
+      }
     }
     return <>{artefactFeedRows}</>;
   }
 
-   // access camera roll
-   _pickImage = async () => {
+  // access camera roll
+  _pickImage = async () => {
     // obtain image
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -166,28 +168,29 @@ class Artefacts extends Component {
 
   // change date
   onDateObtainedChange = dateObtained => {
-      this.setState({
-          newArtefact: {
-              ...this.state.newArtefact,
-              dateObtained
-          }
-      })
+    this.setState({
+      newArtefact: {
+        ...this.state.newArtefact,
+        dateObtained
+      }
+    })
   }
 
   // change imageURL
   onImageURLChange = imageURL => {
     this.setState({
-        newArtefact: {
-            ...this.state.newArtefact,
-            imageURL
-        }
+      newArtefact: {
+        ...this.state.newArtefact,
+        imageURL
+      }
     })
   }
 
   render() {
     return (
       <View style={styles.container}>
-        <Header tab1="Public" tab2="Private" />
+        {/* <Header tab1="Public" tab2="Private" /> */}
+        <SimpleHeader title="My Artefacts" />
 
         {/* scrollable area for CONTENT */}
         <ScrollView
@@ -198,7 +201,7 @@ class Artefacts extends Component {
             <View>{this.showArtefacts(this.state.userArtefacts)}</View>
           )}
         </ScrollView>
-          
+
         {/*********************** CHANGE THIS LATER ********************/}
         {/* create new Group */}
         <Button title="Post New Artefact" onPress={this.toggleModal} />
@@ -232,28 +235,28 @@ class Artefacts extends Component {
             />
 
             <DatePicker
-                style={{width: 200}}
-                date={this.state.newArtefact.dateObtained}
-                mode="date"
-                placeholder="select date"
-                format="YYYY-MM-DD"
-                // minDate="2016-05-01"
-                // maxDate="2016-06-01"
-                confirmBtnText="Confirm"
-                cancelBtnText="Cancel"
-                customStyles={{
+              style={{ width: 200 }}
+              date={this.state.newArtefact.dateObtained}
+              mode="date"
+              placeholder="select date"
+              format="YYYY-MM-DD"
+              // minDate="2016-05-01"
+              // maxDate="2016-06-01"
+              confirmBtnText="Confirm"
+              cancelBtnText="Cancel"
+              customStyles={{
                 dateIcon: {
-                    position: 'absolute',
-                    left: 0,
-                    top: 4,
-                    marginLeft: 0
+                  position: 'absolute',
+                  left: 0,
+                  top: 4,
+                  marginLeft: 0
                 },
                 dateInput: {
-                    marginLeft: 36
+                  marginLeft: 36
                 }
                 // ... You can check the source to find the other keys.
-                }}
-                onDateChange={(date) => this.onDateObtainedChange(date)}
+              }}
+              onDateChange={(date) => this.onDateObtainedChange(date)}
             />
 
             {/* Image button */}
@@ -264,16 +267,16 @@ class Artefacts extends Component {
                   source={{ uri: this.state.newArtefact.imageURL }}
                 />
               ) : ( */}
-                <Image
-                  style={styles.profilePic}
-                  source={require("../../../assets/images/plus-profile-pic.png")}
-                />
+              <Image
+                style={styles.profilePic}
+                source={require("../../../assets/images/plus-profile-pic.png")}
+              />
               {/* )} */}
             </TouchableOpacity>
-            
-            <Button 
-                title="Post Artefact" 
-                onPress={() => this.postNewArtefact()}
+
+            <Button
+              title="Post Artefact"
+              onPress={() => this.postNewArtefact()}
             />
           </View>
         </Modal>
