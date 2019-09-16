@@ -1,4 +1,6 @@
 import React, { Component }from "react";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
 import {
   createSwitchNavigator,
   createAppContainer,
@@ -19,18 +21,20 @@ import ArtefactsScreen from "./Artefacts";
 import WelcomeScreen from "./Welcome";
 import SelectedScreen from "./Artefacts/Selected";
 
-import { getUserData } from "../../actions/userActions";
-import { getUserArtefacts} from "../../actions/artefactsActions";
+import { getUserData } from "../actions/userActions"
+import { getUserArtefacts} from "../actions/artefactsActions";
 
-export default class Scenes extends Component {
+class Scenes extends Component {
   async componentDidMount() {
 
-    // get user authentication data
-    const { user } = this.props.auth;
+    if (this.props.auth.isAuthenticated) {
+      // get user authentication data
+      const { user } = this.props.auth;
 
-    // get user data and artefacts
-    await this.props.getUserData(user.id);
-    await this.props.getUserArtefacts(user.id);
+      // get user data and artefacts
+      await this.props.getUserData(user.id);
+      await this.props.getUserArtefacts(user.id);
+    }
   }
 
   render() {
@@ -47,6 +51,7 @@ const AuthStack = createStackNavigator({
   Login: { screen: LoginScreen },
   Welcome: { screen: WelcomeScreen }
 });
+
 // default app stack
 const AppStack = createBottomTabNavigator(
   {
@@ -129,7 +134,7 @@ Scenes.propTypes = {
   user: PropTypes.object.isRequired,
   artefacts: PropTypes.object.isRequired,
   getUserData: PropTypes.func.isRequired,
-  getUserArtefacts: Proptypes.func.isRequired
+  getUserArtefacts: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({

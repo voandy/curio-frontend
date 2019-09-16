@@ -32,7 +32,6 @@ import {
 
 // object with attributes required to create a new artefact
 const newArtefact = {
-  userId: "",
   title: "",
   description: "",
   category: "",
@@ -54,13 +53,6 @@ class Artefacts extends Component {
   toggleModal = () => {
     this.setState({ isModalVisible: !this.state.isModalVisible });
   };
-
-  async componentDidMount() {
-
-    // get user authentication data
-    const { user } = this.props.auth;
-    await this.props.getUserArtefacts(user.id);
-  }
 
   async componentWillUpdate(nextProps) {
     // sets user artefacts 
@@ -281,8 +273,7 @@ Artefacts.propTypes = {
 const mapStateToProps = state => ({
   artefacts: state.artefacts,
   auth: state.auth,
-  image: state.image,
-  user: state.user
+  image: state.image
 });
 
 // export
