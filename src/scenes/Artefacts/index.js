@@ -44,7 +44,6 @@ class Artefacts extends Component {
   constructor() {
     super();
     this.state = {
-      userArtefacts: {},
       newArtefact,
       isModalVisible: false,
     };
@@ -57,7 +56,7 @@ class Artefacts extends Component {
 
   // checks if userArtefacts is empty
   isUserArtefactsEmpty() {
-    if (Object.keys(this.state.userArtefacts).length === 0) {
+    if (Object.keys(this.props.artefacts.userArtefacts).length === 0) {
       return true;
     }
     return false;
@@ -73,7 +72,7 @@ class Artefacts extends Component {
   async componentWillUpdate(nextProps) {
 
     // sets user artefacts 
-    if (this.isUserArtefactsEmpty() && nextProps.artefacts.userArtefacts !== this.state.userArtefacts) {
+    if (this.isUserArtefactsEmpty() && nextProps.artefacts.userArtefacts !== this.props.artefacts.userArtefacts) {
       await this.setState({
         userArtefacts: nextProps.artefacts.userArtefacts
       });
@@ -197,8 +196,8 @@ class Artefacts extends Component {
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={16}
         >
-          {Object.keys(this.state.userArtefacts).length !== 0 && (
-            <View>{this.showArtefacts(this.state.userArtefacts)}</View>
+          {Object.keys(this.props.artefacts.userArtefacts).length !== 0 && (
+            <View>{this.showArtefacts(this.props.artefacts.userArtefacts)}</View>
           )}
         </ScrollView>
 
@@ -261,17 +260,17 @@ class Artefacts extends Component {
 
             {/* Image button */}
             <TouchableOpacity activeOpacity={0.5} onPress={this._pickImage}>
-              {/* {this.state.newArtefact.imageURL !== "" ? (
+              {this.state.newArtefact.imageURL !== "" ? (
                 <Image
                   style={[styles.profilePic, styles.profilePicBorder]}
                   source={{ uri: this.state.newArtefact.imageURL }}
                 />
-              ) : ( */}
+              ) : (
               <Image
                 style={styles.profilePic}
                 source={require("../../../assets/images/plus-profile-pic.png")}
               />
-              {/* )} */}
+              )} 
             </TouchableOpacity>
 
             <Button

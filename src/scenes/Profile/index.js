@@ -20,19 +20,16 @@ import Moment from "moment";
 // custom component
 import SimpleHeader from "../../component/SimpleHeader";
 import MyButton from "../../component/MyButton";
-import ProfileSetting from "../../component/ProfileSetting"
+import ProfileSetting from "../../component/ProfileSetting";
 
 class Profile extends Component {
   constructor() {
     super();
-    this.state = {
-      userData: {}
-    };
   }
 
   // checks if userData is empty
   isUserDataEmpty() {
-    if (Object.keys(this.state.userData).length === 0) {
+    if (Object.keys(this.props.user.userData).length === 0) {
       return true;
     }
     return false;
@@ -64,11 +61,11 @@ class Profile extends Component {
   };
 
   render() {
-    console.log(this.state.userData);
+    console.log(this.props.user.userData);
 
     // date format
     Moment.locale("en");
-    const dt = this.state.userData.dateJoined;
+    const dt = this.props.user.userData.dateJoined;
 
     return (
       <View style={styles.container}>
@@ -80,10 +77,10 @@ class Profile extends Component {
           scrollEventThrottle={16}
         >
           {/* user profile picture */}
-          {this.state.userData.profilePic != null ? (
+          {this.props.user.userData.profilePic != null ? (
             <Image
               style={styles.profilePic}
-              source={{ uri: this.state.userData.profilePic }}
+              source={{ uri: this.props.user.userData.profilePic }}
             />
           ) : (
               <Image
@@ -93,7 +90,7 @@ class Profile extends Component {
             )}
 
           {/* user heading */}
-          <Text style={styles.userName}>{this.state.userData.name}</Text>
+          <Text style={styles.userName}>{this.props.user.userData.name}</Text>
           <Text style={styles.userDetails}>
             joined since {Moment(dt).format("Do MMMM YYYY")}
           </Text>
@@ -101,9 +98,9 @@ class Profile extends Component {
           {/* line separator */}
           <View style={styles.line} />
 
-          <ProfileSetting text="Account details"/>
-          <ProfileSetting text="Followers"/>
-          <ProfileSetting text="Delete account"/>
+          <ProfileSetting text="Artefacts"/>
+          <ProfileSetting text="Friends"/>
+          <ProfileSetting text="Account Details"/>
 
           {/* line separator */}
           <View style={styles.line} />

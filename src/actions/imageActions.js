@@ -4,7 +4,6 @@ import {
   SET_IMAGE
 } from "../types/imageTypes";
 
-// get artefacts of user based on userId
 export const uploadImage = uri => dispatch => {
   console.log("uri is", uri);
   const image = {
@@ -21,7 +20,7 @@ export const uploadImage = uri => dispatch => {
 
   return axios
     .post(
-      "http://curioapp.herokuapp.com/img-upload", 
+      "http://curioapp.herokuapp.com/api/img-upload", 
       imgBody,
       config = {
         headers: {

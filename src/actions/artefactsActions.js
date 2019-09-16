@@ -32,7 +32,7 @@ export const createNewArtefact = (artefactData) => dispatch => {
         type: GET_ERRORS,
         payload: err.response.data
       })
-  );
+    );
 }
 
 // assign user artefacts based on decoded
