@@ -62,7 +62,6 @@ class Selected extends Component {
           <View style={styles.descriptionPlaceholder}>
             <Text style={styles.description}>This is patrick star, he is cold</Text>
             {/* <Text style={styles.description}>{this.props.description}</Text> */}
-
           </View>
 
           {/* user detail */}
@@ -75,9 +74,9 @@ class Selected extends Component {
           <View style={styles.comments}>
             <Text style={styles.title}>Comments</Text>
 
-            <Comments />
-            <Comments />
-            <Comments />
+            <Comments image={require("../../../../assets/images/default-profile-pic.png")} userName="bob" time="4 hours ago" />
+            <Comments image={require("../../../../assets/images/default-profile-pic.png")} userName="Spongebob Squarepants" time="4 hours ago" />
+            <Comments image={require("../../../../assets/images/default-profile-pic.png")} userName="uwuwewewe onyetenyevwe ugwemuhwem osas" time="4 hours ago" />
 
             <Text>Comments</Text>
             <Text>Comments</Text>
@@ -129,8 +128,8 @@ const styles = StyleSheet.create({
   },
 
   descriptionPlaceholder: {
-    width: Dimensions.get("window").width * 0.8,
-    marginHorizontal: wd(0.1),
+    width: Dimensions.get("window").width * 0.88,
+    marginHorizontal: wd(0.06),
     borderRadius: 5,
     borderWidth: 1,
     borderColor:"black",
@@ -141,12 +140,13 @@ const styles = StyleSheet.create({
   },
 
   comments: {
-    alignItems: "center"
+    alignItems: "center",
+    backgroundColor:"#FAFAFA"
   },
 
   title:{
-    marginHorizontal: wd(0.1),
-    marginBottom: wd(0.05),
+    marginHorizontal: wd(0.05),
+    marginTop: wd(0.05),
     fontFamily:"HindSiliguri-Bold",
     alignSelf:"flex-start",
     fontSize: 24,

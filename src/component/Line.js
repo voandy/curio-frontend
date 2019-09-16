@@ -17,7 +17,7 @@ class Line extends Component {
 const styles = StyleSheet.create({
     line: {
         borderBottomColor: "#939090",
-        borderBottomWidth: 0.4,
+        borderBottomWidth: 0.7,
         width: Dimensions.get("window").width * 0.9,
         alignSelf: "center"
     },
