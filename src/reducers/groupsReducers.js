@@ -1,5 +1,5 @@
 import {
-    SET_NEW_GROUP,
+    SET_USER_GROUPS, ADD_NEW_GROUP,
   } from "../types/groupsTypes";
 
   const initialState = {
@@ -8,10 +8,15 @@ import {
   
   export default function(state = initialState, action) {
     switch (action.type) {
-      case SET_NEW_GROUP:
+      case SET_USER_GROUPS:
         return {
           ...state,
           userGroups: action.payload
+        }
+      case ADD_NEW_GROUP:
+        return {
+          ...state,
+          userGroups: state.userGroups.concat(action.payload)
         };
       default:
         return state;

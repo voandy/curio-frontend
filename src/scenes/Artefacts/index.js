@@ -69,8 +69,6 @@ class Artefacts extends Component {
     }
   }
 
-
-
   // return ArtefactFeedRows containing ArtefactFeed in different rows
   showArtefacts = artefacts => {
     let artefactFeedRows = [];
