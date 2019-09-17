@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import Modal from "react-native-modal";
-
 import {
   View,
   Text,
@@ -15,12 +14,15 @@ import {
   ActivityIndicator
 } from "react-native";
 
+// import redux actions for groups
+import { createNewGroup } from "../../actions/groupsActions";
+import { uploadImage } from "../../actions/imageActions";
+
 // custom components
-import { logoutUser } from "../../actions/authActions";
 import CardCarousel from "../../component/CardCarousel";
 import CardGroup from "../../component/CardGroup";
 import Header from "../../component/Header";
-import Tabs from "./groupManager";
+// import Tabs from "./groupManager";
 
 // Custom respondsive design component
 import {
@@ -33,11 +35,11 @@ import {
 const gray = "#F7F7F7"
 
 const newGroup = {
+  adminId: "",
   title: "",
-  description: ""
+  description: "",
+  coverPhoto: ""
 };
-
-
 
 class Groups extends Component {
   // CHANGE THIS LATER
@@ -50,8 +52,38 @@ class Groups extends Component {
     newGroup
   };
 
+  showUnpinnedGroups = groups => {
+    console.log(groups);
+    // let unpinnedGroups = groups.concat();
+    // let cardGroupRows = [];
+    // let cardGroups = [];
+    // let rowKey = 0;
+
+    // remove user's pinned groups
+    // for (var i = 0; i < unpinnedGroups.length; i++) {
+    //   console.log(unpinnedGroups[i]);
+    // }
+
+    // // sort array based on date obtained (from earliest to oldest)
+    // groups.sort(function(a,b){
+    //   return new Date(b.dateCreated) - new Date(a.dateCreated);
+    // });
+
+    // // create ArtefactFeed object out of artefact and push it into artefactFeeds array
+    // for (var i = 0; i < artefacts.length; i++) {
+    //   artefactFeeds.push(<ArtefactFeed key={artefacts[i]._id} image={{ uri: artefacts[i].imageURLs[0] }} />);
+
+    //   // create a new row after the previous row has been filled with 3 artefacts and fill the previous row into artefactFeedRows
+    //   if (artefactFeeds.length === 3 || i === artefacts.length - 1) {
+    //     artefactFeedRows.push(<View style={styles.feed} key={rowKey}>{artefactFeeds}</View>)
+    //     artefactFeeds = [];
+    //     rowKey++;
+    //   }
+    // }
+    // return <>{artefactFeedRows}</>;
+  }
+
   render() {
-    const { user } = this.props.auth;
 
     return (
       <View style={styles.container}>
@@ -81,19 +113,18 @@ class Groups extends Component {
 
           {/* unpinned groups */}
           <View style={styles.unpinned}>
-            <View style={styles.unpinnedLeft}>
-              <CardGroup text="You can't fail if you dont enroll" userName="Bob" image={require("../../../assets/images/test-delete-this/boi1.jpg")} />
-              <CardGroup text="CooooCOCOCOOOLD" userName="Jon Snow" image={require("../../../assets/images/test-delete-this/boi5.png")} />
-            </View>
-            <View style={styles.unpinnedRight}>
-              <CardGroup text="OWH" userName="Pikaso" image={require("../../../assets/images/test-delete-this/boi3.jpg")} />
-            </View>
+            {this.props.groups.userGroups.length !== 0 && (
+              <View> {this.showUnpinnedGroups(this.props.groups.userGroups)}</View>
+            )}
           </View>
 
-          <Text style={styles.titleText}>Groups</Text>
-          <Text style={styles.titleText}>Groups</Text>
-          <Text style={styles.titleText}>Groups</Text>
-          <Text style={styles.titleText}>Groups</Text>
+          {/* <View style={styles.unpinnedLeft}>
+            <CardGroup text="You can't fail if you dont enroll" userName="Bob" image={require("../../../assets/images/test-delete-this/boi1.jpg")} />
+            <CardGroup text="CooooCOCOCOOOLD" userName="Jon Snow" image={require("../../../assets/images/test-delete-this/boi5.png")} />
+          </View>
+          <View style={styles.unpinnedRight}>
+            <CardGroup text="OWH" userName="Pikaso" image={require("../../../assets/images/test-delete-this/boi3.jpg")} />
+          </View> */}
         </ScrollView>
 
         {/*********************** CHANGE THIS LATER ********************/}
@@ -209,24 +240,23 @@ const styles = StyleSheet.create({
     flex: 0.5, 
     marginRight: Dimensions.get("window").width * 0.05
   }
-
-
-
 });
 
 Groups.propTypes = {
-  logoutUser: PropTypes.func.isRequired,
-  auth: PropTypes.object.isRequired
+  createNewGroup: PropTypes.func.isRequired,
+  groups: PropTypes.object.isRequired,
+  auth: PropTypes.object.isRequired,
+  image: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => ({
+  groups: state.groups,
   auth: state.auth,
-  fontLoaded: state.fontLoader.fontLoaded
+  image: state.image
 });
-
 
 //  connect to redux and export
 export default connect(
   mapStateToProps,
-  { logoutUser }
+  { createNewGroup, uploadImage }
 )(Groups);

@@ -63,6 +63,7 @@ class Artefacts extends Component {
   }
 
   async componentWillUpdate(nextProps) {
+    
     // sets new artefact's imageURL
     if (nextProps.image.imageURL !== this.props.image.imageURL) {
       await this.onNewArtefactChange("imageURL", nextProps.image.imageURL);

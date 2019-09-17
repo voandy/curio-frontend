@@ -36,7 +36,7 @@ export const createNewArtefact = (artefactData) => dispatch => {
     );
 }
 
-// assign user artefacts based on decoded
+// assign user artefacts
 export const setUserArtefacts = decoded => {
   return {
     type: SET_USER_ARTEFACTS,

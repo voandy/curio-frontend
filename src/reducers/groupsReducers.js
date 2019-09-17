@@ -3,7 +3,7 @@ import {
   } from "../types/groupsTypes";
 
   const initialState = {
-    userGroups: {},
+    userGroups: [],
   };
   
   export default function(state = initialState, action) {
