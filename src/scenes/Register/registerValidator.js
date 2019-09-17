@@ -2,44 +2,98 @@ const Validator = require("validator");
 
 // Name checks
 export const validateName = name => {
-
-    let error = "";
-    if (Validator.isEmpty(name)) {
-        error = "Name field is required";
-    }
-
-    return error;
+  let error = "";
+  if (Validator.isEmpty(name)) {
+    error = "Name field is required";
+  }
+  return error;
 };
 
 // email checks
-export const validateEmail= email => {
-
-    let error = "";
+export const validateEmail = email => {
+  return new Promise((resolve, reject) => {
     if (Validator.isEmpty(email)) {
-        error = "Email field is required";
+      resolve("Email field is required");
     } else if (!Validator.isEmail(email)) {
-        error = "Email is invalid";
+      resolve("Email is invalid");
+    } else {
+      isEmailUnique(email).then(res => {
+        if (res.length === 0) {
+          resolve("");
+        } else {
+          resolve("Email already exists");
+        }
+      });
     }
-  
-    return error;
+  });
+};
+
+export const validateUsername = async username => {
+  return new Promise((resolve, reject) => {
+    if (Validator.isEmail(username)) {
+      resolve("Username field is required");
+    } else {
+      isUsernameUnique(username).then(res => {
+        if (res.length === 0) {
+          resolve("");
+        } else {
+          resolve("Username already exists");
+        }
+      });
+    }
+  });
 };
 
 // password checks
-export const validatePassword= (password, passwordCfm) => {
+export const validatePassword = (password, passwordCfm) => {
+  let error = "";
+  if (Validator.isEmpty(password)) {
+    error = "Password field is required";
+  }
+  if (Validator.isEmpty(passwordCfm)) {
+    error = "Confirm password field is required";
+  }
+  if (!Validator.isLength(password, { min: 8 })) {
+    error = "Password must be at least 8 characters";
+  }
+  if (!Validator.equals(password, passwordCfm)) {
+    error = "Passwords must match";
+  }
+  return error;
+};
 
-    let error = "";
-    if (Validator.isEmpty(password)) {
-        error = "Password field is required";
-    }
-    if (Validator.isEmpty(passwordCfm)) {
-        error = "Confirm password field is required";
-    }
-    if (!Validator.isLength(password, { min: 8 })) {
-        error = "Password must be at least 8 characters";
-    }
-    if (!Validator.equals(password, passwordCfm)) {
-        error = "Passwords must match";
-    }
+const isEmailUnique = email => {
+  return new Promise((resolve, reject) => {
+    const url = "http://curioapp.herokuapp.com/api/user/email/" + email;
+    fetch(url, {
+      method: "GET"
+    })
+      .then(res => res.json())
+      .catch(err => console.log(err))
+      .then(res => {
+        resolve(res);
+      })
+      .catch(err => {
+        console.log(err);
+        reject(res);
+      });
+  });
+};
 
-    return error;
+const isUsernameUnique = username => {
+  return new Promise((resolve, reject) => {
+    const url = "http://curioapp.herokuapp.com/api/user/username/" + username;
+    fetch(url, {
+      method: "GET"
+    })
+      .then(res => res.json())
+      .catch(err => console.log(err))
+      .then(res => {
+        resolve(res);
+      })
+      .catch(err => {
+        console.log(err);
+        reject(res);
+      });
+  });
 };

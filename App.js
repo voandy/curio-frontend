@@ -8,6 +8,7 @@ export default class App extends React.Component {
     fontLoaded: false
   };
 
+  // Load fonts async
   async componentDidMount() {
     await Font.loadAsync({
       "HindSiliguri-Bold": require("./assets/fonts//HindSiliguri-Bold.ttf"),
@@ -18,14 +19,16 @@ export default class App extends React.Component {
     });
   }
 
-  rendersAfterFontIsLoaded() {
+  // guard to make sure font is loaded properly, otherwise renders a loading screen
+  rendersWithFontGuard() {
     if (this.state.fontLoaded) {
       return <Provider />;
     } else {
       return <ActivityIndicator size="large" />;
     }
   }
+
   render() {
-    return this.rendersAfterFontIsLoaded();
+    return this.rendersWithFontGuard();
   }
 }

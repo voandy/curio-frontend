@@ -1,12 +1,12 @@
 import React, { Component } from "react";
 import {
-  StyleSheet, //
+  StyleSheet,
   TouchableOpacity,
   View,
   Image,
-  Text
+  Text,
+  Animated
 } from "react-native";
-import { connect } from "react-redux";
 
 // import reusable components
 import {
@@ -14,9 +14,24 @@ import {
   deviceWidthDimension as wd
 } from "../../utils/responsiveDesign";
 
-class Start extends Component {
+export default class Start extends Component {
+  constructor(props) {
+    super(props);
+    this.fadeAnimation = new Animated.Value(0);
+    this.slideAnimation = new Animated.ValueXY({ x: -wd(1), y: 0 });
+  }
+
   componentDidMount() {
-    console.log("Start Page mounted! Font Loaded: " + this.props.fontLoaded);
+    Animated.timing(this.fadeAnimation, {
+      toValue: 1,
+      duration: 500,
+      useNativeDriver: true
+    }).start();
+
+    Animated.spring(this.slideAnimation, {
+      toValue: { x: 0, y: 0 },
+      friction: 5
+    }).start();
   }
 
   // Nav bar details
@@ -27,7 +42,9 @@ class Start extends Component {
   render() {
     const { navigate } = this.props.navigation;
     return (
-      <View style={styles.container}>
+      <Animated.View
+        style={[styles.container, { opacity: this.fadeAnimation }]}
+      >
         {/* heading */}
         <View style={styles.titleContainer}>
           <Text style={[styles.titleText, styles.font]}>Hello there,</Text>
@@ -41,12 +58,14 @@ class Start extends Component {
         />
 
         {/* Login Button */}
-        <TouchableOpacity
-          onPress={() => navigate("Login")}
-          style={styles.loginButton}
-        >
-          <Text style={[styles.loginButtonText, styles.font]}>LOGIN</Text>
-        </TouchableOpacity>
+        <Animated.View style={[this.slideAnimation.getLayout()]}>
+          <TouchableOpacity
+            onPress={() => navigate("Login")}
+            style={styles.loginButton}
+          >
+            <Text style={[styles.loginButtonText, styles.font]}>LOGIN</Text>
+          </TouchableOpacity>
+        </Animated.View>
 
         {/* Register Button */}
         <View style={styles.signupContainer}>
@@ -55,20 +74,10 @@ class Start extends Component {
             <Text style={styles.signupTextButton}>Create account</Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </Animated.View>
     );
   }
 }
-
-// Connect to redux store
-const mapStateToProps = state => ({
-  fontLoaded: state.fontLoader.fontLoaded
-});
-
-export default connect(
-  mapStateToProps,
-  null
-)(Start);
 
 // Component Stylesheet Rules
 const styles = StyleSheet.create({
@@ -91,7 +100,7 @@ const styles = StyleSheet.create({
   titleText: {
     fontSize: wd(0.08),
     paddingTop: wd(0.008),
-    fontFamily: "HindSiliguri-Regular",
+    fontFamily: "HindSiliguri-Regular"
   },
 
   imageStyle: {
@@ -99,7 +108,7 @@ const styles = StyleSheet.create({
     width: wd(0.85),
     height: wd(0.85),
     resizeMode: "contain",
-    marginTop: hp(0.03),
+    marginTop: hp(0.02),
     marginBottom: hp(0.01)
   },
 

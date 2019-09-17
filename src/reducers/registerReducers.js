@@ -1,38 +1,54 @@
-import { C } from "../actions/registerTypes";
+import { C } from "../types/registerTypes";
 
 const initialState = {
-  register_stage: C.GET_NAME,
+  register_stage: C.SET_NAME,
   name: "",
   email: "",
+  username: "",
   password: "",
-  photoURL: ""
+  passwordCfm: "",
+  photoURI: ""
 };
 
 export default registerReducer = (state = initialState, action) => {
   switch (action.type) {
-    case C.GET_NAME:
+    case C.SET_NAME:
       return {
         ...state,
-        register_stage: C.GET_EMAIL,
         name: action.payload
       };
-    case C.GET_EMAIL:
+    case C.SET_EMAIL:
       return {
         ...state,
-        register_stage: C.GET_PASSWORD,
         email: action.payload
       };
-    case C.GET_PASSWORD:
+    case C.SET_USERNAME:
       return {
         ...state,
-        register_stage: C.GET_PHOTO,
+        username: action.payload
+      };
+    case C.SET_PASSWORD:
+      return {
+        ...state,
         password: action.payload
       };
-    case C.GET_PHOTO:
+    case C.SET_PASSWORDCFM:
       return {
         ...state,
-        photoURL: action.payload
+        passwordCfm: action.payload
       };
+    case C.SET_PHOTO_URI:
+      return {
+        ...state,
+        photoURI: action.payload
+      };
+    case C.SET_REGISTER_STAGE:
+      return {
+        ...state,
+        register_stage: action.payload
+      };
+    case C.RESET_REGISTER_STATE:
+      return initialState;
     default:
       return state;
   }

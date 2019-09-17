@@ -32,7 +32,7 @@ import {
 } from "../../utils/responsiveDesign";
 
 // default gray colour
-const gray = "#F7F7F7"
+const gray = "#F7F7F7";
 
 const newGroup = {
   adminId: "",
@@ -81,10 +81,9 @@ class Groups extends Component {
     //   }
     // }
     // return <>{artefactFeedRows}</>;
-  }
+  };
 
   render() {
-
     return (
       <View style={styles.container}>
         <Header />
@@ -104,17 +103,28 @@ class Groups extends Component {
               snapToAlignment={"center"}
               snapToInterval={Dimensions.get("window").width}
             >
-              <CardCarousel image={require("../../../assets/images/test-delete-this/boi1.jpg")} />
-              <CardCarousel image={require("../../../assets/images/test-delete-this/boi2.jpg")} />
-              <CardCarousel image={require("../../../assets/images/test-delete-this/boi3.jpg")} />
-              <CardCarousel image={require("../../../assets/images/test-delete-this/boi4.jpg")} />
+              <CardCarousel
+                image={require("../../../assets/images/test-delete-this/boi1.jpg")}
+              />
+              <CardCarousel
+                image={require("../../../assets/images/test-delete-this/boi2.jpg")}
+              />
+              <CardCarousel
+                image={require("../../../assets/images/test-delete-this/boi3.jpg")}
+              />
+              <CardCarousel
+                image={require("../../../assets/images/test-delete-this/boi4.jpg")}
+              />
             </ScrollView>
           </View>
 
           {/* unpinned groups */}
           <View style={styles.unpinned}>
             {this.props.groups.userGroups.length !== 0 && (
-              <View> {this.showUnpinnedGroups(this.props.groups.userGroups)}</View>
+              <View>
+                {" "}
+                {this.showUnpinnedGroups(this.props.groups.userGroups)}
+              </View>
             )}
           </View>
 
@@ -163,7 +173,6 @@ class Groups extends Component {
   }
 }
 
-
 const styles = StyleSheet.create({
   // CHANGE THIS LATER
   inputField: {
@@ -211,7 +220,7 @@ const styles = StyleSheet.create({
   },
 
   mainGroupContainer: {
-    height: Dimensions.get("window").height * 0.3,
+    height: wd(0.3),
     top: 0,
     position: "absolute",
     backgroundColor: "#E2E2E2"
@@ -222,7 +231,7 @@ const styles = StyleSheet.create({
     marginTop: 100,
     alignItems: "center",
     justifyContent: "center",
-    marginLeft: Dimensions.get("window").width * 0.07,
+    marginLeft: wd(0.07),
     fontFamily: "HindSiliguri-Bold"
   },
 
@@ -232,12 +241,12 @@ const styles = StyleSheet.create({
 
   unpinnedLeft: {
     flex: 0.5,
-    marginLeft: Dimensions.get("window").width * 0.05,
+    marginLeft: Dimensions.get("window").width * 0.05
   },
 
   unpinnedRight: {
-    alignItems: "flex-end", 
-    flex: 0.5, 
+    alignItems: "flex-end",
+    flex: 0.5,
     marginRight: Dimensions.get("window").width * 0.05
   }
 });

@@ -1,10 +1,8 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { getUserData } from "../../actions/userActions";
+import { getUserData, clearCurrentUserData } from "../../actions/userActions";
 import { View, Image, StyleSheet, Text } from "react-native";
-
-// get user data
 
 // custom components
 import MyButton from "../../component/MyButton";
@@ -17,64 +15,55 @@ import {
 } from "../../utils/responsiveDesign";
 
 class Welcome extends Component {
-  constructor() {
-    super();
-    this.state = {
-      userData: {}
-    };
-  }
-
   // remove nav details
   static navigationOptions = {
     header: null
   };
 
   componentDidMount() {
-    console.log("0000");
-
+    console.log("Launching Welcome Page!");
+    this.props.clearCurrentUserData();
     // get user authentication data
     const { user } = this.props.auth;
+    console.log("user in auth: " + JSON.stringify(user));
     this.props.getUserData(user.id);
-    console.log("123");
   }
 
-  componentWillUpdate(nextProps) {
-    console.log("789 UPDATE");
+  // guard to make sure userData is loaded properly, otherwise renders a loading screen
+  rendersWithUserDataGuard() {
+    const { navigate } = this.props.navigation;
 
-    if (Object.keys(this.state.userData).length === 0) {
-      this.setState({
-        userData: nextProps.data.userData
-      });
-      console.log("456");
+    if (this.props.user.userData) {
+      return (
+        <View style={styles.container}>
+          {/* heading */}
+          <Text style={styles.titleText}> All done! </Text>
+          <Text style={styles.subTitleText}>
+            {" "}
+            Welcome {this.props.user.userData.name}.{" "}
+          </Text>
+          {/* <Text style={styles.subTitleText}> Welcome hue. </Text> */}
+
+          <Image
+            style={styles.profilePic}
+            source={{ uri: this.props.user.userData.profilePic }}
+          />
+          {/* <Image style={styles.profilePic} source={require("../../../assets/images/default-profile-pic.png")} /> */}
+          {/* button to collection/group page */}
+          {setToBottom(
+            <View style={styles.bottom}>
+              <MyButton text="Get Started" onPress={() => navigate("App")} />
+            </View>
+          )}
+        </View>
+      );
+    } else {
+      return <ActivityIndicator size="large" />;
     }
   }
 
   render() {
-    const { navigate } = this.props.navigation;
-
-    return (
-      <View style={styles.container}>
-        {/* heading */}
-        <Text style={styles.titleText}> All done! </Text>
-        <Text style={styles.subTitleText}>
-          {" "}
-          Welcome {this.state.userData.name}.{" "}
-        </Text>
-        {/* <Text style={styles.subTitleText}> Welcome hue. </Text> */}
-
-        <Image
-          style={styles.profilePic}
-          source={{ uri: this.state.userData.profilePic }}
-        />
-        {/* <Image style={styles.profilePic} source={require("../../../assets/images/default-profile-pic.png")} /> */}
-        {/* button to collection/group page */}
-        {setToBottom(
-          <View style={styles.bottom}>
-            <MyButton text="Get Started" onPress={() => navigate("App")} />
-          </View>
-        )}
-      </View>
-    );
+    return this.rendersWithUserDataGuard();
   }
 }
 
@@ -121,15 +110,15 @@ const styles = StyleSheet.create({
 Welcome.propTypes = {
   getUserData: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
-  data: PropTypes.object.isRequired
+  user: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => ({
-  data: state.data,
+  user: state.user,
   auth: state.auth
 });
 
 export default connect(
   mapStateToProps,
-  { getUserData }
+  { getUserData, clearCurrentUserData }
 )(Welcome);
