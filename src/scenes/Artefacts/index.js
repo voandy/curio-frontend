@@ -66,6 +66,7 @@ class Artefacts extends Component {
   }
 
   async componentWillUpdate(nextProps) {
+    
     // sets new artefact's imageURL
     if (nextProps.image.imageURL !== this.props.image.imageURL) {
       await this.onNewArtefactChange("imageURL", nextProps.image.imageURL);
@@ -80,12 +81,12 @@ class Artefacts extends Component {
 
     // sort array based on date obtained (from earliest to oldest)
     artefacts.sort(function(a,b){
-      return new Date(b.dateObtained) - new Date(a.dateObtained);
+      return new Date(b.datePosted) - new Date(a.datePosted);
     });
 
     // create ArtefactFeed object out of artefact and push it into artefactFeeds array
     for (var i = 0; i < artefacts.length; i++) {
-      artefactFeeds.push(<ArtefactFeed key={artefacts[i]._id} image={{ uri: artefacts[i].imageURLs[0] }} />);
+      artefactFeeds.push(<ArtefactFeed key={artefacts[i]._id} image={{ uri: artefacts[i].images[0].URL }} />);
 
       // create a new row after the previous row has been filled with 3 artefacts and fill the previous row into artefactFeedRows
       if (artefactFeeds.length === 3 || i === artefacts.length - 1) {

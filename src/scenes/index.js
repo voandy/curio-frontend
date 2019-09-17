@@ -23,6 +23,7 @@ import SelectedScreen from "./Artefacts/Selected";
 
 import { getUserData } from "../actions/userActions"
 import { getUserArtefacts} from "../actions/artefactsActions";
+import { getUserGroups } from "../actions/groupsActions";
 
 class Scenes extends Component {
   async componentDidMount() {
@@ -34,6 +35,7 @@ class Scenes extends Component {
       // get user data and artefacts
       await this.props.getUserData(user.id);
       await this.props.getUserArtefacts(user.id);
+      await this.props.getUserGroups(user.id);
     }
   }
 
@@ -134,17 +136,19 @@ Scenes.propTypes = {
   user: PropTypes.object.isRequired,
   artefacts: PropTypes.object.isRequired,
   getUserData: PropTypes.func.isRequired,
-  getUserArtefacts: PropTypes.func.isRequired
+  getUserArtefacts: PropTypes.func.isRequired,
+  getUserGroups: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
   auth: state.auth,
   user: state.user,
-  artefacts: state.artefacts
+  artefacts: state.artefacts,
+  groups: state.groups
 });
 
 export default connect(
   mapStateToProps,
-  { getUserData, getUserArtefacts }
+  { getUserData, getUserArtefacts, getUserGroups }
 )(Scenes);
 
