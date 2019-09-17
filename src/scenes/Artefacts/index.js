@@ -1,8 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-
-import Modal from "react-native-modal";
 import * as ImagePicker from "expo-image-picker";
 import DatePicker from 'react-native-datepicker';
 import { FloatingAction } from 'react-native-floating-action';
@@ -24,6 +22,7 @@ import SimpleHeader from "../../component/SimpleHeader"
 import ArtefactFeed from "../../component/ArtefactFeed";
 import { getUserArtefacts, createNewArtefact } from "../../actions/artefactsActions";
 import { uploadImage } from "../../actions/imageActions";
+import ArtefactModal from "../../component/ArtefactModal";
 import AddButton from "../../component/AddButton";
 
 // import width/height responsive functions
@@ -157,8 +156,22 @@ class Artefacts extends Component {
         {/* create new Group */}
         <AddButton onPress={this.toggleModal} />
 
+        <ArtefactModal
+          isModalVisible={this.state.isModalVisible}
+          toggleModal={this.toggleModal}
+          dateObtained={this.state.newArtefact.dateObtained}
+          pickImage={this._pickImage}
 
-        <Modal isVisible={this.state.isModalVisible} onRequestClose={this.toggleModal}>
+          title={this.state.newArtefact.title}
+          category={this.state.newArtefact.category}
+          description={this.state.newArtefact.description}
+          date={this.state.newArtefact.dateObtained}
+          imageURL={this.state.newArtefact.imageURL}
+          post={this.postNewArtefact}
+        />
+
+
+        {/* <Modal isVisible={this.state.isModalVisible} onRequestClose={this.toggleModal}>
           <View style={{ backgroundColor: "white", flex: 1 }}>
             <Button title="Close" onPress={this.toggleModal} />
 
@@ -211,10 +224,12 @@ class Artefacts extends Component {
                 // ... You can check the source to find the other keys.
               }}
               onDateChange={(date) => this.onNewArtefactChange("dateObtained", date)}
-            />
+            /> */}
 
-            {/* Image button */}
-            <TouchableOpacity activeOpacity={0.5} onPress={this._pickImage}>
+        {/* Image button */}
+
+
+        {/* <TouchableOpacity activeOpacity={0.5} onPress={this._pickImage}>
               {this.state.newArtefact.imageURL !== "" ? (
                 <Image
                   style={[styles.profilePic, styles.profilePicBorder]}
@@ -233,7 +248,7 @@ class Artefacts extends Component {
               onPress={() => this.postNewArtefact()}
             />
           </View>
-        </Modal>
+        </Modal>  */}
         {/****************************************************************/}
       </View>
     );
@@ -286,14 +301,14 @@ const styles = StyleSheet.create({
   add: {
     width: 56,
     height: 56,
-    borderRadius: 56/2,
-    bottom:30,            // default standard for material design
-    right:30,
-    elevation:5,
-    position:"absolute",
-    alignSelf:"flex-end",
+    borderRadius: 56 / 2,
+    bottom: 30,            // default standard for material design
+    right: 30,
+    elevation: 5,
+    position: "absolute",
+    alignSelf: "flex-end",
     alignItems: "center",
-    justifyContent:"center",
+    justifyContent: "center",
     backgroundColor: "#FF6E6E",
   },
 });
