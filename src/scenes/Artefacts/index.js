@@ -1,10 +1,13 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
+
 import Modal from "react-native-modal";
 // import DateTimePicker from "react-native-modal-datetime-picker";
 import * as ImagePicker from "expo-image-picker";
-import DatePicker from 'react-native-datepicker'
+import DatePicker from 'react-native-datepicker';
+import { FloatingAction } from 'react-native-floating-action';
+
 import {
   Dimensions,
   StyleSheet,
@@ -17,7 +20,6 @@ import {
 } from "react-native";
 
 // custom components
-import Header from "../../component/Header";
 import SimpleHeader from "../../component/SimpleHeader"
 import ArtefactFeed from "../../component/ArtefactFeed";
 import { getUserArtefacts, createNewArtefact } from "../../actions/artefactsActions";
@@ -39,6 +41,7 @@ const newArtefact = {
   dateObtained: "",
   imageURL: "",
 };
+
 
 class Artefacts extends Component {
 
@@ -68,8 +71,6 @@ class Artefacts extends Component {
       await this.onNewArtefactChange("imageURL", nextProps.image.imageURL);
     }
   }
-
-
 
   // return ArtefactFeedRows containing ArtefactFeed in different rows
   showArtefacts = artefacts => {
@@ -133,10 +134,11 @@ class Artefacts extends Component {
     })
   }
 
+
   render() {
     return (
       <View style={styles.container}>
-        {/* <Header tab1="Public" tab2="Private" /> */}
+
         <SimpleHeader title="My Artefacts" />
 
         {/* scrollable area for CONTENT */}
@@ -152,7 +154,13 @@ class Artefacts extends Component {
         {/*********************** CHANGE THIS LATER ********************/}
         {/* create new Group */}
         <Button title="Post New Artefact" onPress={this.toggleModal} />
-        <Modal isVisible={this.state.isModalVisible}>
+
+        <FloatingAction
+        showBackground={this.state.isModalVisible}
+        onPressMain={this.toggleModal}/>
+
+
+        <Modal isVisible={this.state.isModalVisible} onRequestClose={this.toggleModal}>
           <View style={{ backgroundColor: "white", flex: 1 }}>
             <Button title="Close" onPress={this.toggleModal} />
 
@@ -277,6 +285,7 @@ const styles = StyleSheet.create({
   }
 });
 
+
 Artefacts.propTypes = {
   getUserArtefacts: PropTypes.func.isRequired,
   createNewArtefact: PropTypes.func.isRequired,
@@ -290,6 +299,7 @@ const mapStateToProps = state => ({
   auth: state.auth,
   image: state.image
 });
+
 
 // export
 export default connect(
