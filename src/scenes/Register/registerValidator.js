@@ -6,20 +6,42 @@ export const validateName = name => {
   if (Validator.isEmpty(name)) {
     error = "Name field is required";
   }
-
   return error;
 };
 
 // email checks
 export const validateEmail = email => {
-  let error = "";
-  if (Validator.isEmpty(email)) {
-    error = "Email field is required";
-  } else if (!Validator.isEmail(email)) {
-    error = "Email is invalid";
-  }
+  return new Promise((resolve, reject) => {
+    if (Validator.isEmpty(email)) {
+      resolve("Email field is required");
+    } else if (!Validator.isEmail(email)) {
+      resolve("Email is invalid");
+    } else {
+      isEmailUnique(email).then(res => {
+        if (res.length === 0) {
+          resolve("");
+        } else {
+          resolve("Email already exists");
+        }
+      });
+    }
+  });
+};
 
-  return error;
+export const validateUsername = async username => {
+  return new Promise((resolve, reject) => {
+    if (Validator.isEmail(username)) {
+      resolve("Username field is required");
+    } else {
+      isUsernameUnique(username).then(res => {
+        if (res.length === 0) {
+          resolve("");
+        } else {
+          resolve("Username already exists");
+        }
+      });
+    }
+  });
 };
 
 // password checks
@@ -37,6 +59,41 @@ export const validatePassword = (password, passwordCfm) => {
   if (!Validator.equals(password, passwordCfm)) {
     error = "Passwords must match";
   }
-
   return error;
+};
+
+const isEmailUnique = email => {
+  return new Promise((resolve, reject) => {
+    const url = "http://curioapp.herokuapp.com/api/user/email/" + email;
+    fetch(url, {
+      method: "GET"
+    })
+      .then(res => res.json())
+      .catch(err => console.log(err))
+      .then(res => {
+        resolve(res);
+      })
+      .catch(err => {
+        console.log(err);
+        reject(res);
+      });
+  });
+};
+
+const isUsernameUnique = username => {
+  return new Promise((resolve, reject) => {
+    const url = "http://curioapp.herokuapp.com/api/user/username/" + username;
+    fetch(url, {
+      method: "GET"
+    })
+      .then(res => res.json())
+      .catch(err => console.log(err))
+      .then(res => {
+        resolve(res);
+      })
+      .catch(err => {
+        console.log(err);
+        reject(res);
+      });
+  });
 };

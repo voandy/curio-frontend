@@ -11,8 +11,7 @@ import RegisterManager from "./registerManager";
 // import width/height responsive functions
 import {
   deviceHeigthDimension as hp,
-  deviceWidthDimension as wd,
-  setToBottom
+  deviceWidthDimension as wd
 } from "../../utils/responsiveDesign";
 
 import { uploadImageToGCS } from "../../utils/imageUpload";
@@ -27,27 +26,27 @@ class Register extends Component {
 
   // send new user data
   onSubmit = async () => {
-    console.log("submit!");
-    console.log("user's pro pic uri: " + this.props.register.photoURI);
+    console.log(
+      "User's Profile Picture received: " + this.props.register.photoURI
+    );
     // get the navigate function from props
     const { navigate } = this.props.navigation;
 
     uploadImageToGCS(this.props.register.photoURI)
       .then(imageUrl => {
-        console.log("Image Uploaded: " + imageUrl);
+        console.log("Image Uploaded to GCS, at link: " + imageUrl);
         // create new user
         const newUser = {
           name: this.props.register.name,
           email: this.props.register.email,
+          username: this.props.register.username,
           password: this.props.register.password,
           passwordCfm: this.props.register.passwordCfm,
           profilePic: imageUrl
         };
-        console.log("Registering new user: " + newUser);
+        console.log("Registering New User: " + JSON.stringify(newUser));
         // register user
         this.props.registerUser(newUser, this.props.history).then(res => {
-          console.log("api call response from register is", res);
-
           // login details
           const user = {
             email: newUser.email,
@@ -60,10 +59,10 @@ class Register extends Component {
             this.props
               .loginUser(user, this.props.history)
               .then(res => {
-                console.log("api call response from login is", res);
+                console.log("Retrieving userToken...");
                 AsyncStorage.getItem("userToken")
                   .then(res => {
-                    console.log("Gotten userToken!:" + JSON.stringify(res));
+                    console.log("Gotten userToken:" + JSON.stringify(res));
                     // navigate user to Welcome page if no errors
                     if (res !== null) {
                       navigate("Welcome");

@@ -14,6 +14,13 @@ export const setEmail = email => {
   };
 };
 
+export const setUsername = username => {
+  return {
+    type: C.SET_USERNAME,
+    payload: username
+  };
+};
+
 export const setPassword = password => {
   return {
     type: C.SET_PASSWORD,
@@ -32,13 +39,6 @@ export const setPhotoURI = photoURI => {
   return {
     type: C.SET_PHOTO_URI,
     payload: photoURI
-  };
-};
-
-export const setUsername = username => {
-  return {
-    type: C.SET_USERNAME,
-    payload: username
   };
 };
 

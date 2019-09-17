@@ -30,7 +30,7 @@ export default StyleSheet.create({
 
   passwordTitle: {
     marginBottom: hp(0.024),
-    fontSize: hp(0.024)
+    fontSize: hp(0.025)
   },
 
   photoMainTitle: {
