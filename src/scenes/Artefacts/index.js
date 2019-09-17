@@ -79,7 +79,7 @@ class Artefacts extends Component {
 
     // sort array based on date obtained (from earliest to oldest)
     artefacts.sort(function(a,b){
-      return new Date(b.dateObtained) - new Date(a.dateObtained);
+      return new Date(b.datePosted) - new Date(a.datePosted);
     });
 
     // create ArtefactFeed object out of artefact and push it into artefactFeeds array
