@@ -83,7 +83,7 @@ class Artefacts extends Component {
 
     // create ArtefactFeed object out of artefact and push it into artefactFeeds array
     for (var i = 0; i < artefacts.length; i++) {
-      artefactFeeds.push(<ArtefactFeed key={artefacts[i]._id} image={{ uri: artefacts[i].imageURLs[0] }} />);
+      artefactFeeds.push(<ArtefactFeed key={artefacts[i]._id} image={{ uri: artefacts[i].images[0].URL }} />);
 
       // create a new row after the previous row has been filled with 3 artefacts and fill the previous row into artefactFeedRows
       if (artefactFeeds.length === 3 || i === artefacts.length - 1) {
