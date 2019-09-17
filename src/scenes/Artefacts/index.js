@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
 import Modal from "react-native-modal";
-// import DateTimePicker from "react-native-modal-datetime-picker";
 import * as ImagePicker from "expo-image-picker";
 import DatePicker from 'react-native-datepicker';
 import { FloatingAction } from 'react-native-floating-action';
@@ -16,7 +15,8 @@ import {
   Button,
   TextInput,
   TouchableOpacity,
-  Image
+  Image,
+  Text
 } from "react-native";
 
 // custom components
@@ -24,6 +24,7 @@ import SimpleHeader from "../../component/SimpleHeader"
 import ArtefactFeed from "../../component/ArtefactFeed";
 import { getUserArtefacts, createNewArtefact } from "../../actions/artefactsActions";
 import { uploadImage } from "../../actions/imageActions";
+import AddButton from "../../component/AddButton";
 
 // import width/height responsive functions
 import {
@@ -66,7 +67,7 @@ class Artefacts extends Component {
   }
 
   async componentWillUpdate(nextProps) {
-    
+
     // sets new artefact's imageURL
     if (nextProps.image.imageURL !== this.props.image.imageURL) {
       await this.onNewArtefactChange("imageURL", nextProps.image.imageURL);
@@ -80,7 +81,7 @@ class Artefacts extends Component {
     let rowKey = 0;
 
     // sort array based on date obtained (from earliest to oldest)
-    artefacts.sort(function(a,b){
+    artefacts.sort(function (a, b) {
       return new Date(b.datePosted) - new Date(a.datePosted);
     });
 
@@ -130,7 +131,7 @@ class Artefacts extends Component {
     this.setState({
       newArtefact: {
         ...this.state.newArtefact,
-        [key] : value
+        [key]: value
       }
     })
   }
@@ -154,11 +155,7 @@ class Artefacts extends Component {
 
         {/*********************** CHANGE THIS LATER ********************/}
         {/* create new Group */}
-        <Button title="Post New Artefact" onPress={this.toggleModal} />
-
-        <FloatingAction
-        showBackground={this.state.isModalVisible}
-        onPressMain={this.toggleModal}/>
+        <AddButton onPress={this.toggleModal} />
 
 
         <Modal isVisible={this.state.isModalVisible} onRequestClose={this.toggleModal}>
@@ -224,11 +221,11 @@ class Artefacts extends Component {
                   source={{ uri: this.state.newArtefact.imageURL }}
                 />
               ) : (
-              <Image
-                style={styles.profilePic}
-                source={require("../../../assets/images/plus-profile-pic.png")}
-              />
-              )}
+                  <Image
+                    style={styles.profilePic}
+                    source={require("../../../assets/images/plus-profile-pic.png")}
+                  />
+                )}
             </TouchableOpacity>
 
             <Button
@@ -251,6 +248,7 @@ const styles = StyleSheet.create({
     height: wd(0.3),
     alignSelf: "center"
   },
+
   profilePicBorder: {
     borderRadius: wd(0.3) / 2
   },
@@ -283,7 +281,21 @@ const styles = StyleSheet.create({
     margin: 10,
     borderRadius: 540,
     elevation: 3
-  }
+  },
+
+  add: {
+    width: 56,
+    height: 56,
+    borderRadius: 56/2,
+    bottom:30,            // default standard for material design
+    right:30,
+    elevation:5,
+    position:"absolute",
+    alignSelf:"flex-end",
+    alignItems: "center",
+    justifyContent:"center",
+    backgroundColor: "#FF6E6E",
+  },
 });
 
 
