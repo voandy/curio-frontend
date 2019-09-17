@@ -1,5 +1,12 @@
 import React, { Component } from "react";
-import { StyleSheet, TouchableOpacity, View, Image, Text } from "react-native";
+import {
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  Image,
+  Text,
+  Animated
+} from "react-native";
 
 // import reusable components
 import {
@@ -8,6 +15,25 @@ import {
 } from "../../utils/responsiveDesign";
 
 export default class Start extends Component {
+  constructor(props) {
+    super(props);
+    this.fadeAnimation = new Animated.Value(0);
+    this.slideAnimation = new Animated.ValueXY({ x: -wd(1), y: 0 });
+  }
+
+  componentDidMount() {
+    Animated.timing(this.fadeAnimation, {
+      toValue: 1,
+      duration: 500,
+      useNativeDriver: true
+    }).start();
+
+    Animated.spring(this.slideAnimation, {
+      toValue: { x: 0, y: 0 },
+      friction: 5
+    }).start();
+  }
+
   // Nav bar details
   static navigationOptions = {
     header: null
@@ -16,7 +42,9 @@ export default class Start extends Component {
   render() {
     const { navigate } = this.props.navigation;
     return (
-      <View style={styles.container}>
+      <Animated.View
+        style={[styles.container, { opacity: this.fadeAnimation }]}
+      >
         {/* heading */}
         <View style={styles.titleContainer}>
           <Text style={[styles.titleText, styles.font]}>Hello there,</Text>
@@ -30,12 +58,14 @@ export default class Start extends Component {
         />
 
         {/* Login Button */}
-        <TouchableOpacity
-          onPress={() => navigate("Login")}
-          style={styles.loginButton}
-        >
-          <Text style={[styles.loginButtonText, styles.font]}>LOGIN</Text>
-        </TouchableOpacity>
+        <Animated.View style={[this.slideAnimation.getLayout()]}>
+          <TouchableOpacity
+            onPress={() => navigate("Login")}
+            style={styles.loginButton}
+          >
+            <Text style={[styles.loginButtonText, styles.font]}>LOGIN</Text>
+          </TouchableOpacity>
+        </Animated.View>
 
         {/* Register Button */}
         <View style={styles.signupContainer}>
@@ -44,7 +74,7 @@ export default class Start extends Component {
             <Text style={styles.signupTextButton}>Create account</Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </Animated.View>
     );
   }
 }
@@ -68,8 +98,8 @@ const styles = StyleSheet.create({
   },
 
   titleText: {
-    fontSize: wd(0.08),
-    paddingTop: wd(0.008),
+    fontSize: wd(0.09),
+    paddingTop: wd(0.007),
     fontWeight: "bold"
   },
 
@@ -78,7 +108,7 @@ const styles = StyleSheet.create({
     width: wd(0.85),
     height: wd(0.85),
     resizeMode: "contain",
-    marginTop: hp(0.03),
+    marginTop: hp(0.02),
     marginBottom: hp(0.01)
   },
 
