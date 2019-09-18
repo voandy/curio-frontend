@@ -17,9 +17,15 @@ export const validateEmail = email => {
     } else if (!Validator.isEmail(email)) {
       resolve("Email is invalid");
     } else {
+      // check for email uniqueness
       isEmailUnique(email).then(res => {
-        if (res.length === 0) {
+        // if response is undefined, re-validate email
+        if (!res) {
+          validateEmail(email);
+          // email is not used
+        } else if (res.length === 0) {
           resolve("");
+          // email already exists
         } else {
           resolve("Email already exists");
         }
@@ -30,11 +36,13 @@ export const validateEmail = email => {
 
 export const validateUsername = async username => {
   return new Promise((resolve, reject) => {
-    if (Validator.isEmail(username)) {
+    if (Validator.isEmpty(username)) {
       resolve("Username field is required");
     } else {
       isUsernameUnique(username).then(res => {
-        if (res.length === 0) {
+        if (!res) {
+          validateUsername(username);
+        } else if (res.length === 0) {
           resolve("");
         } else {
           resolve("Username already exists");
