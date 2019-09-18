@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import Modal from "react-native-modal";
+import * as ImagePicker from "expo-image-picker";
 import {
   View,
   Text,
@@ -45,16 +46,32 @@ const newGroup = {
 };
 
 class Groups extends Component {
+  state = {
+    isModalVisible: false,
+    newGroup
+  };
+
   // CHANGE THIS LATER
   toggleModal = () => {
     this.setState({ isModalVisible: !this.state.isModalVisible });
   };
 
-  state = {
-    isModalVisible: false,
-    newGroup: newGroup
-  };
+  async componentWillUpdate(nextProps) {
 
+    // sets new artefact's imageURL
+    if (nextProps.image.imageURL !== this.props.image.imageURL) {
+      await this.onNewGroupChange("coverPhoto", nextProps.image.imageURL);
+    }
+  }
+
+  // revert newGroup to initial state
+  resetNewGroup = () => {
+    this.setState({
+      newGroup
+    })
+  }
+
+  // show groups that are unpinned by user
   showUnpinnedGroups = groups => {
     let unpinnedGroups = groups.concat();
     let cardGroupRows = [];
@@ -73,7 +90,8 @@ class Groups extends Component {
 
     // create CardGroup object out of group and push it into cardGroups array
     for (var i = 0; i < unpinnedGroups.length; i++) {
-      cardGroups.push(<CardGroup text={unpinnedGroups[i].title} key={unpinnedGroups[i]._id} image={{ uri: unpinnedGroups[i].coverPhoto }} />);
+      // console.log("groups is", unpinnedGroups[i].group);
+      cardGroups.push(<CardGroup text={unpinnedGroups[i].group[0].title} key={unpinnedGroups[i].group[0]._id} image={{ uri: unpinnedGroups[i].group[0].coverPhoto }} />);
 
       // create a new row after the previous row has been filled with 2 groups and fill the previous row into cardGroupRows
       if (cardGroups.length === 2) {
@@ -88,6 +106,44 @@ class Groups extends Component {
     }
     return <>{cardGroupRows}</>;
   };
+
+  // access camera roll
+  _pickImage = async () => {
+    // obtain image
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 4]
+    });
+
+    // set image
+    if (!result.cancelled) {
+      // upload image to Google Cloud Storage
+      await this.props.uploadImage(result.uri);
+    }
+  };
+
+  // post new artefact into My Artefacts scene
+  postNewGroup = async () => {
+    await this.onNewGroupChange("adminId", this.props.auth.user.id);
+    
+    console.log("new group is", this.state.newGroup);
+    // // save new artefact to redux store
+    // await this.props.createNewGroup(this.state.newGroup);
+
+    // this.toggleModal();
+    // this.resetNewGroup();
+  }
+
+  // new group's attribute change
+  onNewGroupChange = (key, value) => {
+    this.setState({
+      newGroup: {
+        ...this.state.newGroup,
+        [key]: value
+      }
+    })
+  }
 
   render() {
     return (
@@ -147,13 +203,15 @@ class Groups extends Component {
         <GroupModal
           isModalVisible={this.state.isModalVisible}
           toggleModal={this.toggleModal}
+          pickImage={this._pickImage}
 
           title={this.state.newGroup.title}
           description={this.state.newGroup.description}
-          // members={this.state.membe}     TODO
+          coverPhoto={this.state.newGroup.coverPhoto}
           private={this.state.newGroup.private}
+          post={this.postNewGroup}
 
-        // onNewArtefactChange={this.onNewArtefactChange}
+          onNewGroupChange={this.onNewGroupChange}
         />
 
         {/* <Modal isVisible={this.state.isModalVisible} onRequestClose={this.toggleModal}>
