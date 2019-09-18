@@ -1,4 +1,4 @@
-import React, { Component }from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import {
@@ -21,13 +21,12 @@ import ArtefactsScreen from "./Artefacts";
 import WelcomeScreen from "./Welcome";
 import SelectedScreen from "./Artefacts/Selected";
 
-import { getUserData } from "../actions/userActions"
-import { getUserArtefacts} from "../actions/artefactsActions";
+import { getUserData } from "../actions/userActions";
+import { getUserArtefacts } from "../actions/artefactsActions";
 import { getUserGroups } from "../actions/groupsActions";
 
 class Scenes extends Component {
   async componentDidMount() {
-
     if (this.props.auth.isAuthenticated) {
       // get user authentication data
       const { user } = this.props.auth;
@@ -39,10 +38,22 @@ class Scenes extends Component {
     }
   }
 
+  componentWillUpdate(nextProps) {
+    const previousUser = this.props.auth.user;
+    const user = nextProps.auth.user;
+    if (
+      Object.keys(previousUser).length === 0 &&
+      Object.keys(user).length > 0
+    ) {
+      const { user } = nextProps.auth;
+      this.props.getUserData(user.id);
+      this.props.getUserArtefacts(user.id);
+      this.props.getUserGroups(user.id);
+    }
+  }
+
   render() {
-    return(
-      <AppContainer />
-    )
+    return <AppContainer />;
   }
 }
 
@@ -151,4 +162,3 @@ export default connect(
   mapStateToProps,
   { getUserData, getUserArtefacts, getUserGroups }
 )(Scenes);
-

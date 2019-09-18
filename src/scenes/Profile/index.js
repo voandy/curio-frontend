@@ -28,7 +28,6 @@ class Profile extends Component {
   }
 
   componentWillUpdate(nextProps) {
-
     // sets user data
     if (nextProps.user.userData !== this.props.user.userData) {
       this.setState({
@@ -46,7 +45,6 @@ class Profile extends Component {
   };
 
   render() {
-
     // date format
     Moment.locale("en");
     const dt = this.props.user.userData.dateJoined;
@@ -67,11 +65,11 @@ class Profile extends Component {
               source={{ uri: this.props.user.userData.profilePic }}
             />
           ) : (
-              <Image
-                style={styles.profilePic}
-                source={require("../../../assets/images/default-profile-pic.png")}
-              />
-            )}
+            <Image
+              style={styles.profilePic}
+              source={require("../../../assets/images/default-profile-pic.png")}
+            />
+          )}
 
           {/* user heading */}
           <Text style={styles.userName}>{this.props.user.userData.name}</Text>
@@ -82,9 +80,9 @@ class Profile extends Component {
           {/* line separator */}
           <View style={styles.line} />
 
-          <ProfileSetting text="Artefacts"/>
-          <ProfileSetting text="Friends"/>
-          <ProfileSetting text="Account Details"/>
+          <ProfileSetting text="Artefacts" />
+          <ProfileSetting text="Friends" />
+          <ProfileSetting text="Account Details" />
 
           {/* line separator */}
           <View style={styles.line} />
@@ -93,7 +91,6 @@ class Profile extends Component {
           <View style={{ alignItems: "center", marginTop: 20 }}>
             <MyButton onPress={this.onLogoutClick} text="LOG OUT" />
           </View>
-
         </ScrollView>
       </View>
     );

@@ -12,11 +12,12 @@ export const getUserData = userId => dispatch => {
     .then(res => {
       dispatch(setCurrentUserData(res.data));
     })
-    .catch(err =>
-      dispatch({
-        type: GET_ERRORS,
-        payload: err.response.data
-      })
+    .catch(
+      err => console.log("userActions error: " + err)
+      // dispatch({
+      //   type: GET_ERRORS,
+      //   payload: err.response.data
+      // })
     );
 };
 

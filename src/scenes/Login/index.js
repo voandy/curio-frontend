@@ -64,7 +64,6 @@ class Login extends Component {
 
     // logs user in
     this.props.loginUser(user, this.props.history).then(res => {
-
       // navigate to AppStack if there is user token in AsyncStorage
       AsyncStorage.getItem("userToken").then(res => {
         if (res !== null) {
@@ -208,7 +207,7 @@ const styles = StyleSheet.create({
 
   forgotText: {
     color: "#868686",
-    fontFamily: "HindSiliguri-Bold",
+    fontFamily: "HindSiliguri-Bold"
   },
 
   error: {
