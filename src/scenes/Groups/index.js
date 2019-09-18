@@ -23,6 +23,7 @@ import CardCarousel from "../../component/CardCarousel";
 import CardGroup from "../../component/CardGroup";
 import Header from "../../component/Header";
 import AddButton from "../../component/AddButton";
+import GroupModal from "../../component/GroupModal";
 // import Tabs from "./groupManager";
 
 // Custom respondsive design component
@@ -39,6 +40,7 @@ const newGroup = {
   adminId: "",
   title: "",
   description: "",
+  private: true,
   coverPhoto: ""
 };
 
@@ -50,7 +52,7 @@ class Groups extends Component {
 
   state = {
     isModalVisible: false,
-    newGroup
+    newGroup: newGroup
   };
 
   showUnpinnedGroups = groups => {
@@ -142,7 +144,19 @@ class Groups extends Component {
         {/* create new Group */}
         <AddButton onPress={this.toggleModal} />
 
-        <Modal isVisible={this.state.isModalVisible} onRequestClose={this.toggleModal}>
+        <GroupModal
+          isModalVisible={this.state.isModalVisible}
+          toggleModal={this.toggleModal}
+
+          title={this.state.newGroup.title}
+          description={this.state.newGroup.description}
+          // members={this.state.membe}     TODO
+          private={this.state.newGroup.private}
+
+        // onNewArtefactChange={this.onNewArtefactChange}
+        />
+
+        {/* <Modal isVisible={this.state.isModalVisible} onRequestClose={this.toggleModal}>
           <View style={{ backgroundColor: "white", flex: 1 }}>
             <Button title="Close" onPress={this.toggleModal} />
 
@@ -166,7 +180,7 @@ class Groups extends Component {
 
             <Button title="Create Group" />
           </View>
-        </Modal>
+        </Modal> */}
         {/****************************************************************/}
 
         {/* <Tabs /> */}
