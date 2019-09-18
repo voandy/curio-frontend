@@ -22,6 +22,7 @@ import { uploadImage } from "../../actions/imageActions";
 import CardCarousel from "../../component/CardCarousel";
 import CardGroup from "../../component/CardGroup";
 import Header from "../../component/Header";
+import AddButton from "../../component/AddButton";
 // import Tabs from "./groupManager";
 
 // Custom respondsive design component
@@ -121,10 +122,7 @@ class Groups extends Component {
           {/* unpinned groups */}
           <View style={styles.unpinned}>
             {this.props.groups.userGroups.length !== 0 && (
-              <View>
-                {" "}
-                {this.showUnpinnedGroups(this.props.groups.userGroups)}
-              </View>
+              <View><Text>{this.showUnpinnedGroups(this.props.groups.userGroups)}</Text></View>
             )}
           </View>
 
@@ -139,8 +137,9 @@ class Groups extends Component {
 
         {/*********************** CHANGE THIS LATER ********************/}
         {/* create new Group */}
-        <Button title="Create New Group" onPress={this.toggleModal} />
-        <Modal isVisible={this.state.isModalVisible}>
+        <AddButton onPress={this.toggleModal} />
+
+        <Modal isVisible={this.state.isModalVisible} onRequestClose={this.toggleModal}>
           <View style={{ backgroundColor: "white", flex: 1 }}>
             <Button title="Close" onPress={this.toggleModal} />
 

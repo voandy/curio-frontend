@@ -1,9 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-
-import Modal from "react-native-modal";
-// import DateTimePicker from "react-native-modal-datetime-picker";
 import * as ImagePicker from "expo-image-picker";
 import DatePicker from 'react-native-datepicker';
 import { FloatingAction } from 'react-native-floating-action';
@@ -16,7 +13,8 @@ import {
   Button,
   TextInput,
   TouchableOpacity,
-  Image
+  Image,
+  Text
 } from "react-native";
 
 // custom components
@@ -24,6 +22,8 @@ import SimpleHeader from "../../component/SimpleHeader"
 import ArtefactFeed from "../../component/ArtefactFeed";
 import { getUserArtefacts, createNewArtefact } from "../../actions/artefactsActions";
 import { uploadImage } from "../../actions/imageActions";
+import ArtefactModal from "../../component/ArtefactModal";
+import AddButton from "../../component/AddButton";
 
 // import width/height responsive functions
 import {
@@ -44,13 +44,9 @@ const newArtefact = {
 
 
 class Artefacts extends Component {
-
-  constructor() {
-    super();
-    this.state = {
-      newArtefact,
-      isModalVisible: false,
-    };
+  state = {
+    newArtefact: newArtefact,
+    isModalVisible: false,
   }
 
   // toggle the modal for new artefact creation
@@ -66,7 +62,7 @@ class Artefacts extends Component {
   }
 
   async componentWillUpdate(nextProps) {
-    
+
     // sets new artefact's imageURL
     if (nextProps.image.imageURL !== this.props.image.imageURL) {
       await this.onNewArtefactChange("imageURL", nextProps.image.imageURL);
@@ -80,7 +76,7 @@ class Artefacts extends Component {
     let rowKey = 0;
 
     // sort array based on date obtained (from earliest to oldest)
-    artefacts.sort(function(a,b){
+    artefacts.sort(function (a, b) {
       return new Date(b.datePosted) - new Date(a.datePosted);
     });
 
@@ -127,10 +123,11 @@ class Artefacts extends Component {
 
   // new artefact's attribute change
   onNewArtefactChange = (key, value) => {
+
     this.setState({
       newArtefact: {
         ...this.state.newArtefact,
-        [key] : value
+        [key]: value
       }
     })
   }
@@ -152,108 +149,30 @@ class Artefacts extends Component {
           )}
         </ScrollView>
 
-        {/*********************** CHANGE THIS LATER ********************/}
         {/* create new Group */}
-        <Button title="Post New Artefact" onPress={this.toggleModal} />
+        <AddButton onPress={this.toggleModal} />
 
-        <FloatingAction
-        showBackground={this.state.isModalVisible}
-        onPressMain={this.toggleModal}/>
+        <ArtefactModal
+          isModalVisible={this.state.isModalVisible}
+          toggleModal={this.toggleModal}
+          dateObtained={this.state.newArtefact.dateObtained}
+          pickImage={this._pickImage}
 
-
-        <Modal isVisible={this.state.isModalVisible} onRequestClose={this.toggleModal}>
-          <View style={{ backgroundColor: "white", flex: 1 }}>
-            <Button title="Close" onPress={this.toggleModal} />
-
-            <TextInput
-              placeholder="Title"
-              autoCapitalize="none"
-              placeholderTextColor="#868686"
-              onChangeText={value => this.onNewArtefactChange("title", value)}
-              value={this.state.newArtefact.title}
-            />
-
-            <TextInput
-              placeholder="Description"
-              autoCapitalize="none"
-              placeholderTextColor="#868686"
-              onChangeText={value => this.onNewArtefactChange("description", value)}
-              value={this.state.newArtefact.description}
-            />
-
-            <TextInput
-              style={styles.inputField}
-              placeholder="Category"
-              autoCapitalize="none"
-              placeholderTextColor="#868686"
-              onChangeText={(value) => this.onNewArtefactChange("category", value)}
-              value={this.state.newArtefact.category}
-            />
-
-            <DatePicker
-              style={{ width: 200 }}
-              date={this.state.newArtefact.dateObtained}
-              mode="date"
-              value={this.state.newArtefact.dateObtained}
-              placeholder="select date"
-              format="YYYY-MM-DD"
-              // minDate="2016-05-01"
-              // maxDate="2016-06-01"
-              confirmBtnText="Confirm"
-              cancelBtnText="Cancel"
-              customStyles={{
-                dateIcon: {
-                  position: 'absolute',
-                  left: 0,
-                  top: 4,
-                  marginLeft: 0
-                },
-                dateInput: {
-                  marginLeft: 36
-                }
-                // ... You can check the source to find the other keys.
-              }}
-              onDateChange={(date) => this.onNewArtefactChange("dateObtained", date)}
-            />
-
-            {/* Image button */}
-            <TouchableOpacity activeOpacity={0.5} onPress={this._pickImage}>
-              {this.state.newArtefact.imageURL !== "" ? (
-                <Image
-                  style={[styles.profilePic, styles.profilePicBorder]}
-                  source={{ uri: this.state.newArtefact.imageURL }}
-                />
-              ) : (
-              <Image
-                style={styles.profilePic}
-                source={require("../../../assets/images/plus-profile-pic.png")}
-              />
-              )}
-            </TouchableOpacity>
-
-            <Button
-              title="Post Artefact"
-              onPress={() => this.postNewArtefact()}
-            />
-          </View>
-        </Modal>
-        {/****************************************************************/}
+          title={this.state.newArtefact.title}
+          category={this.state.newArtefact.category}
+          description={this.state.newArtefact.description}
+          date={this.state.newArtefact.dateObtained}
+          imageURL={this.state.newArtefact.imageURL}
+          post={this.postNewArtefact}
+          
+          onNewArtefactChange={this.onNewArtefactChange}
+        />
       </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  // CHANGE LATER
-  profilePic: {
-    marginTop: 30,
-    width: wd(0.3),
-    height: wd(0.3),
-    alignSelf: "center"
-  },
-  profilePicBorder: {
-    borderRadius: wd(0.3) / 2
-  },
 
   container: {
     flex: 1
@@ -264,26 +183,6 @@ const styles = StyleSheet.create({
     marginLeft: Dimensions.get("window").width * 0.032,
     marginRight: Dimensions.get("window").width * 0.032
   },
-
-  titleText: {
-    fontSize: 30,
-    marginTop: 250,
-    fontWeight: "bold",
-    alignSelf: "flex-start",
-    marginLeft: Dimensions.get("window").width * 0.07,
-    fontFamily: "HindSiliguri-Bold"
-  },
-
-  button: {
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#FF6E6E",
-    width: Dimensions.get("window").width * 0.4,
-    height: 50,
-    margin: 10,
-    borderRadius: 540,
-    elevation: 3
-  }
 });
 
 
