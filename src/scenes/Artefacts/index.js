@@ -44,13 +44,9 @@ const newArtefact = {
 
 
 class Artefacts extends Component {
-
-  constructor() {
-    super();
-    this.state = {
-      newArtefact,
-      isModalVisible: false,
-    };
+  state = {
+    newArtefact: newArtefact,
+    isModalVisible: false,
   }
 
   // toggle the modal for new artefact creation
@@ -127,6 +123,7 @@ class Artefacts extends Component {
 
   // new artefact's attribute change
   onNewArtefactChange = (key, value) => {
+
     this.setState({
       newArtefact: {
         ...this.state.newArtefact,
@@ -152,7 +149,6 @@ class Artefacts extends Component {
           )}
         </ScrollView>
 
-        {/*********************** CHANGE THIS LATER ********************/}
         {/* create new Group */}
         <AddButton onPress={this.toggleModal} />
 
@@ -168,105 +164,15 @@ class Artefacts extends Component {
           date={this.state.newArtefact.dateObtained}
           imageURL={this.state.newArtefact.imageURL}
           post={this.postNewArtefact}
+          
+          onNewArtefactChange={this.onNewArtefactChange}
         />
-
-
-        {/* <Modal isVisible={this.state.isModalVisible} onRequestClose={this.toggleModal}>
-          <View style={{ backgroundColor: "white", flex: 1 }}>
-            <Button title="Close" onPress={this.toggleModal} />
-
-            <TextInput
-              placeholder="Title"
-              autoCapitalize="none"
-              placeholderTextColor="#868686"
-              onChangeText={value => this.onNewArtefactChange("title", value)}
-              value={this.state.newArtefact.title}
-            />
-
-            <TextInput
-              placeholder="Description"
-              autoCapitalize="none"
-              placeholderTextColor="#868686"
-              onChangeText={value => this.onNewArtefactChange("description", value)}
-              value={this.state.newArtefact.description}
-            />
-
-            <TextInput
-              style={styles.inputField}
-              placeholder="Category"
-              autoCapitalize="none"
-              placeholderTextColor="#868686"
-              onChangeText={(value) => this.onNewArtefactChange("category", value)}
-              value={this.state.newArtefact.category}
-            />
-
-            <DatePicker
-              style={{ width: 200 }}
-              date={this.state.newArtefact.dateObtained}
-              mode="date"
-              value={this.state.newArtefact.dateObtained}
-              placeholder="select date"
-              format="YYYY-MM-DD"
-              // minDate="2016-05-01"
-              // maxDate="2016-06-01"
-              confirmBtnText="Confirm"
-              cancelBtnText="Cancel"
-              customStyles={{
-                dateIcon: {
-                  position: 'absolute',
-                  left: 0,
-                  top: 4,
-                  marginLeft: 0
-                },
-                dateInput: {
-                  marginLeft: 36
-                }
-                // ... You can check the source to find the other keys.
-              }}
-              onDateChange={(date) => this.onNewArtefactChange("dateObtained", date)}
-            /> */}
-
-        {/* Image button */}
-
-
-        {/* <TouchableOpacity activeOpacity={0.5} onPress={this._pickImage}>
-              {this.state.newArtefact.imageURL !== "" ? (
-                <Image
-                  style={[styles.profilePic, styles.profilePicBorder]}
-                  source={{ uri: this.state.newArtefact.imageURL }}
-                />
-              ) : (
-                  <Image
-                    style={styles.profilePic}
-                    source={require("../../../assets/images/plus-profile-pic.png")}
-                  />
-                )}
-            </TouchableOpacity>
-
-            <Button
-              title="Post Artefact"
-              onPress={() => this.postNewArtefact()}
-            />
-          </View>
-        </Modal>  */}
-        {/****************************************************************/}
       </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  // CHANGE LATER
-  profilePic: {
-    marginTop: 30,
-    width: wd(0.3),
-    height: wd(0.3),
-    alignSelf: "center"
-  },
-
-  profilePicBorder: {
-    borderRadius: wd(0.3) / 2
-  },
 
   container: {
     flex: 1
@@ -276,40 +182,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     marginLeft: Dimensions.get("window").width * 0.032,
     marginRight: Dimensions.get("window").width * 0.032
-  },
-
-  titleText: {
-    fontSize: 30,
-    marginTop: 250,
-    fontWeight: "bold",
-    alignSelf: "flex-start",
-    marginLeft: Dimensions.get("window").width * 0.07,
-    fontFamily: "HindSiliguri-Bold"
-  },
-
-  button: {
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#FF6E6E",
-    width: Dimensions.get("window").width * 0.4,
-    height: 50,
-    margin: 10,
-    borderRadius: 540,
-    elevation: 3
-  },
-
-  add: {
-    width: 56,
-    height: 56,
-    borderRadius: 56 / 2,
-    bottom: 30,            // default standard for material design
-    right: 30,
-    elevation: 5,
-    position: "absolute",
-    alignSelf: "flex-end",
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#FF6E6E",
   },
 });
 

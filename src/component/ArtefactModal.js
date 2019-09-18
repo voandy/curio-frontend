@@ -39,8 +39,8 @@ class ArtefactModal extends Component {
                         autoCapitalize="none"
                         placeholderTextColor="#868686"
                         style={[styles.title, styles.font]}
-                        // onChangeText={value => this.onNewArtefactChange("title", value)}
-                        // value={this.props.title}
+                        onChangeText={value => this.props.onNewArtefactChange("title", value)}
+                        value={this.props.title}
                     />
 
                     <Line />
@@ -55,8 +55,8 @@ class ArtefactModal extends Component {
                             placeholderTextColor="#868686"
                             style={[styles.subTitle, styles.font]}
 
-                            // onChangeText={(value) => this.onNewArtefactChange("category", value)}
-                            // value={this.state.newArtefact.category}
+                            onChangeText={value => this.props.onNewArtefactChange("category", value)}
+                            value={this.props.category}
                         />
                     </View>
 
@@ -70,8 +70,8 @@ class ArtefactModal extends Component {
                             placeholderTextColor="#868686"
                             style={[styles.subTitle, styles.font]}
 
-                            // onChangeText={value => this.onNewArtefactChange("description", value)}
-                            // value={this.state.newArtefact.description}
+                            onChangeText={value => this.props.onNewArtefactChange("description", value)}
+                            value={this.props.description}
                         />
                     </View>
 
@@ -85,7 +85,7 @@ class ArtefactModal extends Component {
                             date={this.props.date}
                             mode="date"
                             value={this.props.dateObtained}
-                            placeholder="Select Date"
+                            placeholder="hue"
                             format="YYYY-MM-DD"
                             customStyles={{
                                 dateIcon: {
@@ -96,7 +96,7 @@ class ArtefactModal extends Component {
                                     fontFamily: "HindSiliguri-Bold"
                                 },
                             }}
-                            onDateChange={(date) => this.onNewArtefactChange("dateObtained", date)}
+                            onDateChange={(date) => this.props.onNewArtefactChange("dateObtained", date)}
                         />
                     </View>
 
@@ -110,10 +110,10 @@ class ArtefactModal extends Component {
                                     source={{ uri: this.props.imageURL }}
                                 />
                             ) : (
-                                    <Image
-                                        style={styles.image}
-                                        source={require("../../assets/images/icons/addPicture.png")}
-                                    />)}
+                                <Image
+                                    style={styles.image}
+                                    source={require("../../assets/images/icons/addPicture.png")}
+                                />)}
                         </TouchableOpacity>
 
                         <Text style={[styles.imageText, styles.font]}>Add images of your artefacts</Text>
