@@ -5,7 +5,8 @@ import { AsyncStorage } from "react-native";
 import {
   GET_ERRORS,
   SET_CURRENT_USER,
-  USER_LOADING
+  USER_LOADING,
+  USER_LOGOUT
 } from "../types/authTypes";
 
 // register user based on userData
@@ -23,11 +24,9 @@ export const registerUser = userData => dispatch => {
 
 // log user in with userData
 export const loginUser = userData => dispatch => {
-  
   return axios
     .post("http://curioapp.herokuapp.com/api/login", userData)
     .then(res => {
-
       // Save to AsyncStorage
       // Set token to AsyncStorage
       const { token } = res.data;
@@ -38,7 +37,7 @@ export const loginUser = userData => dispatch => {
 
       // Decode token to get user data
       const decoded = jwt_decode(token);
-      
+
       // Set current user
       dispatch(setCurrentUser(decoded));
     })
@@ -52,35 +51,37 @@ export const loginUser = userData => dispatch => {
 
 // log user out
 export const logoutUser = () => dispatch => {
-  return new Promise(
-    function (resolve, reject) {
-        var logoutIsSuccess;
+  return new Promise(function(resolve, reject) {
+    var logoutIsSuccess;
 
-        try {
-          // Remove token from AsyncStorage
-          AsyncStorage.removeItem("userToken");
-          // Remove auth header for future requests
-          setAuthToken(false);
-          // Set current user to empty object {} which will set isAuthenticated to false
-          dispatch(setCurrentUser({}));
+    try {
+      // Remove token from AsyncStorage
+      AsyncStorage.removeItem("userToken");
+      // Remove auth header for future requests
+      setAuthToken(false);
+      // Set current user to empty object {} which will set isAuthenticated to false
+      dispatch(userLogOut());
 
-          // logout is successful
-          logoutIsSuccess = true;
-        }
-        catch {
-
-          // logout is unsuccessful
-          logoutIsSuccess = false;
-        }
-
-        // checks if logout is successful
-        if (logoutIsSuccess) {
-            resolve("logout succeeds");
-        } else {
-            reject(new Error('logout fails'));
-        }
+      // logout is successful
+      logoutIsSuccess = true;
+    } catch {
+      // logout is unsuccessful
+      logoutIsSuccess = false;
     }
-  );
+
+    // checks if logout is successful
+    if (logoutIsSuccess) {
+      resolve("logout succeeds");
+    } else {
+      reject(new Error("logout fails"));
+    }
+  });
+};
+
+export const userLogOut = () => {
+  return {
+    type: USER_LOGOUT
+  };
 };
 
 // Set logged in user
