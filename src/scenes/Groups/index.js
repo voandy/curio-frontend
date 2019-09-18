@@ -150,7 +150,7 @@ class Groups extends Component {
 
           title={this.state.newGroup.title}
           description={this.state.newGroup.description}
-          // members={this.state.membe}     TODO
+          // members={this.state.members}     TODO
           private={this.state.newGroup.private}
 
         // onNewArtefactChange={this.onNewArtefactChange}

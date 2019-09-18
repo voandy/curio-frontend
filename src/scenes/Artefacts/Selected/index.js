@@ -109,8 +109,6 @@ class Selected extends Component {
             <Text>Comments</Text>
             <Text>Comments</Text>
           </View>
-
-
         </HeaderImageScrollView>
       </View>
     );

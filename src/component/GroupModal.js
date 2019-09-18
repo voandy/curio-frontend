@@ -29,72 +29,99 @@ class GroupModal extends Component {
     }
 
     render() {
-
         return (
-
             <Modal isVisible={this.props.isModalVisible} onRequestClose={this.props.toggleModal}>
                 <View style={styles.modal}>
-
-                    {/* group name */}
+                    
+                    {/* Title */}
                     <TextInput
-                        style={[styles.title, styles.font]}
-                        placeholder="Title"
+                        placeholder="Add Title"
                         autoCapitalize="none"
                         placeholderTextColor="#868686"
-                    // onChangeText={val => this.props.nameHandler(val)}
-                    // value={this.props.name}
+                        style={[styles.title, styles.font]}
+                        onChangeText={value => this.props.onNewArtefactChange("title", value)}
+                        value={this.props.title}
                     />
 
                     <Line />
 
+                    {/* add category  */}
                     <View style={styles.inputRow}>
-
-                        {/* Description of group */}
-                        <Image style={styles.icon} source={require("../../assets/images/icons/description.png")} />
+                        <Image style={styles.icon} source={require("../../assets/images/icons/category.png")} />
                         <TextInput
-                            style={[styles.subTitle, styles.font]}
-                            placeholder="Description"
+                            style={styles.inputField}
+                            placeholder="Add Category"
                             autoCapitalize="none"
                             placeholderTextColor="#868686"
-                        // onChangeText={val => this.props.nameHandler(val)}
-                        // value={this.props.name}
+                            style={[styles.subTitle, styles.font]}
+
+                            onChangeText={value => this.props.onNewArtefactChange("category", value)}
+                            value={this.props.category}
                         />
                     </View>
 
+                    {/* add description */}
                     <View style={styles.inputRow}>
 
-                        {/* Add members */}
-                        <Image style={styles.icon} source={require("../../assets/images/icons/user.png")} />
+                        <Image style={styles.icon} source={require("../../assets/images/icons/description.png")} />
                         <TextInput
-                            style={[styles.subTitle, styles.font]}
-                            placeholder="Members"
+                            placeholder="Add Description"
                             autoCapitalize="none"
                             placeholderTextColor="#868686"
-                        // onChangeText={val => this.props.nameHandler(val)}
-                        // value={this.props.name}
+                            style={[styles.subTitle, styles.font]}
+
+                            onChangeText={value => this.props.onNewArtefactChange("description", value)}
+                            value={this.props.description}
                         />
                     </View>
 
                     <Line />
 
+                    {/* date */}
                     <View style={styles.inputRow}>
-
-                        <Image style={styles.icon} source={require("../../assets/images/icons/privacy.png")} />
-                        <Picker
-                            selectedValue="select ur privacy setting"
-                            style={styles.subTitle}
-                        // onValueChange={(itemValue, itemIndex) =>
-                        //     this.setState({ language: itemValue })}
-                        >
-                            <Picker.Item label="Private" style={{ fontFamily: "HindSiliguri-Bold" }} />
-                            <Picker.Item label="Public" />
-                        </Picker>
-
+                        <Image style={styles.icon} source={require("../../assets/images/icons/calendar.png")} />
+                        <DatePicker
+                            style={{ width: 200 }}
+                            date={this.props.date}
+                            mode="date"
+                            value={this.props.dateObtained}
+                            placeholder="hue"
+                            format="YYYY-MM-DD"
+                            customStyles={{
+                                dateIcon: {
+                                    display: 'none'
+                                },
+                                dateInput: {
+                                    borderWidth: 0,
+                                    fontFamily: "HindSiliguri-Bold"
+                                },
+                            }}
+                            onDateChange={(date) => this.props.onNewArtefactChange("dateObtained", date)}
+                        />
                     </View>
 
-                    {/* create group button */}
-                    <TouchableOpacity onPress={this.props.create} style={styles.button}>
-                        <Text style={styles.buttonText}>Create Group</Text>
+                    {/* Add image button */}
+                    <View style={styles.imagePlaceholder}>
+
+                        <TouchableOpacity activeOpacity={0.5} onPress={this.props.pickImage}>
+                            {this.props.imageURL !== "" ? (
+                                <Image
+                                    style={styles.imageSelected}
+                                    source={{ uri: this.props.imageURL }}
+                                />
+                            ) : (
+                                <Image
+                                    style={styles.image}
+                                    source={require("../../assets/images/icons/addPicture.png")}
+                                />)}
+                        </TouchableOpacity>
+
+                        <Text style={[styles.imageText, styles.font]}>Add images of your artefacts</Text>
+                    </View>
+
+                    {/* post button */}
+                    <TouchableOpacity onPress={this.props.post} style={styles.button}>
+                        <Text style={styles.buttonText}>Post</Text>
                     </TouchableOpacity>
                 </View>
             </Modal>

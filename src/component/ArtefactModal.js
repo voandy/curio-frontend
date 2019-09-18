@@ -120,7 +120,7 @@ class ArtefactModal extends Component {
               activeOpacity={0.5}
               onPress={this.props.pickImage}
             >
-              {!this.props.imageURL ? (
+              {this.props.imageURL !== "" ? (
                 <Image
                   style={styles.imageSelected}
                   source={{ uri: this.props.imageURL }}

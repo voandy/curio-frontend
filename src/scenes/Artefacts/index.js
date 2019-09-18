@@ -40,7 +40,6 @@ const newArtefact = {
   imageURL: "",
 };
 
-
 class Artefacts extends Component {
   state = {
     newArtefact: newArtefact,
