@@ -29,15 +29,6 @@ export class RegisterPhotoField extends Component {
     }
   };
 
-  // Skip button for photos
-  skipPhotoText(photo) {
-    if (photo != null) {
-      return "Next";
-    } else {
-      return "Skip";
-    }
-  }
-
   render() {
     return (
       <View style={styles.cardContainer}>
@@ -72,7 +63,7 @@ export class RegisterPhotoField extends Component {
 
             <MyButton
               style={styles.nextButton}
-              text={this.skipPhotoText(this.props.register.photoURI)}
+              text={this.props.register.photoURI ? "Submit" : "Skip"}
               onPress={() => this.props.onSubmit()} // moves to welcome page and will be logged in
             />
           </View>

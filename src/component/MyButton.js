@@ -1,4 +1,4 @@
-  import React, { Component } from "react";
+import React, { Component } from "react";
 import {
   View,
   StyleSheet,
@@ -6,6 +6,11 @@ import {
   Dimensions,
   TouchableOpacity
 } from "react-native";
+
+import {
+  deviceHeigthDimension as hp,
+  deviceWidthDimension as wd
+} from "../utils/responsiveDesign";
 
 class MyButton extends Component {
   constructor(props) {
@@ -26,16 +31,16 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#FF6E6E",
-    width: Dimensions.get("window").width * 0.3,
+    width: wd(0.3),
     height: 50,
     borderRadius: 40,
     elevation: 4
   },
 
   buttonText: {
-    fontSize: 16,
+    fontSize: hp(0.021),
     color: "white",
-    fontFamily: 'HindSiliguri-Bold'
+    fontFamily: "HindSiliguri-Bold"
   }
 });
 

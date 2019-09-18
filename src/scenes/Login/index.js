@@ -119,7 +119,7 @@ class Login extends Component {
           {/* button */}
           {setToBottom(
             <View style={{ marginBottom: 30 }}>
-              <MyButton onPress={this.onSubmit} text="LOG IN" />
+              <MyButton onPress={this.onSubmit} text="LOGIN" />
             </View>
           )}
         </View>

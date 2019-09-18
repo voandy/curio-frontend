@@ -77,7 +77,7 @@ export default StyleSheet.create({
   },
 
   backButton: {
-    fontSize: hp(0.022),
+    fontSize: hp(0.021),
     alignSelf: "center",
     marginLeft: wd(0.03),
     textDecorationLine: "underline",
