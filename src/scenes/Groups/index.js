@@ -88,18 +88,29 @@ class Groups extends Component {
       return new Date(b.dateCreated) - new Date(a.dateCreated);
     });
 
+    console.log("number of groups are", unpinnedGroups.length);
     // create CardGroup object out of group and push it into cardGroups array
     for (var i = 0; i < unpinnedGroups.length; i++) {
-      // console.log("groups is", unpinnedGroups[i].group);
-      cardGroups.push(<CardGroup text={unpinnedGroups[i].group[0].title} key={unpinnedGroups[i].group[0]._id} image={{ uri: unpinnedGroups[i].group[0].coverPhoto }} />);
+      console.log("group", i, "is", unpinnedGroups[i]);
+      // FREAKIN JOHN DOE!!!!!!!!!
+      // if (i == 0) {
+      //   // console.log("groups is", unpinnedGroups[i].group);
+      //   cardGroups.push(<CardGroup text={unpinnedGroups[i].group[0].title} key={unpinnedGroups[i].group[0]._id} image={{ uri: unpinnedGroups[i].group[0].coverPhoto }} />);
 
+      //   // create a new row after the previous row has been filled with 2 groups and fill the previous row into cardGroupRows
+      //   if (cardGroups.length === 2 || i === cardGroups.length - 1) {
+      //     cardGroupRows.push(<View style={styles.feed} key={rowKey}>{cardGroups}</View>)
+      //     cardGroups = [];
+      //     rowKey++;
+      //   }
+      // }
+      // else {
+
+      cardGroups.push(<CardGroup key={unpinnedGroups[i]._id} text={unpinnedGroups[i].title}  image={{ uri: unpinnedGroups[i].coverPhoto }} />);
+      
       // create a new row after the previous row has been filled with 2 groups and fill the previous row into cardGroupRows
-      if (cardGroups.length === 2) {
-        cardGroupRows.push(<View style={styles.unpinnedRight} key={rowKey}>{cardGroups}</View>)
-        cardGroups = [];
-        rowKey++;
-      } else if (cardGroups.length === 1 && i === cardGroups.length - 1) {
-        cardGroupRows.push(<View style={styles.unpinnedLeft} key={rowKey}>{cardGroups}</View>)
+      if (unpinnedGroups.length === 1 || cardGroups.length === 2 || (i !== 0 && i === unpinnedGroups.length - 1)) {
+        cardGroupRows.push(<View style={styles.feed} key={i}>{cardGroups}</View>)
         cardGroups = [];
         rowKey++;
       }
@@ -123,16 +134,17 @@ class Groups extends Component {
     }
   };
 
-  // post new artefact into My Artefacts scene
+  // post new group into My Groups scene
   postNewGroup = async () => {
     await this.onNewGroupChange("adminId", this.props.auth.user.id);
     
     console.log("new group is", this.state.newGroup);
     // // save new artefact to redux store
     // await this.props.createNewGroup(this.state.newGroup);
+    await this.props.createNewGroup(this.state.newGroup);
 
-    // this.toggleModal();
-    // this.resetNewGroup();
+    this.toggleModal();
+    this.resetNewGroup();
   }
 
   // new group's attribute change
@@ -181,19 +193,16 @@ class Groups extends Component {
           </View>
 
           {/* unpinned groups */}
-          <View style={styles.unpinned}>
-            {this.props.groups.userGroups.length !== 0 && (
-              <View>{this.showUnpinnedGroups(this.props.groups.userGroups)}</View>
-            )}
-          </View>
-
-          {/* <View style={styles.unpinnedLeft}>
-            <CardGroup text="You can't fail if you dont enroll" userName="Bob" image={require("../../../assets/images/test-delete-this/boi1.jpg")} />
-            <CardGroup text="CooooCOCOCOOOLD" userName="Jon Snow" image={require("../../../assets/images/test-delete-this/boi5.png")} />
-          </View>
-          <View style={styles.unpinnedRight}>
-            <CardGroup text="OWH" userName="Pikaso" image={require("../../../assets/images/test-delete-this/boi3.jpg")} />
-          </View> */}
+          {this.props.groups.userGroups.length !== 0 && (
+            <View>{this.showUnpinnedGroups(this.props.groups.userGroups)}</View>
+          )}
+          {/* <View></View>
+            <View style={styles.unpinnedLeft}>
+              <CardGroup text="You can't fail if you dont enroll" userName="Bob" image={require("../../../assets/images/test-delete-this/boi1.jpg")} />
+            </View>
+            <View style={styles.unpinnedRight}>
+              <CardGroup text="OWH" userName="Pikaso" image={require("../../../assets/images/test-delete-this/boi3.jpg")} />
+            </View> */}
         </ScrollView>
 
         {/*********************** CHANGE THIS LATER ********************/}
@@ -262,6 +271,12 @@ const styles = StyleSheet.create({
 
   container: {
     flex: 1
+  },
+
+  feed: {
+    flexDirection: "row",
+    marginLeft: Dimensions.get("window").width * 0.032,
+    marginRight: Dimensions.get("window").width * 0.032
   },
 
   header: {

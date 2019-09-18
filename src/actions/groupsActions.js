@@ -22,7 +22,7 @@ export const getUserGroups = userId => dispatch => {
 // create new group based on groupData
 export const createNewGroup = groupData => dispatch => {
     return axios
-    .post("http://curioapp.herokuapp.com/api/artefact", groupData)
+    .post("http://curioapp.herokuapp.com/api/group", groupData)
       .then(res => {
 
         // set new group
