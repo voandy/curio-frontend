@@ -37,11 +37,10 @@ class CardGroup extends Component {
                         <Text style={[styles.title, styles.font]}>{this.props.text}</Text>
 
                         {/* <Image style={styles.user} source={this.props.userPic}/> */}
-                        <View style={styles.userProfile}>
+                        {/* <View style={styles.userProfile}>
                             <Image style={styles.userProfilePic} source={require("../../assets/images/default-profile-pic.png")} />
                             <Text style={[styles.userName, styles.font]}>{this.props.userName}</Text>
-                        </View>
-
+                        </View> */}
 
                     </View>
                 </TouchableOpacity>

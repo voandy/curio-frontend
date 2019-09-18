@@ -2,8 +2,6 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import * as ImagePicker from "expo-image-picker";
-import DatePicker from 'react-native-datepicker';
-import { FloatingAction } from 'react-native-floating-action';
 
 import {
   Dimensions,
