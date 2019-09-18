@@ -54,34 +54,37 @@ class Groups extends Component {
   };
 
   showUnpinnedGroups = groups => {
-    console.log(groups);
-    // let unpinnedGroups = groups.concat();
-    // let cardGroupRows = [];
-    // let cardGroups = [];
-    // let rowKey = 0;
+    let unpinnedGroups = groups.concat();
+    let cardGroupRows = [];
+    let cardGroups = [];
+    let rowKey = 0;
 
     // remove user's pinned groups
-    // for (var i = 0; i < unpinnedGroups.length; i++) {
-    //   console.log(unpinnedGroups[i]);
-    // }
+    for (var i = 0; i < unpinnedGroups.length; i++) {
+      // console.log("cover photo is", unpinnedGroups[i].coverPhoto);
+    }
 
-    // // sort array based on date obtained (from earliest to oldest)
-    // groups.sort(function(a,b){
-    //   return new Date(b.dateCreated) - new Date(a.dateCreated);
-    // });
+    // sort array based on date obtained (from earliest to oldest)
+    unpinnedGroups.sort(function(a,b){
+      return new Date(b.dateCreated) - new Date(a.dateCreated);
+    });
 
-    // // create ArtefactFeed object out of artefact and push it into artefactFeeds array
-    // for (var i = 0; i < artefacts.length; i++) {
-    //   artefactFeeds.push(<ArtefactFeed key={artefacts[i]._id} image={{ uri: artefacts[i].imageURLs[0] }} />);
+    // create CardGroup object out of group and push it into cardGroups array
+    for (var i = 0; i < unpinnedGroups.length; i++) {
+      cardGroups.push(<CardGroup text={unpinnedGroups[i].title} key={unpinnedGroups[i]._id} image={{ uri: unpinnedGroups[i].coverPhoto }} />);
 
-    //   // create a new row after the previous row has been filled with 3 artefacts and fill the previous row into artefactFeedRows
-    //   if (artefactFeeds.length === 3 || i === artefacts.length - 1) {
-    //     artefactFeedRows.push(<View style={styles.feed} key={rowKey}>{artefactFeeds}</View>)
-    //     artefactFeeds = [];
-    //     rowKey++;
-    //   }
-    // }
-    // return <>{artefactFeedRows}</>;
+      // create a new row after the previous row has been filled with 2 groups and fill the previous row into cardGroupRows
+      if (cardGroups.length === 2) {
+        cardGroupRows.push(<View style={styles.unpinnedRight} key={rowKey}>{cardGroups}</View>)
+        cardGroups = [];
+        rowKey++;
+      } else if (cardGroups.length === 1 && i === cardGroups.length - 1) {
+        cardGroupRows.push(<View style={styles.unpinnedLeft} key={rowKey}>{cardGroups}</View>)
+        cardGroups = [];
+        rowKey++;
+      }
+    }
+    return <>{cardGroupRows}</>;
   };
 
   render() {
@@ -122,7 +125,7 @@ class Groups extends Component {
           {/* unpinned groups */}
           <View style={styles.unpinned}>
             {this.props.groups.userGroups.length !== 0 && (
-              <View><Text>{this.showUnpinnedGroups(this.props.groups.userGroups)}</Text></View>
+              <View>{this.showUnpinnedGroups(this.props.groups.userGroups)}</View>
             )}
           </View>
 
