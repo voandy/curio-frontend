@@ -29,7 +29,7 @@ class Header extends Component {
         </View>
 
         {/* header tab */}
-        <View style={{ flexDirection: "row", justifyContent: "center" }}>
+        {/* <View style={{ flexDirection: "row", justifyContent: "center" }}>
           <TouchableOpacity
             // onPress
             style={styles.headerButton}
@@ -49,7 +49,7 @@ class Header extends Component {
               {this.props.tab2}{" "}
             </Text>
           </TouchableOpacity>
-        </View>
+        </View> */}
       </View>
     );
   }

@@ -26,6 +26,14 @@ import {
   setToBottom
 } from "../../../utils/responsiveDesign"
 
+
+// remove this
+const comment1 = "Ravioli, ravioli, give me the formuoli"
+const comment2 = "is mayonnaise an instrument? No patrick, mayonnaise is not an instrument... Horseradish is not either"
+const comment3 = "Goodbye everyone, I'll remember you all in therapy"
+
+
+
 class Selected extends Component {
 
   state = {
@@ -64,8 +72,9 @@ class Selected extends Component {
         >
 
           <View style={styles.descriptionPlaceholder}>
-            <Text style={styles.title}>Patrick Star</Text>
+            <Text style={styles.title}>Patrick Star is cold</Text>
             <Text style={styles.description}>we should take bikini bottom and push it somewhere else</Text>
+
             {/* <Text style={styles.title}>{this.props.title}</Text> */}
             {/* <Text style={styles.description}>{this.props.description}</Text> */}
           </View>
@@ -76,51 +85,58 @@ class Selected extends Component {
           {/* indicator */}
           <View style={styles.likesIndicatorPlaceholder}>
             {/* <Text style={styles.indicator}>{this.props.likeCount} Likes    {this.props.commentsCount} Comments</Text> */}
-            <Text style={styles.indicator}>69 Likes    5 Comments</Text>
+            <Text style={styles.indicator}>69 Likes    3 Comments</Text>
           </View>
 
           {/* button */}
           <View style={styles.likesButtonPlaceholder}>
+            {/* Like button */}
             <TouchableOpacity style={styles.button}>
               <Image style={styles.buttonIcon} source={require("../../../../assets/images/icons/like.png")} />
               <Text style={styles.buttonText}>Like</Text>
             </TouchableOpacity>
 
+            {/* Comment button */}
             <TouchableOpacity style={styles.button}>
               <Image style={styles.buttonIcon} source={require("../../../../assets/images/icons/comment.png")} />
               <Text style={styles.buttonText}>Comment</Text>
             </TouchableOpacity>
           </View>
 
-          {/* line separator */}
           <Line />
 
           {/* comments */}
           <View style={styles.comments}>
             <Text style={styles.commentsTitle}>Comments</Text>
 
-            <View styles={styles.commentInput}>
+            <View style={styles.commentInput}>
               {/* user profile pic */}
               {/* <Image style={styles.photo} source={this.props.userProfilePic} /> */}
               <Image style={styles.userProfilePic} source={require("../../../../assets/images/default-profile-pic.png")} />
 
-              {/* comment inpit field */}
+              {/* comment input field */}
               <TextInput
-                // underlineColorAndroid="transparent"
                 placeholder="Add Comment"
                 placeholderTextColor="#707070"
                 style={styles.textInput}
               />
             </View>
 
-
-            <Comments image={require("../../../../assets/images/default-profile-pic.png")} userName="bob" time="4 hours ago" />
-            <Comments image={require("../../../../assets/images/default-profile-pic.png")} userName="Spongebob Squarepants" time="4 hours ago" />
-            <Comments image={require("../../../../assets/images/default-profile-pic.png")} userName="uwuwewewe onyetenyevwe ugwemuhwem osas" time="4 hours ago" />
+            {/* comments */}
+            <Comments userProfilePic={require("../../../../assets/images/default-profile-pic.png")}
+              userName="Spongebob"
+              time="1 hour ago"
+              comment={comment1} />
+            <Comments userProfilePic={require("../../../../assets/images/default-profile-pic.png")}
+              userName="Squidward"
+              time="5 hours ago"
+              comment={comment2} />
+            <Comments userProfilePic={require("../../../../assets/images/default-profile-pic.png")}
+              userName="Plankton"
+              time="20 hours ago"
+              comment={comment3} />
 
           </View>
-
-
         </HeaderImageScrollView>
       </View>
     );
@@ -194,17 +210,19 @@ const styles = StyleSheet.create({
   userProfilePic: {
     width: Dimensions.get('window').width * 0.1,
     height: Dimensions.get('window').width * 0.1,
-    // marginRight: wd(0.06),
+    marginLeft: wd(0.06),
+    marginRight: wd(0.03),
   },
 
   commentInput: {
     flexDirection: "row",
-    backgroundColor:"blue"
+    width: Dimensions.get('window').width,
+    height: wd(0.1),
+    marginVertical: wd(0.03)
   },
 
   textInput: {
     fontFamily: "HindSiliguri-Regular",
-    backgroundColor: "red",
     width: Dimensions.get("window").width * 0.7
   },
 
