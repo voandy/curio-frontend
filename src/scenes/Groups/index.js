@@ -26,7 +26,6 @@ import CardGroup from "../../component/CardGroup";
 import Header from "../../component/Header";
 import AddButton from "../../component/AddButton";
 import GroupModal from "../../component/GroupModal";
-// import Tabs from "./groupManager";
 
 // Custom respondsive design component
 import {
