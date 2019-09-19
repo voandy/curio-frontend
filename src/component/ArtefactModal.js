@@ -13,6 +13,7 @@ import {
 import Modal from "react-native-modal";
 import DatePicker from "react-native-datepicker";
 import Line from "./Line";
+import * as ImagePicker from "expo-image-picker";
 
 // custom responsive design component
 import {
@@ -22,9 +23,38 @@ import {
 } from "../utils/responsiveDesign";
 
 class ArtefactModal extends Component {
-  constructor(props) {
-    super(props);
-  }
+  // access camera roll
+  _pickImage = async () => {
+    // obtain image
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 4]
+    });
+    // set imageURI in local state
+    if (!result.cancelled) {
+      this.setImageURI(result.uri);
+    }
+  };
+
+  setDateObtained = dateObtained => {
+    this.props.setNewArtefact("dateObtained", dateObtained);
+  };
+  setTitle = title => {
+    this.props.setNewArtefact("title", title);
+  };
+  setCategory = category => {
+    this.props.setNewArtefact("category", category);
+  };
+  setDescription = description => {
+    this.props.setNewArtefact("description", description);
+  };
+  setDate = date => {
+    this.props.setNewArtefact("date", date);
+  };
+  setImageURI = imageURI => {
+    this.props.setNewArtefact("imageURI", imageURI);
+  };
 
   render() {
     return (
@@ -39,10 +69,8 @@ class ArtefactModal extends Component {
             autoCapitalize="none"
             placeholderTextColor="#868686"
             style={[styles.title, styles.font]}
-            onChangeText={value =>
-              this.props.onNewArtefactChange("title", value)
-            }
-            value={this.props.title}
+            onChangeText={value => this.setTitle(value)}
+            value={this.props.newArtefact.title}
           />
 
           <Line />
@@ -59,10 +87,8 @@ class ArtefactModal extends Component {
               autoCapitalize="none"
               placeholderTextColor="#868686"
               style={[styles.subTitle, styles.font]}
-              onChangeText={value =>
-                this.props.onNewArtefactChange("category", value)
-              }
-              value={this.props.category}
+              onChangeText={value => this.setCategory(value)}
+              value={this.props.newArtefact.category}
             />
           </View>
 
@@ -77,10 +103,8 @@ class ArtefactModal extends Component {
               autoCapitalize="none"
               placeholderTextColor="#868686"
               style={[styles.subTitle, styles.font]}
-              onChangeText={value =>
-                this.props.onNewArtefactChange("description", value)
-              }
-              value={this.props.description}
+              onChangeText={value => this.setDescription(value)}
+              value={this.props.newArtefact.description}
             />
           </View>
 
@@ -94,9 +118,9 @@ class ArtefactModal extends Component {
             />
             <DatePicker
               style={{ width: 200 }}
-              date={this.props.date}
+              date={this.props.newArtefact.date}
               mode="date"
-              value={this.props.dateObtained}
+              value={this.props.newArtefact.dateObtained}
               placeholder="hue"
               format="YYYY-MM-DD"
               customStyles={{
@@ -108,23 +132,18 @@ class ArtefactModal extends Component {
                   fontFamily: "HindSiliguri-Bold"
                 }
               }}
-              onDateChange={date =>
-                this.props.onNewArtefactChange("dateObtained", date)
-              }
+              onDateChange={date => this.setDateObtained(date)}
             />
           </View>
 
           {/* Add image button */}
           <View style={styles.imagePlaceholder}>
-            <TouchableOpacity
-              activeOpacity={0.5}
-              onPress={this.props.pickImage}
-            >
-              {this.props.imageURL !== undefined &&
-              this.props.imageURL !== "" ? (
+            <TouchableOpacity activeOpacity={0.5} onPress={this._pickImage}>
+              {this.props.newArtefact.imageURI !== undefined &&
+              this.props.newArtefact.imageURI !== "" ? (
                 <Image
                   style={styles.imageSelected}
-                  source={{ uri: this.props.imageURL }}
+                  source={{ uri: this.props.newArtefact.imageURI }}
                 />
               ) : (
                 <Image
@@ -140,7 +159,10 @@ class ArtefactModal extends Component {
           </View>
 
           {/* post button */}
-          <TouchableOpacity onPress={this.props.post} style={styles.button}>
+          <TouchableOpacity
+            onPress={() => this.props.onSubmit()}
+            style={styles.button}
+          >
             <Text style={styles.buttonText}>Post</Text>
           </TouchableOpacity>
         </View>

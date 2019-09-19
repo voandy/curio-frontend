@@ -1,9 +1,6 @@
 import axios from "axios";
 
-import {
-  SET_USER_ARTEFACTS,
-  ADD_NEW_ARTEFACT,
-} from "../types/artefactsTypes";
+import { SET_USER_ARTEFACTS, ADD_NEW_ARTEFACT } from "../types/artefactsTypes";
 
 // get artefacts of user based on userId
 export const getUserArtefacts = userId => dispatch => {
@@ -12,28 +9,8 @@ export const getUserArtefacts = userId => dispatch => {
     .then(res => {
       dispatch(setUserArtefacts(res.data));
     })
-    .catch(err =>
-      dispatch({
-        type: GET_ERRORS,
-        payload: err.response.data
-     })
-    );
-}
-
-// create new artefact for user based on artefactData
-export const createNewArtefact = (artefactData) => dispatch => {
-  return axios
-    .post("http://curioapp.herokuapp.com/api/artefact", artefactData)
-    .then(res => {
-      dispatch(addNewArtefact(res.data));
-    })
-    .catch(err =>
-      dispatch({
-        type: GET_ERRORS,
-        payload: err.response.data
-      })
-    );
-}
+    .catch(err => console.log("artefactActions: " + err));
+};
 
 // assign user artefacts
 export const setUserArtefacts = decoded => {
