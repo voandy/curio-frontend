@@ -2,7 +2,7 @@ import axios from "axios";
 
 import { SET_USER_ARTEFACTS, ADD_NEW_ARTEFACT } from "../types/artefactsTypes";
 
-// get artefacts of user based on userId
+// get all artefacts of user based on userId
 export const getUserArtefacts = userId => dispatch => {
   return axios
     .get("http://curioapp.herokuapp.com/api/artefact/userId/" + userId)
@@ -12,7 +12,7 @@ export const getUserArtefacts = userId => dispatch => {
     .catch(err => console.log("artefactActions: " + err));
 };
 
-// assign user artefacts
+// store all of the user's artefacts into redux state
 export const setUserArtefacts = decoded => {
   return {
     type: SET_USER_ARTEFACTS,
@@ -20,7 +20,7 @@ export const setUserArtefacts = decoded => {
   };
 };
 
-// assign new artefact based on decoded
+// add user's newly posted/created rtefacts into redux state
 export const addNewArtefact = decoded => {
   return {
     type: ADD_NEW_ARTEFACT,

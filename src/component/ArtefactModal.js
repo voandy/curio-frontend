@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import {
   View,
   StyleSheet,
-  Button,
   Text,
   TextInput,
   Dimensions,
@@ -18,14 +17,13 @@ import * as ImagePicker from "expo-image-picker";
 // custom responsive design component
 import {
   deviceHeigthDimension as hp,
-  deviceWidthDimension as wd,
-  setToBottom
+  deviceWidthDimension as wd
 } from "../utils/responsiveDesign";
 
 class ArtefactModal extends Component {
-  // access camera roll
+  // access camera roll to pick an image
   _pickImage = async () => {
-    // obtain image
+    // wait for user to pick an image
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
@@ -37,6 +35,7 @@ class ArtefactModal extends Component {
     }
   };
 
+  // Setters for all the local state passed down from Artefacts/index.js
   setDateObtained = dateObtained => {
     this.props.setNewArtefact("dateObtained", dateObtained);
   };
@@ -60,7 +59,7 @@ class ArtefactModal extends Component {
     return (
       <Modal
         isVisible={this.props.isModalVisible}
-        onRequestClose={this.props.toggleModal}
+        onRequestClose={() => this.props.toggleModal()}
       >
         <View style={styles.modal}>
           {/* Title */}

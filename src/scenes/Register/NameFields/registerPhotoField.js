@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import styles from "../style";
 import { C } from "../../../types/registerTypes";
 import * as ImagePicker from "expo-image-picker";
-
+// redux state
 import {
   setPhotoURI,
   setRegisterStage
@@ -14,18 +14,17 @@ import MyButton from "../../../component/MyButton";
 import { setToBottom } from "../../../utils/responsiveDesign";
 
 export class RegisterPhotoField extends Component {
-  // access camera roll
+  // access camera roll to pick an image
   _pickImage = async () => {
-    // obtain image
+    // wait for user to pick an image
     let response = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [4, 4]
     });
-    // set image
+    // set imageURI in local state
     if (!response.cancelled) {
       this.props.setPhotoURI(response.uri);
-      // this.props.setphotoURI(uploadImageToGCS(response.uri));
     }
   };
 
@@ -53,6 +52,7 @@ export class RegisterPhotoField extends Component {
           )}
         </TouchableOpacity>
 
+        {/* back button + skip/next button */}
         {setToBottom(
           <View style={styles.buttom}>
             <TouchableOpacity
@@ -73,10 +73,12 @@ export class RegisterPhotoField extends Component {
   }
 }
 
+// map required redux state to local props
 const mapStateToProps = state => ({
   register: state.register
 });
 
+// map required redux state and actions to local props
 export default connect(
   mapStateToProps,
   { setPhotoURI, setRegisterStage }

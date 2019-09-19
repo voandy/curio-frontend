@@ -19,7 +19,7 @@ import RegisterUsernameField from "./NameFields/registerUsernameField";
 import RegisterPasswordField from "./NameFields/registerPasswordField";
 import RegisterPhotoField from "./NameFields/registerPhotoField";
 
-// Load new page after each completed stage in sign up
+// manage and render the correct sign-up page accordingly
 class RegisterManager extends Component {
   state = {
     nameErrorMessage: "",
@@ -29,6 +29,7 @@ class RegisterManager extends Component {
   };
 
   componentDidMount() {
+    // get the permission from user to access their storage
     this.getPermissionAsync();
     // reset register's state so that the new user can get a fresh state
     this.props.resetRegisterState();
@@ -42,17 +43,18 @@ class RegisterManager extends Component {
     }
   };
 
-  // error handlers
+  // error handlers //
+  // make sure the name is valid
   async checkNameForError(name) {
     await this.setState({
       nameErrorMessage: validator.validateName(name)
     });
-    // with no errors, proceed to next page
+    // if there's no errors, proceed to next page
     if (!this.state.nameErrorMessage) {
       this.props.setRegisterStage(C.SET_EMAIL);
     }
   }
-
+  // check if email is valid and unique
   async checkEmailForError(email) {
     validator.validateEmail(email).then(res => {
       this.setState({ emailErrorMessage: res });
@@ -62,7 +64,7 @@ class RegisterManager extends Component {
       }
     });
   }
-
+  // check if username is valid and unique
   async checkUsernameForError(username) {
     validator.validateUsername(username).then(res => {
       this.setState({ usernameErrorMessage: res });
@@ -72,7 +74,7 @@ class RegisterManager extends Component {
       }
     });
   }
-
+  // check if password and passwordCfm matches and valid
   async checkPasswordForError(password, passwordCfm) {
     await this.setState({
       passwordErrorMessage: validator.validatePassword(password, passwordCfm)
@@ -83,6 +85,7 @@ class RegisterManager extends Component {
     }
   }
 
+  // render pages according to user's current register stage
   render() {
     switch (this.props.register.register_stage) {
       case C.SET_NAME:
@@ -113,10 +116,9 @@ class RegisterManager extends Component {
             checkPasswordForError={this.checkPasswordForError.bind(this)}
           />
         );
-
       case C.SET_PHOTO:
         return <RegisterPhotoField onSubmit={this.props.onSubmit} />;
-
+      // if error occurs, render error 404
       default:
         return (
           <View>
@@ -126,12 +128,12 @@ class RegisterManager extends Component {
     }
   }
 }
-
+// map required redux state to local props
 const mapStateToProps = state => ({
   register: state.register
 });
 
-// connect and export
+// map required redux state and actions to local props
 export default connect(
   mapStateToProps,
   { setRegisterStage, resetRegisterState }

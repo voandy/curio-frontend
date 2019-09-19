@@ -2,18 +2,16 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { View, StyleSheet, Text, AsyncStorage } from "react-native";
-
 // Redux actions
 import { registerUser, loginUser } from "../../actions/authActions";
-
-import RegisterManager from "./registerManager";
-
 // import width/height responsive functions
 import {
   deviceHeigthDimension as hp,
   deviceWidthDimension as wd
 } from "../../utils/responsiveDesign";
-
+// import manager to manage register stage
+import RegisterManager from "./registerManager";
+// import helper function to deal with image upload
 import { uploadImageToGCS } from "../../utils/imageUpload";
 
 class Register extends Component {
@@ -24,14 +22,14 @@ class Register extends Component {
     }
   };
 
-  // send new user data
+  // post new user to the backend
   onSubmit = async () => {
     // get the navigate function from props
     const { navigate } = this.props.navigation;
-
+    // upload the selected photo to GCS, which returns the url to the image
     uploadImageToGCS(this.props.register.photoURI)
       .then(imageUrl => {
-        // create new user
+        // prepare the body data base on new user details
         const newUser = {
           name: this.props.register.name,
           email: this.props.register.email,
@@ -40,16 +38,16 @@ class Register extends Component {
           passwordCfm: this.props.register.passwordCfm,
           profilePic: imageUrl
         };
-        // register user
+        // register user (post api request)
         this.props.registerUser(newUser, this.props.history).then(res => {
-          // login details
+          // prepare login details
           const user = {
             email: newUser.email,
             password: newUser.password
           };
-          // successful registration
+          // upon successful registration
           if (res !== null) {
-            // login user directly
+            // log the user in directly
             this.props
               .loginUser(user, this.props.history)
               .then(res => {
@@ -60,18 +58,25 @@ class Register extends Component {
                       navigate("Welcome");
                     }
                   })
+                  // error with retrieving user token
                   .catch(err => {
-                    console.log("Failed!: " + err);
+                    console.log(
+                      "Failed at retrieving user token! Error: " + err
+                    );
                   });
               })
+              // error with logging in the user
               .catch(err => {
-                console.log("Failed to log user in.");
+                console.log("Failed to log user in. Error: " + err);
               });
           }
         });
       })
+      // error with uploading image to GCS
       .catch(err => {
-        console.log(err);
+        console.log(
+          "Failed to upload image at user registration. Error: " + err
+        );
       });
   };
 
@@ -148,14 +153,14 @@ const styles = StyleSheet.create({
 Register.propTypes = {
   loginUser: PropTypes.func.isRequired,
   registerUser: PropTypes.func.isRequired
-  // register: PropTypes.object.isRequired,
 };
 
+// map required redux state to local props
 const mapStateToProps = state => ({
   register: state.register
 });
 
-// connect and export
+// map required redux state and actions to local props
 export default connect(
   mapStateToProps,
   { registerUser, loginUser }

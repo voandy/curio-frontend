@@ -1,6 +1,6 @@
 const Validator = require("validator");
 
-// Name checks
+// check if name passes all the validations
 export const validateName = name => {
   let error = "";
   if (Validator.isEmpty(name)) {
@@ -9,7 +9,7 @@ export const validateName = name => {
   return error;
 };
 
-// email checks
+// check if email passes all the validations
 export const validateEmail = email => {
   return new Promise((resolve, reject) => {
     if (Validator.isEmpty(email)) {
@@ -34,16 +34,21 @@ export const validateEmail = email => {
   });
 };
 
+// check if username passes all the validations
 export const validateUsername = async username => {
   return new Promise((resolve, reject) => {
     if (Validator.isEmpty(username)) {
       resolve("Username field is required");
     } else {
+      // check for username uniqueness
       isUsernameUnique(username).then(res => {
+        // if response is undefined, ask user to submit again
         if (!res) {
           resolve("Please try again");
+          // username is not used
         } else if (res.length === 0) {
           resolve("");
+          // email already exists
         } else {
           resolve("Username already exists");
         }
@@ -52,7 +57,7 @@ export const validateUsername = async username => {
   });
 };
 
-// password checks
+// check if password passes all the validations
 export const validatePassword = (password, passwordCfm) => {
   let error = "";
   if (Validator.isEmpty(password)) {
@@ -70,6 +75,7 @@ export const validatePassword = (password, passwordCfm) => {
   return error;
 };
 
+// check with the backend to see if email has already exists
 const isEmailUnique = email => {
   return new Promise((resolve, reject) => {
     const url = "http://curioapp.herokuapp.com/api/user/email/" + email;
@@ -88,6 +94,7 @@ const isEmailUnique = email => {
   });
 };
 
+// check with the backend to see if username has already exists
 const isUsernameUnique = username => {
   return new Promise((resolve, reject) => {
     const url = "http://curioapp.herokuapp.com/api/user/username/" + username;

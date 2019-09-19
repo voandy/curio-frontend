@@ -3,7 +3,7 @@ import { View, TextInput, Text, TouchableOpacity } from "react-native";
 import { connect } from "react-redux";
 import styles from "../style";
 import { C } from "../../../types/registerTypes";
-
+// redux actions
 import {
   setPassword,
   setPasswordCfm,
@@ -14,12 +14,15 @@ import MyButton from "../../../component/MyButton";
 import { setToBottom } from "../../../utils/responsiveDesign";
 
 export class RegisterPasswordField extends Component {
+  // local state to fix textInput flickering issue with redux
   state = {
     password: "",
     passwordCfm: ""
   };
 
   componentDidMount() {
+    // fill in the inputField's value if user has already input their password
+    // e.g. when user backs from another register stage
     if (this.props.register.password) {
       this.setState({ password: this.props.register.password });
     }
@@ -28,10 +31,10 @@ export class RegisterPasswordField extends Component {
     }
   }
 
+  // setter function for local state
   setLocalPassword = password => {
     this.setState({ ...this.state, password });
   };
-
   setLocalPasswordCfm = passwordCfm => {
     this.setState({ ...this.state, passwordCfm });
   };
@@ -43,12 +46,12 @@ export class RegisterPasswordField extends Component {
         <Text style={[styles.inputText, styles.passwordTitle]}>
           Great, now create your password!
         </Text>
-
-        {/* password */}
+        {/* password title text */}
         <Text style={[styles.inputText, styles.passwordFieldTitle]}>
           {" "}
           Password:{" "}
         </Text>
+        {/* inputfield for password */}
         <TextInput
           style={[styles.inputField, styles.passwordField]}
           secureTextEntry={true}
@@ -60,12 +63,12 @@ export class RegisterPasswordField extends Component {
           }}
           value={this.state.password}
         />
-
-        {/* Cfm password */}
+        {/* title text for passwordCfm */}
         <Text style={[styles.inputText, styles.passwordFieldTitle]}>
           {" "}
           Confirm Password:{" "}
         </Text>
+        {/* inputfield for passwordCfm */}
         <TextInput
           style={[styles.inputField, styles.passwordField]}
           secureTextEntry={true}
@@ -77,11 +80,11 @@ export class RegisterPasswordField extends Component {
           }}
           value={this.state.passwordCfm}
         />
-
+        {/* error messages if there's any */}
         {this.props.passwordErrorMessage !== "" && (
           <Text style={styles.error}> {this.props.passwordErrorMessage} </Text>
         )}
-
+        {/* back button + next button */}
         {setToBottom(
           <View style={styles.buttom}>
             <TouchableOpacity
@@ -109,10 +112,12 @@ export class RegisterPasswordField extends Component {
   }
 }
 
+// map required redux state to local props
 const mapStateToProps = state => ({
   register: state.register
 });
 
+// map required redux state and actions to local props
 export default connect(
   mapStateToProps,
   { setPassword, setPasswordCfm, setRegisterStage }
