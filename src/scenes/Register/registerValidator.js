@@ -19,9 +19,9 @@ export const validateEmail = email => {
     } else {
       // check for email uniqueness
       isEmailUnique(email).then(res => {
-        // if response is undefined, re-validate email
+        // if response is undefined, ask user to submit again
         if (!res) {
-          validateEmail(email);
+          resolve("Please try again");
           // email is not used
         } else if (res.length === 0) {
           resolve("");
@@ -41,7 +41,7 @@ export const validateUsername = async username => {
     } else {
       isUsernameUnique(username).then(res => {
         if (!res) {
-          validateUsername(username);
+          resolve("Please try again");
         } else if (res.length === 0) {
           resolve("");
         } else {
