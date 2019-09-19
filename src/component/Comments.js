@@ -22,19 +22,27 @@ class UserDetail extends Component {
     render() {
         return (
             <View style={styles.container}>
-                {/* <Text style={ styles.comment }>{this.props.comment}</Text> */}
-                <Text style={styles.comment}>Omaewa Mo shindeiru</Text>
 
-                {/* TODO add link to user profile */}
+                {/* user profile pic */}
                 <TouchableOpacity>
-                    <View style={styles.user}>
-                        <Image style={styles.photo} source={this.props.image} />
-                        <Text style={styles.userName}>{this.props.userName}</Text>
-                        <Text style={styles.time}>{this.props.time}</Text>
-                    </View>
+                    {/* TODO: LINK TO PROFILE */}
+                    <Image style={styles.userProfilePic} source={this.props.userProfilePic} />
                 </TouchableOpacity>
 
-                <View style={styles.line} />
+                {/* comment bubble */}
+                <View style={styles.bubble}>
+                    <View style={styles.user}>
+
+                        <TouchableOpacity style={{ flex: 0.65 }}>
+                            {/* TODO: LINK TO PROFILE */}
+                            <Text style={styles.userName}>{this.props.userName}</Text>
+                        </TouchableOpacity>
+                        <Text style={styles.time}>{this.props.time}</Text>
+                    </View>
+
+                    <Text style={styles.comment}>{this.props.comment}</Text>
+                </View>
+
             </View>
         );
     }
@@ -42,49 +50,47 @@ class UserDetail extends Component {
 
 const styles = StyleSheet.create({
     container: {
-        marginHorizontal: wd(0.05),
-        // alignItems: "center",
-        width: Dimensions.get('window').width * 0.8,
-        height: wd(0.24),
+        marginVertical: wd(0.03),
+        flexDirection: "row",
+        width: Dimensions.get('window').width,
     },
 
-    comment: {
-        fontFamily: "HindSiliguri-Regular",
-        width: Dimensions.get('window').width * 0.8,
-        alignContent: "center",
-        height: wd(0.1),
-        marginTop: wd(0.02),
+    userProfilePic: {
+        width: Dimensions.get('window').width * 0.1,
+        height: Dimensions.get('window').width * 0.1,
+        marginLeft: wd(0.06),
+        marginRight: wd(0.03),
+    },
+
+    bubble: {
+        width: Dimensions.get('window').width * 0.77,
+        backgroundColor: "#E0E0E0",
+        borderRadius: 10,
+        alignContent: "center"
     },
 
     user: {
-        height: wd(0.1),
+        width: Dimensions.get('window').width * 0.77,
         flexDirection: "row",
-        alignItems: "center",
-        marginBottom: wd(0.02)
-    },
-
-    photo: {
-        width: Dimensions.get('window').width * 0.1,
-        height: Dimensions.get('window').width * 0.1,
-        marginRight: wd(0.03),
+        marginVertical: wd(0.01),
+        marginHorizontal: wd(0.03)
     },
 
     userName: {
         fontFamily: "HindSiliguri-Bold",
-        flex: 0.95,
     },
 
     time: {
         fontFamily: "HindSiliguri-Regular",
+        flex: 0.35,
     },
 
-    // this line is different from the "line component"
-    line: {
-        borderBottomColor: "#939090",
-        borderBottomWidth: 0.2,
-        width: Dimensions.get("window").width * 0.95,
-        alignSelf: "center"
-    }
+    comment: {
+        fontFamily: "HindSiliguri-Regular",
+        alignContent: "center",
+        marginVertical: wd(0.01),
+        marginHorizontal: wd(0.03)
+    },
 });
 
 

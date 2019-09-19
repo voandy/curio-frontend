@@ -86,7 +86,7 @@ class Login extends Component {
         {/* main card view */}
         <View style={styles.card}>
           {/* Email */}
-          <Text style={styles.inputText}> EMAIL ADDRESS </Text>
+          <Text style={styles.inputText}> EMAIL / USERNAME </Text>
           <TextInput
             style={styles.input}
             autoCapitalize="none"

@@ -46,17 +46,16 @@ class UserDetail extends Component {
 const styles = StyleSheet.create({
     container: {
         flexDirection: "row",
-        marginHorizontal: wd(0.1),
-        marginVertical: wd(0.03),
+        marginHorizontal: wd(0.06),
         alignItems: "center",
         width: Dimensions.get('window').width * 0.8,
         height: Dimensions.get('window').width * 0.15,
     },
 
     photo: {
-        width: Dimensions.get('window').width * 0.15,
-        height: Dimensions.get('window').width * 0.15,
-        marginRight: wd(0.03)
+        width: Dimensions.get('window').width * 0.1,
+        height: Dimensions.get('window').width * 0.1,
+        marginRight: wd(0.06),
     },
 
     userName: {
