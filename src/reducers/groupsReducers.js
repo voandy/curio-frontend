@@ -16,7 +16,7 @@ import {
       case ADD_NEW_GROUP:
         return {
           ...state,
-          userGroups: state.userGroups.concat(action.payload)
+          userGroups: action.payload
         };
       default:
         return state;

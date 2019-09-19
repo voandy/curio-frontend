@@ -41,8 +41,10 @@ class GroupModal extends Component {
                         placeholder="Title"
                         autoCapitalize="none"
                         placeholderTextColor="#868686"
-                    // onChangeText={val => this.props.nameHandler(val)}
-                    // value={this.props.name}
+                        onChangeText={value =>
+                            this.props.onNewGroupChange("title", value)
+                        }
+                        value={this.props.title}
                     />
 
                     <Line />
@@ -56,22 +58,10 @@ class GroupModal extends Component {
                             placeholder="Description"
                             autoCapitalize="none"
                             placeholderTextColor="#868686"
-                        // onChangeText={val => this.props.nameHandler(val)}
-                        // value={this.props.name}
-                        />
-                    </View>
-
-                    <View style={styles.inputRow}>
-
-                        {/* Add members */}
-                        <Image style={styles.icon} source={require("../../assets/images/icons/user.png")} />
-                        <TextInput
-                            style={[styles.subTitle, styles.font]}
-                            placeholder="Members"
-                            autoCapitalize="none"
-                            placeholderTextColor="#868686"
-                        // onChangeText={val => this.props.nameHandler(val)}
-                        // value={this.props.name}
+                            onChangeText={value =>
+                                this.props.onNewGroupChange("description", value)
+                            }
+                            value={this.props.description}
                         />
                     </View>
 
@@ -83,17 +73,42 @@ class GroupModal extends Component {
                         <Picker
                             selectedValue="select ur privacy setting"
                             style={styles.subTitle}
-                        // onValueChange={(itemValue, itemIndex) =>
-                        //     this.setState({ language: itemValue })}
-                        >
+                            onValueChange={(itemValue, itemIndex) =>
+                                this.props.onNewGroupChange("privacy", itemValue)}
+                            >
+        
                             <Picker.Item label="Private" style={{ fontFamily: "HindSiliguri-Bold" }} />
                             <Picker.Item label="Public" />
                         </Picker>
 
                     </View>
 
+                    {/* Add image button */}
+                    <View style={styles.imagePlaceholder}>
+                        <TouchableOpacity
+                        activeOpacity={0.5}
+                        onPress={this.props.pickImage}
+                        >
+                        {this.props.coverPhoto !== "" ? (
+                            <Image
+                            style={styles.imageSelected}
+                            source={{ uri: this.props.coverPhoto }}
+                            />
+                        ) : (
+                            <Image
+                            style={styles.image}
+                            source={require("../../assets/images/icons/addPicture.png")}
+                            />
+                        )}
+                        </TouchableOpacity>
+
+                        <Text style={[styles.imageText, styles.font]}>
+                            Add images of your group
+                        </Text>
+                    </View>
+
                     {/* create group button */}
-                    <TouchableOpacity onPress={this.props.create} style={styles.button}>
+                    <TouchableOpacity onPress={this.props.post} style={styles.button}>
                         <Text style={styles.buttonText}>Create Group</Text>
                     </TouchableOpacity>
                 </View>

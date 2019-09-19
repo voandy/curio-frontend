@@ -1,7 +1,7 @@
 import axios from "axios";
 
 import {
-  SET_USER_GROUPS, ADD_NEW_GROUP
+  SET_USER_GROUPS, ADD_NEW_GROUP, GET_ERRORS
 } from "../types/groupsTypes";
 
 // get groups of user based on userId
@@ -19,21 +19,39 @@ export const getUserGroups = userId => dispatch => {
     );
 }
 
-// create new group based on adminId
-export const createNewGroup = adminId => dispatch => {
+// create new group based on groupData
+export const createNewGroup = groupData => dispatch => {
     return axios
-      .get("http://curioapp.herokuapp.com/api/group/adminId/" + adminId)
+    .post("http://curioapp.herokuapp.com/api/group", groupData)
       .then(res => {
+        axios.put("http://curioapp.herokuapp.com/api/group/id/" + res.data._id + "/add/userId/" + groupData.adminId)
 
-        // set new group
-        dispatch(addNewGroup(res.data));
+        .then(res => {
+          axios.get("http://curioapp.herokuapp.com/api/user/id/" + groupData.adminId + "/groups")
+
+          .then(res => {
+            dispatch(addNewGroup(res.data));
+          })
+          .catch(err =>
+            dispatch({
+              type: GET_ERRORS,
+              payload: err.response.data
+            })
+          );
+        })
+        .catch(err =>
+          dispatch({
+            type: GET_ERRORS,
+            payload: err.response.data
+          })
+        );
       })
       .catch(err =>
         dispatch({
           type: GET_ERRORS,
           payload: err.response.data
         })
-    );
+      );
 }
 
 // assign user groups

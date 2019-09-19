@@ -40,7 +40,6 @@ const newArtefact = {
   imageURL: "",
 };
 
-
 class Artefacts extends Component {
   state = {
     newArtefact: newArtefact,
@@ -111,7 +110,7 @@ class Artefacts extends Component {
   // post new artefact into My Artefacts scene
   postNewArtefact = async () => {
     await this.onNewArtefactChange("userId", this.props.auth.user.id);
-
+    
     // save new artefact to redux store
     await this.props.createNewArtefact(this.state.newArtefact);
 
