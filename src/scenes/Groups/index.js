@@ -73,6 +73,7 @@ class Groups extends Component {
 
   // show groups that are unpinned by user
   showUnpinnedGroups = groups => {
+    console.log(groups);
     let unpinnedGroups = groups.concat();
     let cardGroupRows = [];
     let cardGroups = [];
@@ -88,25 +89,10 @@ class Groups extends Component {
       return new Date(b.dateCreated) - new Date(a.dateCreated);
     });
 
-    console.log("number of groups are", unpinnedGroups.length);
     // create CardGroup object out of group and push it into cardGroups array
     for (var i = 0; i < unpinnedGroups.length; i++) {
-      console.log("group", i, "is", unpinnedGroups[i]);
-      // FREAKIN JOHN DOE!!!!!!!!!
-      // if (i == 0) {
-      //   // console.log("groups is", unpinnedGroups[i].group);
-      //   cardGroups.push(<CardGroup text={unpinnedGroups[i].group[0].title} key={unpinnedGroups[i].group[0]._id} image={{ uri: unpinnedGroups[i].group[0].coverPhoto }} />);
 
-      //   // create a new row after the previous row has been filled with 2 groups and fill the previous row into cardGroupRows
-      //   if (cardGroups.length === 2 || i === cardGroups.length - 1) {
-      //     cardGroupRows.push(<View style={styles.feed} key={rowKey}>{cardGroups}</View>)
-      //     cardGroups = [];
-      //     rowKey++;
-      //   }
-      // }
-      // else {
-
-      cardGroups.push(<CardGroup key={unpinnedGroups[i]._id} text={unpinnedGroups[i].title}  image={{ uri: unpinnedGroups[i].coverPhoto }} />);
+      cardGroups.push(<CardGroup key={unpinnedGroups[i].details._id} text={unpinnedGroups[i].details.title}  image={{ uri: unpinnedGroups[i].details.coverPhoto }} />);
       
       // create a new row after the previous row has been filled with 2 groups and fill the previous row into cardGroupRows
       if (unpinnedGroups.length === 1 || cardGroups.length === 2 || (i !== 0 && i === unpinnedGroups.length - 1)) {
@@ -139,8 +125,7 @@ class Groups extends Component {
     await this.onNewGroupChange("adminId", this.props.auth.user.id);
     
     console.log("new group is", this.state.newGroup);
-    // // save new artefact to redux store
-    // await this.props.createNewGroup(this.state.newGroup);
+    // save new artefact to redux store
     await this.props.createNewGroup(this.state.newGroup);
 
     this.toggleModal();
