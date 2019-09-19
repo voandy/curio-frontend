@@ -38,6 +38,8 @@ class Scenes extends Component {
     }
   }
 
+  // Temporary fix to retrieve user, groups and artefacts data
+  // when after a user logs in
   componentWillUpdate(nextProps) {
     const previousUser = this.props.auth.user;
     const user = nextProps.auth.user;
