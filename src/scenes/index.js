@@ -69,7 +69,8 @@ const AuthStack = createStackNavigator({
 const AppStack = createBottomTabNavigator(
   {
     Groups: {
-      screen: GroupsScreen,
+      // screen: GroupsScreen,
+      screen: SelectedScreen,
       navigationOptions: {
         tabBarIcon: ({ tintColor }) => (
           <Image

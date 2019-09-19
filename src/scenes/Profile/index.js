@@ -88,7 +88,7 @@ class Profile extends Component {
           <View style={styles.line} />
 
           {/* logout button */}
-          <View style={{ alignItems: "center", marginTop: 20 }}>
+          <View style={{ alignItems: "center", marginVertical: 20 }}>
             <MyButton onPress={this.onLogoutClick} text="LOG OUT" />
           </View>
         </ScrollView>
