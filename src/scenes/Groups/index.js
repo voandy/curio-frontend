@@ -18,6 +18,7 @@ import {
 // import redux actions for groups
 import { createNewGroup } from "../../actions/groupsActions";
 import { uploadImage } from "../../actions/imageActions";
+import { uploadImageToGCS } from "../../utils/imageUpload";
 
 // custom components
 import CardCarousel from "../../component/CardCarousel";
@@ -42,7 +43,7 @@ const newGroup = {
   title: "",
   description: "",
   private: true,
-  coverPhoto: ""
+  imageURI: ""
 };
 
 class Groups extends Component {
@@ -56,14 +57,6 @@ class Groups extends Component {
     this.setState({ isModalVisible: !this.state.isModalVisible });
   };
 
-  async componentWillUpdate(nextProps) {
-
-    // sets new artefact's imageURL
-    if (nextProps.image.imageURL !== this.props.image.imageURL) {
-      await this.onNewGroupChange("coverPhoto", nextProps.image.imageURL);
-    }
-  }
-
   // revert newGroup to initial state
   resetNewGroup = () => {
     this.setState({
@@ -71,9 +64,18 @@ class Groups extends Component {
     })
   }
 
+  // new group's attribute change
+  onNewGroupChange = (key, value) => {
+    this.setState({
+        newGroup: {
+            ...this.state.newGroup,
+            [key]: value
+        }
+    })
+  }
+
   // show groups that are unpinned by user
   showUnpinnedGroups = groups => {
-    console.log(groups);
     let unpinnedGroups = groups.concat();
     let cardGroupRows = [];
     let cardGroups = [];
@@ -104,42 +106,24 @@ class Groups extends Component {
     return <>{cardGroupRows}</>;
   };
 
-  // access camera roll
-  _pickImage = async () => {
-    // obtain image
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 4]
-    });
-
-    // set image
-    if (!result.cancelled) {
-      // upload image to Google Cloud Storage
-      await this.props.uploadImage(result.uri);
-    }
-  };
-
-  // post new group into My Groups scene
+  // post new group into the backend
   postNewGroup = async () => {
     await this.onNewGroupChange("adminId", this.props.auth.user.id);
-    
-    console.log("new group is", this.state.newGroup);
-    // save new artefact to redux store
-    await this.props.createNewGroup(this.state.newGroup);
 
-    this.toggleModal();
-    this.resetNewGroup();
-  }
-
-  // new group's attribute change
-  onNewGroupChange = (key, value) => {
-    this.setState({
-      newGroup: {
+    // upload the selected photo to GCS, which returns the url to the image
+    uploadImageToGCS(this.state.newGroup.imageURI).then(imageURL => {
+      // prepare the body data
+      const newGroup = {
         ...this.state.newGroup,
-        [key]: value
-      }
-    })
+        coverPhoto: imageURL
+      };
+
+      // save new group to redux store
+      this.props.createNewGroup(newGroup);
+
+      this.toggleModal();
+      this.resetNewGroup();
+    });
   }
 
   render() {
@@ -181,61 +165,18 @@ class Groups extends Component {
           {this.props.groups.userGroups.length !== 0 && (
             <View>{this.showUnpinnedGroups(this.props.groups.userGroups)}</View>
           )}
-          {/* <View></View>
-            <View style={styles.unpinnedLeft}>
-              <CardGroup text="You can't fail if you dont enroll" userName="Bob" image={require("../../../assets/images/test-delete-this/boi1.jpg")} />
-            </View>
-            <View style={styles.unpinnedRight}>
-              <CardGroup text="OWH" userName="Pikaso" image={require("../../../assets/images/test-delete-this/boi3.jpg")} />
-            </View> */}
         </ScrollView>
 
-        {/*********************** CHANGE THIS LATER ********************/}
         {/* create new Group */}
         <AddButton onPress={this.toggleModal} />
 
         <GroupModal
           isModalVisible={this.state.isModalVisible}
           toggleModal={this.toggleModal}
-          pickImage={this._pickImage}
-
-          title={this.state.newGroup.title}
-          description={this.state.newGroup.description}
-          coverPhoto={this.state.newGroup.coverPhoto}
-          private={this.state.newGroup.private}
-          post={this.postNewGroup}
-
-          onNewGroupChange={this.onNewGroupChange}
+          newGroup={this.state.newGroup}
+          post={this.postNewGroup.bind(this)}
+          onNewGroupChange={this.onNewGroupChange.bind(this)}
         />
-
-        {/* <Modal isVisible={this.state.isModalVisible} onRequestClose={this.toggleModal}>
-          <View style={{ backgroundColor: "white", flex: 1 }}>
-            <Button title="Close" onPress={this.toggleModal} />
-
-            <TextInput
-              style={styles.inputField}
-              placeholder="Title"
-              autoCapitalize="none"
-              placeholderTextColor="#868686"
-              onChangeText={val => this.props.nameHandler(val)}
-              value={this.props.name}
-            />
-
-            <TextInput
-              style={styles.inputField}
-              placeholder="Description"
-              autoCapitalize="none"
-              placeholderTextColor="#868686"
-              onChangeText={val => this.props.nameHandler(val)}
-              value={this.props.name}
-            />
-
-            <Button title="Create Group" />
-          </View>
-        </Modal> */}
-        {/****************************************************************/}
-
-        {/* <Tabs /> */}
       </View>
     );
   }

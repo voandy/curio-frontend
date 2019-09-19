@@ -13,6 +13,7 @@ import {
 import Modal from "react-native-modal";
 import DatePicker from 'react-native-datepicker';
 import Line from "./Line";
+import * as ImagePicker from "expo-image-picker";
 
 // custom responsive design component
 import {
@@ -24,14 +25,24 @@ import {
 
 class GroupModal extends Component {
 
-    constructor(props) {
-        super(props);
-    }
+    // access camera roll
+    pickImage = async () => {
+        // obtain image
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            aspect: [4, 4]
+        });
+
+        // set image
+        if (!result.cancelled) {
+            // upload image to Google Cloud Storage
+            this.props.onNewGroupChange("imageURI", result.uri);
+        }
+    };
 
     render() {
-
         return (
-
             <Modal isVisible={this.props.isModalVisible} onRequestClose={this.props.toggleModal}>
                 <View style={styles.modal}>
 
@@ -87,12 +98,13 @@ class GroupModal extends Component {
                     <View style={styles.imagePlaceholder}>
                         <TouchableOpacity
                         activeOpacity={0.5}
-                        onPress={this.props.pickImage}
+                        onPress={this.pickImage}
                         >
-                        {this.props.coverPhoto !== "" ? (
+                        {this.props.newGroup.imageURI !== undefined &&
+                        this.props.newGroup.imageURI !== "" ? (
                             <Image
                             style={styles.imageSelected}
-                            source={{ uri: this.props.coverPhoto }}
+                            source={{ uri: this.props.newGroup.imageURI }}
                             />
                         ) : (
                             <Image
