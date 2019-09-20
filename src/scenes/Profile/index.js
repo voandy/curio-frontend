@@ -39,9 +39,12 @@ class Profile extends Component {
   // logout button
   onLogoutClick = () => {
     const { navigate } = this.props.navigation;
-    this.props.logoutUser().then(res => {
-      navigate("Auth");
-    });
+    this.props
+      .logoutUser()
+      .then(() => {
+        navigate("Auth");
+      })
+      .catch(err => console.log(err));
   };
 
   render() {
@@ -65,15 +68,17 @@ class Profile extends Component {
               source={{ uri: this.props.user.userData.profilePic }}
             />
           ) : (
-              <Image
-                style={styles.profilePic}
-                source={require("../../../assets/images/default-profile-pic.png")}
-              />
-            )}
+            <Image
+              style={styles.profilePic}
+              source={require("../../../assets/images/default-profile-pic.png")}
+            />
+          )}
 
           {/* user heading */}
           <Text style={styles.userName}>{this.props.user.userData.name}</Text>
-          <Text style={styles.userDetails}>@{this.props.user.userData.username}</Text>
+          <Text style={styles.userDetails}>
+            @{this.props.user.userData.username}
+          </Text>
           <Text style={[styles.userDetails, { marginBottom: 25 }]}>
             joined since {Moment(dt).format("Do MMMM YYYY")}
           </Text>
@@ -128,7 +133,7 @@ const styles = StyleSheet.create({
   button: {
     alignItems: "center",
     marginVertical: 25
-  },
+  }
 });
 
 Profile.propTypes = {

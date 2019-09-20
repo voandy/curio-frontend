@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
   },
 
   buttonText: {
-    fontSize: hp(0.021),
+    fontSize: wd(0.037),
     color: "white",
     fontFamily: "HindSiliguri-Bold"
   }

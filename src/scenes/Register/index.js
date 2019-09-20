@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { connect } from "react-redux";
 import { View, StyleSheet, Text, AsyncStorage } from "react-native";
-// Redux actions
-import { registerUser, loginUser } from "../../actions/authActions";
+// redux action
+import { connect } from "react-redux";
+import { setCurrentUser } from "../../actions/authActions";
 // import width/height responsive functions
 import {
   deviceHeigthDimension as hp,
@@ -11,10 +11,11 @@ import {
 } from "../../utils/responsiveDesign";
 // import manager to manage register stage
 import RegisterManager from "./registerManager";
-// import helper function to deal with image upload
-import { uploadImageToGCS } from "../../utils/imageUpload";
 // import the loader modal to help show loading process
 import ActivityLoaderModal from "../../component/ActivityLoaderModal";
+// import helper function to deal with image upload
+import { uploadImageToGCS } from "../../utils/imageUpload";
+import { registerUser, loginUser } from "../../utils/auth/authHelpers";
 
 class Register extends Component {
   state = {
@@ -36,7 +37,7 @@ class Register extends Component {
     });
   };
 
-  // post new user to the backend
+  // post new user to the backend (massive function)
   onSubmit = async () => {
     // show user the loading modal
     this.setLoading(true);
@@ -55,44 +56,46 @@ class Register extends Component {
           profilePic: imageUrl
         };
         // register user (post api request)
-        this.props.registerUser(newUser, this.props.history).then(res => {
-          // prepare login details
-          const user = {
-            email: newUser.email,
-            password: newUser.password
-          };
-          // upon successful registration
-          if (res !== null) {
+        registerUser(newUser)
+          .then(() => {
+            // prepare login details
+            const user = {
+              email: newUser.email,
+              password: newUser.password
+            };
             // log the user in directly
-            this.props
-              .loginUser(user, this.props.history)
-              .then(res => {
+            loginUser(user)
+              .then(decoded => {
+                // setting user's details to redux store
+                this.props.setCurrentUser(decoded);
+                // get user's data
                 AsyncStorage.getItem("userToken")
-                  .then(res => {
+                  .then(() => {
                     // stop showing user the loading modal
                     this.setLoading(false);
-                    // navigate user to Welcome page if no errors
-                    if (res !== null) {
-                      navigate("Welcome");
-                    }
+                    // navigate user to Welcome page
+                    navigate("Welcome");
                   })
                   // error with retrieving user token
                   .catch(err => {
                     // stop showing user the loading modal
                     this.setLoading(false);
                     console.log(
-                      "Failed at retrieving user token! Error: " + err
+                      "Failed to retrieve user token at Register -> Login: " +
+                        err
                     );
                   });
               })
               // error with logging in the user
               .catch(err => {
-                // stop showing user the loading modal
                 this.setLoading(false);
-                console.log("Failed to log user in. Error: " + err);
+                console.log("Failed to log user in after registration: " + err);
               });
-          }
-        });
+          })
+          .catch(err => {
+            this.setLoading(false);
+            console.log("Failed to register user: " + err);
+          });
       })
       // error with uploading image to GCS
       .catch(err => {
@@ -176,11 +179,6 @@ const styles = StyleSheet.create({
   }
 });
 
-Register.propTypes = {
-  loginUser: PropTypes.func.isRequired,
-  registerUser: PropTypes.func.isRequired
-};
-
 // map required redux state to local props
 const mapStateToProps = state => ({
   register: state.register
@@ -189,5 +187,5 @@ const mapStateToProps = state => ({
 // map required redux state and actions to local props
 export default connect(
   mapStateToProps,
-  { registerUser, loginUser }
+  { setCurrentUser }
 )(Register);

@@ -1,4 +1,8 @@
-import { SET_CURRENT_USER, USER_LOADING } from "../types/authTypes";
+import {
+  SET_CURRENT_USER,
+  USER_LOADING,
+  USER_LOGOUT
+} from "../types/authTypes";
 
 const isEmpty = require("is-empty");
 const initialState = {
@@ -20,6 +24,8 @@ export default function(state = initialState, action) {
         ...state,
         loading: true
       };
+    case USER_LOGOUT:
+      return initialState;
     default:
       return state;
   }

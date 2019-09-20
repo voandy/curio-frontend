@@ -11,15 +11,19 @@ import {
   AsyncStorage
 } from "react-native";
 
-import { loginUser } from "../../actions/authActions";
+import { loginUser } from "../../utils/auth/authHelpers";
+import { setCurrentUser } from "../../actions/authActions";
 import MyButton from "../../component/MyButton";
 import { setToBottom } from "../../utils/responsiveDesign";
+// import the loader modal to help show loading process
+import ActivityLoaderModal from "../../component/ActivityLoaderModal";
 
 // state
 const initialState = {
   email: "",
   password: "",
-  errors: {}
+  errors: {},
+  loading: false
 };
 
 class Login extends Component {
@@ -44,6 +48,14 @@ class Login extends Component {
     }
   }
 
+  // toggle function to show/hide loading modal
+  setLoading = loading => {
+    this.setState({
+      ...this.state,
+      loading
+    });
+  };
+
   // change text
   onChangeText = (key, val) => {
     this.setState({
@@ -52,25 +64,34 @@ class Login extends Component {
     });
   };
 
-  // send user data
-  onSubmit = async () => {
+  // send user's data to backend to log user in
+  onSubmit = () => {
+    // show modal screen for loading process
+    this.setLoading(true);
     const { navigate } = this.props.navigation;
-
     // logged-in user
     const user = {
       email: this.state.email,
       password: this.state.password
     };
-
     // logs user in
-    this.props.loginUser(user, this.props.history).then(res => {
+    loginUser(user).then(decoded => {
+      // setting user's details to redux store
+      this.props.setCurrentUser(decoded);
       // navigate to AppStack if there is user token in AsyncStorage
-      AsyncStorage.getItem("userToken").then(res => {
-        if (res !== null) {
+      AsyncStorage.getItem("userToken")
+        .then(() => {
+          // stop showing modal screen for loading process
+          this.setLoading(false);
+          // redirect user to main App page
           navigate("App");
           this.state = initialState;
-        }
-      });
+        })
+        .catch(err => {
+          // stop showing modal screen for loading process
+          this.setLoading(false);
+          console.log("Failed to retrieve user token at login: " + err);
+        });
     });
   };
 
@@ -79,10 +100,11 @@ class Login extends Component {
 
     return (
       <View style={styles.container}>
+        {/* loading modal window */}
+        <ActivityLoaderModal loading={this.state.loading} />
         {/* heading */}
         <Text style={styles.titleText}> Alrighty, </Text>
         <Text style={styles.subTitleText}> Enter your details to login. </Text>
-
         {/* main card view */}
         <View style={styles.card}>
           {/* Email */}
@@ -97,7 +119,6 @@ class Login extends Component {
             {errors.email}
             {errors.emailnotfound}
           </Text>
-
           {/* Password */}
           <Text style={styles.inputText}> PASSWORD </Text>
           <TextInput
@@ -107,16 +128,16 @@ class Login extends Component {
             placeholderTextColor="#454545"
             onChangeText={val => this.onChangeText("password", val)}
           />
+          {/* error messages, if any */}
           <Text style={styles.error}>
             {errors.password}
             {errors.passwordincorrect}
           </Text>
-
+          {/* forgot password */}
           <TouchableOpacity style={styles.forgot}>
             <Text style={styles.forgotText}>Forgot Password?</Text>
           </TouchableOpacity>
-
-          {/* button */}
+          {/* login button */}
           {setToBottom(
             <View style={{ marginBottom: 30 }}>
               <MyButton onPress={this.onSubmit} text="LOGIN" />
@@ -216,7 +237,6 @@ const styles = StyleSheet.create({
 });
 
 Login.propTypes = {
-  loginUser: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
   errors: PropTypes.object.isRequired
 };
@@ -229,5 +249,5 @@ const mapStateToProps = state => ({
 //  export
 export default connect(
   mapStateToProps,
-  { loginUser }
+  { setCurrentUser }
 )(Login);

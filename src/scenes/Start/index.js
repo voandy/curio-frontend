@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
   },
 
   loginButtonText: {
-    fontSize: wd(0.035),
+    fontSize: wd(0.037),
     alignSelf: "center",
     color: "black"
   },
