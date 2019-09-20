@@ -1,8 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import Modal from "react-native-modal";
-import * as ImagePicker from "expo-image-picker";
 import {
   View,
   Text,
@@ -16,7 +14,7 @@ import {
 } from "react-native";
 
 // import redux actions for groups
-import { createNewGroup } from "../../actions/groupsActions";
+import { createNewGroup, selectGroup } from "../../actions/groupsActions";
 import { uploadImage } from "../../actions/imageActions";
 import { uploadImageToGCS } from "../../utils/imageUpload";
 
@@ -46,6 +44,12 @@ const newGroup = {
 };
 
 class Groups extends Component {
+
+  // Nav bar details
+  static navigationOptions = {
+    header: null
+  };
+
   state = {
     isModalVisible: false,
     newGroup
@@ -93,7 +97,7 @@ class Groups extends Component {
     // create CardGroup object out of group and push it into cardGroups array
     for (var i = 0; i < unpinnedGroups.length; i++) {
 
-      cardGroups.push(<CardGroup key={unpinnedGroups[i].details._id} text={unpinnedGroups[i].details.title}  image={{ uri: unpinnedGroups[i].details.coverPhoto }} />);
+      cardGroups.push(<CardGroup onPress={ this.clickGroup() } key={unpinnedGroups[i].details._id} text={unpinnedGroups[i].details.title}  image={{ uri: unpinnedGroups[i].details.coverPhoto }} />);
       
       // create a new row after the previous row has been filled with 2 groups and fill the previous row into cardGroupRows
       if (unpinnedGroups.length === 1 || cardGroups.length === 2 || (i !== 0 && i === unpinnedGroups.length - 1)) {
@@ -123,6 +127,14 @@ class Groups extends Component {
       this.toggleModal();
       this.resetNewGroup();
     });
+  }
+
+  // click a specific group on the Groups scene
+  clickGroup = async (groupId) => {
+    const { navigate } = this.props.navigation;
+
+    this.props.selectGroup(groupId);
+    navigate("SelectedGroup");
   }
 
   render() {
@@ -281,5 +293,5 @@ const mapStateToProps = state => ({
 //  connect to redux and export
 export default connect(
   mapStateToProps,
-  { createNewGroup, uploadImage }
+  { createNewGroup, uploadImage, selectGroup }
 )(Groups);
