@@ -17,11 +17,6 @@ import {
 
 class CardGroup extends Component {
 
-    // get height of group image, and dynamically adjust it
-    changeHeight() {
-        // Image.getSize(this.props.image, (width, height) => {this.setState({width, height})});
-    }
-
     render() {
 
         return (
@@ -51,8 +46,9 @@ class CardGroup extends Component {
 
 const styles = StyleSheet.create({
     card: {
-        width: Dimensions.get("window").width * 0.43,
-        marginVertical: 10,
+        width: Dimensions.get("window").width * 0.44,
+        marginTop: 10,
+        marginLeft: Dimensions.get("window").width * 0.04,
         height: wd(0.5),
         borderRadius: 15,
         borderWidth: 0.05,
@@ -73,8 +69,9 @@ const styles = StyleSheet.create({
     },
 
     photo: {
-        width: Dimensions.get("window").width * 0.425,
+        width: Dimensions.get("window").width * 0.435,
         height: wd(0.35),
+        marginTop: 10,
         borderTopLeftRadius: 15,
         borderTopRightRadius: 15,
     },

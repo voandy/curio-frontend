@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import Modal from "react-native-modal";
 import * as ImagePicker from "expo-image-picker";
+
 import {
   View,
   Text,
@@ -66,10 +66,10 @@ class Groups extends Component {
   // new group's attribute change
   onNewGroupChange = (key, value) => {
     this.setState({
-        newGroup: {
-            ...this.state.newGroup,
-            [key]: value
-        }
+      newGroup: {
+        ...this.state.newGroup,
+        [key]: value
+      }
     })
   }
 
@@ -86,15 +86,15 @@ class Groups extends Component {
     }
 
     // sort array based on date obtained (from earliest to oldest)
-    unpinnedGroups.sort(function(a,b){
+    unpinnedGroups.sort(function (a, b) {
       return new Date(b.dateCreated) - new Date(a.dateCreated);
     });
 
     // create CardGroup object out of group and push it into cardGroups array
     for (var i = 0; i < unpinnedGroups.length; i++) {
 
-      cardGroups.push(<CardGroup key={unpinnedGroups[i].details._id} text={unpinnedGroups[i].details.title}  image={{ uri: unpinnedGroups[i].details.coverPhoto }} />);
-      
+      cardGroups.push(<CardGroup key={unpinnedGroups[i].details._id} text={unpinnedGroups[i].details.title} image={{ uri: unpinnedGroups[i].details.coverPhoto }} />);
+
       // create a new row after the previous row has been filled with 2 groups and fill the previous row into cardGroupRows
       if (unpinnedGroups.length === 1 || cardGroups.length === 2 || (i !== 0 && i === unpinnedGroups.length - 1)) {
         cardGroupRows.push(<View style={styles.feed} key={i}>{cardGroups}</View>)
@@ -161,9 +161,14 @@ class Groups extends Component {
           </View>
 
           {/* unpinned groups */}
-          {this.props.groups.userGroups.length !== 0 && (
+          {this.props.groups.userGroups.length !== 0 ? (
             <View>{this.showUnpinnedGroups(this.props.groups.userGroups)}</View>
-          )}
+          ) : (
+              <View style={styles.emptyFeed}>
+                <Text style={{ fontSize: 16, fontFamily: "HindSiliguri-Regular" }}>Looks like you're not part of any groups yet</Text>
+                <Text style={{ fontSize: 16, fontFamily: "HindSiliguri-Regular" }}>Click the "+" button to create a group</Text>
+              </View>
+            )}
         </ScrollView>
 
         {/* create new Group */}
@@ -182,17 +187,6 @@ class Groups extends Component {
 }
 
 const styles = StyleSheet.create({
-  // CHANGE THIS LATER
-  inputField: {
-    textAlign: "center",
-    width: wd(0.7),
-    height: hp(0.05),
-    marginTop: 20,
-    backgroundColor: "white",
-    borderBottomWidth: 0.5,
-    fontSize: 16,
-    alignSelf: "center"
-  },
 
   container: {
     flex: 1
@@ -200,69 +194,15 @@ const styles = StyleSheet.create({
 
   feed: {
     flexDirection: "row",
-    marginLeft: Dimensions.get("window").width * 0.032,
-    marginRight: Dimensions.get("window").width * 0.032
   },
 
-  header: {
-    height: 130,
-    elevation: 2,
-    borderRadius: 1
-  },
-
-  headerText: {
-    fontSize: 24,
-    marginTop: 40,
-    marginLeft: 30,
-    fontWeight: "bold"
-  },
-
-  headerButton: {
-    alignContent: "center",
-    marginTop: 20,
-    marginLeft: 30,
-    padding: 5,
-    borderColor: "#FF6E6E",
-    borderWidth: 0,
-    borderBottomWidth: 3,
+  emptyFeed: {
+    flex: 1,
+    height: Dimensions.get('window').height * 0.6,
+    alignItems: "center",
     justifyContent: "center"
   },
 
-  headerButtonText: {
-    fontSize: 18,
-    fontWeight: "bold"
-  },
-
-  mainGroupContainer: {
-    height: wd(0.3),
-    top: 0,
-    position: "absolute",
-    backgroundColor: "#E2E2E2"
-  },
-
-  titleText: {
-    fontSize: 30,
-    marginTop: 100,
-    alignItems: "center",
-    justifyContent: "center",
-    marginLeft: wd(0.07),
-    fontFamily: "HindSiliguri-Bold"
-  },
-
-  unpinned: {
-    flexDirection: "row"
-  },
-
-  unpinnedLeft: {
-    flex: 0.5,
-    marginLeft: Dimensions.get("window").width * 0.05
-  },
-
-  unpinnedRight: {
-    alignItems: "flex-end",
-    flex: 0.5,
-    marginRight: Dimensions.get("window").width * 0.05
-  }
 });
 
 Groups.propTypes = {

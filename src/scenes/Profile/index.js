@@ -7,7 +7,6 @@ import { getUserData } from "../../actions/userActions";
 import {
   Dimensions,
   StyleSheet,
-  TouchableOpacity,
   ScrollView,
   View,
   Image,
@@ -21,6 +20,7 @@ import Moment from "moment";
 import SimpleHeader from "../../component/SimpleHeader";
 import MyButton from "../../component/MyButton";
 import ProfileSetting from "../../component/ProfileSetting";
+import Line from "../../component/Line";
 
 class Profile extends Component {
   constructor() {
@@ -65,30 +65,31 @@ class Profile extends Component {
               source={{ uri: this.props.user.userData.profilePic }}
             />
           ) : (
-            <Image
-              style={styles.profilePic}
-              source={require("../../../assets/images/default-profile-pic.png")}
-            />
-          )}
+              <Image
+                style={styles.profilePic}
+                source={require("../../../assets/images/default-profile-pic.png")}
+              />
+            )}
 
           {/* user heading */}
           <Text style={styles.userName}>{this.props.user.userData.name}</Text>
-          <Text style={styles.userDetails}>
+          <Text style={styles.userDetails}>@{this.props.user.userData.username}</Text>
+          <Text style={[styles.userDetails, { marginBottom: 25 }]}>
             joined since {Moment(dt).format("Do MMMM YYYY")}
           </Text>
 
           {/* line separator */}
-          <View style={styles.line} />
+          <Line />
 
           <ProfileSetting text="Artefacts" />
           <ProfileSetting text="Friends" />
           <ProfileSetting text="Account Details" />
 
           {/* line separator */}
-          <View style={styles.line} />
+          <Line />
 
           {/* logout button */}
-          <View style={{ alignItems: "center", marginVertical: 20 }}>
+          <View style={styles.button}>
             <MyButton onPress={this.onLogoutClick} text="LOG OUT" />
           </View>
         </ScrollView>
@@ -104,15 +105,13 @@ const styles = StyleSheet.create({
 
   userName: {
     fontSize: 24,
-    marginTop: 5,
+    marginVertical: 5,
     alignSelf: "center",
     fontFamily: "HindSiliguri-Bold"
   },
 
   userDetails: {
     fontSize: 14,
-    marginTop: 3,
-    marginBottom: 10,
     alignSelf: "center",
     color: "#939090",
     fontFamily: "HindSiliguri-Regular"
@@ -126,32 +125,10 @@ const styles = StyleSheet.create({
     alignSelf: "center"
   },
 
-  line: {
-    marginTop: 20,
-    borderBottomColor: "#939090",
-    borderBottomWidth: 0.4,
-    width: Dimensions.get("window").width * 0.8,
-    alignSelf: "center"
-  },
-
   button: {
-    justifyContent: "center",
-    alignSelf: "center",
-    backgroundColor: "#FF6E6E",
-    width: Dimensions.get("window").width * 0.4,
-    height: 50,
-    margin: 10,
-    borderRadius: 40,
-    elevation: 3
+    alignItems: "center",
+    marginVertical: 25
   },
-
-  buttonText: {
-    fontSize: 18,
-    fontWeight: "bold",
-    alignSelf: "center",
-    color: "white",
-    fontFamily: "HindSiliguri-Regular"
-  }
 });
 
 Profile.propTypes = {

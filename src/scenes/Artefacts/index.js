@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { Dimensions, StyleSheet, ScrollView, View } from "react-native";
+import { Dimensions, StyleSheet, ScrollView, View, Text } from "react-native";
 import axios from "axios";
 
 // custom components
@@ -123,11 +123,17 @@ class Artefacts extends Component {
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={16}
         >
-          {Object.keys(this.props.artefacts.userArtefacts).length !== 0 && (
+          {/* all artefacts posted by the user */}
+          {Object.keys(this.props.artefacts.userArtefacts).length !== 0 ? (
             <View>
               {this.showArtefacts(this.props.artefacts.userArtefacts)}
             </View>
-          )}
+          ) : (
+              <View style={styles.emptyFeed}>
+                <Text style={{ fontSize: 16, fontFamily: "HindSiliguri-Regular" }}>Looks like you haven't posted any artefacts</Text>
+                <Text style={{ fontSize: 16, fontFamily: "HindSiliguri-Regular" }}>Click the "+" button to add some</Text>
+              </View>
+            )}
         </ScrollView>
 
         {/* create new Group */}
@@ -154,7 +160,14 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     marginLeft: Dimensions.get("window").width * 0.032,
     marginRight: Dimensions.get("window").width * 0.032
-  }
+  },
+
+  emptyFeed: {
+    flex: 1,
+    height: Dimensions.get('window').height * 0.7,
+    alignItems: "center",
+    justifyContent: "center"
+  },
 });
 
 // check for prop types correctness
