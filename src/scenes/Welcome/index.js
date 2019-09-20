@@ -21,11 +21,9 @@ class Welcome extends Component {
   };
 
   componentDidMount() {
-    console.log("Launching Welcome Page!");
     this.props.clearCurrentUserData();
     // get user authentication data
     const { user } = this.props.auth;
-    console.log("user in auth: " + JSON.stringify(user));
     this.props.getUserData(user.id);
   }
 

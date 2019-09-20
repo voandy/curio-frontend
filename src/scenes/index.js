@@ -61,7 +61,7 @@ class Scenes extends Component {
 
 // login / signup stack
 const AuthStack = createStackNavigator({
-  // Start: { screen: StartScreen },
+  Start: { screen: StartScreen },
   Register: { screen: RegisterScreen },
   Login: { screen: LoginScreen },
   Welcome: { screen: WelcomeScreen }

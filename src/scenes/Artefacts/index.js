@@ -32,7 +32,7 @@ class Artefacts extends Component {
   state = {
     newArtefact: newArtefact,
     isModalVisible: false,
-    loading: true
+    loading: false
   };
 
   // toggle the modal for new artefact creation
@@ -69,7 +69,7 @@ class Artefacts extends Component {
   // post new artefact to the backend
   onSubmit = async () => {
     // close actual modal
-    await this.toggleModal();
+    // await this.toggleModal();
     // show user the loading modal
     this.setLoading(true);
     // redux action to set artefact data in store
@@ -87,6 +87,8 @@ class Artefacts extends Component {
         .then(res => {
           // stop showing user the loading modal
           this.setLoading(false);
+          // close loading modal
+          this.toggleModal();
           // add backend's response (artefact's details) to redux
           this.props.addNewArtefact(res.data);
           this.resetNewArtefact();
