@@ -7,21 +7,29 @@ import {
 } from "../utils/responsiveDesign";
 
 export default class ActivityLoaderModal extends Component {
-  render() {
-    return (
-      <View style={[styles.modalBackground, { visible: this.props.loading }]}>
-        <View style={styles.activityIndicatorWrapper}>
-          <AnimatedLoader
-            visible={this.props.loading}
-            overlayColor="rgba(255,255,255,0)"
-            animationStyle={styles.lottie}
-            speed={1.5}
-            loop={true}
-            source={require("../../assets/animations/loading_animation.json")}
-          />
+  rendersLoading() {
+    if (this.props.loading) {
+      return (
+        <View style={[styles.modalBackground, { visible: this.props.loading }]}>
+          <View style={styles.activityIndicatorWrapper}>
+            <AnimatedLoader
+              visible={this.props.loading}
+              overlayColor="rgba(255,255,255,0)"
+              animationStyle={styles.lottie}
+              speed={1.5}
+              loop={true}
+              source={require("../../assets/animations/loading_animation.json")}
+            />
+          </View>
         </View>
-      </View>
-    );
+      );
+    } else {
+      return <View></View>;
+    }
+  }
+
+  render() {
+    return this.rendersLoading();
   }
 }
 

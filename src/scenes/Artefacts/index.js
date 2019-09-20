@@ -14,6 +14,8 @@ import {
 import ArtefactModal from "../../component/ArtefactModal";
 import AddButton from "../../component/AddButton";
 import { uploadImageToGCS } from "../../utils/imageUpload";
+// import the loader modal to help show loading process
+import ActivityLoaderModal from "../../component/ActivityLoaderModal";
 
 // temp state to store object with attributes required to create a new artefact
 const newArtefact = {
@@ -29,7 +31,8 @@ class Artefacts extends Component {
   // local state
   state = {
     newArtefact: newArtefact,
-    isModalVisible: false
+    isModalVisible: false,
+    loading: true
   };
 
   // toggle the modal for new artefact creation
@@ -55,8 +58,21 @@ class Artefacts extends Component {
     });
   };
 
+  // setter function for "loading" to show user that something is loading
+  setLoading = loading => {
+    this.setState({
+      ...this.state,
+      loading
+    });
+  };
+
   // post new artefact to the backend
   onSubmit = async () => {
+    // close actual modal
+    await this.toggleModal();
+    // show user the loading modal
+    this.setLoading(true);
+    // redux action to set artefact data in store
     await this.setNewArtefact("userId", this.props.auth.user.id);
     // upload the selected photo to GCS, which returns the url to the image
     uploadImageToGCS(this.state.newArtefact.imageURI).then(imageURL => {
@@ -69,13 +85,17 @@ class Artefacts extends Component {
       axios
         .post("http://curioapp.herokuapp.com/api/artefact", newArtefact)
         .then(res => {
+          // stop showing user the loading modal
+          this.setLoading(false);
           // add backend's response (artefact's details) to redux
           this.props.addNewArtefact(res.data);
-          // close modal window and reset local state
-          this.toggleModal();
           this.resetNewArtefact();
         })
-        .catch(err => console.log("POST: Create New Artefact Error: " + err));
+        .catch(err => {
+          // stop showing user the loading modal
+          this.setLoading(false);
+          console.log("POST: Create New Artefact Error: " + err);
+        });
     });
   };
 
@@ -84,12 +104,10 @@ class Artefacts extends Component {
     let artefactFeedRows = [];
     let artefactFeeds = [];
     let rowKey = 0;
-
     // sort array based on date obtained (from earliest to oldest)
     artefacts.sort(function(a, b) {
       return new Date(b.datePosted) - new Date(a.datePosted);
     });
-
     // create ArtefactFeed object out of artefact and push it into artefactFeeds array
     for (var i = 0; i < artefacts.length; i++) {
       artefactFeeds.push(
@@ -98,7 +116,6 @@ class Artefacts extends Component {
           image={{ uri: artefacts[i].images[0].URL }}
         />
       );
-
       // create a new row after the previous row has been filled with 3 artefacts and fill the previous row into artefactFeedRows
       if (artefactFeeds.length === 3 || i === artefacts.length - 1) {
         artefactFeedRows.push(
@@ -116,8 +133,10 @@ class Artefacts extends Component {
   render() {
     return (
       <View style={styles.container}>
+        {/* loading modal window */}
+        <ActivityLoaderModal loading={this.state.loading} />
+        {/* header */}
         <SimpleHeader title="My Artefacts" />
-
         {/* scrollable area for CONTENT */}
         <ScrollView
           showsVerticalScrollIndicator={false}
@@ -129,11 +148,19 @@ class Artefacts extends Component {
               {this.showArtefacts(this.props.artefacts.userArtefacts)}
             </View>
           ) : (
-              <View style={styles.emptyFeed}>
-                <Text style={{ fontSize: 16, fontFamily: "HindSiliguri-Regular" }}>Looks like you haven't posted any artefacts</Text>
-                <Text style={{ fontSize: 16, fontFamily: "HindSiliguri-Regular" }}>Click the "+" button to add some</Text>
-              </View>
-            )}
+            <View style={styles.emptyFeed}>
+              <Text
+                style={{ fontSize: 16, fontFamily: "HindSiliguri-Regular" }}
+              >
+                Looks like you haven't posted any artefacts
+              </Text>
+              <Text
+                style={{ fontSize: 16, fontFamily: "HindSiliguri-Regular" }}
+              >
+                Click the "+" button to add some
+              </Text>
+            </View>
+          )}
         </ScrollView>
 
         {/* create new Group */}
@@ -164,10 +191,10 @@ const styles = StyleSheet.create({
 
   emptyFeed: {
     flex: 1,
-    height: Dimensions.get('window').height * 0.7,
+    height: Dimensions.get("window").height * 0.7,
     alignItems: "center",
     justifyContent: "center"
-  },
+  }
 });
 
 // check for prop types correctness

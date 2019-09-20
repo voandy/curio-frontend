@@ -18,7 +18,7 @@ import ActivityLoaderModal from "../../component/ActivityLoaderModal";
 
 class Register extends Component {
   state = {
-    loading: true
+    loading: false
   };
 
   // nav details
@@ -107,12 +107,8 @@ class Register extends Component {
   render() {
     return (
       <View style={styles.container}>
-        {this.state.loading ? (
-          <ActivityLoaderModal loading={this.state.loading} />
-        ) : (
-          <View />
-        )}
-
+        {/* loading modal window */}
+        <ActivityLoaderModal loading={this.state.loading} />
         {/* heading */}
         <Text style={styles.titleText}> Welcome, </Text>
         <Text style={styles.subTitleText}> Enter your details to signup. </Text>
