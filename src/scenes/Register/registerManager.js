@@ -117,7 +117,7 @@ class RegisterManager extends Component {
           />
         );
       case C.SET_PHOTO:
-        return <RegisterPhotoField onSubmit={this.props.onSubmit} />;
+        return <RegisterPhotoField onSubmit={() => this.props.onSubmit()} />;
       // if error occurs, render error 404
       default:
         return (

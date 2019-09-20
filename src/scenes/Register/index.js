@@ -13,8 +13,14 @@ import {
 import RegisterManager from "./registerManager";
 // import helper function to deal with image upload
 import { uploadImageToGCS } from "../../utils/imageUpload";
+// import the loader modal to help show loading process
+import ActivityLoaderModal from "../../component/ActivityLoaderModal";
 
 class Register extends Component {
+  state = {
+    loading: true
+  };
+
   // nav details
   static navigationOptions = {
     headerStyle: {
@@ -22,8 +28,18 @@ class Register extends Component {
     }
   };
 
+  // setter function for "loading" to show user that something is loading
+  setLoading = loading => {
+    this.setState({
+      ...this.state,
+      loading
+    });
+  };
+
   // post new user to the backend
   onSubmit = async () => {
+    // show user the loading modal
+    this.setLoading(true);
     // get the navigate function from props
     const { navigate } = this.props.navigation;
     // upload the selected photo to GCS, which returns the url to the image
@@ -53,6 +69,8 @@ class Register extends Component {
               .then(res => {
                 AsyncStorage.getItem("userToken")
                   .then(res => {
+                    // stop showing user the loading modal
+                    this.setLoading(false);
                     // navigate user to Welcome page if no errors
                     if (res !== null) {
                       navigate("Welcome");
@@ -60,6 +78,8 @@ class Register extends Component {
                   })
                   // error with retrieving user token
                   .catch(err => {
+                    // stop showing user the loading modal
+                    this.setLoading(false);
                     console.log(
                       "Failed at retrieving user token! Error: " + err
                     );
@@ -67,6 +87,8 @@ class Register extends Component {
               })
               // error with logging in the user
               .catch(err => {
+                // stop showing user the loading modal
+                this.setLoading(false);
                 console.log("Failed to log user in. Error: " + err);
               });
           }
@@ -74,6 +96,8 @@ class Register extends Component {
       })
       // error with uploading image to GCS
       .catch(err => {
+        // stop showing user the loading modal
+        this.setLoading(false);
         console.log(
           "Failed to upload image at user registration. Error: " + err
         );
@@ -83,13 +107,19 @@ class Register extends Component {
   render() {
     return (
       <View style={styles.container}>
+        {this.state.loading ? (
+          <ActivityLoaderModal loading={this.state.loading} />
+        ) : (
+          <View />
+        )}
+
         {/* heading */}
         <Text style={styles.titleText}> Welcome, </Text>
         <Text style={styles.subTitleText}> Enter your details to signup. </Text>
 
         {/* main card view */}
         <View style={styles.card}>
-          <RegisterManager onSubmit={this.onSubmit} />
+          <RegisterManager onSubmit={this.onSubmit.bind(this)} />
         </View>
       </View>
     );
