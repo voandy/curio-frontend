@@ -3,24 +3,12 @@ import setAuthToken from "../utils/auth/setAuthToken";
 import jwt_decode from "jwt-decode";
 import { AsyncStorage } from "react-native";
 import {
-  GET_ERRORS,
   SET_CURRENT_USER,
   USER_LOADING,
-  USER_LOGOUT
+  USER_LOGOUT,
+  REGISTER_USER,
+  LOGIN_USER
 } from "../types/authTypes";
-
-// register user based on userData
-export const registerUser = userData => dispatch => {
-  return axios
-    .post("http://curioapp.herokuapp.com/api/register", userData)
-    .then(res => console.log(res.data))
-    .catch(err =>
-      dispatch({
-        type: GET_ERRORS,
-        payload: err.response.data
-      })
-    );
-};
 
 // log user out
 export const logoutUser = () => dispatch => {
@@ -60,5 +48,18 @@ export const setUserLoading = () => {
 export const userLogOut = () => {
   return {
     type: USER_LOGOUT
+  };
+};
+
+export const registerUser = user => {
+  return {
+    type: REGISTER_USER
+  };
+};
+
+export const loginUser = decoded => {
+  return {
+    type: LOGIN_USER,
+    payload: decoded
   };
 };
