@@ -44,13 +44,10 @@ class Scenes extends Component {
     const previousUser = this.props.auth.user;
     const user = nextProps.auth.user;
     if (
-      previousUser &&
-      user &&
       Object.keys(previousUser).length === 0 &&
       Object.keys(user).length > 0
     ) {
       const { user } = nextProps.auth;
-      console.log("Oopps, im triggered! user: " + JSON.stringify(user));
       this.props.getUserData(user.id);
       this.props.getUserArtefacts(user.id);
       this.props.getUserGroups(user.id);

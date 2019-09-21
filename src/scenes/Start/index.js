@@ -14,10 +14,7 @@ import {
   deviceWidthDimension as wd
 } from "../../utils/responsiveDesign";
 
-import { connect } from "react-redux";
-import { logoutUser } from "../../actions/authActions";
-
-export class Start extends Component {
+export default class Start extends Component {
   constructor(props) {
     super(props);
     this.fadeAnimation = new Animated.Value(0);
@@ -25,7 +22,6 @@ export class Start extends Component {
   }
 
   componentDidMount() {
-    this.props.logoutUser().then(res => console.log(res));
     Animated.timing(this.fadeAnimation, {
       toValue: 1,
       duration: 500,
@@ -82,11 +78,6 @@ export class Start extends Component {
     );
   }
 }
-
-export default connect(
-  null,
-  { logoutUser }
-)(Start);
 
 // Component Stylesheet Rules
 const styles = StyleSheet.create({

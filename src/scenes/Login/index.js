@@ -11,8 +11,7 @@ import {
   AsyncStorage
 } from "react-native";
 
-// import { loginUser } from "../../utils/auth/authHelpers";
-import { loginUser } from "../../actions/authActions";
+import { loginUser } from "../../utils/auth/authHelpers";
 import { setCurrentUser } from "../../actions/authActions";
 import MyButton from "../../component/MyButton";
 import { setToBottom } from "../../utils/responsiveDesign";
@@ -66,7 +65,7 @@ class Login extends Component {
   };
 
   // send user's data to backend to log user in
-  onSubmit = async () => {
+  onSubmit = () => {
     // show modal screen for loading process
     this.setLoading(true);
     const { navigate } = this.props.navigation;
@@ -76,38 +75,24 @@ class Login extends Component {
       password: this.state.password
     };
     // logs user in
-    // loginUser(user).then(decoded => {
-    //   // setting user's details to redux store
-    //   this.props.setCurrentUser(decoded);
-    //   // navigate to AppStack if there is user token in AsyncStorage
-    //   AsyncStorage.getItem("userToken")
-    //     .then(() => {
-    //       // stop showing modal screen for loading process
-    //       this.setLoading(false);
-    //       // redirect user to main App page
-    //       navigate("App");
-    //       this.state = initialState;
-    //     })
-    //     .catch(err => {
-    //       // stop showing modal screen for loading process
-    //       this.setLoading(false);
-    //       console.log("Failed to retrieve user token at login: " + err);
-    //     });
-    // });
-    await this.props.loginUser(user);
-    AsyncStorage.getItem("userToken")
-      .then(() => {
-        // stop showing modal screen for loading process
-        this.setLoading(false);
-        // redirect user to main App page
-        navigate("App");
-        this.state = initialState;
-      })
-      .catch(err => {
-        // stop showing modal screen for loading process
-        this.setLoading(false);
-        console.log("Failed to retrieve user token at login: " + err);
-      });
+    loginUser(user).then(decoded => {
+      // setting user's details to redux store
+      this.props.setCurrentUser(decoded);
+      // navigate to AppStack if there is user token in AsyncStorage
+      AsyncStorage.getItem("userToken")
+        .then(() => {
+          // stop showing modal screen for loading process
+          this.setLoading(false);
+          // redirect user to main App page
+          navigate("App");
+          this.state = initialState;
+        })
+        .catch(err => {
+          // stop showing modal screen for loading process
+          this.setLoading(false);
+          console.log("Failed to retrieve user token at login: " + err);
+        });
+    });
   };
 
   render() {
@@ -252,8 +237,8 @@ const styles = StyleSheet.create({
 });
 
 Login.propTypes = {
-  auth: PropTypes.object.isRequired
-  // errors: PropTypes.object.isRequired
+  auth: PropTypes.object.isRequired,
+  errors: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -264,5 +249,5 @@ const mapStateToProps = state => ({
 //  export
 export default connect(
   mapStateToProps,
-  { setCurrentUser, loginUser }
+  { setCurrentUser }
 )(Login);

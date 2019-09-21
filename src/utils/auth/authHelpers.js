@@ -4,7 +4,7 @@ import setAuthToken from "./setAuthToken";
 import jwt_decode from "jwt-decode";
 
 // register user based on user details
-export const registerUserAPIRequest = userData => {
+export const registerUser = userData => {
   return new Promise((resolve, reject) => {
     axios
       .post("http://curioapp.herokuapp.com/api/register", userData)
@@ -14,7 +14,7 @@ export const registerUserAPIRequest = userData => {
 };
 
 // log user in with user details
-export const loginUserAPIRequest = user => {
+export const loginUser = user => {
   return new Promise((resolve, reject) => {
     axios
       .post("http://curioapp.herokuapp.com/api/login", user)
