@@ -2,11 +2,7 @@ import React, { Component } from "react";
 import { View, StyleSheet, Text } from "react-native";
 // redux action
 import { connect } from "react-redux";
-import {
-  setCurrentUser,
-  registerUser,
-  loginUser
-} from "../../actions/authActions";
+import { registerUser, loginUser } from "../../actions/authActions";
 // import width/height responsive functions
 import {
   deviceHeigthDimension as hp,
@@ -16,8 +12,6 @@ import {
 import RegisterManager from "./registerManager";
 // import the loader modal to help show loading process
 import ActivityLoaderModal from "../../component/ActivityLoaderModal";
-// import helper function to deal with image upload
-import { uploadImageToGCS } from "../../utils/imageUpload";
 
 class Register extends Component {
   state = {
@@ -45,52 +39,34 @@ class Register extends Component {
     this.setLoading(true);
     // get the navigate function from props
     const { navigate } = this.props.navigation;
-    // upload the selected photo to GCS, which returns the url to the image
-    uploadImageToGCS(this.props.register.photoURI)
-      .then(imageUrl => {
-        // prepare the body data base on new user details
-        const newUser = {
-          name: this.props.register.name,
+    // register user to the backend
+    this.props
+      .registerUser()
+      // register success
+      .then(() => {
+        const user = {
           email: this.props.register.email,
-          username: this.props.register.username,
-          password: this.props.register.password,
-          passwordCfm: this.props.register.passwordCfm,
-          profilePic: imageUrl
+          password: this.props.register.password
         };
-        // register user (post api request)
+        // try to login user
         this.props
-          .registerUser(newUser)
+          .loginUser(user)
           .then(() => {
-            // prepare login details
-            const user = {
-              email: newUser.email,
-              password: newUser.password
-            };
-            // log the user in directly
-            this.props
-              .loginUser(user)
-              .then(() => {
-                // stop showing user the loading modal
-                this.setLoading(false);
-                // navigate user to Welcome page
-                navigate("Welcome");
-              })
-              // error with logging in the user
-              .catch(err => {
-                this.setLoading(false);
-                console.log("At Registration: " + err);
-              });
+            // stop showing user the loading modal
+            this.setLoading(false);
+            // navigate user to Welcome page
+            navigate("Welcome");
           })
+          // error with logging in the user
           .catch(err => {
             this.setLoading(false);
-            console.log(err);
+            console.log("At Registration: " + err);
           });
       })
-      // error with uploading image to GCS
+      // failed to register
       .catch(err => {
-        // stop showing user the loading modal
         this.setLoading(false);
-        console.log("Failed to upload image at user registration: " + err);
+        console.log(err);
       });
   };
 
@@ -174,5 +150,5 @@ const mapStateToProps = state => ({
 // map required redux state and actions to local props
 export default connect(
   mapStateToProps,
-  { setCurrentUser, registerUser, loginUser }
+  { registerUser, loginUser }
 )(Register);

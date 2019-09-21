@@ -6,13 +6,34 @@ import {
   loginUserAPIRequest
 } from "../utils/auth/authHelpers";
 import jwt_decode from "jwt-decode";
+// import helper function to deal with image upload
+import { uploadImageToGCS } from "../utils/imageUpload";
 
 // register user based on user details
-export const registerUser = user => dispatch => {
+export const registerUser = () => (dispatch, getState) => {
   return new Promise((resolve, reject) => {
-    registerUserAPIRequest(user)
-      .then(res => resolve(res))
-      .catch(err => reject("Failed to register user: " + err));
+    // retrieve user register details
+    const { register } = getState();
+    // upload image
+    uploadImageToGCS(register.photoURI)
+      .then(imageURL => {
+        // prepare the body data base on new user details
+        const newUser = {
+          name: register.name,
+          email: register.email,
+          username: register.username,
+          password: register.password,
+          passwordCfm: register.passwordCfm,
+          profilePic: imageURL
+        };
+        // send a post API request to backend to register user
+        registerUserAPIRequest(newUser)
+          .then(res => resolve(res))
+          .catch(err => reject("Failed to register user: " + err));
+      })
+      .catch(err =>
+        reject("Failed to upload image at user registration: " + err)
+      );
   });
 };
 
