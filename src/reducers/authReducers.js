@@ -1,14 +1,9 @@
-import {
-  SET_CURRENT_USER,
-  USER_LOADING,
-  USER_LOGOUT
-} from "../types/authTypes";
+import { SET_CURRENT_USER, USER_LOGOUT } from "../types/authTypes";
 
 const isEmpty = require("is-empty");
 const initialState = {
   isAuthenticated: false,
-  user: {},
-  loading: false
+  user: {}
 };
 
 export default function(state = initialState, action) {
@@ -18,11 +13,6 @@ export default function(state = initialState, action) {
         ...state,
         isAuthenticated: !isEmpty(action.payload),
         user: action.payload
-      };
-    case USER_LOADING:
-      return {
-        ...state,
-        loading: true
       };
     case USER_LOGOUT:
       return initialState;

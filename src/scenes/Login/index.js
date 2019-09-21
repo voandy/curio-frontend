@@ -1,24 +1,22 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { connect } from "react-redux";
 import {
   View,
   Dimensions,
   TouchableOpacity,
   TextInput,
   StyleSheet,
-  Text,
-  AsyncStorage
+  Text
 } from "react-native";
-
-import { loginUser } from "../../utils/auth/authHelpers";
-import { setCurrentUser } from "../../actions/authActions";
+//redux
+import { connect } from "react-redux";
+import { setCurrentUser, loginUser } from "../../actions/authActions";
+// reusable components
 import MyButton from "../../component/MyButton";
 import { setToBottom } from "../../utils/responsiveDesign";
 // import the loader modal to help show loading process
 import ActivityLoaderModal from "../../component/ActivityLoaderModal";
 
-// state
 const initialState = {
   email: "",
   password: "",
@@ -64,35 +62,38 @@ class Login extends Component {
     });
   };
 
+  // reset state to its initialState
+  resetState = () => {
+    this.setState(initialState);
+  };
+
   // send user's data to backend to log user in
   onSubmit = () => {
     // show modal screen for loading process
     this.setLoading(true);
     const { navigate } = this.props.navigation;
-    // logged-in user
+    // prepare user details
     const user = {
       email: this.state.email,
       password: this.state.password
     };
-    // logs user in
-    loginUser(user).then(decoded => {
-      // setting user's details to redux store
-      this.props.setCurrentUser(decoded);
-      // navigate to AppStack if there is user token in AsyncStorage
-      AsyncStorage.getItem("userToken")
-        .then(() => {
-          // stop showing modal screen for loading process
-          this.setLoading(false);
-          // redirect user to main App page
-          navigate("App");
-          this.state = initialState;
-        })
-        .catch(err => {
-          // stop showing modal screen for loading process
-          this.setLoading(false);
-          console.log("Failed to retrieve user token at login: " + err);
-        });
-    });
+    // tries to log user in
+    this.props
+      .loginUser(user)
+      // success
+      .then(() => {
+        // stop showing modal screen for loading process
+        this.setLoading(false);
+        // reset state
+        this.state = initialState;
+        // redirect user to main App page
+        navigate("App");
+      })
+      // failure
+      .catch(err => {
+        this.setLoading(false);
+        console.log(err);
+      });
   };
 
   render() {
@@ -249,5 +250,5 @@ const mapStateToProps = state => ({
 //  export
 export default connect(
   mapStateToProps,
-  { setCurrentUser }
+  { setCurrentUser, loginUser }
 )(Login);

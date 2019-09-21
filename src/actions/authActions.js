@@ -1,25 +1,54 @@
-import axios from "axios";
 import setAuthToken from "../utils/auth/setAuthToken";
-import jwt_decode from "jwt-decode";
 import { AsyncStorage } from "react-native";
+import { SET_CURRENT_USER, USER_LOGOUT } from "../types/authTypes";
 import {
-  GET_ERRORS,
-  SET_CURRENT_USER,
-  USER_LOADING,
-  USER_LOGOUT
-} from "../types/authTypes";
+  registerUserAPIRequest,
+  loginUserAPIRequest
+} from "../utils/auth/authHelpers";
+import jwt_decode from "jwt-decode";
 
-// register user based on userData
-export const registerUser = userData => dispatch => {
-  return axios
-    .post("http://curioapp.herokuapp.com/api/register", userData)
-    .then(res => console.log(res.data))
-    .catch(err =>
-      dispatch({
-        type: GET_ERRORS,
-        payload: err.response.data
+// register user based on user details
+export const registerUser = user => dispatch => {
+  return new Promise((resolve, reject) => {
+    registerUserAPIRequest(user)
+      .then(res => resolve(res))
+      .catch(err => reject("Failed to register user: " + err));
+  });
+};
+
+// login user based on user details
+export const loginUser = user => dispatch => {
+  return new Promise((resolve, reject) => {
+    // post login api request to the backend
+    loginUserAPIRequest(user)
+      // backend login verification success
+      .then(res => {
+        try {
+          // Set token to AsyncStorage
+          const { token } = res.data;
+          // Save to AsyncStorage
+          AsyncStorage.setItem("userToken", token);
+          // Set token to Auth header
+          setAuthToken(token);
+          // Decode token to get user data
+          const decoded = jwt_decode(token);
+          // setting user's details to redux store
+          dispatch(setCurrentUser(decoded));
+          // check if user token is properly set to asyncstorage
+          AsyncStorage.getItem("userToken")
+            // all good, user can proceed
+            .then(() => resolve(decoded))
+            // issue with retrieving user token
+            .catch(err =>
+              reject("Error retrieving user token at login: " + err)
+            );
+        } catch {
+          reject("Error setting user token at login.");
+        }
       })
-    );
+      // backend login verification failed
+      .catch(err => reject("Failed to log user in: " + err));
+  });
 };
 
 // log user out
@@ -46,13 +75,6 @@ export const setCurrentUser = decoded => {
   return {
     type: SET_CURRENT_USER,
     payload: decoded
-  };
-};
-
-// loading user
-export const setUserLoading = () => {
-  return {
-    type: USER_LOADING
   };
 };
 

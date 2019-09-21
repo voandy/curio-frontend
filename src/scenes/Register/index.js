@@ -1,9 +1,12 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { View, StyleSheet, Text, AsyncStorage } from "react-native";
+import { View, StyleSheet, Text } from "react-native";
 // redux action
 import { connect } from "react-redux";
-import { setCurrentUser } from "../../actions/authActions";
+import {
+  setCurrentUser,
+  registerUser,
+  loginUser
+} from "../../actions/authActions";
 // import width/height responsive functions
 import {
   deviceHeigthDimension as hp,
@@ -15,7 +18,6 @@ import RegisterManager from "./registerManager";
 import ActivityLoaderModal from "../../component/ActivityLoaderModal";
 // import helper function to deal with image upload
 import { uploadImageToGCS } from "../../utils/imageUpload";
-import { registerUser, loginUser } from "../../utils/auth/authHelpers";
 
 class Register extends Component {
   state = {
@@ -56,7 +58,8 @@ class Register extends Component {
           profilePic: imageUrl
         };
         // register user (post api request)
-        registerUser(newUser)
+        this.props
+          .registerUser(newUser)
           .then(() => {
             // prepare login details
             const user = {
@@ -64,46 +67,30 @@ class Register extends Component {
               password: newUser.password
             };
             // log the user in directly
-            loginUser(user)
-              .then(decoded => {
-                // setting user's details to redux store
-                this.props.setCurrentUser(decoded);
-                // get user's data
-                AsyncStorage.getItem("userToken")
-                  .then(() => {
-                    // stop showing user the loading modal
-                    this.setLoading(false);
-                    // navigate user to Welcome page
-                    navigate("Welcome");
-                  })
-                  // error with retrieving user token
-                  .catch(err => {
-                    // stop showing user the loading modal
-                    this.setLoading(false);
-                    console.log(
-                      "Failed to retrieve user token at Register -> Login: " +
-                        err
-                    );
-                  });
+            this.props
+              .loginUser(user)
+              .then(() => {
+                // stop showing user the loading modal
+                this.setLoading(false);
+                // navigate user to Welcome page
+                navigate("Welcome");
               })
               // error with logging in the user
               .catch(err => {
                 this.setLoading(false);
-                console.log("Failed to log user in after registration: " + err);
+                console.log("At Registration: " + err);
               });
           })
           .catch(err => {
             this.setLoading(false);
-            console.log("Failed to register user: " + err);
+            console.log(err);
           });
       })
       // error with uploading image to GCS
       .catch(err => {
         // stop showing user the loading modal
         this.setLoading(false);
-        console.log(
-          "Failed to upload image at user registration. Error: " + err
-        );
+        console.log("Failed to upload image at user registration: " + err);
       });
   };
 
@@ -187,5 +174,5 @@ const mapStateToProps = state => ({
 // map required redux state and actions to local props
 export default connect(
   mapStateToProps,
-  { setCurrentUser }
+  { setCurrentUser, registerUser, loginUser }
 )(Register);
