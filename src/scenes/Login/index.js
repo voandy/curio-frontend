@@ -10,7 +10,7 @@ import {
 } from "react-native";
 //redux
 import { connect } from "react-redux";
-import { setCurrentUser, loginUser } from "../../actions/authActions";
+import { loginUser } from "../../actions/authActions";
 // reusable components
 import MyButton from "../../component/MyButton";
 import { setToBottom } from "../../utils/responsiveDesign";
@@ -78,8 +78,8 @@ class Login extends Component {
       password: this.state.password
     };
     // tries to log user in
-    this.props
-      .loginUser(user)
+    //prettier-ignore
+    this.props.loginUser(user)
       // success
       .then(() => {
         // stop showing modal screen for loading process
@@ -89,10 +89,11 @@ class Login extends Component {
         // redirect user to main App page
         navigate("App");
       })
-      // failure
+      // failure to login
       .catch(err => {
         this.setLoading(false);
-        console.log(err);
+        // set state to display error
+        this.setState({...this.state, errors: err.response.data})
       });
   };
 
@@ -250,5 +251,5 @@ const mapStateToProps = state => ({
 //  export
 export default connect(
   mapStateToProps,
-  { setCurrentUser, loginUser }
+  { loginUser }
 )(Login);

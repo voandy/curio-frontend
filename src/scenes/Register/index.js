@@ -40,34 +40,32 @@ class Register extends Component {
     // get the navigate function from props
     const { navigate } = this.props.navigation;
     // register user to the backend
-    this.props
-      .registerUser()
-      // register success
-      .then(() => {
-        const user = {
-          email: this.props.register.email,
-          password: this.props.register.password
-        };
-        // try to login user
-        this.props
-          .loginUser(user)
-          .then(() => {
-            // stop showing user the loading modal
-            this.setLoading(false);
-            // navigate user to Welcome page
-            navigate("Welcome");
-          })
-          // error with logging in the user
-          .catch(err => {
-            this.setLoading(false);
-            console.log("At Registration: " + err);
-          });
+    //prettier-ignore
+    this.props.registerUser().then(() => {
+      const user = {
+        email: this.props.register.email,
+        password: this.props.register.password
+      };
+      // try to login user
+      this.props.loginUser(user).then(() => {
+        // stop showing user the loading modal
+        this.setLoading(false);
+        // navigate user to Welcome page
+        navigate("Welcome");
       })
-      // failed to register
+      // error with logging in the user
       .catch(err => {
         this.setLoading(false);
-        console.log(err);
+        // log error
+        console.log("At Registration: " + err);
       });
+    })
+    // failed to register
+    .catch(err => {
+      this.setLoading(false);
+      // log error
+      console.log(err);
+    });
   };
 
   render() {

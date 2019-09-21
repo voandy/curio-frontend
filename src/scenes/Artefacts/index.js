@@ -2,18 +2,12 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Dimensions, StyleSheet, ScrollView, View, Text } from "react-native";
-import axios from "axios";
-
 // custom components
 import SimpleHeader from "../../component/SimpleHeader";
 import ArtefactFeed from "../../component/ArtefactFeed";
-import {
-  getUserArtefacts,
-  addNewArtefact
-} from "../../actions/artefactsActions";
+import { createNewArtefacts } from "../../actions/artefactsActions";
 import ArtefactModal from "../../component/ArtefactModal";
 import AddButton from "../../component/AddButton";
-import { uploadImageToGCS } from "../../utils/imageUpload";
 // import the loader modal to help show loading process
 import ActivityLoaderModal from "../../component/ActivityLoaderModal";
 
@@ -30,7 +24,10 @@ const newArtefact = {
 class Artefacts extends Component {
   // local state
   state = {
-    newArtefact: newArtefact,
+    newArtefact: {
+      ...newArtefact,
+      userId: this.props.auth.user.id
+    },
     isModalVisible: false,
     loading: false
   };
@@ -54,7 +51,10 @@ class Artefacts extends Component {
   resetNewArtefact = () => {
     this.setState({
       ...this.state,
-      newArtefact
+      newArtefact: {
+        ...newArtefact,
+        userId: this.props.auth.user.id
+      }
     });
   };
 
@@ -68,37 +68,24 @@ class Artefacts extends Component {
 
   // post new artefact to the backend
   onSubmit = async () => {
-    // close actual modal
-    // await this.toggleModal();
     // show user the loading modal
     this.setLoading(true);
-    // redux action to set artefact data in store
-    await this.setNewArtefact("userId", this.props.auth.user.id);
-    // upload the selected photo to GCS, which returns the url to the image
-    uploadImageToGCS(this.state.newArtefact.imageURI).then(imageURL => {
-      // prepare the body data
-      const newArtefact = {
-        ...this.state.newArtefact,
-        imageURL: imageURL
-      };
-      // post to the backend to create artefact
-      axios
-        .post("http://curioapp.herokuapp.com/api/artefact", newArtefact)
-        .then(res => {
-          // stop showing user the loading modal
-          this.setLoading(false);
-          // close loading modal
-          this.toggleModal();
-          // add backend's response (artefact's details) to redux
-          this.props.addNewArtefact(res.data);
-          this.resetNewArtefact();
-        })
-        .catch(err => {
-          // stop showing user the loading modal
-          this.setLoading(false);
-          console.log("POST: Create New Artefact Error: " + err);
-        });
-    });
+    // send and create artefact to the backend
+    //prettier-ignore
+    this.props.createNewArtefacts(this.state.newArtefact)
+      .then(() => {
+        // stop showing user the loading modal
+        this.setLoading(false);
+        // close loading modal
+        this.toggleModal();
+        this.resetNewArtefact();
+      })
+      .catch(err => {
+        // stop showing user the loading modal
+        this.setLoading(false);
+        // show error
+        console.log(err.response.data);
+      });
   };
 
   // return ArtefactFeedRows containing ArtefactFeed in different rows
@@ -201,7 +188,6 @@ const styles = StyleSheet.create({
 
 // check for prop types correctness
 Artefacts.propTypes = {
-  getUserArtefacts: PropTypes.func.isRequired,
   artefacts: PropTypes.object.isRequired,
   auth: PropTypes.object.isRequired,
   image: PropTypes.object.isRequired
@@ -217,5 +203,5 @@ const mapStateToProps = state => ({
 // map required redux state and actions to local props
 export default connect(
   mapStateToProps,
-  { getUserArtefacts, addNewArtefact }
+  { createNewArtefacts }
 )(Artefacts);

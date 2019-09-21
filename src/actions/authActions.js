@@ -4,11 +4,12 @@ import { SET_CURRENT_USER, USER_LOGOUT } from "../types/authTypes";
 import {
   registerUserAPIRequest,
   loginUserAPIRequest
-} from "../utils/auth/authHelpers";
+} from "../utils/apiRequestHelpers/authHelpers";
 import jwt_decode from "jwt-decode";
 // import helper function to deal with image upload
 import { uploadImageToGCS } from "../utils/imageUpload";
 
+// Async Redux actions //
 // register user based on user details
 export const registerUser = () => (dispatch, getState) => {
   return new Promise((resolve, reject) => {
@@ -29,11 +30,15 @@ export const registerUser = () => (dispatch, getState) => {
         // send a post API request to backend to register user
         registerUserAPIRequest(newUser)
           .then(res => resolve(res))
-          .catch(err => reject("Failed to register user: " + err));
+          .catch(err => {
+            console.log("Failed to register user: " + err);
+            reject(err);
+          });
       })
-      .catch(err =>
-        reject("Failed to upload image at user registration: " + err)
-      );
+      .catch(err => {
+        console.log("Failed to upload image at user registration: " + err);
+        reject(err);
+      });
   });
 };
 
@@ -60,15 +65,19 @@ export const loginUser = user => dispatch => {
             // all good, user can proceed
             .then(() => resolve(decoded))
             // issue with retrieving user token
-            .catch(err =>
-              reject("Error retrieving user token at login: " + err)
-            );
+            .catch(err => {
+              console.log("Error retrieving user token at login: " + err);
+              reject(err);
+            });
         } catch {
-          reject("Error setting user token at login.");
+          console.log("Error setting user token at login.");
         }
       })
       // backend login verification failed
-      .catch(err => reject("Failed to log user in: " + err));
+      // no need to log, usually it's wrong email/username or password
+      .catch(err => {
+        reject(err);
+      });
   });
 };
 
@@ -91,6 +100,7 @@ export const logoutUser = () => dispatch => {
   });
 };
 
+// Redux actions //
 // Set logged in user
 export const setCurrentUser = decoded => {
   return {
