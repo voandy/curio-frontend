@@ -22,7 +22,7 @@ class CardGroup extends Component {
         return (
             <View style={styles.card}>
 
-                <TouchableOpacity>
+                <TouchableOpacity onPress={this.props.onPress(this.props.groupId)}>
                     {/* Image  */}
                     <View style={styles.picPlaceholder}>
                         <Image style={[styles.photo]} source={this.props.image} />
