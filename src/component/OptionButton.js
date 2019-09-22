@@ -1,11 +1,8 @@
 import React, { Component } from "react";
 import {
-    Image,
     StyleSheet,
-    Picker,
-    Dimensions,
-    TouchableOpacity
 } from "react-native";
+import OptionsMenu from "react-native-options-menu";
 
 import {
     deviceHeigthDimension as hp,
@@ -19,32 +16,25 @@ class OptionButton extends Component {
 
     render() {
         return (
-            <TouchableOpacity onPress={()=>console.log("hue")} style={styles.button}>
-                {/* options icon */}
-                <Image style={styles.icon} source={require("../../assets/images/icons/option.png")} />
-
-                {/* dropdown menu */}
-                {/* TODO */}
-            </TouchableOpacity>
+        <OptionsMenu
+            button={require("../../assets/images/icons/option.png")}
+            buttonStyle = { styles.icon}
+            destructiveIndex={1}            // only on ios (red indicator)
+            options={["Edit Privacy", "Delete Artefact"]}
+            // actions={[this.editPost, this.deletePost]} />
+            />
         );
     }
 }
 
 const styles = StyleSheet.create({
-    button: {
-        justifyContent: "center",
-        alignItems: "center",
-        elevation: 1,
-        marginTop: wd(0.02),
-        width: wd(0.1),
-        height: wd(0.1),
-        position: "absolute",
-        right: wd(0.01)
-    },
 
     icon: {
         width: wd(0.04),
-        height: wd(0.04)
+        height: wd(0.04),
+        marginTop: wd(0.05),
+        marginLeft: wd(0.13),
+        resizeMode: "contain",
     }
 });
 

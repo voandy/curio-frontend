@@ -96,13 +96,15 @@ class Selected extends Component {
             isVisible={this.state.isImageViewVisible}
             animationType={"fade"}
             isSwipeCloseEnabled={true}
-            // onClose={() => this.setState({ statusBarHidden: false })}
+          // onClose={() => this.setState({ statusBarHidden: false })}
           />
 
           {/* desciption */}
           <View style={styles.descriptionPlaceholder}>
-            <Text style={styles.title}>Patrick Star is coldddddddd</Text>
-            <OptionButton />
+            <View style={{ flexDirection: "row" }}>
+              <Text style={styles.title}>Patrick Star is colddddddd</Text>
+              <OptionButton />
+            </View>
 
             <Text style={styles.description}>we should take bikini bottom and push it somewhere else</Text>
 
