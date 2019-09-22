@@ -21,7 +21,7 @@ import {
     deviceWidthDimension as wd,
     setToBottom
 } from "../utils/responsiveDesign"
-
+ 
 
 class GroupModal extends Component {
 
