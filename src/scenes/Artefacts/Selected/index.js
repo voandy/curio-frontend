@@ -7,7 +7,8 @@ import {
   TextInput,
   View,
   Image,
-  Text
+  Text,
+  StatusBar
 } from "react-native";
 
 // date converter
@@ -17,7 +18,9 @@ import Moment from "moment";
 import UserDetail from "../../../component/UserDetail"
 import Line from "../../../component/Line"
 import Comments from "../../../component/Comments"
+import OptionButton from "../../../component/OptionButton"
 import HeaderImageScrollView, { TriggeringView } from 'react-native-image-header-scroll-view';
+import ImageView from 'react-native-image-view';
 
 // custom responsive design component
 import {
@@ -38,6 +41,7 @@ class Selected extends Component {
 
   state = {
     isImageViewVisible: false,
+    // statusBarHidden: false,
   }
 
   // nav details
@@ -54,8 +58,21 @@ class Selected extends Component {
     Moment.locale("en");
     // const dt = this.state.userData.dateJoined;
 
+    const artefactImage = [
+      {
+        source: {
+          uri: 'https://cdn.pixabay.com/photo/2017/08/17/10/47/paris-2650808_960_720.jpg',
+          // uri: require("../../../../assets/images/test-delete-this/boi5.png"),
+        },
+        width: Dimensions.get('window').width,
+        height: Dimensions.get('window').width,
+      },
+    ];
+
+
     return (
       <View style={styles.container}>
+
 
         <HeaderImageScrollView
           maxHeight={Dimensions.get("window").height * 0.5}
@@ -67,12 +84,26 @@ class Selected extends Component {
 
           renderForeground={() => (
             // change this to open the image in full screen
-            <TouchableOpacity style={styles.cover} onPress={() => console.log("Open the image fool!")} />
+            <TouchableOpacity style={styles.cover} onPress={() =>
+              this.setState({ isImageViewVisible: true, statusBarHidden: true })} />
           )}
         >
 
+          {/* open image in full screen */}
+          {/* <StatusBar hidden={this.state.statusBarHidden} /> */}
+          <ImageView
+            images={artefactImage}
+            isVisible={this.state.isImageViewVisible}
+            animationType={"fade"}
+            isSwipeCloseEnabled={true}
+            // onClose={() => this.setState({ statusBarHidden: false })}
+          />
+
+          {/* desciption */}
           <View style={styles.descriptionPlaceholder}>
-            <Text style={styles.title}>Patrick Star is cold</Text>
+            <Text style={styles.title}>Patrick Star is coldddddddd</Text>
+            <OptionButton />
+
             <Text style={styles.description}>we should take bikini bottom and push it somewhere else</Text>
 
             {/* <Text style={styles.title}>{this.props.title}</Text> */}
@@ -138,7 +169,7 @@ class Selected extends Component {
 
           </View>
         </HeaderImageScrollView>
-      </View>
+      </View >
     );
   }
 }
@@ -161,6 +192,7 @@ const styles = StyleSheet.create({
     fontFamily: "HindSiliguri-Bold",
     fontSize: 20,
     marginTop: wd(0.03),
+    width: Dimensions.get("window").width * 0.7,
   },
 
   description: {
