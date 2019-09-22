@@ -2,12 +2,20 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Dimensions, StyleSheet, ScrollView, View, Text } from "react-native";
+
 // custom components
 import SimpleHeader from "../../component/SimpleHeader";
 import ArtefactFeed from "../../component/ArtefactFeed";
 import { createNewArtefacts } from "../../actions/artefactsActions";
 import ArtefactModal from "../../component/ArtefactModal";
 import AddButton from "../../component/AddButton";
+
+// Custom respondsive design component
+import {
+  deviceHeigthDimension as hp,
+  deviceWidthDimension as wd
+} from "../../utils/responsiveDesign";
+
 // import the loader modal to help show loading process
 import ActivityLoaderModal from "../../component/ActivityLoaderModal";
 
@@ -174,13 +182,13 @@ const styles = StyleSheet.create({
 
   feed: {
     flexDirection: "row",
-    marginLeft: Dimensions.get("window").width * 0.032,
-    marginRight: Dimensions.get("window").width * 0.032
+    marginLeft: wd(0.032),
+    marginRight: wd(0.032)
   },
 
   emptyFeed: {
     flex: 1,
-    height: Dimensions.get("window").height * 0.7,
+    height: hp(0.7),
     alignItems: "center",
     justifyContent: "center"
   }
@@ -189,15 +197,13 @@ const styles = StyleSheet.create({
 // check for prop types correctness
 Artefacts.propTypes = {
   artefacts: PropTypes.object.isRequired,
-  auth: PropTypes.object.isRequired,
-  image: PropTypes.object.isRequired
+  auth: PropTypes.object.isRequired
 };
 
 // map required redux state to local props
 const mapStateToProps = state => ({
   artefacts: state.artefacts,
-  auth: state.auth,
-  image: state.image
+  auth: state.auth
 });
 
 // map required redux state and actions to local props

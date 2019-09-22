@@ -4,7 +4,7 @@ import { SET_CURRENT_USER, USER_LOGOUT } from "../types/authTypes";
 import {
   registerUserAPIRequest,
   loginUserAPIRequest
-} from "../utils/apiRequestHelpers/authHelpers";
+} from "../utils/APIHelpers/authAPIHelpers";
 import jwt_decode from "jwt-decode";
 // import helper function to deal with image upload
 import { uploadImageToGCS } from "../utils/imageUpload";

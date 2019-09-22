@@ -2,7 +2,7 @@ import { SET_USER_ARTEFACTS, ADD_NEW_ARTEFACT } from "../types/artefactsTypes";
 import {
   createArtefactAPIRequest,
   getUserArtefactsAPIRequest
-} from "../utils/apiRequestHelpers/artefactHelpers";
+} from "../utils/APIHelpers/artefactAPIHelpers";
 
 import { uploadImageToGCS } from "../utils/imageUpload";
 
