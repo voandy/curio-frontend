@@ -4,18 +4,10 @@ import errorReducers from "./errorReducers";
 import userReducers from "./userReducers";
 import groupsReducers from "./groupsReducers";
 import artefactsReducers from "./artefactsReducers";
-import imageReducers from "./imageReducers";
 import registerReducers from "./registerReducers";
 
-// export default combineReducers({
-//   auth: authReducers,
-//   errors: errorReducers,
-//   user: userReducers,
-//   groups: groupsReducers,
-//   artefacts: artefactsReducers,
-//   image: imageReducers,
-//   register: registerReducers
-// });
+// import auth types constant
+import { USER_LOGOUT } from "../types/authTypes";
 
 export const appReducer = combineReducers({
   auth: authReducers,
@@ -23,15 +15,14 @@ export const appReducer = combineReducers({
   user: userReducers,
   groups: groupsReducers,
   artefacts: artefactsReducers,
-  image: imageReducers,
   register: registerReducers
 });
 
 export default rootReducer = (state, action) => {
-  if (action.type === "USER_LOGOUT") {
-    // reset state
+  // remove all redux states if user logs out
+  if (action.type === USER_LOGOUT) {
+    // reset all states
     state = undefined;
   }
-
   return appReducer(state, action);
 };
