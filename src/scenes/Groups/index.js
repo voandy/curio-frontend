@@ -3,14 +3,9 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import {
   View,
-  Text,
   StyleSheet,
   ScrollView,
   Dimensions,
-  Button,
-  TextInput,
-  Image,
-  ActivityIndicator
 } from "react-native";
 
 // import redux actions for groups
@@ -77,38 +72,6 @@ class Groups extends Component {
     })
   }
 
-  // show groups that are unpinned by user
-  showUnpinnedGroups = groups => {
-    let unpinnedGroups = groups.concat();
-    let cardGroupRows = [];
-    let cardGroups = [];
-    let rowKey = 0;
-
-    // remove user's pinned groups
-    for (var i = 0; i < unpinnedGroups.length; i++) {
-      // console.log("cover photo is", unpinnedGroups[i].coverPhoto);
-    }
-
-    // sort array based on date obtained (from earliest to oldest)
-    unpinnedGroups.sort(function(a,b){
-      return new Date(b.dateCreated) - new Date(a.dateCreated);
-    });
-
-    // create CardGroup object out of group and push it into cardGroups array
-    for (var i = 0; i < unpinnedGroups.length; i++) {
-
-      cardGroups.push(<CardGroup onPress={ this.clickGroup() } key={unpinnedGroups[i].details._id} text={unpinnedGroups[i].details.title}  image={{ uri: unpinnedGroups[i].details.coverPhoto }} />);
-      
-      // create a new row after the previous row has been filled with 2 groups and fill the previous row into cardGroupRows
-      if (unpinnedGroups.length === 1 || cardGroups.length === 2 || (i !== 0 && i === unpinnedGroups.length - 1)) {
-        cardGroupRows.push(<View style={styles.feed} key={i}>{cardGroups}</View>)
-        cardGroups = [];
-        rowKey++;
-      }
-    }
-    return <>{cardGroupRows}</>;
-  };
-
   // post new group into the backend
   postNewGroup = async () => {
     await this.onNewGroupChange("adminId", this.props.auth.user.id);
@@ -133,9 +96,50 @@ class Groups extends Component {
   clickGroup = async (groupId) => {
     const { navigate } = this.props.navigation;
 
-    this.props.selectGroup(groupId);
+    await this.props.selectGroup(groupId);
     navigate("SelectedGroup");
   }
+
+  // show groups that are unpinned by user
+  showUnpinnedGroups = groups => {
+    let unpinnedGroups = groups.concat();
+    let cardGroupRows = [];
+    let cardGroups = [];
+    let rowKey = 0;
+    let groupKey = 0;
+
+    // remove user's pinned groups
+    for (var i = 0; i < unpinnedGroups.length; i++) {
+      // console.log("cover photo is", unpinnedGroups[i].coverPhoto);
+    }
+
+    // sort array based on date obtained (from earliest to oldest)
+    unpinnedGroups.sort(function(a,b){
+      return new Date(b.dateCreated) - new Date(a.dateCreated);
+    });
+
+    // create CardGroup object out of group and push it into cardGroups array
+    for (var i = 0; i < unpinnedGroups.length; i++) {
+
+      cardGroups.push(
+        <CardGroup
+          onPress={() => this.clickGroup.bind(this)} 
+          key={groupKey}  
+          groupId={unpinnedGroups[i].details._id} 
+          text={unpinnedGroups[i].details.title}  
+          image={{ uri: unpinnedGroups[i].details.coverPhoto }}
+        /> );
+      groupKey++;
+
+      // create a new row after the previous row has been filled with 2 groups and fill the previous row into cardGroupRows
+      if (unpinnedGroups.length === 1 || cardGroups.length === 2 || (i !== 0 && i === unpinnedGroups.length - 1)) {
+        cardGroupRows.push(<View style={styles.feed} key={rowKey}>{cardGroups}</View>)
+        cardGroups = [];
+        rowKey++;
+      }
+    }
+    return <>{cardGroupRows}</>;
+  };
 
   render() {
     return (
