@@ -101,7 +101,6 @@ class Artefacts extends Component {
     // get artefact information and navigate to it
     await this.props.selectArtefact(artefactId);
 
-    console.log(this.props.artefacts.selectedArtefact);
     navigate("SelectedArtefact");
   }
 

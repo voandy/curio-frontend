@@ -10,7 +10,6 @@ import {
   View,
   Image,
   Text,
-  StatusBar
 } from "react-native";
 
 // date converter
@@ -53,16 +52,16 @@ class SelectedArtefact extends Component {
   };
 
   render() {
+    console.log("user is", this.props.user.userData);
+    console.log("selected artefact is", this.props.artefacts.selectedArtefact);
 
     // date format
     Moment.locale("en");
-    // const dt = this.state.userData.dateJoined;
 
     const artefactImage = [
       {
         source: {
-          uri: 'https://cdn.pixabay.com/photo/2017/08/17/10/47/paris-2650808_960_720.jpg',
-          // uri: require("../../../../assets/images/test-delete-this/boi5.png"),
+          uri: this.props.artefacts.selectedArtefact.images[0].URL,
         },
         width: Dimensions.get('window').width,
         height: Dimensions.get('window').width,
@@ -71,15 +70,13 @@ class SelectedArtefact extends Component {
 
     return (
       <View style={styles.container}>
-        
-
+  
         <HeaderImageScrollView
           maxHeight={Dimensions.get("window").height * 0.5}
           minHeight={Dimensions.get("window").height * 0.2}
 
           // use this to dynamically get image data
-          // headerImage={{ uri: this.props.user.image }}
-          headerImage={require("../../../../assets/images/test-delete-this/boi5.png")}
+          headerImage={{ uri: this.props.artefacts.selectedArtefact.images[0].URL }}
 
           renderForeground={() => (
             // change this to open the image in full screen
@@ -89,32 +86,30 @@ class SelectedArtefact extends Component {
         >
 
           {/* open image in full screen */}
-          {/* <StatusBar hidden={this.state.statusBarHidden} /> */}
           <ImageView
             images={artefactImage}
             isVisible={this.state.isImageViewVisible}
             animationType={"fade"}
             isSwipeCloseEnabled={true}
-          // onClose={() => this.setState({ statusBarHidden: false })}
           />
 
           {/* desciption */}
           <View style={styles.descriptionPlaceholder}>
             <View style={{ flexDirection: "row" }}>
-              <Text style={styles.title}>Patrick Star is colddddddd</Text>
+
+            {/* title */}
+            <Text style={styles.title}>{this.props.artefacts.selectedArtefact.title}</Text>
               <OptionButton />
             </View>
 
-            <Text style={styles.description}>we should take bikini bottom and push it somewhere else</Text>
-
-            {/* <Text style={styles.title}>{this.props.title}</Text> */}
-            {/* <Text style={styles.description}>{this.props.description}</Text> */}
+            {/* description */}
+            <Text style={styles.description}>{this.props.artefacts.selectedArtefact.description}</Text>
           </View>
 
           {/* user detail */}
-          <UserDetail image={require("../../../../assets/images/default-profile-pic.png")} userName="Patrick Star" />
+          <UserDetail image={{uri: this.props.user.userData.profilePic}} userName={this.props.user.userData.name} />
 
-          {/* indicator */}
+          {/* NOT WORKING YET!! indicator */}
           <View style={styles.likesIndicatorPlaceholder}>
             {/* <Text style={styles.indicator}>{this.props.likeCount} Likes    {this.props.commentsCount} Comments</Text> */}
             <Text style={styles.indicator}>69 Likes    3 Comments</Text>
@@ -276,11 +271,13 @@ const styles = StyleSheet.create({
 // check for prop types correctness
 SelectedArtefact.propTypes = {
   artefacts: PropTypes.object.isRequired,
+  user: PropTypes.object.isRequired,
 };
 
 // map required redux state to local props
 const mapStateToProps = state => ({
   artefacts: state.artefacts,
+  user: state.user,
 });
 
 // map required redux state and actions to local props
