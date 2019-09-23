@@ -19,3 +19,14 @@ export const getUserArtefactsAPIRequest = userId => {
       .catch(err => reject(err));
   });
 };
+
+// get an artefact based on artefactId
+export const selectArtefactAPIRequest = artefactId => {
+  return new Promise((resolve, reject) => {
+    axios
+    .get("http://curioapp.herokuapp.com/api/artefact/id/" + artefactId)
+    .then(res => resolve(res))
+    .catch(err => reject(err));
+  });
+}
+
