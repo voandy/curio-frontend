@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
+import Dialog from "react-native-dialog";
 import { getUserData } from "../../../actions/userActions";
 
 import {
@@ -24,8 +25,9 @@ import {
 import { TouchableOpacity } from "react-native-gesture-handler";
 
 class AccountSetting extends Component {
-    constructor() {
-        super();
+
+    state = {
+        dialogVisible: false
     }
 
     // Nav bar details
@@ -34,6 +36,21 @@ class AccountSetting extends Component {
         headerStyle: {
             elevation: 0,
         },
+    };
+
+    // deleting account handlers
+    showDialog = () => {
+        this.setState({ dialogVisible: true });
+    };
+
+    handleCancel = () => {
+        this.setState({ dialogVisible: false });
+    };
+
+    // DELETE
+    handleDelete = () => {
+        // TODO add logic
+        this.setState({ dialogVisible: false });
     };
 
     componentWillUpdate(nextProps) {
@@ -74,9 +91,19 @@ class AccountSetting extends Component {
                     <SettingField editable={true} field="Password" />
 
                     <TouchableOpacity style={{ marginVertical: wd(0.1), alignItems: "center" }}>
-                        <Text style={styles.delete}>Delete Account</Text>
+                        <Text style={styles.delete} onPress={this.showDialog}>Delete Account</Text>
                     </TouchableOpacity>
                 </View>
+
+                {/* deleting account dialog warning */}
+                <Dialog.Container visible={this.state.dialogVisible}>
+                    <Dialog.Title>Delete Account</Dialog.Title>
+                    <Dialog.Description>
+                        Do you want to delete this account? You cannot undo this action.
+                    </Dialog.Description>
+                    <Dialog.Button label="Cancel" onPress={this.handleCancel} />
+                    <Dialog.Button label="Delete" onPress={this.handleDelete} />
+                </Dialog.Container>
             </View>
         );
     }
@@ -116,7 +143,7 @@ const styles = StyleSheet.create({
 
     delete: {
         fontFamily: "HindSiliguri-Bold",
-        color:"red",
+        color: "red",
         fontSize: 16,
     }
 });
