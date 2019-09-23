@@ -23,6 +23,9 @@ import OptionButton from "../../../component/OptionButton"
 import HeaderImageScrollView, { TriggeringView } from 'react-native-image-header-scroll-view';
 import ImageView from 'react-native-image-view';
 
+// redux actions
+import { updateSelectedArtefact } from "../../../actions/artefactsActions";
+
 // custom responsive design component
 import {
   deviceHeigthDimension as hp,
@@ -99,7 +102,10 @@ class SelectedArtefact extends Component {
 
             {/* title */}
             <Text style={styles.title}>{this.props.artefacts.selectedArtefact.title}</Text>
-              <OptionButton />
+              <OptionButton 
+                editArtefact={() => this.editArtefact}
+                deleteArtefact={() => this.deleteArtefact}
+              />
             </View>
 
             {/* description */}
@@ -283,5 +289,5 @@ const mapStateToProps = state => ({
 // map required redux state and actions to local props
 export default connect(
   mapStateToProps,
-  {}
+  { updateSelectedArtefact }
 )(SelectedArtefact);

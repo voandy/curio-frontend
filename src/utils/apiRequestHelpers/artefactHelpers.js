@@ -30,3 +30,13 @@ export const selectArtefactAPIRequest = artefactId => {
   });
 }
 
+// update selected artefact based on artefactId
+export const updateSelectedArtefactAPIRequest = artefactId => {
+  return new Promise((resolve, reject) => {
+    axios
+    .put("http://curioapp.herokuapp.com/api/artefact/id/" + artefactId)
+    .then(res => resolve(res))
+    .catch(err => reject(err));
+  });
+}
+

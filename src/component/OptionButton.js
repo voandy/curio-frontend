@@ -18,11 +18,11 @@ class OptionButton extends Component {
         return (
         <OptionsMenu
             button={require("../../assets/images/icons/option.png")}
-            buttonStyle = { styles.icon}
+            buttonStyle = {styles.icon}
             destructiveIndex={1}            // only on ios (red indicator)
             options={["Edit Privacy", "Delete Artefact"]}
-            // actions={[this.editPost, this.deletePost]} />
-            />
+            actions={[this.editPost, this.deletePost]}
+        />
         );
     }
 }
