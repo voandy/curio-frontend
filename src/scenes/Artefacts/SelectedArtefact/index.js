@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
 
 import {
   Dimensions,
@@ -66,7 +68,6 @@ class SelectedArtefact extends Component {
         height: Dimensions.get('window').width,
       },
     ];
-
 
     return (
       <View style={styles.container}>
@@ -272,5 +273,18 @@ const styles = StyleSheet.create({
 
 });
 
-// export 
-export default SelectedArtefact
+// check for prop types correctness
+SelectedArtefact.propTypes = {
+  artefacts: PropTypes.object.isRequired,
+};
+
+// map required redux state to local props
+const mapStateToProps = state => ({
+  artefacts: state.artefacts,
+});
+
+// map required redux state and actions to local props
+export default connect(
+  mapStateToProps,
+  {}
+)(SelectedArtefact);

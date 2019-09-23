@@ -55,9 +55,10 @@ export const selectArtefact = artefactId => dispatch => {
     // get artefact based on artefactId
     selectArtefactAPIRequest(artefactId)
     .then(res => {
-
+      
       // add selected artefact to redux state
       dispatch(setSelectedArtefact(res.data));
+      resolve(res);
     })
     .catch(err => {
       console.log("Failed to select artefact" + err);
