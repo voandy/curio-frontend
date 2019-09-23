@@ -69,20 +69,33 @@ export const selectArtefact = artefactId => dispatch => {
 }
 
 // update selected artefact based on artefactId
-export const changeSelectedArtefact = artefactId => dispatch => {
+export const editSelectedArtefact = (artefactId, artefact) => dispatch => {
   return new Promise((resolve, reject) => {
+    // upload image
+    uploadImageToGCS(artefact.imageURI)
+      .then(imageURL => {
+        // prepare the data for new images
+        const newImages = artefact.images;
+        newImages[0].URL = imageURL;
 
-    // update artefact in the backend
-    updateSelectedArtefactAPIRequest(artefactId)
-    .then(res => {
-      
-      // add selected artefact to redux state
-      dispatch(updateSelectedArtefact(res.data));
-      resolve(res);
-    })
-    .catch(err => {
-      console.log("Failed to update artefact" + err);
-      reject(err);
+        // prepare the body data base on new user details
+        const selectedArtefact = {
+          ...artefact,
+          images: newImages
+        };
+
+        // update artefact in the backend
+        updateSelectedArtefactAPIRequest(artefactId, selectedArtefact)
+        .then(res => {
+
+          // update selected artefact to redux state
+          dispatch(updateSelectedArtefact(res.data));
+          resolve(res);
+        })
+        .catch(err => {
+          console.log("Failed to update artefact" + err);
+          reject(err);
+        });
     });
   });
 }

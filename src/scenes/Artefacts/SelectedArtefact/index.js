@@ -22,9 +22,10 @@ import Comments from "../../../component/Comments"
 import OptionButton from "../../../component/OptionButton"
 import HeaderImageScrollView, { TriggeringView } from 'react-native-image-header-scroll-view';
 import ImageView from 'react-native-image-view';
+import ArtefactModal from '../../../component/ArtefactModal';
 
 // redux actions
-import { updateSelectedArtefact } from "../../../actions/artefactsActions";
+import { editSelectedArtefact, selectArtefact } from "../../../actions/artefactsActions";
 
 // custom responsive design component
 import {
@@ -42,7 +43,14 @@ const comment3 = "Goodbye everyone, I'll remember you all in therapy"
 class SelectedArtefact extends Component {
 
   state = {
+    selectedArtefact:
+      { 
+        ...this.props.artefacts.selectedArtefact,
+        imageURI: this.props.artefacts.selectedArtefact.images[0].URL,
+      },
     isImageViewVisible: false,
+    isUpdateModalVisible: false,
+    loading: false,
     // statusBarHidden: false,
   }
 
@@ -54,8 +62,59 @@ class SelectedArtefact extends Component {
     }
   };
 
+  // update selectedArtefact when it has already been changed
+  componentWillUpdate(nextProps) {
+    const prevSelectedArtefact = this.props.artefacts.selectedArtefact;
+    const selectedArtefact = nextProps.artefacts.selectedArtefact;
+    if (prevSelectedArtefact !== selectedArtefact) { 
+      this.props.selectArtefact(prevSelectedArtefact._id);
+    }
+  }
+
+  // toggle the modal for artefact update input
+  toggleUpdateModal = () => {
+    this.setState({ isUpdateModalVisible: !this.state.isUpdateModalVisible });
+  };
+
+  // selected artefact's attribute change
+  setSelectedArtefact = (key, value) => {
+    this.setState({
+      selectedArtefact: {
+        ...this.state.selectedArtefact,
+        [key]: value
+      }
+    });
+  };
+
+  // setter function for "loading" to show user that something is loading
+  setLoading = loading => {
+    this.setState({
+      ...this.state,
+      loading
+    });
+  };
+
+  // post new artefact to the backend
+  onSubmit = async () => {
+    // show user the loading modal
+    this.setLoading(true);
+    // send and create artefact to the backend
+    this.props.editSelectedArtefact(this.state.selectedArtefact._id, this.state.selectedArtefact)
+      .then(() => {
+        // stop showing user the loading modal
+        this.setLoading(false);
+        // close loading modal
+        this.toggleUpdateModal();
+      })
+      .catch(err => {
+        // stop showing user the loading modal
+        this.setLoading(false);
+        // show error
+        console.log(err.response.data);
+      });
+  };
+
   render() {
-    console.log("user is", this.props.user.userData);
     console.log("selected artefact is", this.props.artefacts.selectedArtefact);
 
     // date format
@@ -63,7 +122,7 @@ class SelectedArtefact extends Component {
 
     const artefactImage = [
       {
-        source: {
+        source: {  
           uri: this.props.artefacts.selectedArtefact.images[0].URL,
         },
         width: Dimensions.get('window').width,
@@ -103,10 +162,18 @@ class SelectedArtefact extends Component {
             {/* title */}
             <Text style={styles.title}>{this.props.artefacts.selectedArtefact.title}</Text>
               <OptionButton 
-                editArtefact={() => this.editArtefact}
+                toggleUpdateModal={this.toggleUpdateModal}
                 deleteArtefact={() => this.deleteArtefact}
               />
             </View>
+
+            <ArtefactModal
+              isModalVisible={this.state.isUpdateModalVisible}
+              toggleModal={this.toggleUpdateModal}
+              newArtefact={this.state.selectedArtefact}
+              onSubmit={this.onSubmit.bind(this)}
+              setNewArtefact={this.setSelectedArtefact.bind(this)}
+            />
 
             {/* description */}
             <Text style={styles.description}>{this.props.artefacts.selectedArtefact.description}</Text>
@@ -289,5 +356,5 @@ const mapStateToProps = state => ({
 // map required redux state and actions to local props
 export default connect(
   mapStateToProps,
-  { updateSelectedArtefact }
+  { editSelectedArtefact, selectArtefact }
 )(SelectedArtefact);
