@@ -19,7 +19,7 @@ import ProfileScreen from "./Profile";
 import NotificationScreen from "./Notification";
 import ArtefactsScreen from "./Artefacts";
 import WelcomeScreen from "./Welcome";
-import SelectedScreen from "./Artefacts/Selected";
+import SelectedArtefactScreen from "./Artefacts/Selected";
 import SelectedGroupScreen from "./Groups/SelectedGroup";
 
 import { getUserData } from "../actions/userActions";
@@ -65,6 +65,12 @@ const GroupStack = createStackNavigator({
   SelectedGroup: {screen: SelectedGroupScreen}
 });
 
+const NotificationStack = createStackNavigator({
+  Notification: {screen: NotificationScreen},
+  SelectedArtefact: {screen: SelectedArtefactScreen},
+  SelectedGroup: {screen: SelectedGroupScreen}
+});
+
 // login / signup stack
 const AuthStack = createStackNavigator({
   Start: { screen: StartScreen },
@@ -87,7 +93,7 @@ const AppStack = createBottomTabNavigator(
         )
       }
     },
-    Artefacts: {
+    ArtefactsTab: {
       screen: ArtefactsScreen,
       navigationOptions: {
         tabBarIcon: ({ tintColor }) => (
@@ -98,8 +104,9 @@ const AppStack = createBottomTabNavigator(
         )
       }
     },
-    Notification: {
-      screen: NotificationScreen,
+    NotificationTab: {
+      // screen: NotificationScreen,
+      screen: NotificationStack,
       navigationOptions: {
         tabBarIcon: ({ tintColor }) => (
           <Image
@@ -109,7 +116,7 @@ const AppStack = createBottomTabNavigator(
         )
       }
     },
-    Profile: {
+    ProfileTab: {
       screen: ProfileScreen,
       navigationOptions: {
         tabBarIcon: ({ tintColor }) => (

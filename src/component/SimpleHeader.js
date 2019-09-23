@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
   header: {
     height: 100,
     borderBottomColor: "black",
-    borderRadius: 1
+    borderRadius: 1,
   },
 
   headerText: {

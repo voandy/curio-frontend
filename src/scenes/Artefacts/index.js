@@ -1,14 +1,17 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
+import { RefreshControl } from 'react-native';
 import { Dimensions, StyleSheet, ScrollView, View, Text } from "react-native";
 
 // custom components
 import SimpleHeader from "../../component/SimpleHeader";
 import ArtefactFeed from "../../component/ArtefactFeed";
-import { createNewArtefacts } from "../../actions/artefactsActions";
 import ArtefactModal from "../../component/ArtefactModal";
 import AddButton from "../../component/AddButton";
+
+// redux actions
+import { createNewArtefacts, getUserArtefacts } from "../../actions/artefactsActions";
 
 // Custom respondsive design component
 import {
@@ -37,7 +40,8 @@ class Artefacts extends Component {
       userId: this.props.auth.user.id
     },
     isModalVisible: false,
-    loading: false
+    loading: false,
+    refreshing: false,
   };
 
   // toggle the modal for new artefact creation
@@ -102,7 +106,7 @@ class Artefacts extends Component {
     let artefactFeeds = [];
     let rowKey = 0;
     // sort array based on date obtained (from earliest to oldest)
-    artefacts.sort(function(a, b) {
+    artefacts.sort(function (a, b) {
       return new Date(b.datePosted) - new Date(a.datePosted);
     });
     // create ArtefactFeed object out of artefact and push it into artefactFeeds array
@@ -127,6 +131,20 @@ class Artefacts extends Component {
     return <>{artefactFeedRows}</>;
   };
 
+  // refresh page
+  refreshArtefacts = async () => {
+    
+    this.setState({ refreshing: true })
+
+    console.log("userArtefacts before reloading", this.props.artefacts.userArtefacts);
+
+    // get data from backend  
+    await this.props.getUserArtefacts(this.props.auth.user.id)
+
+    // resets refreshing state
+    this.setState({ refreshing: false })
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -138,6 +156,9 @@ class Artefacts extends Component {
         <ScrollView
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={16}
+          refreshControl={
+            <RefreshControl refreshing={this.state.refreshing} onRefresh={this.refreshArtefacts} />
+          }
         >
           {/* all artefacts posted by the user */}
           {Object.keys(this.props.artefacts.userArtefacts).length !== 0 ? (
@@ -145,19 +166,19 @@ class Artefacts extends Component {
               {this.showArtefacts(this.props.artefacts.userArtefacts)}
             </View>
           ) : (
-            <View style={styles.emptyFeed}>
-              <Text
-                style={{ fontSize: 16, fontFamily: "HindSiliguri-Regular" }}
-              >
-                Looks like you haven't posted any artefacts
+              <View style={styles.emptyFeed}>
+                <Text
+                  style={{ fontSize: 16, fontFamily: "HindSiliguri-Regular" }}
+                >
+                  Looks like you haven't posted any artefacts
               </Text>
-              <Text
-                style={{ fontSize: 16, fontFamily: "HindSiliguri-Regular" }}
-              >
-                Click the "+" button to add some
+                <Text
+                  style={{ fontSize: 16, fontFamily: "HindSiliguri-Regular" }}
+                >
+                  Click the "+" button to add some
               </Text>
-            </View>
-          )}
+              </View>
+            )}
         </ScrollView>
 
         {/* create new Group */}
@@ -197,7 +218,9 @@ const styles = StyleSheet.create({
 // check for prop types correctness
 Artefacts.propTypes = {
   artefacts: PropTypes.object.isRequired,
-  auth: PropTypes.object.isRequired
+  auth: PropTypes.object.isRequired,
+  getUserArtefacts: PropTypes.func.isRequired,
+  createNewArtefacts: PropTypes.func.isRequired,
 };
 
 // map required redux state to local props
@@ -209,5 +232,5 @@ const mapStateToProps = state => ({
 // map required redux state and actions to local props
 export default connect(
   mapStateToProps,
-  { createNewArtefacts }
+  { createNewArtefacts, getUserArtefacts }
 )(Artefacts);
