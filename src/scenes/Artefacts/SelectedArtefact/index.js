@@ -17,6 +17,7 @@ import Moment from "moment";
 
 // custom component
 import LikeButton from "../../../component/LikeButton";
+import CommentButton from "../../../component/CommentButton";
 import UserDetail from "../../../component/UserDetail";
 import Line from "../../../component/Line";
 import Comments from "../../../component/Comments";
@@ -63,13 +64,13 @@ class SelectedArtefact extends Component {
 
   unlike = function () {
     console.log("unlike");
-    console.log(props);
+    console.log(this.props);
     this.props.unlikeArtefact(this.props.artefacts.selectedArtefact._id, this.props.user.userData._id);
   }
 
   render() {
-    console.log("user is", this.props.user.userData);
-    console.log("selected artefact is", this.props.artefacts.selectedArtefact);
+    // console.log("user is", this.props.user.userData);
+    // console.log("selected artefact is", this.props.artefacts.selectedArtefact);
 
     // date format
     Moment.locale("en");
@@ -90,9 +91,9 @@ class SelectedArtefact extends Component {
     // whether the user has liked this artefact
     var liked = this.props.artefacts.selectedArtefact.likes.includes(this.props.user.userData._id);
 
-    const likeButton = <LikeButton onPress={this.like} />;
+    const likeButton = <LikeButton onPress={this.like.bind(this)} />;
 
-    const unlikeButton = <LikeButton onPress={this.unlike} />;
+    const unlikeButton = <LikeButton onPress={this.unlike.bind(this)} />;
 
     var likeUnlike;
     if (liked) {
@@ -167,13 +168,7 @@ class SelectedArtefact extends Component {
             {likeUnlike}
 
             {/* Comment button */}
-            <TouchableOpacity style={styles.button}>
-              <Image
-                style={styles.buttonIcon}
-                source={require("../../../../assets/images/icons/comment.png")}
-              />
-              <Text style={styles.buttonText}>Comment</Text>
-            </TouchableOpacity>
+            <CommentButton />
           </View>
 
           <Line />
