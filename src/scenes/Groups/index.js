@@ -92,7 +92,7 @@ class Groups extends Component {
     });
   }
 
-  // click a specific group on the Groups scene
+  // click a specific group and navigate to it
   clickGroup = async (groupId) => {
     const { navigate } = this.props.navigation;
 

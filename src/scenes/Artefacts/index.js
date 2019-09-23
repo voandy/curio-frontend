@@ -22,6 +22,12 @@ const newArtefact = {
 };
 
 class Artefacts extends Component {
+
+  // Navbar details
+  static navigationOptions = {
+    header: null
+  };
+
   // local state
   state = {
     newArtefact: {
@@ -88,11 +94,20 @@ class Artefacts extends Component {
       });
   };
 
+  // click a specific artefact and navigate to it
+  clickArtefact = async (artefactId) => {
+    const { navigate } = this.props.navigation;
+
+    navigate("SelectedArtefact");
+  }
+
   // return ArtefactFeedRows containing ArtefactFeed in different rows
   showArtefacts = artefacts => {
     let artefactFeedRows = [];
     let artefactFeeds = [];
     let rowKey = 0;
+    let artefactKey = 0;
+
     // sort array based on date obtained (from earliest to oldest)
     artefacts.sort(function(a, b) {
       return new Date(b.datePosted) - new Date(a.datePosted);
@@ -101,10 +116,13 @@ class Artefacts extends Component {
     for (var i = 0; i < artefacts.length; i++) {
       artefactFeeds.push(
         <ArtefactFeed
-          key={artefacts[i]._id}
+          onPress={() => this.clickArtefact.bind(this)}
+          key={artefactKey}
+          artefactId={artefacts[i]._id}
           image={{ uri: artefacts[i].images[0].URL }}
         />
       );
+      artefactKey++;
       // create a new row after the previous row has been filled with 3 artefacts and fill the previous row into artefactFeedRows
       if (artefactFeeds.length === 3 || i === artefacts.length - 1) {
         artefactFeedRows.push(
