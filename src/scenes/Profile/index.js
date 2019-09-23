@@ -27,6 +27,11 @@ class Profile extends Component {
     super();
   }
 
+  // Nav bar details
+  static navigationOptions = {
+    header: null
+  };
+
   componentWillUpdate(nextProps) {
     // sets user data
     if (nextProps.user.userData !== this.props.user.userData) {
@@ -52,6 +57,8 @@ class Profile extends Component {
     Moment.locale("en");
     const dt = this.props.user.userData.dateJoined;
 
+    const { navigate } = this.props.navigation;
+
     return (
       <View style={styles.container}>
         <SimpleHeader title="Profile" />
@@ -68,11 +75,11 @@ class Profile extends Component {
               source={{ uri: this.props.user.userData.profilePic }}
             />
           ) : (
-            <Image
-              style={styles.profilePic}
-              source={require("../../../assets/images/default-profile-pic.png")}
-            />
-          )}
+              <Image
+                style={styles.profilePic}
+                source={require("../../../assets/images/default-profile-pic.png")}
+              />
+            )}
 
           {/* user heading */}
           <Text style={styles.userName}>{this.props.user.userData.name}</Text>
@@ -88,7 +95,7 @@ class Profile extends Component {
 
           <ProfileSetting text="Artefacts" />
           <ProfileSetting text="Friends" />
-          <ProfileSetting text="Account Details" />
+          <ProfileSetting text="Account Settings" onPress={() => navigate("AccountSetting")} />
 
           {/* line separator */}
           <Line />

@@ -136,8 +136,6 @@ class Artefacts extends Component {
     
     this.setState({ refreshing: true })
 
-    console.log("userArtefacts before reloading", this.props.artefacts.userArtefacts);
-
     // get data from backend  
     await this.props.getUserArtefacts(this.props.auth.user.id)
 

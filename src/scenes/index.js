@@ -21,6 +21,7 @@ import ArtefactsScreen from "./Artefacts";
 import WelcomeScreen from "./Welcome";
 import SelectedArtefactScreen from "./Artefacts/Selected";
 import SelectedGroupScreen from "./Groups/SelectedGroup";
+import AccountSettingScreen from "./Profile/AccountSetting"
 
 import { getUserData } from "../actions/userActions";
 import { getUserArtefacts } from "../actions/artefactsActions";
@@ -71,6 +72,11 @@ const NotificationStack = createStackNavigator({
   SelectedGroup: {screen: SelectedGroupScreen}
 });
 
+const ProfileStack = createStackNavigator({
+  Profile: {screen: ProfileScreen},
+  AccountSetting: {screen: AccountSettingScreen},
+});
+
 // login / signup stack
 const AuthStack = createStackNavigator({
   Start: { screen: StartScreen },
@@ -117,7 +123,7 @@ const AppStack = createBottomTabNavigator(
       }
     },
     ProfileTab: {
-      screen: ProfileScreen,
+      screen: ProfileStack,
       navigationOptions: {
         tabBarIcon: ({ tintColor }) => (
           <Image
