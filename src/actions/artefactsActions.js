@@ -69,7 +69,7 @@ export const selectArtefact = artefactId => dispatch => {
 }
 
 // update selected artefact based on artefactId
-export const editSelectedArtefact = (artefactId, artefact) => dispatch => {
+export const editSelectedArtefact = (artefact) => dispatch => {
   return new Promise((resolve, reject) => {
     // upload image
     uploadImageToGCS(artefact.imageURI)
@@ -85,7 +85,7 @@ export const editSelectedArtefact = (artefactId, artefact) => dispatch => {
         };
 
         // update artefact in the backend
-        updateSelectedArtefactAPIRequest(artefactId, selectedArtefact)
+        updateSelectedArtefactAPIRequest(selectedArtefact._id, selectedArtefact)
         .then(res => {
 
           // update selected artefact to redux state

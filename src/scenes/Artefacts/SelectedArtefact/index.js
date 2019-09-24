@@ -105,7 +105,7 @@ class SelectedArtefact extends Component {
     // show user the loading modal
     this.setLoading(true);
     // send and create artefact to the backend
-    this.props.editSelectedArtefact(this.state.selectedArtefact._id, this.state.selectedArtefact)
+    this.props.editSelectedArtefact(this.state.selectedArtefact)
       .then(() => {
         // stop showing user the loading modal
         this.setLoading(false);
