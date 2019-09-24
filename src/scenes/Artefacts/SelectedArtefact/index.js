@@ -68,7 +68,11 @@ class SelectedArtefact extends Component {
     const prevSelectedArtefact = this.props.artefacts.selectedArtefact;
     const selectedArtefact = nextProps.artefacts.selectedArtefact;
     if (prevSelectedArtefact !== selectedArtefact) { 
+
+      // edit selectedArtefact in redux state
       this.props.selectArtefact(selectedArtefact._id);
+
+      // reload userArtefacts to update userArtefacts in redux state
       this.props.getUserArtefacts(selectedArtefact.userId);
     }
   }
