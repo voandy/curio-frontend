@@ -117,10 +117,9 @@ class SelectedArtefactModal extends Component {
             />
             <DatePicker
               style={{ width: 200 }}
-              date={this.props.newArtefact.date}
+              date={this.props.newArtefact.dateObtained}
               mode="date"
-              value={this.props.newArtefact.dateObtained}
-              placeholder="hue"
+              placeholder="Select Date"
               format="YYYY-MM-DD"
               customStyles={{
                 dateIcon: {

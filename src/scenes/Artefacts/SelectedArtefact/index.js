@@ -133,7 +133,10 @@ class SelectedArtefact extends Component {
 
     return (
       <View style={styles.container}>
-  
+        {/* loading modal window */}
+        <ActivityLoaderModal loading={this.state.loading} />
+
+        {/* header */}
         <HeaderImageScrollView
           maxHeight={Dimensions.get("window").height * 0.5}
           minHeight={Dimensions.get("window").height * 0.2}

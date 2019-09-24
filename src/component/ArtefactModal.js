@@ -116,11 +116,10 @@ class ArtefactModal extends Component {
               source={require("../../assets/images/icons/calendar.png")}
             />
             <DatePicker
-              style={{ width: 200 }}
-              date={this.props.newArtefact.date}
+              style={{ width: 100 }}
+              date={this.props.newArtefact.dateObtained}
               mode="date"
-              value={this.props.newArtefact.dateObtained}
-              placeholder="hue"
+              placeholder="select date"
               format="YYYY-MM-DD"
               customStyles={{
                 dateIcon: {
