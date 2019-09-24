@@ -69,3 +69,13 @@ export const unlikeAPIRequest = (artefactId, userId) => {
       .catch(err => reject(err));
   });
 };
+
+// get all comments on an artefact
+export const getArtefactCommentsAPIRequest = artefactId => {
+  return new Promise((resolve, reject) => {
+    axios
+      .get("http://curioapp.herokuapp.com/api/artefact/id/" + artefactId + "/getAllComments")
+      .then(res => resolve(res))
+      .catch(err => reject(err));
+  });
+};

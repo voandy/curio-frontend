@@ -7,6 +7,7 @@ import {
   likeAPIRequest,
   unlikeAPIRequest,
   deleteSelectedArtefactAPIRequest,
+  getArtefactCommentsAPIRequest
 } from "../utils/APIHelpers/artefactAPIHelpers";
 
 import { uploadImageToGCS } from "../utils/imageUpload";
@@ -156,6 +157,16 @@ export const removeSelectedArtefact = artefactId => dispatch => {
   });
 }
 
+// get all comments made about an artefact
+export const getArtefactComments = artefactId => dispatch => {
+  getArtefactCommentsAPIRequest(artefactId)
+    // success
+    .then(res => dispatch(setArtefactComments(res.data)))
+    // failure
+    .catch(err => console.log("artefactActions: " + err));
+};
+
+
 // Redux actions //
 // store all of the user's artefacts into redux state
 export const setUserArtefacts = decoded => {
@@ -196,3 +207,11 @@ export const deleteSelectedArtefact = decoded => {
     payload: decoded
   }
 }
+
+// store all of the user's artefacts into redux state
+export const setArtefactComments = decoded => {
+  return {
+    type: SET_ARTEFACT_COMMENTS,
+    payload: decoded
+  };
+};

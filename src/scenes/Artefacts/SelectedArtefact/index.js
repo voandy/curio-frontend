@@ -29,8 +29,9 @@ import ArtefactModal from '../../../component/ArtefactModal';
 import ActivityLoaderModal from "../../../component/ActivityLoaderModal";
 
 // redux actions
-import { editSelectedArtefact, selectArtefact, getUserArtefacts, removeSelectedArtefact } from "../../../actions/artefactsActions";
-import { likeArtefact, unlikeArtefact } from "../../../actions/artefactsActions";
+import { editSelectedArtefact, selectArtefact, getUserArtefacts, 
+  removeSelectedArtefact, likeArtefact, unlikeArtefact } 
+  from "../../../actions/artefactsActions";
 
 // custom responsive design component
 import {

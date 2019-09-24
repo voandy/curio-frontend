@@ -1,4 +1,4 @@
-import { SET_USER_ARTEFACTS, ADD_NEW_ARTEFACT, SET_SELECTED_ARTEFACT, UPDATE_SELECTED_ARTEFACT, DELETE_SELECTED_ARTEFACT } from "../types/artefactsTypes";
+import { SET_USER_ARTEFACTS, ADD_NEW_ARTEFACT, SET_SELECTED_ARTEFACT, UPDATE_SELECTED_ARTEFACT, DELETE_SELECTED_ARTEFACT, SET_ARTEFACT_COMMENTS } from "../types/artefactsTypes";
 
 const initialState = {
   userArtefacts: [],
@@ -30,6 +30,11 @@ export default function(state = initialState, action) {
     case DELETE_SELECTED_ARTEFACT:
       return {
         ...state,
+      }
+    case SET_ARTEFACT_COMMENTS:
+      return {
+        ...state,
+        artefactComments: action.payload
       }
     default:
       return state;
