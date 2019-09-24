@@ -16,7 +16,7 @@ import {
 import Moment from "moment";
 
 // custom component
-import LikeButton from "../../../component/LikeButton";
+import { LikeButton, UnikeButton } from "../../../component/LikeButton";
 import CommentButton from "../../../component/CommentButton";
 import UserDetail from "../../../component/UserDetail";
 import Line from "../../../component/Line";
@@ -69,9 +69,6 @@ class SelectedArtefact extends Component {
   }
 
   render() {
-    // console.log("user is", this.props.user.userData);
-    // console.log("selected artefact is", this.props.artefacts.selectedArtefact);
-
     // date format
     Moment.locale("en");
 
@@ -93,7 +90,7 @@ class SelectedArtefact extends Component {
 
     const likeButton = <LikeButton onPress={this.like.bind(this)} />;
 
-    const unlikeButton = <LikeButton onPress={this.unlike.bind(this)} />;
+    const unlikeButton = <UnikeButton onPress={this.unlike.bind(this)} />;
 
     var likeUnlike;
     if (liked) {
@@ -170,8 +167,6 @@ class SelectedArtefact extends Component {
             {/* Comment button */}
             <CommentButton />
           </View>
-
-          <Line />
 
           {/* comments */}
           <View style={styles.comments}>
