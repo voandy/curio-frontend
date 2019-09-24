@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { RefreshControl } from 'react-native';
 
 import {
   Dimensions,
@@ -23,6 +24,18 @@ const joffrey = "deserved to die, was a pleasure to watch him chock to his death
 
 export default class Notification extends Component {
 
+  // Nav bar details
+  static navigationOptions = {
+    header: null
+  };
+
+  // navigate to page 
+  // TODO add the proper routes
+  clickNotification = () => {
+    const { navigate } = this.props.navigation;
+    navigate("SelectedArtefact");
+  }
+
   render() {
 
     // date format
@@ -39,20 +52,69 @@ export default class Notification extends Component {
         <ScrollView
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={16}
+          refreshControl={
+            <RefreshControl />
+          }
         >
 
-          <NotificationFeed name={"jon"} text={jon} hasRead={true} image={require("../../../assets/images/default-profile-pic.png")} />
-          <NotificationFeed name={"varys"} text={varys} hasRead={false} image={require("../../../assets/images/default-profile-pic.png")} />
-          <NotificationFeed name={"tormund"} text={tormund} hasRead={false} image={require("../../../assets/images/default-profile-pic.png")} />
-          <NotificationFeed name={"tyrion"} text={tyrion} hasRead={true} image={require("../../../assets/images/default-profile-pic.png")} />
-          <NotificationFeed name={"joffrey"} text={joffrey} hasRead={true} image={require("../../../assets/images/default-profile-pic.png")} />
-          <NotificationFeed name={"tyrion"} text={tyrion} hasRead={false} image={require("../../../assets/images/default-profile-pic.png")} />
-          <NotificationFeed name={"joffrey"} text={joffrey} hasRead={false} image={require("../../../assets/images/default-profile-pic.png")} />
-          <NotificationFeed name={"tyrion"} text={tyrion} hasRead={true} image={require("../../../assets/images/default-profile-pic.png")} />
+          <NotificationFeed
+            name={"jon"}
+            text={jon}
+            hasRead={true}
+            image={require("../../../assets/images/default-profile-pic.png")}
+            onPress={() => this.clickNotification.bind(this)}
+          />
+          <NotificationFeed
+            name={"varys"}
+            text={varys}
+            hasRead={false}
+            image={require("../../../assets/images/default-profile-pic.png")}
+            onPress={() => this.clickNotification.bind(this)}
+          />
+          <NotificationFeed
+            name={"tormund"}
+            text={tormund}
+            hasRead={false}
+            image={require("../../../assets/images/default-profile-pic.png")}
+            onPress={() => this.clickNotification.bind(this)}
+          />
+          <NotificationFeed
+            name={"tyrion"}
+            text={tyrion}
+            hasRead={true}
+            image={require("../../../assets/images/default-profile-pic.png")}
+            onPress={() => this.clickNotification.bind(this)}
+          />
+          <NotificationFeed
+            name={"joffrey"}
+            text={joffrey}
+            hasRead={true}
+            image={require("../../../assets/images/default-profile-pic.png")}
+            onPress={() => this.clickNotification.bind(this)}
+          />
+          <NotificationFeed
+            name={"tyrion"}
+            text={tyrion}
+            hasRead={false}
+            image={require("../../../assets/images/default-profile-pic.png")}
+            onPress={() => this.clickNotification.bind(this)}
+          />
+          <NotificationFeed
+            name={"joffrey"}
+            text={joffrey}
+            hasRead={false}
+            image={require("../../../assets/images/default-profile-pic.png")}
+            onPress={() => this.clickNotification.bind(this)}
+          />
 
 
           {/* no more notifications ! */}
-          <Text style={{ alignSelf: "center", justifyContent: "center", marginVertical: 40 }}>  Hooray no more notifications </Text>
+          <Text style={{
+            alignSelf: "center",
+            justifyContent: "center",
+            marginVertical: 40,
+            fontFamily: "HindSiliguri-Regular"
+          }}>  Hooray no more notifications </Text>
         </ScrollView>
       </View>
     );

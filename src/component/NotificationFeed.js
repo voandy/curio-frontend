@@ -35,6 +35,14 @@ class NotificationFeed extends Component {
         }
     }
 
+    // navigate to given screen (TODO)
+    clickNotification = () => {
+        const { navigate } = this.props.navigation;
+        // TODO pass in props
+        navigate("SelectedArtefact");
+        console.log("hue");
+    }
+
     render() {
 
         // date format
@@ -44,8 +52,7 @@ class NotificationFeed extends Component {
         return (
             <View style={styles.card}>
 
-                {/* TODO ADD BELOW ===>   onPress={ () => this.props.func() } */}
-                <TouchableOpacity activeOpacity={0.5}>
+                <TouchableOpacity activeOpacity={0.5} onPress={this.props.onPress(this.props.notificationId)} >
 
                     <View style={styles.card}>
                         {/* Image  */}

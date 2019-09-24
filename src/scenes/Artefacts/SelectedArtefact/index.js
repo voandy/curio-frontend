@@ -9,7 +9,8 @@ import {
   TextInput,
   View,
   Image,
-  Text
+  Text,
+  Alert
 } from "react-native";
 
 // date converter
@@ -18,17 +19,18 @@ import Moment from "moment";
 // custom component
 import { LikeButton, UnikeButton } from "../../../component/LikeButton";
 import CommentButton from "../../../component/CommentButton";
-import UserDetail from "../../../component/UserDetail";
-import Line from "../../../component/Line";
-import Comments from "../../../component/Comments";
-import OptionButton from "../../../component/OptionButton";
-import HeaderImageScrollView, {
-  TriggeringView
-} from "react-native-image-header-scroll-view";
-import ImageView from "react-native-image-view";
+import UserDetail from "../../../component/UserDetail"
+import Line from "../../../component/Line"
+import Comments from "../../../component/Comments"
+import OptionButton from "../../../component/OptionButton"
+import {HeaderImageScrollView, TriggeringView } from 'react-native-image-header-scroll-view';
+import ImageView from 'react-native-image-view';
+import ArtefactModal from '../../../component/ArtefactModal';
+import ActivityLoaderModal from "../../../component/ActivityLoaderModal";
 
 // redux actions
-import { updateSelectedArtefact, likeArtefact, unlikeArtefact } from "../../../actions/artefactsActions";
+import { editSelectedArtefact, selectArtefact, getUserArtefacts, removeSelectedArtefact } from "../../../actions/artefactsActions";
+import { likeArtefact, unlikeArtefact } from "../../../actions/artefactsActions";
 
 // custom responsive design component
 import {
@@ -45,7 +47,14 @@ const comment3 = "Goodbye everyone, I'll remember you all in therapy";
 
 class SelectedArtefact extends Component {
   state = {
-    isImageViewVisible: false
+    selectedArtefact:
+      { 
+        ...this.props.artefacts.selectedArtefact,
+        imageURI: this.props.artefacts.selectedArtefact.images[0].URL,
+      },
+    isImageViewVisible: false,
+    isUpdateModalVisible: false,
+    loading: false,
     // statusBarHidden: false,
   };
 
@@ -68,7 +77,106 @@ class SelectedArtefact extends Component {
     this.props.unlikeArtefact(this.props.artefacts.selectedArtefact._id, this.props.user.userData._id);
   }
 
+  // update selectedArtefact when it has already been changed
+  componentWillUpdate(nextProps) {
+    const prevSelectedArtefact = this.props.artefacts.selectedArtefact;
+    const selectedArtefact = nextProps.artefacts.selectedArtefact;
+    if (prevSelectedArtefact !== selectedArtefact) { 
+
+      // edit selectedArtefact in redux state
+      this.props.selectArtefact(selectedArtefact._id);
+
+      // reload userArtefacts to update userArtefacts in redux state
+      this.props.getUserArtefacts(selectedArtefact.userId);
+    }
+  }
+
+  // toggle the modal for artefact update input
+  toggleUpdateModal = () => {
+    this.setState({ isUpdateModalVisible: !this.state.isUpdateModalVisible });
+  };
+
+  // toggle the modal for artefact deletion
+  toggleDeleteModal = async () => {
+    const { navigate } = this.props.navigation;
+
+    Alert.alert(
+      'Delete Artefact',
+      'Are you sure you want to delete your artefact?',
+      [
+        {
+          text: 'No',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        { text: 'Yes', onPress: async () => {
+            // show user the loading modal
+            this.setLoading(true);
+
+            // remove selected artefact from redux states
+            await this.props.removeSelectedArtefact(this.props.artefacts.selectedArtefact._id)
+            .then(() => {
+              // stop showing user the loading modal
+              this.setLoading(false);
+
+              // navigate to artefacts
+              navigate('Artefacts');
+            })
+            .catch(err => {
+              // stop showing user the loading modal
+              this.setLoading(false);
+              // show error
+              console.log(err.response.data);
+            });
+          }
+        },
+      ],
+      { cancelable: false }
+    );
+  }
+
+  // selected artefact's attribute change
+  setSelectedArtefact = (key, value) => {
+    this.setState({
+      selectedArtefact: {
+        ...this.state.selectedArtefact,
+        [key]: value
+      }
+    });
+  };
+
+  // setter function for "loading" to show user that something is loading
+  setLoading = loading => {
+    this.setState({
+      ...this.state,
+      loading
+    });
+  };
+
+  // post new artefact to the backend
+  onSubmit = async () => {
+    // show user the loading modal
+    this.setLoading(true);
+    // send and create artefact to the backend
+    this.props.editSelectedArtefact(this.state.selectedArtefact)
+      .then(() => {
+        // stop showing user the loading modal
+        this.setLoading(false);
+        // close loading modal
+        this.toggleUpdateModal();
+      })
+      .catch(err => {
+        // stop showing user the loading modal
+        this.setLoading(false);
+        // show error
+        console.log(err.response.data);
+      });
+  };
+
   render() {
+    // FOR TESTING PURPOSES
+    // console.log("selected artefact is", this.props.artefacts.selectedArtefact);
+
     // date format
     Moment.locale("en");
 
@@ -101,6 +209,11 @@ class SelectedArtefact extends Component {
 
     return (
       <View style={styles.container}>
+
+        {/* loading modal window */}
+        <ActivityLoaderModal loading={this.state.loading} />
+
+        {/* header */}
         <HeaderImageScrollView
           maxHeight={Dimensions.get("window").height * 0.5}
           minHeight={Dimensions.get("window").height * 0.2}
@@ -121,32 +234,38 @@ class SelectedArtefact extends Component {
             />
           )}
         >
-          {/* open image in full screen */}
-          <ImageView
-            images={artefactImage}
-            isVisible={this.state.isImageViewVisible}
-            animationType={"fade"}
-            isSwipeCloseEnabled={true}
+
+        {/* open image in full screen */}
+        <ImageView
+          images={artefactImage}
+          isVisible={this.state.isImageViewVisible}
+          animationType={"fade"}
+          isSwipeCloseEnabled={true}
+        />
+
+        {/* desciption */}
+        <View style={styles.descriptionPlaceholder}>
+          <View style={{ flexDirection: "row" }}>
+
+          {/* title */}
+          <Text style={styles.title}>{this.props.artefacts.selectedArtefact.title}</Text>
+            <OptionButton 
+              toggleUpdateModal={this.toggleUpdateModal}
+              toggleDeleteModal={this.toggleDeleteModal}
+            />
+          </View>
+
+          <ArtefactModal
+            isModalVisible={this.state.isUpdateModalVisible}
+            toggleModal={this.toggleUpdateModal}
+            newArtefact={this.state.selectedArtefact}
+            onSubmit={this.onSubmit.bind(this)}
+            setNewArtefact={this.setSelectedArtefact.bind(this)}
           />
 
-          {/* desciption */}
-          <View style={styles.descriptionPlaceholder}>
-            <View style={{ flexDirection: "row" }}>
-              {/* title */}
-              <Text style={styles.title}>
-                {this.props.artefacts.selectedArtefact.title}
-              </Text>
-              <OptionButton
-                editArtefact={() => this.editArtefact}
-                deleteArtefact={() => this.deleteArtefact}
-              />
-            </View>
-
-            {/* description */}
-            <Text style={styles.description}>
-              {this.props.artefacts.selectedArtefact.description}
-            </Text>
-          </View>
+          {/* description */}
+          <Text style={styles.description}>{this.props.artefacts.selectedArtefact.description}</Text>
+        </View>
 
           {/* user detail */}
           <UserDetail
@@ -208,8 +327,8 @@ class SelectedArtefact extends Component {
               comment={comment3}
             />
           </View>
-        </HeaderImageScrollView>
-      </View>
+        </HeaderImageScrollView>     
+      </View >
     );
   }
 }
@@ -305,5 +424,6 @@ const mapStateToProps = state => ({
 // map required redux state and actions to local props
 export default connect(
   mapStateToProps,
-  { updateSelectedArtefact, likeArtefact, unlikeArtefact }
+  { editSelectedArtefact, selectArtefact, getUserArtefacts, removeSelectedArtefact,
+    updateSelectedArtefact, likeArtefact, unlikeArtefact }
 )(SelectedArtefact);

@@ -31,10 +31,20 @@ export const selectArtefactAPIRequest = artefactId => {
 }
 
 // update selected artefact based on artefactId
-export const updateSelectedArtefactAPIRequest = artefactId => {
+export const updateSelectedArtefactAPIRequest = (artefactId, selectedArtefact) => {
   return new Promise((resolve, reject) => {
     axios
-    .put("http://curioapp.herokuapp.com/api/artefact/id/" + artefactId)
+    .put("http://curioapp.herokuapp.com/api/artefact/id/" + artefactId, selectedArtefact)
+    .then(res => resolve(res))
+    .catch(err => reject(err));
+  });
+}
+
+// delete selected artefact of artefactId
+export const deleteSelectedArtefactAPIRequest = (artefactId) => {
+  return new Promise((resolve, reject) => {
+    axios
+    .delete("http://curioapp.herokuapp.com/api/artefact/id/" + artefactId)
     .then(res => resolve(res))
     .catch(err => reject(err));
   });

@@ -13,14 +13,17 @@ import { Image } from "react-native";
 import StartScreen from "./Start";
 import RegisterScreen from "./Register";
 import LoginScreen from "./Login";
-import GroupsScreen from "./Groups";
+import WelcomeScreen from "./Welcome";
 import AuthLoadingScreen from "./AuthLoadingScreen";
+import GroupsScreen from "./Groups";
 import ProfileScreen from "./Profile";
 import NotificationScreen from "./Notification";
 import ArtefactsScreen from "./Artefacts";
-import WelcomeScreen from "./Welcome";
 import SelectedArtefactScreen from "./Artefacts/SelectedArtefact";
 import SelectedGroupScreen from "./Groups/SelectedGroup";
+import ArtefactsFormScreen from "./Artefacts/ArtefactsForm";
+import GroupsFormScreen from "./Groups/GroupsForm";
+import AccountSettingScreen from "./Profile/AccountSetting";
 
 import { getUserData } from "../actions/userActions";
 import { getUserArtefacts } from "../actions/artefactsActions";
@@ -63,13 +66,25 @@ class Scenes extends Component {
 // group stack
 const GroupStack = createStackNavigator({
   Groups: {screen: GroupsScreen},
+  GroupsForm: {screen: GroupsFormScreen},
   SelectedGroup: {screen: SelectedGroupScreen}
 });
 
-// artefact stack
 const ArtefactStack = createStackNavigator({
   Artefacts: {screen: ArtefactsScreen},
+  ArtefactsForm: {screen: ArtefactsFormScreen},
   SelectedArtefact: {screen: SelectedArtefactScreen}
+});
+
+const NotificationStack = createStackNavigator({
+  Notification: {screen: NotificationScreen},
+  SelectedArtefact: {screen: SelectedArtefactScreen},
+  SelectedGroup: {screen: SelectedGroupScreen}
+});
+
+const ProfileStack = createStackNavigator({
+  Profile: {screen: ProfileScreen},
+  AccountSetting: {screen: AccountSettingScreen},
 });
 
 // login / signup stack
@@ -85,6 +100,7 @@ const AppStack = createBottomTabNavigator(
   {
     GroupTab: {
       screen: GroupStack,
+      // screen: GroupsFormScreen,
       navigationOptions: {
         tabBarIcon: ({ tintColor }) => (
           <Image
@@ -105,8 +121,8 @@ const AppStack = createBottomTabNavigator(
         )
       }
     },
-    Notification: {
-      screen: NotificationScreen,
+    NotificationTab: {
+      screen: NotificationStack,
       navigationOptions: {
         tabBarIcon: ({ tintColor }) => (
           <Image
@@ -116,8 +132,8 @@ const AppStack = createBottomTabNavigator(
         )
       }
     },
-    Profile: {
-      screen: ProfileScreen,
+    ProfileTab: {
+      screen: ProfileStack,
       navigationOptions: {
         tabBarIcon: ({ tintColor }) => (
           <Image

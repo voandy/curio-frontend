@@ -10,7 +10,7 @@ import {
   deviceWidthDimension as wd
 } from "../utils/responsiveDesign";
 
-class MyButton extends Component {
+class MySmallerButton extends Component {
   constructor(props) {
     super(props);
   }
@@ -29,17 +29,17 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#FF6E6E",
-    width: wd(0.3),
-    height: 50,
+    width: wd(0.25),
+    height: 45,
     borderRadius: 40,
     elevation: 4
   },
 
   buttonText: {
-    fontSize: wd(0.037),
+    fontSize: wd(0.035),
     color: "white",
     fontFamily: "HindSiliguri-Bold"
   }
 });
 
-export default MyButton;
+export default MySmallerButton;

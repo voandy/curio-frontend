@@ -20,8 +20,8 @@ class OptionButton extends Component {
             button={require("../../assets/images/icons/option.png")}
             buttonStyle = {styles.icon}
             destructiveIndex={1}            // only on ios (red indicator)
-            options={["Edit Privacy", "Delete Artefact"]}
-            actions={[this.editPost, this.deletePost]}
+            options={["Edit Artefact", "Delete Artefact"]}
+            actions={[this.props.toggleUpdateModal, this.props.toggleDeleteModal]}
         />
         );
     }

@@ -13,11 +13,11 @@ import {
 // import entry field validators
 import * as validator from "./registerValidator";
 // import helper components
-import RegisterNameField from "./NameFields/registerNameField";
-import RegisterEmailField from "./NameFields/registerEmailField";
-import RegisterUsernameField from "./NameFields/registerUsernameField";
-import RegisterPasswordField from "./NameFields/registerPasswordField";
-import RegisterPhotoField from "./NameFields/registerPhotoField";
+import RegisterNameField from "./RegisterFields/registerNameField";
+import RegisterEmailField from "./RegisterFields/registerEmailField";
+import RegisterUsernameField from "./RegisterFields/registerUsernameField";
+import RegisterPasswordField from "./RegisterFields/registerPasswordField";
+import RegisterPhotoField from "./RegisterFields/registerPhotoField";
 
 // manage and render the correct sign-up page accordingly
 class RegisterManager extends Component {
