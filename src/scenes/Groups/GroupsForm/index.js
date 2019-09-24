@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { StyleSheet, View, Text, Image, TextInput, TouchableOpacity, Picker } from "react-native";
+import { StyleSheet, ScrollView, View, Text, Image, TextInput, TouchableOpacity, Picker } from "react-native";
 
 // redux actions
 import DatePicker from "react-native-datepicker";
@@ -51,96 +51,100 @@ class GroupsForm extends Component {
                 {/* loading modal window */}
                 <ActivityLoaderModal loading={this.state.loading} />
 
-                {/* invisible container for all content */}
-                <View style={{ height: hp(0.7) }} >
-                    {/* Add image button */}
-                    <View style={styles.imagePlaceholder}>
-                        <Text style={[styles.font, styles.imageText]}>Create a group, share artefacts amongst yourselves</Text>
+                {/* scrollable container for all content */}
+                <ScrollView showsVerticalScrollIndicator={false}>
+                    <View style={{ alignItems: "center" }}>
+                        {/* Add image button */}
+                        <View style={styles.imagePlaceholder}>
+                            <Text style={[styles.font, styles.imageText]}>Create a group, share artefacts amongst yourselves</Text>
 
-                        <TouchableOpacity activeOpacity={0.5} onPress={this._pickImage}>
-                            {/* {this.props.newGroup.imageURI !== undefined &&
+                            <TouchableOpacity activeOpacity={0.5} onPress={this._pickImage}>
+                                {/* {this.props.newGroup.imageURI !== undefined &&
                                 this.props.newGroup.imageURI !== "" ? ( */}
-                            {this.props.imageURI !== undefined &&
-                                this.props.imageURI !== "" ? (
-                                    <Image
-                                        style={styles.imageSelected}
-                                        source={{ uri: this.props.imageURI }}
-                                    />
-                                ) : (
-                                    <Image
-                                        style={styles.imageSelected}
-                                        source={require("../../../../assets/images/icons/addPicture.png")}
-                                    />
-                                )}
-                        </TouchableOpacity>
+                                {this.props.imageURI !== undefined &&
+                                    this.props.imageURI !== "" ? (
+                                        <Image
+                                            style={styles.imageSelected}
+                                            source={{ uri: this.props.imageURI }}
+                                        />
+                                    ) : (
+                                        <Image
+                                            style={styles.imageSelected}
+                                            source={require("../../../../assets/images/icons/addPicture.png")}
+                                        />
+                                    )}
+                            </TouchableOpacity>
 
-                        <Text style={[styles.subFont, styles.imageText]}>Add a cover photo</Text>
-                    </View>
+                            <Text style={[styles.subFont, styles.imageText]}>Add a cover photo</Text>
+                        </View>
 
-                    {/* input fields */}
+                        {/* input fields */}
 
-                    {/* Title */}
-                    <View style={styles.inputRow}>
-                        <Image
-                            style={styles.icon}
-                            source={require("../../../../assets/images/icons/title.png")}
-                        />
-                        <View style={styles.inputField}>
-                            <Text style={styles.font}>Group name</Text>
-                            <TextInput
-                                placeholder="Title"
-                                autoCapitalize="none"
-                                placeholderTextColor="#868686"
-                                style={styles.inputFont}
-                            // onChangeText={value => this.setCategory(value)}
-                            // value={this.props.newArtefact.category}
+                        {/* Title */}
+                        <View style={styles.inputRow}>
+                            <Image
+                                style={styles.icon}
+                                source={require("../../../../assets/images/icons/title.png")}
                             />
+                            <View style={styles.inputField}>
+                                <Text style={styles.font}>Group name</Text>
+                                <TextInput
+                                    placeholder="Title"
+                                    autoCapitalize="none"
+                                    placeholderTextColor="#868686"
+                                    style={styles.inputFont}
+                                // onChangeText={value => this.setCategory(value)}
+                                // value={this.props.newArtefact.category}
+                                />
+                            </View>
                         </View>
-                    </View>
 
-                    {/* Description */}
-                    <View style={styles.inputRow}>
-                        <Image
-                            style={styles.icon}
-                            source={require("../../../../assets/images/icons/description.png")}
-                        />
-                        <View style={styles.inputField}>
-                            <Text style={styles.font}>Description</Text>
-                            <TextInput
-                                placeholder="Description of the group"
-                                autoCapitalize="none"
-                                placeholderTextColor="#868686"
-                                style={styles.inputFont}
-                            // onChangeText={value => this.setCategory(value)}
-                            // value={this.props.newArtefact.category}
+                        {/* Description */}
+                        <View style={styles.inputRow}>
+                            <Image
+                                style={styles.icon}
+                                source={require("../../../../assets/images/icons/description.png")}
                             />
+                            <View style={styles.inputField}>
+                                <Text style={styles.font}>Description</Text>
+                                <TextInput
+                                    placeholder="Description of the group"
+                                    autoCapitalize="none"
+                                    placeholderTextColor="#868686"
+                                    style={styles.inputFont}
+                                // onChangeText={value => this.setCategory(value)}
+                                // value={this.props.newArtefact.category}
+                                />
+                            </View>
                         </View>
-                    </View>
 
-                    {/* Privacy */}
-                    <View style={styles.inputRow}>
-                        <Image
-                            style={styles.icon}
-                            source={require("../../../../assets/images/icons/category.png")}
-                        />
-                        <View style={styles.inputField}>
-                            <Text style={styles.font}>Privacy</Text>
-                            <Picker
-                                style={styles.pickerLong}
-                            // onValueChange={(itemValue, itemIndex) =>
-                            // this.props.onNewGroupChange("privacy", itemValue)}
-                            >
-                                <Picker.Item label="Public" />
-                                <Picker.Item label="Private" />
-                            </Picker>
+                        {/* Privacy */}
+                        <View style={styles.inputRow}>
+                            <Image
+                                style={styles.icon}
+                                source={require("../../../../assets/images/icons/category.png")}
+                            />
+                            <View style={styles.inputField}>
+                                <Text style={styles.font}>Privacy</Text>
+                                <Picker
+                                    style={styles.pickerLong}
+                                // onValueChange={(itemValue, itemIndex) =>
+                                // this.props.onNewGroupChange("privacy", itemValue)}
+                                >
+                                    <Picker.Item label="Public" />
+                                    <Picker.Item label="Private" />
+                                </Picker>
+                            </View>
                         </View>
-                    </View>
-                </View>
 
-                <View style={{ alignItems: "flex-end", marginTop: wd(0.05), width: wd(0.8) }}>
-                    {/* TODO add onPress={() => onSubmit} */}
-                    <MySmallerButton text="POST" />
-                </View>
+                        {/* submit button */}
+                        <View style={{ alignItems: "flex-end", marginVertical: wd(0.05), width: wd(0.8) }}>
+                            {/* TODO add onPress={() => onSubmit} */}
+                            <MySmallerButton text="POST" />
+                        </View>
+
+                    </View>
+                </ScrollView>
             </View>
         );
     }

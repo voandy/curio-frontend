@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { StyleSheet, View, Text, Image, TextInput, TouchableOpacity, Picker } from "react-native";
+import { StyleSheet, View, ScrollView, Text, Image, TextInput, TouchableOpacity, Picker } from "react-native";
 
 // redux actions
 import { createNewArtefacts } from "../../../actions/artefactsActions";
@@ -109,153 +109,157 @@ class ArtefactsForm extends Component {
                 <ActivityLoaderModal loading={this.state.loading} />
 
                 {/* invisible container for all content */}
-                <View style={{ height: hp(0.7) }} >
-                    {/* Add image button */}
-                    <View style={styles.imagePlaceholder}>
-                        <Text style={[styles.font, styles.imageText]}>Share your artefacts for others to view</Text>
+                <ScrollView showsVerticalScrollIndicator={false}>
+                    <View>
+                        {/* Add image button */}
+                        <View style={styles.imagePlaceholder}>
+                            <Text style={[styles.font, styles.imageText]}>Share your artefacts for others to view</Text>
 
-                        <TouchableOpacity activeOpacity={0.5} onPress={this._pickImage}>
-                            {this.state.newArtefact.imageURI !== undefined &&
-                                this.state.newArtefact.imageURI !== "" ? (
-                                    <Image
-                                        style={styles.imageSelected}
-                                        source={{ uri: this.state.newArtefact.imageURI }}
-                                    />
-                                ) : (
-                                    <Image
-                                        style={styles.imageSelected}
-                                        source={require("../../../../assets/images/icons/addPicture.png")}
-                                    />
-                                )}
-                        </TouchableOpacity>
+                            <TouchableOpacity activeOpacity={0.5} onPress={this._pickImage}>
+                                {this.state.newArtefact.imageURI !== undefined &&
+                                    this.state.newArtefact.imageURI !== "" ? (
+                                        <Image
+                                            style={styles.imageSelected}
+                                            source={{ uri: this.state.newArtefact.imageURI }}
+                                        />
+                                    ) : (
+                                        <Image
+                                            style={styles.imageSelected}
+                                            source={require("../../../../assets/images/icons/addPicture.png")}
+                                        />
+                                    )}
+                            </TouchableOpacity>
 
-                        <Text style={[styles.subFont, styles.imageText]}>Add images of your artefacts</Text>
-                    </View>
-
-                    {/* input fields */}
-
-                    {/* Title */}
-                    <View style={styles.inputRow}>
-                        <Image
-                            style={styles.icon}
-                            source={require("../../../../assets/images/icons/title.png")}
-                        />
-                        <View style={styles.inputField}>
-                            <Text style={styles.font}>Title</Text>
-                            <TextInput
-                                placeholder="'My First Car'"
-                                autoCapitalize="none"
-                                placeholderTextColor="#868686"
-                                style={styles.inputFont}
-                            // onChangeText={value => this.setCategory(value)}
-                            // value={this.props.newArtefact.category}
-                            />
+                            <Text style={[styles.subFont, styles.imageText]}>Add images of your artefacts</Text>
                         </View>
-                    </View>
 
-                    {/* Description */}
-                    <View style={styles.inputRow}>
-                        <Image
-                            style={styles.icon}
-                            source={require("../../../../assets/images/icons/description.png")}
-                        />
-                        <View style={styles.inputField}>
-                            <Text style={styles.font}>Description</Text>
-                            <TextInput
-                                placeholder="Describe your artefact"
-                                autoCapitalize="none"
-                                placeholderTextColor="#868686"
-                                style={styles.inputFont}
-                            // onChangeText={value => this.setCategory(value)}
-                            // value={this.props.newArtefact.category}
-                            />
-                        </View>
-                    </View>
+                        {/* input fields */}
 
-                    {/* Category */}
-                    <View style={styles.inputRow}>
-                        <Image
-                            style={styles.icon}
-                            source={require("../../../../assets/images/icons/category.png")}
-                        />
-                        <View style={styles.inputField}>
-                            <Text style={styles.font}>category</Text>
-                            <Picker
-                                style={styles.pickerLong}
-                                // onValueChange={(itemValue, itemIndex) =>
-                                // this.props.onNewGroupChange("privacy", itemValue)}
-                            >
-                                <Picker.Item label="Art" />
-                                <Picker.Item label="Books" />
-                                <Picker.Item label="Furniture" />
-                                <Picker.Item label="Clothing and Fabric" />
-                                <Picker.Item label="Coins and Currency" />
-                                <Picker.Item label="Pottery" />
-                                <Picker.Item label="Flims and Television" />
-                                <Picker.Item label="Kitchen Collectable" />
-                                <Picker.Item label="Music" />
-                                <Picker.Item label="Technology" />
-                                <Picker.Item label="Pepe" />
-                                <Picker.Item label="Others" />
-                            </Picker>
-                        </View>
-                    </View>
-
-                    {/* Dropdown selector fields */}
-                    <View style={styles.inputRow}>
-                        {/* Date */}
-                        <View style={{ flex: 0.5, flexDirection: "row" }}>
+                        {/* Title */}
+                        <View style={styles.inputRow}>
                             <Image
                                 style={styles.icon}
-                                source={require("../../../../assets/images/icons/calendar.png")}
+                                source={require("../../../../assets/images/icons/title.png")}
                             />
-                            <View>
-                                <Text style={styles.font}>Date</Text>
-                                <DatePicker
-                                    mode="date"
-                                    style={styles.date}
-                                    // value={this.state.newArtefact.dateObtained}
-                                    format="YYYY-MM-DD"
-                                    customStyles={{
-                                        dateIcon: {
-                                            display: "none"
-                                        },
-                                        dateInput: {
-                                            borderWidth: 0,
-                                            color: "black",
-                                            alignItems: "flex-start"
-                                        }
-                                    }}
-                                    onDateChange={date => this.setDateObtained(date)}
+                            <View style={styles.inputField}>
+                                <Text style={styles.font}>Title</Text>
+                                <TextInput
+                                    placeholder="'My First Car'"
+                                    autoCapitalize="none"
+                                    placeholderTextColor="#868686"
+                                    style={styles.inputFont}
+                                // onChangeText={value => this.setCategory(value)}
+                                // value={this.props.newArtefact.category}
                                 />
                             </View>
                         </View>
 
-                        {/* Privacy */}
-                        <View style={{ flex: 0.5, flexDirection: "row" }}>
+                        {/* Description */}
+                        <View style={styles.inputRow}>
+                            <Image
+                                style={styles.icon}
+                                source={require("../../../../assets/images/icons/description.png")}
+                            />
+                            <View style={styles.inputField}>
+                                <Text style={styles.font}>Description</Text>
+                                <TextInput
+                                    placeholder="Describe your artefact"
+                                    autoCapitalize="none"
+                                    placeholderTextColor="#868686"
+                                    style={styles.inputFont}
+                                // onChangeText={value => this.setCategory(value)}
+                                // value={this.props.newArtefact.category}
+                                />
+                            </View>
+                        </View>
 
-                            <Image style={styles.icon} source={require("../../../../assets/images/icons/privacy.png")} />
-                            <View>
-                                <Text style={styles.font}>Privacy</Text>
+                        {/* Category */}
+                        <View style={styles.inputRow}>
+                            <Image
+                                style={styles.icon}
+                                source={require("../../../../assets/images/icons/category.png")}
+                            />
+                            <View style={styles.inputField}>
+                                <Text style={styles.font}>category</Text>
                                 <Picker
-                                    style={styles.pickerShort}
+                                    style={styles.pickerLong}
                                 // onValueChange={(itemValue, itemIndex) =>
-                                //     this.props.onNewGroupChange("privacy", itemValue)}
+                                // this.props.onNewGroupChange("privacy", itemValue)}
                                 >
-                                    <Picker.Item label="Private" />
-                                    <Picker.Item label="Public" />
+                                    <Picker.Item label="Art" />
+                                    <Picker.Item label="Books" />
+                                    <Picker.Item label="Furniture" />
+                                    <Picker.Item label="Clothing and Fabric" />
+                                    <Picker.Item label="Coins and Currency" />
+                                    <Picker.Item label="Pottery" />
+                                    <Picker.Item label="Flims and Television" />
+                                    <Picker.Item label="Kitchen Collectable" />
+                                    <Picker.Item label="Music" />
+                                    <Picker.Item label="Technology" />
+                                    <Picker.Item label="Pepe" />
+                                    <Picker.Item label="Others" />
                                 </Picker>
                             </View>
                         </View>
 
-                    </View>
-                </View>
+                        {/* Dropdown selector fields */}
+                        <View style={styles.inputRow}>
+                            {/* Date */}
+                            <View style={{ flex: 0.5, flexDirection: "row" }}>
+                                <Image
+                                    style={styles.icon}
+                                    source={require("../../../../assets/images/icons/calendar.png")}
+                                />
+                                <View>
+                                    <Text style={styles.font}>Date</Text>
+                                    <DatePicker
+                                        mode="date"
+                                        style={styles.date}
+                                        // value={this.state.newArtefact.dateObtained}
+                                        format="YYYY-MM-DD"
+                                        customStyles={{
+                                            dateIcon: {
+                                                display: "none"
+                                            },
+                                            dateInput: {
+                                                borderWidth: 0,
+                                                color: "black",
+                                                alignItems: "flex-start"
+                                            }
+                                        }}
+                                        onDateChange={date => this.setDateObtained(date)}
+                                    />
+                                </View>
+                            </View>
 
-                <View style={{ alignItems: "flex-end", marginTop: wd(0.05), width: wd(0.8) }}>
-                    {/* TODO add onPress={() => onSubmit} */}
-                    <MySmallerButton text="POST" />
-                </View>
-            </View>
+                            {/* Privacy */}
+                            <View style={{ flex: 0.5, flexDirection: "row" }}>
+
+                                <Image style={styles.icon} source={require("../../../../assets/images/icons/privacy.png")} />
+                                <View>
+                                    <Text style={styles.font}>Privacy</Text>
+                                    <Picker
+                                        style={styles.pickerShort}
+                                    // onValueChange={(itemValue, itemIndex) =>
+                                    //     this.props.onNewGroupChange("privacy", itemValue)}
+                                    >
+                                        <Picker.Item label="Private" />
+                                        <Picker.Item label="Public" />
+                                    </Picker>
+                                </View>
+                            </View>
+                        </View>
+
+                        {/* submit button */}
+                        <View style={{ alignItems: "flex-end", marginVertical: wd(0.05), width: wd(0.8) }}>
+                            {/* TODO add onPress={() => onSubmit} */}
+                            <MySmallerButton text="POST" />
+                        </View>
+
+                    </View>
+                </ScrollView>
+
+            </View >
         );
     }
 }
