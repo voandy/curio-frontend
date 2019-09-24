@@ -22,7 +22,8 @@ import Comments from "../../../component/Comments"
 import OptionButton from "../../../component/OptionButton"
 import HeaderImageScrollView, { TriggeringView } from 'react-native-image-header-scroll-view';
 import ImageView from 'react-native-image-view';
-import ArtefactModal from '../../../component/ArtefactModal';
+import SelectedArtefactModal from '../../../component/SelectedArtefactModal';
+import ActivityLoaderModal from "../../../component/ActivityLoaderModal";
 
 // redux actions
 import { editSelectedArtefact, selectArtefact } from "../../../actions/artefactsActions";
@@ -167,7 +168,7 @@ class SelectedArtefact extends Component {
               />
             </View>
 
-            <ArtefactModal
+            <SelectedArtefactModal
               isModalVisible={this.state.isUpdateModalVisible}
               toggleModal={this.toggleUpdateModal}
               newArtefact={this.state.selectedArtefact}
