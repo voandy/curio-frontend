@@ -17,13 +17,13 @@ import {
 import Moment from "moment";
 
 // custom component
-import { LikeButton, UnikeButton } from "../../../component/LikeButton";
+import { LikeButton, UnlikeButton } from "../../../component/LikeButton";
 import CommentButton from "../../../component/CommentButton";
 import UserDetail from "../../../component/UserDetail"
 import Line from "../../../component/Line"
 import Comments from "../../../component/Comments"
 import OptionButton from "../../../component/OptionButton"
-import {HeaderImageScrollView, TriggeringView } from 'react-native-image-header-scroll-view';
+import HeaderImageScrollView from 'react-native-image-header-scroll-view';
 import ImageView from 'react-native-image-view';
 import ArtefactModal from '../../../component/ArtefactModal';
 import ActivityLoaderModal from "../../../component/ActivityLoaderModal";
@@ -41,8 +41,7 @@ import {
 
 // remove this
 const comment1 = "Ravioli, ravioli, give me the formuoli";
-const comment2 =
-  "is mayonnaise an instrument? No patrick, mayonnaise is not an instrument... Horseradish is not either";
+const comment2 = "is mayonnaise an instrument? No patrick, mayonnaise is not an instrument... Horseradish is not either";
 const comment3 = "Goodbye everyone, I'll remember you all in therapy";
 
 class SelectedArtefact extends Component {
@@ -198,7 +197,7 @@ class SelectedArtefact extends Component {
 
     const likeButton = <LikeButton onPress={this.like.bind(this)} />;
 
-    const unlikeButton = <UnikeButton onPress={this.unlike.bind(this)} />;
+    const unlikeButton = <UnlikeButton onPress={this.unlike.bind(this)} />;
 
     var likeUnlike;
     if (liked) {
@@ -425,5 +424,5 @@ const mapStateToProps = state => ({
 export default connect(
   mapStateToProps,
   { editSelectedArtefact, selectArtefact, getUserArtefacts, removeSelectedArtefact,
-    updateSelectedArtefact, likeArtefact, unlikeArtefact }
+    likeArtefact, unlikeArtefact }
 )(SelectedArtefact);

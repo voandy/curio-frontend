@@ -31,7 +31,7 @@ class LikeButton extends Component {
   }
 }
 
-class UnikeButton extends Component {
+class UnlikeButton extends Component {
   constructor(props) {
     super(props);
   }
@@ -87,4 +87,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export { LikeButton, UnikeButton };
+export { LikeButton, UnlikeButton };
