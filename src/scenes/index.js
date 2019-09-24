@@ -72,7 +72,8 @@ const GroupStack = createStackNavigator({
 
 const ArtefactStack = createStackNavigator({
   Artefacts: {screen: ArtefactsScreen},
-  ArtefactsForm: {screen: ArtefactsFormScreen}
+  ArtefactsForm: {screen: ArtefactsFormScreen},
+  SelectedArtefact: {screen: SelectedArtefactScreen}
 });
 
 const NotificationStack = createStackNavigator({

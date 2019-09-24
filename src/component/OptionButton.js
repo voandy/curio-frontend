@@ -21,7 +21,7 @@ class OptionButton extends Component {
             buttonStyle = {styles.icon}
             destructiveIndex={1}            // only on ios (red indicator)
             options={["Edit Artefact", "Delete Artefact"]}
-            actions={[this.props.toggleUpdateModal, this.props.deleteArtefact]}
+            actions={[this.props.toggleUpdateModal, this.props.toggleDeleteModal]}
         />
         );
     }

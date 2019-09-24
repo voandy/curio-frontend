@@ -53,6 +53,15 @@ class Artefacts extends Component {
     header: null
   };
 
+  // update selectedArtefact when it has already been changed
+  componentWillUpdate(nextProps) {
+    if (this.props.artefacts !== nextProps.artefacts) { 
+
+      // reload userArtefacts to update userArtefacts in redux state
+      this.props.getUserArtefacts(this.props.auth.user.id);
+    }
+  }
+
   // toggle the modal for new artefact creation
   toggleModal = () => {
     this.setState({ isModalVisible: !this.state.isModalVisible });
@@ -215,8 +224,8 @@ class Artefacts extends Component {
         </ScrollView>
 
         {/* create new Group */}
-        {/* <AddButton onPress={() => this.toggleModal()} /> */}
-        <AddButton onPress={() => navigate("ArtefactsForm")} />
+        <AddButton onPress={() => this.toggleModal()} />
+        {/* <AddButton onPress={() => navigate("ArtefactsForm")} /> */}
 
         <ArtefactModal
           isModalVisible={this.state.isModalVisible}

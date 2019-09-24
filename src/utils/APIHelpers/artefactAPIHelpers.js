@@ -40,3 +40,13 @@ export const updateSelectedArtefactAPIRequest = (artefactId, selectedArtefact) =
   });
 }
 
+// delete selected artefact of artefactId
+export const deleteSelectedArtefactAPIRequest = (artefactId) => {
+  return new Promise((resolve, reject) => {
+    axios
+    .delete("http://curioapp.herokuapp.com/api/artefact/id/" + artefactId)
+    .then(res => resolve(res))
+    .catch(err => reject(err));
+  });
+}
+
