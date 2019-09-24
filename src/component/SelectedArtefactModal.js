@@ -13,7 +13,6 @@ import Modal from "react-native-modal";
 import DatePicker from "react-native-datepicker";
 import Line from "./Line";
 import * as ImagePicker from "expo-image-picker";
-import * as ImageManipulator from 'expo-image-manipulator';
 
 // custom responsive design component
 import {
@@ -21,7 +20,7 @@ import {
   deviceWidthDimension as wd
 } from "../utils/responsiveDesign";
 
-class ArtefactModal extends Component {
+class SelectedArtefactModal extends Component {
   // access camera roll to pick an image
   _pickImage = async () => {
     // wait for user to pick an image
@@ -32,12 +31,7 @@ class ArtefactModal extends Component {
     });
     // set imageURI in local state
     if (!result.cancelled) {
-      const manipResult = await ImageManipulator.manipulateAsync(
-        result.uri,
-        [{ resize: { width: 1024} }],
-        { format: 'jpeg', compress: 0.5 }
-      );
-      this.setImageURI(manipResult.uri);
+      this.setImageURI(result.uri);
     }
   };
 
@@ -122,10 +116,10 @@ class ArtefactModal extends Component {
               source={require("../../assets/images/icons/calendar.png")}
             />
             <DatePicker
-              style={{ width: 100 }}
+              style={{ width: 200 }}
               date={this.props.newArtefact.dateObtained}
               mode="date"
-              placeholder="select date"
+              placeholder="Select Date"
               format="YYYY-MM-DD"
               customStyles={{
                 dateIcon: {
@@ -260,4 +254,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default ArtefactModal;
+export default SelectedArtefactModal;

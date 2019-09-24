@@ -1,7 +1,8 @@
-import { SET_USER_ARTEFACTS, ADD_NEW_ARTEFACT } from "../types/artefactsTypes";
+import { SET_USER_ARTEFACTS, ADD_NEW_ARTEFACT, SET_SELECTED_ARTEFACT, UPDATE_SELECTED_ARTEFACT } from "../types/artefactsTypes";
 
 const initialState = {
-  userArtefacts: {}
+  userArtefacts: [],
+  selectedArtefact: {}
 };
 
 export default function(state = initialState, action) {
@@ -16,6 +17,16 @@ export default function(state = initialState, action) {
         ...state,
         userArtefacts: state.userArtefacts.concat(action.payload)
       };
+    case SET_SELECTED_ARTEFACT:
+      return {
+        ...state,
+        selectedArtefact: action.payload
+      }
+    case UPDATE_SELECTED_ARTEFACT:
+      return {
+        ...state,
+        selectedArtefact: action.payload
+      }
     default:
       return state;
   }

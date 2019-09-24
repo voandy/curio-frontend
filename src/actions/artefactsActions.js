@@ -1,7 +1,9 @@
-import { SET_USER_ARTEFACTS, ADD_NEW_ARTEFACT } from "../types/artefactsTypes";
+import { SET_USER_ARTEFACTS, ADD_NEW_ARTEFACT, SET_SELECTED_ARTEFACT, UPDATE_SELECTED_ARTEFACT } from "../types/artefactsTypes";
 import {
   createArtefactAPIRequest,
-  getUserArtefactsAPIRequest
+  getUserArtefactsAPIRequest,
+  selectArtefactAPIRequest,
+  updateSelectedArtefactAPIRequest,
 } from "../utils/APIHelpers/artefactAPIHelpers";
 
 import { uploadImageToGCS } from "../utils/imageUpload";
@@ -47,6 +49,58 @@ export const createNewArtefacts = artefact => dispatch => {
   });
 };
 
+// select artefact based on artefactId
+export const selectArtefact = artefactId => dispatch => {
+  return new Promise((resolve, reject) => {
+
+    // get artefact based on artefactId
+    selectArtefactAPIRequest(artefactId)
+    .then(res => {
+      
+      // add selected artefact to redux state
+      dispatch(setSelectedArtefact(res.data));
+      resolve(res);
+    })
+    .catch(err => {
+      console.log("Failed to select artefact" + err);
+      reject(err);
+    });
+  });
+}
+
+// update selected artefact based on artefactId
+export const editSelectedArtefact = (artefactId, artefact) => dispatch => {
+  return new Promise((resolve, reject) => {
+    // upload image
+    uploadImageToGCS(artefact.imageURI)
+      .then(imageURL => {
+        // prepare the data for new images
+        const newImages = artefact.images;
+        newImages[0].URL = imageURL;
+
+        // prepare the body data base on new user details
+        const selectedArtefact = {
+          ...artefact,
+          images: newImages
+        };
+
+        // update artefact in the backend
+        updateSelectedArtefactAPIRequest(artefactId, selectedArtefact)
+        .then(res => {
+
+          // update selected artefact to redux state
+          dispatch(updateSelectedArtefact(res.data));
+          resolve(res);
+        })
+        .catch(err => {
+          console.log("Failed to update artefact" + err);
+          reject(err);
+        });
+    });
+  });
+}
+
+
 // Redux actions //
 // store all of the user's artefacts into redux state
 export const setUserArtefacts = decoded => {
@@ -60,6 +114,22 @@ export const setUserArtefacts = decoded => {
 export const addNewArtefact = decoded => {
   return {
     type: ADD_NEW_ARTEFACT,
+    payload: decoded
+  };
+};
+
+// assign new group to user
+export const setSelectedArtefact = decoded => {
+  return {
+    type: SET_SELECTED_ARTEFACT,
+    payload: decoded
+  };
+};
+
+// update selected user
+export const updateSelectedArtefact = decoded => {
+  return {
+    type: UPDATE_SELECTED_ARTEFACT,
     payload: decoded
   };
 };

@@ -1,9 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { RefreshControl } from 'react-native';
-import { Dimensions, StyleSheet, ScrollView, View, Text } from "react-native";
-
+import { Dimensions, StyleSheet, ScrollView, View, Text, RefreshControl, TouchableOpacity, Image } from "react-native";
 // custom components
 import SimpleHeader from "../../component/SimpleHeader";
 import ArtefactFeed from "../../component/ArtefactFeed";
@@ -11,12 +9,12 @@ import ArtefactModal from "../../component/ArtefactModal";
 import AddButton from "../../component/AddButton";
 
 // redux actions
-import { createNewArtefacts, getUserArtefacts } from "../../actions/artefactsActions";
+import { createNewArtefacts, selectArtefact, getUserArtefacts } from "../../actions/artefactsActions";
 
 // Custom respondsive design component
 import {
   deviceHeigthDimension as hp,
-  deviceWidthDimension as wd
+  deviceWidthDimension as wd,
 } from "../../utils/responsiveDesign";
 
 // import the loader modal to help show loading process
@@ -33,6 +31,12 @@ const newArtefact = {
 };
 
 class Artefacts extends Component {
+
+  // Navbar details
+  static navigationOptions = {
+    header: null
+  };
+
   // local state
   state = {
     newArtefact: {
@@ -105,23 +109,47 @@ class Artefacts extends Component {
       });
   };
 
+  // click a specific artefact and navigate to it
+  clickArtefact = async (artefactId) => {
+    const { navigate } = this.props.navigation;
+
+    // get artefact information and navigate to it
+    await this.props.selectArtefact(artefactId);
+
+    navigate("SelectedArtefact");
+  }
+
   // return ArtefactFeedRows containing ArtefactFeed in different rows
   showArtefacts = artefacts => {
     let artefactFeedRows = [];
     let artefactFeeds = [];
     let rowKey = 0;
+    let artefactKey = 0;
+
     // sort array based on date obtained (from earliest to oldest)
     artefacts.sort(function (a, b) {
       return new Date(b.datePosted) - new Date(a.datePosted);
     });
     // create ArtefactFeed object out of artefact and push it into artefactFeeds array
     for (var i = 0; i < artefacts.length; i++) {
+      const artefactId = artefacts[i]._id;
+      
       artefactFeeds.push(
-        <ArtefactFeed
-          key={artefacts[i]._id}
-          image={{ uri: artefacts[i].images[0].URL }}
-        />
+        // DOES NOT WORK!!!!!!!!
+        // <ArtefactFeed
+        //   onPress={() => this.clickArtefact.bind(this)}
+        //   artefactId = {artefacts[i]._id}
+        //   key={artefactKey}
+        //   image={{ uri: artefacts[i].images[0].URL }}
+        // />
+
+        <View style={styles.card} key={artefactKey}>
+            <TouchableOpacity onPress={() => this.clickArtefact(artefactId)} activeOpacity={0.5} >     
+                <Image style={styles.photo} source={{ uri: artefacts[i].images[0].URL }} />
+            </TouchableOpacity>
+        </View>
       );
+      artefactKey++;
       // create a new row after the previous row has been filled with 3 artefacts and fill the previous row into artefactFeedRows
       if (artefactFeeds.length === 3 || i === artefacts.length - 1) {
         artefactFeedRows.push(
@@ -203,6 +231,17 @@ class Artefacts extends Component {
 }
 
 const styles = StyleSheet.create({
+  // ARTEFACT FEED
+  photo: {
+    width: Dimensions.get('window').width * 0.3,
+    height: Dimensions.get('window').width * 0.3,
+  },
+  card: {
+      width: Dimensions.get('window').width * 0.3,
+      height: Dimensions.get('window').width * 0.3,
+      margin: Dimensions.get('window').width * 0.006,
+  },
+
   container: {
     flex: 1
   },
@@ -238,5 +277,5 @@ const mapStateToProps = state => ({
 // map required redux state and actions to local props
 export default connect(
   mapStateToProps,
-  { createNewArtefacts, getUserArtefacts }
+  { createNewArtefacts, selectArtefact, getUserArtefacts }
 )(Artefacts);
