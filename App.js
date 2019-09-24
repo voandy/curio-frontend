@@ -4,7 +4,6 @@ import Provider from "./src/provider";
 import * as Font from "expo-font";
 // expo push notification
 import { Notifications } from "expo";
-import registerForPushNotificationsAsync from "./src/services/notification/registerForPushNotificationsAsync";
 
 export default class App extends React.Component {
   state = {
@@ -13,8 +12,6 @@ export default class App extends React.Component {
 
   // Load fonts async
   componentDidMount() {
-    // post user's expo-push-token to backend if haven't already
-    registerForPushNotificationsAsync();
     // create a channel with id "test" for new user (first-time app launch)
     // otherwise this will be ignored
     if (Platform.OS === "android") {

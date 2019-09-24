@@ -1,9 +1,12 @@
-import { Notifications } from "expo";
-import * as Permissions from "expo-permissions";
+// reference: https://docs.expo.io/versions/v35.0.0/guides/push-notifications/
 
-// const PUSH_ENDPOINT = "https://your-server.com/users/push-token";
+const { Notifications } = require("expo");
+const Permissions = require("expo-permissions");
+const axios = require("axios");
 
-export default async function registerForPushNotificationsAsync() {
+const PUSH_ENDPOINT = "http://curioapp.herokuapp.com/api/user/id";
+
+export async function registerForPushNotificationsAsync(userId) {
   const { status: existingStatus } = await Permissions.getAsync(
     Permissions.NOTIFICATIONS
   );
@@ -21,25 +24,19 @@ export default async function registerForPushNotificationsAsync() {
   if (finalStatus !== "granted") {
     return;
   }
-
   // Get the token that uniquely identifies this device
   let token = await Notifications.getExpoPushTokenAsync();
-  console.log("User's Expo-Push-Token: " + token);
+
+  // Show push token for now until backend has been updated
+  console.log("Expo-Push-Token: " + token);
+
+  // const pushToken = {
+  //   userPushToken: token
+  // };
 
   // POST the token to your backend server from where you can retrieve it to send push notifications.
-  //   return fetch(PUSH_ENDPOINT, {
-  //     method: "POST",
-  //     headers: {
-  //       Accept: "application/json",
-  //       "Content-Type": "application/json"
-  //     },
-  //     body: JSON.stringify({
-  //       token: {
-  //         value: token
-  //       },
-  //       user: {
-  //         username: "Brent"
-  //       }
-  //     })
-  //   });
+  // axios
+  //   .put(PUSH_ENDPOINT + userId, pushToken)
+  //   .then(res => console.log(res))
+  //   .catch(err => console.log(err));
 }

@@ -21,11 +21,14 @@ import ArtefactsScreen from "./Artefacts";
 import WelcomeScreen from "./Welcome";
 import SelectedArtefactScreen from "./Artefacts/Selected";
 import SelectedGroupScreen from "./Groups/SelectedGroup";
-import AccountSettingScreen from "./Profile/AccountSetting"
+import AccountSettingScreen from "./Profile/AccountSetting";
 
 import { getUserData } from "../actions/userActions";
 import { getUserArtefacts } from "../actions/artefactsActions";
 import { getUserGroups } from "../actions/groupsActions";
+
+//prettier-ignore
+const { registerForPushNotificationsAsync } = require("../services/notification/registerForPushNotificationsAsync");
 
 class Scenes extends Component {
   async componentDidMount() {
@@ -37,6 +40,9 @@ class Scenes extends Component {
       await this.props.getUserData(user.id);
       await this.props.getUserArtefacts(user.id);
       await this.props.getUserGroups(user.id);
+
+      // post user's expo-push-token to backend if haven't already
+      registerForPushNotificationsAsync(user.id);
     }
   }
 
@@ -62,19 +68,19 @@ class Scenes extends Component {
 }
 
 const GroupStack = createStackNavigator({
-  Groups: {screen: GroupsScreen},
-  SelectedGroup: {screen: SelectedGroupScreen}
+  Groups: { screen: GroupsScreen },
+  SelectedGroup: { screen: SelectedGroupScreen }
 });
 
 const NotificationStack = createStackNavigator({
-  Notification: {screen: NotificationScreen},
-  SelectedArtefact: {screen: SelectedArtefactScreen},
-  SelectedGroup: {screen: SelectedGroupScreen}
+  Notification: { screen: NotificationScreen },
+  SelectedArtefact: { screen: SelectedArtefactScreen },
+  SelectedGroup: { screen: SelectedGroupScreen }
 });
 
 const ProfileStack = createStackNavigator({
-  Profile: {screen: ProfileScreen},
-  AccountSetting: {screen: AccountSettingScreen},
+  Profile: { screen: ProfileScreen },
+  AccountSetting: { screen: AccountSettingScreen }
 });
 
 // login / signup stack
