@@ -13,15 +13,17 @@ import { Image } from "react-native";
 import StartScreen from "./Start";
 import RegisterScreen from "./Register";
 import LoginScreen from "./Login";
-import GroupsScreen from "./Groups";
+import WelcomeScreen from "./Welcome";
 import AuthLoadingScreen from "./AuthLoadingScreen";
+import GroupsScreen from "./Groups";
 import ProfileScreen from "./Profile";
 import NotificationScreen from "./Notification";
 import ArtefactsScreen from "./Artefacts";
-import WelcomeScreen from "./Welcome";
 import SelectedArtefactScreen from "./Artefacts/Selected";
 import SelectedGroupScreen from "./Groups/SelectedGroup";
-import AccountSettingScreen from "./Profile/AccountSetting"
+import ArtefactsFormScreen from "./Artefacts/ArtefactsForm";
+import GroupsFormScreen from "./Groups/GroupsForm";
+import AccountSettingScreen from "./Profile/AccountSetting";
 
 import { getUserData } from "../actions/userActions";
 import { getUserArtefacts } from "../actions/artefactsActions";
@@ -61,9 +63,16 @@ class Scenes extends Component {
   }
 }
 
+// Tab stacks
 const GroupStack = createStackNavigator({
   Groups: {screen: GroupsScreen},
+  GroupsForm: {screen: GroupsFormScreen},
   SelectedGroup: {screen: SelectedGroupScreen}
+});
+
+const ArtefactsStack = createStackNavigator({
+  Artefacts: {screen: ArtefactsScreen},
+  ArtefactsForm: {screen: ArtefactsFormScreen}
 });
 
 const NotificationStack = createStackNavigator({
@@ -90,6 +99,7 @@ const AppStack = createBottomTabNavigator(
   {
     GroupsTab: {
       screen: GroupStack,
+      // screen: GroupsFormScreen,
       navigationOptions: {
         tabBarIcon: ({ tintColor }) => (
           <Image
@@ -100,7 +110,7 @@ const AppStack = createBottomTabNavigator(
       }
     },
     ArtefactsTab: {
-      screen: ArtefactsScreen,
+      screen: ArtefactsStack,
       navigationOptions: {
         tabBarIcon: ({ tintColor }) => (
           <Image
@@ -111,7 +121,6 @@ const AppStack = createBottomTabNavigator(
       }
     },
     NotificationTab: {
-      // screen: NotificationScreen,
       screen: NotificationStack,
       navigationOptions: {
         tabBarIcon: ({ tintColor }) => (

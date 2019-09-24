@@ -109,7 +109,12 @@ export default class Notification extends Component {
 
 
           {/* no more notifications ! */}
-          <Text style={{ alignSelf: "center", justifyContent: "center", marginVertical: 40 }}>  Hooray no more notifications </Text>
+          <Text style={{
+            alignSelf: "center",
+            justifyContent: "center",
+            marginVertical: 40,
+            fontFamily: "HindSiliguri-Regular"
+          }}>  Hooray no more notifications </Text>
         </ScrollView>
       </View>
     );

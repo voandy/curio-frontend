@@ -44,6 +44,11 @@ class Artefacts extends Component {
     refreshing: false,
   };
 
+  // Nav bar details
+  static navigationOptions = {
+    header: null
+  };
+
   // toggle the modal for new artefact creation
   toggleModal = () => {
     this.setState({ isModalVisible: !this.state.isModalVisible });
@@ -133,7 +138,7 @@ class Artefacts extends Component {
 
   // refresh page
   refreshArtefacts = async () => {
-    
+
     this.setState({ refreshing: true })
 
     // get data from backend  
@@ -144,6 +149,8 @@ class Artefacts extends Component {
   }
 
   render() {
+
+    const { navigate } = this.props.navigation;
     return (
       <View style={styles.container}>
         {/* loading modal window */}
@@ -180,7 +187,8 @@ class Artefacts extends Component {
         </ScrollView>
 
         {/* create new Group */}
-        <AddButton onPress={() => this.toggleModal()} />
+        {/* <AddButton onPress={() => this.toggleModal()} /> */}
+        <AddButton onPress={() => navigate("ArtefactsForm")} />
 
         <ArtefactModal
           isModalVisible={this.state.isModalVisible}

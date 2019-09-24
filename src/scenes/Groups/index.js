@@ -134,6 +134,9 @@ class Groups extends Component {
   };
 
   render() {
+
+    const { navigate } = this.props.navigation;
+
     return (
       <View style={styles.container}>
         <Header />
@@ -188,7 +191,8 @@ class Groups extends Component {
         </ScrollView>
 
         {/* create new Group */}
-        <AddButton onPress={this.toggleModal} />
+        {/* <AddButton onPress={this.toggleModal} /> */}
+        <AddButton onPress={() => navigate("GroupsForm")} />
 
         <GroupModal
           isModalVisible={this.state.isModalVisible}
