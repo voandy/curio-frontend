@@ -26,7 +26,7 @@ import SelectedArtefactModal from '../../../component/SelectedArtefactModal';
 import ActivityLoaderModal from "../../../component/ActivityLoaderModal";
 
 // redux actions
-import { editSelectedArtefact, selectArtefact } from "../../../actions/artefactsActions";
+import { editSelectedArtefact, selectArtefact, getUserArtefacts } from "../../../actions/artefactsActions";
 
 // custom responsive design component
 import {
@@ -68,7 +68,8 @@ class SelectedArtefact extends Component {
     const prevSelectedArtefact = this.props.artefacts.selectedArtefact;
     const selectedArtefact = nextProps.artefacts.selectedArtefact;
     if (prevSelectedArtefact !== selectedArtefact) { 
-      this.props.selectArtefact(prevSelectedArtefact._id);
+      this.props.selectArtefact(selectedArtefact._id);
+      this.props.getUserArtefacts(selectedArtefact.userId);
     }
   }
 
@@ -360,5 +361,5 @@ const mapStateToProps = state => ({
 // map required redux state and actions to local props
 export default connect(
   mapStateToProps,
-  { editSelectedArtefact, selectArtefact }
+  { editSelectedArtefact, selectArtefact, getUserArtefacts }
 )(SelectedArtefact);
