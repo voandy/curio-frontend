@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
 
 import {
   Dimensions,
@@ -8,7 +10,6 @@ import {
   View,
   Image,
   Text,
-  StatusBar
 } from "react-native";
 
 // date converter
@@ -21,6 +22,11 @@ import Comments from "../../../component/Comments"
 import OptionButton from "../../../component/OptionButton"
 import HeaderImageScrollView, { TriggeringView } from 'react-native-image-header-scroll-view';
 import ImageView from 'react-native-image-view';
+import SelectedArtefactModal from '../../../component/SelectedArtefactModal';
+import ActivityLoaderModal from "../../../component/ActivityLoaderModal";
+
+// redux actions
+import { editSelectedArtefact, selectArtefact, getUserArtefacts } from "../../../actions/artefactsActions";
 
 // custom responsive design component
 import {
@@ -35,12 +41,17 @@ const comment1 = "Ravioli, ravioli, give me the formuoli"
 const comment2 = "is mayonnaise an instrument? No patrick, mayonnaise is not an instrument... Horseradish is not either"
 const comment3 = "Goodbye everyone, I'll remember you all in therapy"
 
-
-
-class Selected extends Component {
+class SelectedArtefact extends Component {
 
   state = {
+    selectedArtefact:
+      { 
+        ...this.props.artefacts.selectedArtefact,
+        imageURI: this.props.artefacts.selectedArtefact.images[0].URL,
+      },
     isImageViewVisible: false,
+    isUpdateModalVisible: false,
+    loading: false,
     // statusBarHidden: false,
   }
 
@@ -52,35 +63,91 @@ class Selected extends Component {
     }
   };
 
+  // update selectedArtefact when it has already been changed
+  componentWillUpdate(nextProps) {
+    const prevSelectedArtefact = this.props.artefacts.selectedArtefact;
+    const selectedArtefact = nextProps.artefacts.selectedArtefact;
+    if (prevSelectedArtefact !== selectedArtefact) { 
+
+      // edit selectedArtefact in redux state
+      this.props.selectArtefact(selectedArtefact._id);
+
+      // reload userArtefacts to update userArtefacts in redux state
+      this.props.getUserArtefacts(selectedArtefact.userId);
+    }
+  }
+
+  // toggle the modal for artefact update input
+  toggleUpdateModal = () => {
+    this.setState({ isUpdateModalVisible: !this.state.isUpdateModalVisible });
+  };
+
+  // selected artefact's attribute change
+  setSelectedArtefact = (key, value) => {
+    this.setState({
+      selectedArtefact: {
+        ...this.state.selectedArtefact,
+        [key]: value
+      }
+    });
+  };
+
+  // setter function for "loading" to show user that something is loading
+  setLoading = loading => {
+    this.setState({
+      ...this.state,
+      loading
+    });
+  };
+
+  // post new artefact to the backend
+  onSubmit = async () => {
+    // show user the loading modal
+    this.setLoading(true);
+    // send and create artefact to the backend
+    this.props.editSelectedArtefact(this.state.selectedArtefact._id, this.state.selectedArtefact)
+      .then(() => {
+        // stop showing user the loading modal
+        this.setLoading(false);
+        // close loading modal
+        this.toggleUpdateModal();
+      })
+      .catch(err => {
+        // stop showing user the loading modal
+        this.setLoading(false);
+        // show error
+        console.log(err.response.data);
+      });
+  };
+
   render() {
+    console.log("selected artefact is", this.props.artefacts.selectedArtefact);
 
     // date format
     Moment.locale("en");
-    // const dt = this.state.userData.dateJoined;
 
     const artefactImage = [
       {
-        source: {
-          uri: 'https://cdn.pixabay.com/photo/2017/08/17/10/47/paris-2650808_960_720.jpg',
-          // uri: require("../../../../assets/images/test-delete-this/boi5.png"),
+        source: {  
+          uri: this.props.artefacts.selectedArtefact.images[0].URL,
         },
         width: Dimensions.get('window').width,
         height: Dimensions.get('window').width,
       },
     ];
 
-
     return (
       <View style={styles.container}>
+        {/* loading modal window */}
+        <ActivityLoaderModal loading={this.state.loading} />
 
-
+        {/* header */}
         <HeaderImageScrollView
           maxHeight={Dimensions.get("window").height * 0.5}
           minHeight={Dimensions.get("window").height * 0.2}
 
           // use this to dynamically get image data
-          // headerImage={{ uri: this.props.user.image }}
-          headerImage={require("../../../../assets/images/test-delete-this/boi5.png")}
+          headerImage={{ uri: this.props.artefacts.selectedArtefact.images[0].URL }}
 
           renderForeground={() => (
             // change this to open the image in full screen
@@ -90,32 +157,41 @@ class Selected extends Component {
         >
 
           {/* open image in full screen */}
-          {/* <StatusBar hidden={this.state.statusBarHidden} /> */}
           <ImageView
             images={artefactImage}
             isVisible={this.state.isImageViewVisible}
             animationType={"fade"}
             isSwipeCloseEnabled={true}
-          // onClose={() => this.setState({ statusBarHidden: false })}
           />
 
           {/* desciption */}
           <View style={styles.descriptionPlaceholder}>
             <View style={{ flexDirection: "row" }}>
-              <Text style={styles.title}>Patrick Star is colddddddd</Text>
-              <OptionButton />
+
+            {/* title */}
+            <Text style={styles.title}>{this.props.artefacts.selectedArtefact.title}</Text>
+              <OptionButton 
+                toggleUpdateModal={this.toggleUpdateModal}
+                deleteArtefact={() => this.deleteArtefact}
+              />
             </View>
 
-            <Text style={styles.description}>we should take bikini bottom and push it somewhere else</Text>
+            <SelectedArtefactModal
+              isModalVisible={this.state.isUpdateModalVisible}
+              toggleModal={this.toggleUpdateModal}
+              newArtefact={this.state.selectedArtefact}
+              onSubmit={this.onSubmit.bind(this)}
+              setNewArtefact={this.setSelectedArtefact.bind(this)}
+            />
 
-            {/* <Text style={styles.title}>{this.props.title}</Text> */}
-            {/* <Text style={styles.description}>{this.props.description}</Text> */}
+            {/* description */}
+            <Text style={styles.description}>{this.props.artefacts.selectedArtefact.description}</Text>
           </View>
 
           {/* user detail */}
-          <UserDetail image={require("../../../../assets/images/default-profile-pic.png")} userName="Patrick Star" />
+          <UserDetail image={{uri: this.props.user.userData.profilePic}} userName={this.props.user.userData.name} />
 
-          {/* indicator */}
+          {/* NOT WORKING YET!! indicator */}
           <View style={styles.likesIndicatorPlaceholder}>
             {/* <Text style={styles.indicator}>{this.props.likeCount} Likes    {this.props.commentsCount} Comments</Text> */}
             <Text style={styles.indicator}>69 Likes    3 Comments</Text>
@@ -274,6 +350,20 @@ const styles = StyleSheet.create({
 
 });
 
+// check for prop types correctness
+SelectedArtefact.propTypes = {
+  artefacts: PropTypes.object.isRequired,
+  user: PropTypes.object.isRequired,
+};
 
-// export 
-export default Selected
+// map required redux state to local props
+const mapStateToProps = state => ({
+  artefacts: state.artefacts,
+  user: state.user,
+});
+
+// map required redux state and actions to local props
+export default connect(
+  mapStateToProps,
+  { editSelectedArtefact, selectArtefact, getUserArtefacts }
+)(SelectedArtefact);

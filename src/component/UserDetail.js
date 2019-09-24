@@ -53,6 +53,7 @@ const styles = StyleSheet.create({
     },
 
     photo: {
+        borderRadius: Dimensions.get('window').width * 0.1 / 2,
         width: Dimensions.get('window').width * 0.1,
         height: Dimensions.get('window').width * 0.1,
         marginRight: wd(0.06),
