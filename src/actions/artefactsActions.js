@@ -1,9 +1,10 @@
-import { SET_USER_ARTEFACTS, ADD_NEW_ARTEFACT, SET_SELECTED_ARTEFACT, UPDATE_SELECTED_ARTEFACT } from "../types/artefactsTypes";
+import { SET_USER_ARTEFACTS, ADD_NEW_ARTEFACT, SET_SELECTED_ARTEFACT, UPDATE_SELECTED_ARTEFACT, DELETE_SELECTED_ARTEFACT } from "../types/artefactsTypes";
 import {
   createArtefactAPIRequest,
   getUserArtefactsAPIRequest,
   selectArtefactAPIRequest,
   updateSelectedArtefactAPIRequest,
+  deleteSelectedArtefactAPIRequest,
 } from "../utils/APIHelpers/artefactAPIHelpers";
 
 import { uploadImageToGCS } from "../utils/imageUpload";
@@ -49,7 +50,7 @@ export const createNewArtefacts = artefact => dispatch => {
   });
 };
 
-// select artefact based on artefactId
+// select artefact of artefactId
 export const selectArtefact = artefactId => dispatch => {
   return new Promise((resolve, reject) => {
 
@@ -68,7 +69,7 @@ export const selectArtefact = artefactId => dispatch => {
   });
 }
 
-// update selected artefact based on artefactId
+// update selected artefact
 export const editSelectedArtefact = (artefact) => dispatch => {
   return new Promise((resolve, reject) => {
     // upload image
@@ -100,6 +101,22 @@ export const editSelectedArtefact = (artefact) => dispatch => {
   });
 }
 
+// delete selected artefact
+export const removeSelectedArtefact = artefactId => dispatch => {
+  return new Promise((resolve, reject) => {
+    deleteSelectedArtefactAPIRequest(artefactId)
+    .then(res => {
+
+      // delete selected artefact and update artefacts in redux state
+      dispatch(deleteSelectedArtefact(res.data));
+      resolve(res);
+    })
+    .catch(err => {
+      console.log("Failed to delete artefact" + err);
+      reject(err);
+    })
+  });
+}
 
 // Redux actions //
 // store all of the user's artefacts into redux state
@@ -118,7 +135,7 @@ export const addNewArtefact = decoded => {
   };
 };
 
-// assign new group to user
+// assign new artefact to user
 export const setSelectedArtefact = decoded => {
   return {
     type: SET_SELECTED_ARTEFACT,
@@ -126,10 +143,18 @@ export const setSelectedArtefact = decoded => {
   };
 };
 
-// update selected user
+// update selected artefact
 export const updateSelectedArtefact = decoded => {
   return {
     type: UPDATE_SELECTED_ARTEFACT,
     payload: decoded
   };
 };
+
+// delete selected artefact
+export const deleteSelectedArtefact = decoded => {
+  return {
+    type: DELETE_SELECTED_ARTEFACT,
+    payload: decoded
+  }
+}

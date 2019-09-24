@@ -19,7 +19,6 @@ import ActivityLoaderModal from "../../../component/ActivityLoaderModal";
 // custom components
 import MySmallerButton from "../../../component/MySmallerButton";
 
-
 // temp state to store object with attributes required to create a new artefact
 const newArtefact = {
     userId: "",
