@@ -4,6 +4,8 @@ import { connect } from "react-redux";
 import styles from "../style";
 import { C } from "../../../types/registerTypes";
 import * as ImagePicker from "expo-image-picker";
+import * as ImageManipulator from 'expo-image-manipulator';
+
 // redux state
 import {
   setPhotoURI,
@@ -24,7 +26,12 @@ export class RegisterPhotoField extends Component {
     });
     // set imageURI in local state
     if (!response.cancelled) {
-      this.props.setPhotoURI(response.uri);
+      const manipResult = await ImageManipulator.manipulateAsync(
+        response.uri,
+        [{ resize: { width: 1024} }],
+        { format: 'jpeg', compress: 0.5 }
+      );
+      this.setImageURI(manipResult.uri);
     }
   };
 

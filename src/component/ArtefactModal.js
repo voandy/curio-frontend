@@ -13,6 +13,7 @@ import Modal from "react-native-modal";
 import DatePicker from "react-native-datepicker";
 import Line from "./Line";
 import * as ImagePicker from "expo-image-picker";
+import * as ImageManipulator from 'expo-image-manipulator';
 
 // custom responsive design component
 import {
@@ -31,7 +32,12 @@ class ArtefactModal extends Component {
     });
     // set imageURI in local state
     if (!result.cancelled) {
-      this.setImageURI(result.uri);
+      const manipResult = await ImageManipulator.manipulateAsync(
+        result.uri,
+        [{ resize: { width: 1024} }],
+        { format: 'jpeg', compress: 0.5 }
+      );
+      this.setImageURI(manipResult.uri);
     }
   };
 
