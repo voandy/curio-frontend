@@ -4,6 +4,8 @@ import {
   getUserArtefactsAPIRequest,
   selectArtefactAPIRequest,
   updateSelectedArtefactAPIRequest,
+  likeAPIRequest,
+  unlikeAPIRequest,
   deleteSelectedArtefactAPIRequest,
 } from "../utils/APIHelpers/artefactAPIHelpers";
 
@@ -18,6 +20,42 @@ export const getUserArtefacts = userId => dispatch => {
     .then(res => dispatch(setUserArtefacts(res.data)))
     // failure
     .catch(err => console.log("artefactActions: " + err));
+};
+
+// like an artefact
+export const likeArtefact = (artefactId, userId) => dispatch => {
+  return new Promise((resolve, reject) => {
+    // add like to artefact from user
+    likeAPIRequest(artefactId, userId)
+    // success
+    .then(res => {
+      dispatch(updateSelectedArtefact(res.data));
+      resolve(res);
+    })
+    // failure
+    .catch(err => {
+      console.log("artefactActions: " + err);
+      reject(err);
+    });
+  });
+};
+
+// unlike an artefact
+export const unlikeArtefact = (artefactId, userId) => dispatch => {
+  return new Promise((resolve, reject) => {
+    // remove like to artefact from user
+    unlikeAPIRequest(artefactId, userId)
+    // success
+    .then(res => {
+      dispatch(updateSelectedArtefact(res.data));
+      resolve(res);
+    })
+    // failure
+    .catch(err => {
+      console.log("artefactActions: " + err);
+      reject(err);
+    });
+  });
 };
 
 // register user based on user details
