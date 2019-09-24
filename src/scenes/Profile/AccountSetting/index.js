@@ -86,11 +86,21 @@ class AccountSetting extends Component {
 
                 {/* setting fields */}
                 <View style={styles.settings} >
-                    <SettingField editable={true} field="Name" input={this.props.user.userData.name} />
-                    <SettingField editable={false} field="Email" input={this.props.user.userData.email} />
-                    <SettingField editable={true} field="Password" />
+                    <SettingField editable={true} field="Name" isPassword={false} input={this.props.user.userData.name} />
+                    <SettingField editable={false} field="Username" isPassword={false} input={this.props.user.userData.username} />
+                    <SettingField editable={false} field="Email" isPassword={false} input={this.props.user.userData.email} />
+                    <SettingField editable={true} field="Password" isPassword={true} input="********" />
 
-                    <TouchableOpacity style={{ marginVertical: wd(0.1), alignItems: "center" }}>
+                    <Text style={styles.warning}>* cannot be edited</Text>
+
+                    {/* make edit changes */}
+                    <TouchableOpacity style={{ marginVertical: wd(0.05), alignItems: "center" }}>
+                        {/* TODO ADD onPress() */}
+                        <Text style={styles.edit}>Edit changes</Text>
+                    </TouchableOpacity>
+
+                    {/* delete account */}
+                    <TouchableOpacity style={{ marginVertical: wd(0.05), alignItems: "center" }}>
                         <Text style={styles.delete} onPress={this.showDialog}>Delete Account</Text>
                     </TouchableOpacity>
                 </View>
@@ -134,11 +144,25 @@ const styles = StyleSheet.create({
 
     settings: {
         height: hp(0.6),
+        width: wd(0.8),
         alignContent: "center"
     },
 
     settingsField: {
 
+    },
+
+    warning: {
+        marginVertical: wd(0.03),
+        fontFamily: "HindSiliguri-Regular",
+        fontSize: 12,
+        width: wd(0.8),
+    },
+
+    edit: {
+        fontFamily: "HindSiliguri-Bold",
+        color: "#1183ca",
+        fontSize: 16,
     },
 
     delete: {

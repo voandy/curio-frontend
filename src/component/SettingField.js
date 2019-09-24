@@ -3,6 +3,7 @@ import {
     View,
     StyleSheet,
     Text,
+    TextInput,
     TouchableOpacity
 } from "react-native";
 
@@ -22,17 +23,15 @@ class SettingField extends Component {
 
         // can edit
         if (this.props.editable === true) {
-            return {
-                color: "#000000"   // black
-            }
+            return "#000000"    // black
         }
         // can't edit
         else {
-            return {
-                color: "#939090"   // gray
-            }
+            return "#939090"    // gray
         }
     }
+
+
 
     render() {
         return (
@@ -40,11 +39,26 @@ class SettingField extends Component {
             <View style={styles.container}>
 
                 <View style={{ flex: 0.35 }}>
-                    <Text style={styles.fieldName}>{this.props.field}</Text>
+                    {/* show non editable items with "*" */}
+                    {this.props.editable != false ? (
+                        <Text style={styles.fieldName}>{this.props.field}</Text>
+                    ) : (
+                            <Text style={styles.fieldName}>{this.props.field} *</Text>
+                        )}
                 </View>
 
                 <View style={{ flex: 0.65 }}>
-                    <Text style={[styles.fieldInput, this.editableColour()]}>{this.props.input}</Text>
+                    {/* <Text style={[styles.fieldInput, this.editableColour()]}>{this.props.input}</Text> */}
+                    <TextInput
+                        placeholder={this.props.input}
+                        editable={this.props.editable}
+                        autoCapitalize="none"
+                        secureTextEntry={this.props.isPassword}
+                        placeholderTextColor={this.editableColour()}
+                        style={styles.fieldInput}
+                    // onChangeText={value => this.setInput(value)}
+                    // value={this.props.value}
+                    />
                 </View>
             </View>
         );
