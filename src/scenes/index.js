@@ -61,6 +61,9 @@ class Scenes extends Component {
       this.props.getUserData(user.id);
       this.props.getUserArtefacts(user.id);
       this.props.getUserGroups(user.id);
+
+      // post user's expo-push-token to backend if haven't already
+      registerForPushNotificationsAsync(user.id);
     }
   }
 
