@@ -56,7 +56,7 @@ class Artefacts extends Component {
   // update selectedArtefact when it has already been changed
   componentWillUpdate(nextProps) {
     if (this.props.artefacts !== nextProps.artefacts) { 
-
+    
       // reload userArtefacts to update userArtefacts in redux state
       this.props.getUserArtefacts(this.props.auth.user.id);
     }
@@ -125,6 +125,7 @@ class Artefacts extends Component {
     // get artefact information and navigate to it
     await this.props.selectArtefact(artefactId);
 
+    // navigate to selected artefact
     navigate("SelectedArtefact");
   }
 
@@ -186,8 +187,6 @@ class Artefacts extends Component {
   }
 
   render() {
-
-    const { navigate } = this.props.navigation;
     return (
       <View style={styles.container}>
         {/* loading modal window */}

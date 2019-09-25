@@ -1,4 +1,4 @@
-import { SET_USER_ARTEFACTS, ADD_NEW_ARTEFACT, SET_SELECTED_ARTEFACT, UPDATE_SELECTED_ARTEFACT, DELETE_SELECTED_ARTEFACT } from "../types/artefactsTypes";
+import { SET_USER_ARTEFACTS, SET_SELECTED_ARTEFACT } from "../types/artefactsTypes";
 import {
   createArtefactAPIRequest,
   getUserArtefactsAPIRequest,
@@ -29,7 +29,7 @@ export const likeArtefact = (artefactId, userId) => dispatch => {
     likeAPIRequest(artefactId, userId)
     // success
     .then(res => {
-      dispatch(updateSelectedArtefact(res.data));
+      dispatch(setSelectedArtefact(res.data));
       resolve(res);
     })
     // failure
@@ -47,7 +47,7 @@ export const unlikeArtefact = (artefactId, userId) => dispatch => {
     unlikeAPIRequest(artefactId, userId)
     // success
     .then(res => {
-      dispatch(updateSelectedArtefact(res.data));
+      dispatch(setSelectedArtefact(res.data));
       resolve(res);
     })
     // failure
@@ -73,7 +73,7 @@ export const createNewArtefacts = artefact => dispatch => {
         createArtefactAPIRequest(newArtefact)
           .then(res => {
             // add the new artefact directly to redux state
-            dispatch(addNewArtefact(res.data));
+            dispatch(setUserArtefacts(res.data));
             resolve(res);
           })
           .catch(err => {
@@ -128,7 +128,7 @@ export const editSelectedArtefact = (artefact) => dispatch => {
         .then(res => {
 
           // update selected artefact to redux state
-          dispatch(updateSelectedArtefact(res.data));
+          dispatch(setSelectedArtefact(res.data));
           resolve(res);
         })
         .catch(err => {
@@ -144,9 +144,6 @@ export const removeSelectedArtefact = artefactId => dispatch => {
   return new Promise((resolve, reject) => {
     deleteSelectedArtefactAPIRequest(artefactId)
     .then(res => {
-
-      // delete selected artefact and update artefacts in redux state
-      dispatch(deleteSelectedArtefact(res.data));
       resolve(res);
     })
     .catch(err => {
@@ -165,14 +162,6 @@ export const setUserArtefacts = decoded => {
   };
 };
 
-// add user's newly posted/created rtefacts into redux state
-export const addNewArtefact = decoded => {
-  return {
-    type: ADD_NEW_ARTEFACT,
-    payload: decoded
-  };
-};
-
 // assign new artefact to user
 export const setSelectedArtefact = decoded => {
   return {
@@ -180,19 +169,3 @@ export const setSelectedArtefact = decoded => {
     payload: decoded
   };
 };
-
-// update selected artefact
-export const updateSelectedArtefact = decoded => {
-  return {
-    type: UPDATE_SELECTED_ARTEFACT,
-    payload: decoded
-  };
-};
-
-// delete selected artefact
-export const deleteSelectedArtefact = decoded => {
-  return {
-    type: DELETE_SELECTED_ARTEFACT,
-    payload: decoded
-  }
-}
