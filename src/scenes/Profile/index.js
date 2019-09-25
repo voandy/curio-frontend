@@ -22,6 +22,9 @@ import MyButton from "../../component/MyButton";
 import ProfileSetting from "../../component/ProfileSetting";
 import Line from "../../component/Line";
 
+//prettier-ignore
+const { setUserPushTokenAPIRequest } = require('../../utils/APIHelpers/userAPIHelper');
+
 class Profile extends Component {
   constructor() {
     super();
@@ -42,11 +45,16 @@ class Profile extends Component {
   }
 
   // logout button
+  //prettier-ignore
   onLogoutClick = () => {
     const { navigate } = this.props.navigation;
-    this.props
-      .logoutUser()
+    const userId = this.props.user.userData._id;
+    this.props.logoutUser()
       .then(() => {
+        // set user's push token to null so that the backend won't set 
+        // a notification to an unlogged in device
+        console.log(userId);
+        setUserPushTokenAPIRequest(userId, null).catch(err => console.log(err));
         navigate("Auth");
       })
       .catch(err => console.log(err));
@@ -75,11 +83,11 @@ class Profile extends Component {
               source={{ uri: this.props.user.userData.profilePic }}
             />
           ) : (
-              <Image
-                style={styles.profilePic}
-                source={require("../../../assets/images/default-profile-pic.png")}
-              />
-            )}
+            <Image
+              style={styles.profilePic}
+              source={require("../../../assets/images/default-profile-pic.png")}
+            />
+          )}
 
           {/* user heading */}
           <Text style={styles.userName}>{this.props.user.userData.name}</Text>
@@ -95,7 +103,10 @@ class Profile extends Component {
 
           <ProfileSetting text="Artefacts" />
           <ProfileSetting text="Friends" />
-          <ProfileSetting text="Account Settings" onPress={() => navigate("AccountSetting")} />
+          <ProfileSetting
+            text="Account Settings"
+            onPress={() => navigate("AccountSetting")}
+          />
 
           {/* line separator */}
           <Line />

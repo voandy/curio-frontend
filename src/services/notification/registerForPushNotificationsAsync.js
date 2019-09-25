@@ -4,7 +4,8 @@ const { Notifications } = require("expo");
 const Permissions = require("expo-permissions");
 const axios = require("axios");
 
-const PUSH_ENDPOINT = "http://curioapp.herokuapp.com/api/user/id/";
+//prettier-ignore
+const { setUserPushTokenAPIRequest } = require('../../utils/APIHelpers/userAPIHelper');
 
 export async function registerForPushNotificationsAsync(userId) {
   const { status: existingStatus } = await Permissions.getAsync(
@@ -28,15 +29,8 @@ export async function registerForPushNotificationsAsync(userId) {
   let token = await Notifications.getExpoPushTokenAsync();
 
   // Show push token for now until backend has been updated
-  console.log("Expo-Push-Token: " + token + " " + userId);
-
-  const pushToken = {
-    userPushToken: token
-  };
+  console.log("Expo-Push-Token: " + token);
 
   // POST the token to your backend server from where you can retrieve it to send push notifications.
-  axios
-    .put(PUSH_ENDPOINT + userId, pushToken)
-    .then(res => console.log(res.request._response))
-    .catch(err => console.log(err));
+  setUserPushTokenAPIRequest(userId, token).catch(err => console.log(err));
 }
