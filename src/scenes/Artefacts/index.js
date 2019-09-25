@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import {
-  Dimensions,
   StyleSheet,
   ScrollView,
   View,
@@ -259,13 +258,13 @@ class Artefacts extends Component {
 const styles = StyleSheet.create({
   // ARTEFACT FEED
   photo: {
-    width: Dimensions.get("window").width * 0.3,
-    height: Dimensions.get("window").width * 0.3
+    width: wd(0.3),
+    height: wd(0.3)
   },
   card: {
-    width: Dimensions.get("window").width * 0.3,
-    height: Dimensions.get("window").width * 0.3,
-    margin: Dimensions.get("window").width * 0.006
+    width: wd(0.3),
+    height: wd(0.3),
+    margin: wd(0.006)
   },
 
   container: {
