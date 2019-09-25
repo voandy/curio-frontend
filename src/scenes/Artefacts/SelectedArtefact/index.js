@@ -76,6 +76,7 @@ class SelectedArtefact extends Component {
 
   async componentDidMount() {
     await this.generateComments();
+    console.log(this.props.artefacts.artefactComments);
   }
 
   // update selectedArtefact when it has already been changed
@@ -100,7 +101,7 @@ class SelectedArtefact extends Component {
 
   generateComments = async () => {
     const artefactId = this.props.artefacts.selectedArtefact._id;
-    this.props.getArtefactComments(artefactId);
+     await this.props.getArtefactComments(artefactId);
   }
 
   // toggle the modal for artefact update input
@@ -202,6 +203,7 @@ class SelectedArtefact extends Component {
     // whether the user has liked this artefact
     var liked = this.props.artefacts.selectedArtefact.likes.includes(this.props.user.userData._id);
     var likesCount = this.props.artefacts.selectedArtefact.likes.length;
+    // var commentsCount = 3;
     var commentsCount = this.props.artefacts.artefactComments.length;
 
     return (

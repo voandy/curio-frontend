@@ -166,7 +166,6 @@ export const getArtefactComments = artefactId => dispatch => {
     .catch(err => console.log("artefactActions: " + err));
 };
 
-
 // Redux actions //
 // store all of the user's artefacts into redux state
 export const setUserArtefacts = decoded => {
