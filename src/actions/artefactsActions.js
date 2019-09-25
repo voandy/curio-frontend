@@ -2,7 +2,7 @@ import { SET_USER_ARTEFACTS, SET_SELECTED_ARTEFACT } from "../types/artefactsTyp
 import {
   createArtefactAPIRequest,
   getUserArtefactsAPIRequest,
-  selectArtefactAPIRequest,
+  getSelectedArtefactAPIRequest,
   updateSelectedArtefactAPIRequest,
   likeAPIRequest,
   unlikeAPIRequest,
@@ -89,11 +89,11 @@ export const createNewArtefacts = artefact => dispatch => {
 };
 
 // select artefact of artefactId
-export const selectArtefact = artefactId => dispatch => {
+export const getSelectedArtefact = artefactId => dispatch => {
   return new Promise((resolve, reject) => {
 
     // get artefact based on artefactId
-    selectArtefactAPIRequest(artefactId)
+    getSelectedArtefactAPIRequest(artefactId)
     .then(res => {
       
       // add selected artefact to redux state
