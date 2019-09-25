@@ -16,11 +16,14 @@ import {
 import { createNewArtefacts } from "../../../actions/artefactsActions";
 import DatePicker from "react-native-datepicker";
 
+// expo image modules
+import * as ImagePicker from "expo-image-picker";
+import * as ImageManipulator from "expo-image-manipulator";
+
 // Custom respondsive design component
 import {
   deviceHeigthDimension as hp,
-  deviceWidthDimension as wd,
-  setToBottom
+  deviceWidthDimension as wd
 } from "../../../utils/responsiveDesign";
 
 // import the loader modal to help show loading process
@@ -33,9 +36,10 @@ const newArtefact = {
   userId: "",
   title: "",
   description: "",
-  category: "",
+  category: "Art",
   dateObtained: "",
-  imageURI: ""
+  imageURI: "",
+  privacy: "Private"
 };
 
 class ArtefactsForm extends Component {
@@ -79,6 +83,29 @@ class ArtefactsForm extends Component {
     });
   };
 
+  // Setters for all the local state for newArtefacts
+  setDateObtained = dateObtained => {
+    this.setNewArtefact("dateObtained", dateObtained);
+  };
+  setTitle = title => {
+    this.setNewArtefact("title", title);
+  };
+  setCategory = category => {
+    this.setNewArtefact("category", category);
+  };
+  setDescription = description => {
+    this.setNewArtefact("description", description);
+  };
+  setDate = date => {
+    this.setNewArtefact("date", date);
+  };
+  setImageURI = imageURI => {
+    this.setNewArtefact("imageURI", imageURI);
+  };
+  setPrivacy = privacy => {
+    this.setNewArtefact("privacy", privacy);
+  };
+
   // setter function for "loading" to show user that something is loading
   setLoading = loading => {
     this.setState({
@@ -88,25 +115,45 @@ class ArtefactsForm extends Component {
   };
 
   // post new artefact to the backend
-  onSubmit = async () => {
+  onSubmit = () => {
+    const { navigate } = this.props.navigation;
     // show user the loading modal
     this.setLoading(true);
     // send and create artefact to the backend
     //prettier-ignore
     this.props.createNewArtefacts(this.state.newArtefact)
-            .then(() => {
-                // stop showing user the loading modal
-                this.setLoading(false);
-                // close loading modal
-                this.toggleModal();
-                this.resetNewArtefact();
-            })
-            .catch(err => {
-                // stop showing user the loading modal
-                this.setLoading(false);
-                // show error
-                console.log(err.response.data);
-            });
+      .then(() => {
+          // stop showing user the loading modal
+          this.setLoading(false);
+          // reset new artefacts details
+          this.resetNewArtefact();
+          navigate("Artefacts");
+      })
+      .catch(err => {
+          // stop showing user the loading modal
+          this.setLoading(false);
+          // show error
+          console.log(err.response.data);
+      });
+  };
+
+  // access camera roll to pick an image
+  _pickImage = async () => {
+    // wait for user to pick an image
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 4]
+    });
+    // set imageURI in local state
+    if (!result.cancelled) {
+      const manipResult = await ImageManipulator.manipulateAsync(
+        result.uri,
+        [{ resize: { width: 1024 } }],
+        { format: "jpeg", compress: 0.5 }
+      );
+      this.setImageURI(manipResult.uri);
+    }
   };
 
   render() {
@@ -159,8 +206,8 @@ class ArtefactsForm extends Component {
                   autoCapitalize="none"
                   placeholderTextColor="#868686"
                   style={styles.inputFont}
-                  // onChangeText={value => this.setCategory(value)}
-                  // value={this.props.newArtefact.category}
+                  onChangeText={value => this.setTitle(value)}
+                  value={this.state.newArtefact.title}
                 />
               </View>
             </View>
@@ -178,8 +225,8 @@ class ArtefactsForm extends Component {
                   autoCapitalize="none"
                   placeholderTextColor="#868686"
                   style={styles.inputFont}
-                  // onChangeText={value => this.setCategory(value)}
-                  // value={this.props.newArtefact.category}
+                  onChangeText={value => this.setDescription(value)}
+                  value={this.state.newArtefact.description}
                 />
               </View>
             </View>
@@ -194,21 +241,33 @@ class ArtefactsForm extends Component {
                 <Text style={styles.font}>category</Text>
                 <Picker
                   style={styles.pickerLong}
-                  // onValueChange={(itemValue, itemIndex) =>
-                  // this.props.onNewGroupChange("privacy", itemValue)}
+                  selectedValue={this.state.newArtefact.category}
+                  onValueChange={this.setCategory.bind(this)}
                 >
-                  <Picker.Item label="Art" />
-                  <Picker.Item label="Books" />
-                  <Picker.Item label="Furniture" />
-                  <Picker.Item label="Clothing and Fabric" />
-                  <Picker.Item label="Coins and Currency" />
-                  <Picker.Item label="Pottery" />
-                  <Picker.Item label="Flims and Television" />
-                  <Picker.Item label="Kitchen Collectable" />
-                  <Picker.Item label="Music" />
-                  <Picker.Item label="Technology" />
-                  <Picker.Item label="Pepe" />
-                  <Picker.Item label="Others" />
+                  <Picker.Item label="Art" value="Art" />
+                  <Picker.Item label="Books" value="Books" />
+                  <Picker.Item label="Furniture" value="Furniture" />
+                  <Picker.Item
+                    label="Clothing and Fabric"
+                    value="Clothing and Fabric"
+                  />
+                  <Picker.Item
+                    label="Coins and Currency"
+                    value="Coins and Currency"
+                  />
+                  <Picker.Item label="Pottery" value="Pottery" />
+                  <Picker.Item
+                    label="Flims and Television"
+                    value="Flims and Television"
+                  />
+                  <Picker.Item
+                    label="Kitchen Collectable"
+                    value="Kitchen Collectable"
+                  />
+                  <Picker.Item label="Music" value="Music" />
+                  <Picker.Item label="Technology" value="Technology" />
+                  <Picker.Item label="Pepe" value="Pepe" />
+                  <Picker.Item label="Others" value="Others" />
                 </Picker>
               </View>
             </View>
@@ -225,8 +284,9 @@ class ArtefactsForm extends Component {
                   <Text style={styles.font}>Date</Text>
                   <DatePicker
                     mode="date"
+                    date={this.state.newArtefact.dateObtained}
                     style={styles.date}
-                    // value={this.state.newArtefact.dateObtained}
+                    placeholder="select date"
                     format="YYYY-MM-DD"
                     customStyles={{
                       dateIcon: {
@@ -238,6 +298,7 @@ class ArtefactsForm extends Component {
                         alignItems: "flex-start"
                       }
                     }}
+                    selectedValue={this.state.newArtefact.dateObtained}
                     onDateChange={date => this.setDateObtained(date)}
                   />
                 </View>
@@ -253,11 +314,11 @@ class ArtefactsForm extends Component {
                   <Text style={styles.font}>Privacy</Text>
                   <Picker
                     style={styles.pickerShort}
-                    // onValueChange={(itemValue, itemIndex) =>
-                    //     this.props.onNewGroupChange("privacy", itemValue)}
+                    selectedValue={this.state.newArtefact.privacy}
+                    onValueChange={this.setPrivacy.bind(this)}
                   >
-                    <Picker.Item label="Private" />
-                    <Picker.Item label="Public" />
+                    <Picker.Item label="Private" value="Private" />
+                    <Picker.Item label="Public" value="Public" />
                   </Picker>
                 </View>
               </View>
@@ -272,7 +333,7 @@ class ArtefactsForm extends Component {
               }}
             >
               {/* TODO add onPress={() => onSubmit} */}
-              <MySmallerButton text="POST" />
+              <MySmallerButton text="POST" onPress={() => this.onSubmit()} />
             </View>
           </View>
         </ScrollView>
