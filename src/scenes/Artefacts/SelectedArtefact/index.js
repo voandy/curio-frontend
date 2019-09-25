@@ -10,7 +10,8 @@ import {
   View,
   Image,
   Text,
-  Alert
+  Alert,
+  StatusBar
 } from "react-native";
 
 // date converter
@@ -249,6 +250,8 @@ class SelectedArtefact extends Component {
         >
           {/* open image in full screen */}
           <ImageView
+            glideAlways
+            isPinchZoomEnabled={false}
             images={artefactImage}
             isVisible={this.state.isImageViewVisible}
             animationType={"fade"}
@@ -355,7 +358,8 @@ class SelectedArtefact extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
+    marginTop: StatusBar.currentHeight
   },
 
   cover: {
