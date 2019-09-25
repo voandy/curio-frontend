@@ -2,7 +2,8 @@ import { SET_USER_ARTEFACTS, ADD_NEW_ARTEFACT, SET_SELECTED_ARTEFACT, UPDATE_SEL
 
 const initialState = {
   userArtefacts: [],
-  selectedArtefact: {}
+  selectedArtefact: {},
+  artefactComments: []
 };
 
 export default function(state = initialState, action) {

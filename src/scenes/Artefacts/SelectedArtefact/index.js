@@ -30,7 +30,7 @@ import ActivityLoaderModal from "../../../component/ActivityLoaderModal";
 
 // redux actions
 import { editSelectedArtefact, selectArtefact, getUserArtefacts, 
-  removeSelectedArtefact, likeArtefact, unlikeArtefact } 
+  removeSelectedArtefact, likeArtefact, unlikeArtefact, getArtefactComments } 
   from "../../../actions/artefactsActions";
 
 // custom responsive design component
@@ -67,14 +67,15 @@ class SelectedArtefact extends Component {
   };
 
   like = function () {
-    console.log("like");
     this.props.likeArtefact(this.props.artefacts.selectedArtefact._id, this.props.user.userData._id);
   }
 
   unlike = function () {
-    console.log("unlike");
-    console.log(this.props);
     this.props.unlikeArtefact(this.props.artefacts.selectedArtefact._id, this.props.user.userData._id);
+  }
+
+  async componentDidMount() {
+    await this.generateComments();
   }
 
   // update selectedArtefact when it has already been changed
@@ -89,6 +90,17 @@ class SelectedArtefact extends Component {
       // reload userArtefacts to update userArtefacts in redux state
       this.props.getUserArtefacts(selectedArtefact.userId);
     }
+
+    const prevArtefactComments = this.props.artefacts.artefactComments;
+    const artefactComments = nextProps.artefacts.artefactComments;
+    if(prevArtefactComments !== artefactComments) {
+      this.props.getArtefactComments(selectedArtefact._id);
+    }
+  }
+
+  generateComments = async () => {
+    const artefactId = this.props.artefacts.selectedArtefact._id;
+    this.props.getArtefactComments(artefactId);
   }
 
   // toggle the modal for artefact update input
@@ -174,9 +186,6 @@ class SelectedArtefact extends Component {
   };
 
   render() {
-    // FOR TESTING PURPOSES
-    // console.log("selected artefact is", this.props.artefacts.selectedArtefact);
-
     // date format
     Moment.locale("en");
 
@@ -190,22 +199,10 @@ class SelectedArtefact extends Component {
       }
     ];
 
-    var likesCount = this.props.artefacts.selectedArtefact.likes.length;
-    var commentsCount = 44;
-
     // whether the user has liked this artefact
     var liked = this.props.artefacts.selectedArtefact.likes.includes(this.props.user.userData._id);
-
-    const likeButton = <LikeButton onPress={this.like.bind(this)} />;
-
-    const unlikeButton = <UnlikeButton onPress={this.unlike.bind(this)} />;
-
-    var likeUnlike;
-    if (liked) {
-      likeUnlike = unlikeButton;
-    } else {
-      likeUnlike = likeButton;
-    }
+    var likesCount = this.props.artefacts.selectedArtefact.likes.length;
+    var commentsCount = this.props.artefacts.artefactComments.length;
 
     return (
       <View style={styles.container}>
@@ -280,8 +277,11 @@ class SelectedArtefact extends Component {
 
           {/* button */}
           <View style={styles.likesButtonPlaceholder}>
-            {/* Like button */}
-            {likeUnlike}
+            {liked === true ? (
+              <UnlikeButton onPress={this.unlike.bind(this)} />
+              ) : (
+              <LikeButton onPress={this.like.bind(this)} />
+            )}
 
             {/* Comment button */}
             <CommentButton />
@@ -425,5 +425,5 @@ const mapStateToProps = state => ({
 export default connect(
   mapStateToProps,
   { editSelectedArtefact, selectArtefact, getUserArtefacts, removeSelectedArtefact,
-    likeArtefact, unlikeArtefact }
+    likeArtefact, unlikeArtefact, getArtefactComments }
 )(SelectedArtefact);
