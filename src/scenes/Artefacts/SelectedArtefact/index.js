@@ -19,6 +19,7 @@ import Moment from "moment";
 // custom component
 import { LikeButton, UnlikeButton } from "../../../component/LikeButton";
 import CommentButton from "../../../component/CommentButton";
+import CommentForm from "../../../component/CommentForm";
 import UserDetail from "../../../component/UserDetail"
 import Line from "../../../component/Line"
 import Comments from "../../../component/Comments"
@@ -76,7 +77,6 @@ class SelectedArtefact extends Component {
 
   async componentDidMount() {
     await this.generateComments();
-    console.log(this.props.artefacts.artefactComments);
   }
 
   // update selectedArtefact when it has already been changed
@@ -95,13 +95,37 @@ class SelectedArtefact extends Component {
     const prevArtefactComments = this.props.artefacts.artefactComments;
     const artefactComments = nextProps.artefacts.artefactComments;
     if(prevArtefactComments !== artefactComments) {
-      this.props.getArtefactComments(selectedArtefact._id);
+      this.generateComments();
     }
   }
 
   generateComments = async () => {
     const artefactId = this.props.artefacts.selectedArtefact._id;
-     await this.props.getArtefactComments(artefactId);
+    await this.props.getArtefactComments(artefactId);
+  }
+
+  showComments = function (comments) {
+    var commentViews = [];
+
+    // sort comments by date
+    comments.sort(function(a, b) {
+      return new Date(a.datePosted) - new Date(b.datePosted);
+    });
+
+    // create a view for each comment
+    for (var i = 0; i < comments.length; i++) {
+      commentViews.push(
+        <Comments
+        key={i}
+        userProfilePic={comments[i].posterPic}
+        userName={comments[i].posterName}
+        datePosted={comments[i].datePosted}
+        comment={comments[i].content}
+      />
+      );
+    }
+
+    return commentViews;
   }
 
   // toggle the modal for artefact update input
@@ -203,7 +227,6 @@ class SelectedArtefact extends Component {
     // whether the user has liked this artefact
     var liked = this.props.artefacts.selectedArtefact.likes.includes(this.props.user.userData._id);
     var likesCount = this.props.artefacts.selectedArtefact.likes.length;
-    // var commentsCount = 3;
     var commentsCount = this.props.artefacts.artefactComments.length;
 
     return (
@@ -293,41 +316,10 @@ class SelectedArtefact extends Component {
           <View style={styles.comments}>
             <Text style={styles.commentsTitle}>Comments</Text>
 
-            <View style={styles.commentInput}>
-              {/* user profile pic */}
-              {/* <Image style={styles.photo} source={this.props.userProfilePic} /> */}
-              <Image
-                style={styles.userProfilePic}
-                source={require("../../../../assets/images/default-profile-pic.png")}
-              />
-
-              {/* comment input field */}
-              <TextInput
-                placeholder="Add Comment"
-                placeholderTextColor="#707070"
-                style={styles.textInput}
-              />
-            </View>
+                <CommentForm profilePic = {this.props.user.userData.profilePic} />
 
             {/* comments */}
-            <Comments
-              userProfilePic={require("../../../../assets/images/default-profile-pic.png")}
-              userName="Spongebob"
-              time="1 hour ago"
-              comment={comment1}
-            />
-            <Comments
-              userProfilePic={require("../../../../assets/images/default-profile-pic.png")}
-              userName="Squidward"
-              time="5 hours ago"
-              comment={comment2}
-            />
-            <Comments
-              userProfilePic={require("../../../../assets/images/default-profile-pic.png")}
-              userName="Plankton"
-              time="20 hours ago"
-              comment={comment3}
-            />
+            {this.showComments(this.props.artefacts.artefactComments)}
           </View>
         </HeaderImageScrollView>     
       </View >
@@ -377,25 +369,6 @@ const styles = StyleSheet.create({
   likesButtonPlaceholder: {
     flexDirection: "row",
     marginVertical: wd(0.02)
-  },
-
-  userProfilePic: {
-    width: Dimensions.get("window").width * 0.1,
-    height: Dimensions.get("window").width * 0.1,
-    marginLeft: wd(0.06),
-    marginRight: wd(0.03)
-  },
-
-  commentInput: {
-    flexDirection: "row",
-    width: Dimensions.get("window").width,
-    height: wd(0.1),
-    marginVertical: wd(0.03)
-  },
-
-  textInput: {
-    fontFamily: "HindSiliguri-Regular",
-    width: Dimensions.get("window").width * 0.7
   },
 
   comments: {
