@@ -19,18 +19,26 @@ import Moment from "moment";
 // custom component
 import { LikeButton, UnlikeButton } from "../../../component/LikeButton";
 import CommentButton from "../../../component/CommentButton";
-import UserDetail from "../../../component/UserDetail"
-import Line from "../../../component/Line"
-import Comments from "../../../component/Comments"
-import OptionButton from "../../../component/OptionButton"
-import HeaderImageScrollView from 'react-native-image-header-scroll-view';
-import ImageView from 'react-native-image-view';
-import ArtefactModal from '../../../component/ArtefactModal';
+import UserDetail from "../../../component/UserDetail";
+import Line from "../../../component/Line";
+import Comments from "../../../component/Comments";
+import OptionButton from "../../../component/OptionButton";
+import HeaderImageScrollView from "react-native-image-header-scroll-view";
+import ImageView from "react-native-image-view";
+import ArtefactModal from "../../../component/ArtefactModal";
 import ActivityLoaderModal from "../../../component/ActivityLoaderModal";
 
 // redux actions
-import { editSelectedArtefact, selectArtefact, getUserArtefacts, removeSelectedArtefact } from "../../../actions/artefactsActions";
-import { likeArtefact, unlikeArtefact } from "../../../actions/artefactsActions";
+import {
+  editSelectedArtefact,
+  selectArtefact,
+  getUserArtefacts,
+  removeSelectedArtefact
+} from "../../../actions/artefactsActions";
+import {
+  likeArtefact,
+  unlikeArtefact
+} from "../../../actions/artefactsActions";
 
 // custom responsive design component
 import {
@@ -41,20 +49,19 @@ import {
 
 // remove this
 const comment1 = "Ravioli, ravioli, give me the formuoli";
-const comment2 = "is mayonnaise an instrument? No patrick, mayonnaise is not an instrument... Horseradish is not either";
+const comment2 =
+  "is mayonnaise an instrument? No patrick, mayonnaise is not an instrument... Horseradish is not either";
 const comment3 = "Goodbye everyone, I'll remember you all in therapy";
 
 class SelectedArtefact extends Component {
   state = {
-    selectedArtefact:
-      { 
-        ...this.props.artefacts.selectedArtefact,
-        imageURI: this.props.artefacts.selectedArtefact.images[0].URL,
-      },
+    selectedArtefact: {
+      ...this.props.artefacts.selectedArtefact,
+      imageURI: this.props.artefacts.selectedArtefact.images[0].URL
+    },
     isImageViewVisible: false,
     isUpdateModalVisible: false,
-    loading: false,
-    // statusBarHidden: false,
+    loading: false
   };
 
   // nav details
@@ -65,23 +72,28 @@ class SelectedArtefact extends Component {
     }
   };
 
-  like = function () {
+  like = function() {
     console.log("like");
-    this.props.likeArtefact(this.props.artefacts.selectedArtefact._id, this.props.user.userData._id);
-  }
+    this.props.likeArtefact(
+      this.props.artefacts.selectedArtefact._id,
+      this.props.user.userData._id
+    );
+  };
 
-  unlike = function () {
+  unlike = function() {
     console.log("unlike");
     console.log(this.props);
-    this.props.unlikeArtefact(this.props.artefacts.selectedArtefact._id, this.props.user.userData._id);
-  }
+    this.props.unlikeArtefact(
+      this.props.artefacts.selectedArtefact._id,
+      this.props.user.userData._id
+    );
+  };
 
   // update selectedArtefact when it has already been changed
   componentWillUpdate(nextProps) {
     const prevSelectedArtefact = this.props.artefacts.selectedArtefact;
     const selectedArtefact = nextProps.artefacts.selectedArtefact;
-    if (prevSelectedArtefact !== selectedArtefact) { 
-
+    if (prevSelectedArtefact !== selectedArtefact) {
       // edit selectedArtefact in redux state
       this.props.selectArtefact(selectedArtefact._id);
 
@@ -100,39 +112,42 @@ class SelectedArtefact extends Component {
     const { navigate } = this.props.navigation;
 
     Alert.alert(
-      'Delete Artefact',
-      'Are you sure you want to delete your artefact?',
+      "Delete Artefact",
+      "Are you sure you want to delete your artefact?",
       [
         {
-          text: 'No',
-          onPress: () => console.log('Cancel Pressed'),
-          style: 'cancel',
+          text: "No",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel"
         },
-        { text: 'Yes', onPress: async () => {
+        {
+          text: "Yes",
+          onPress: async () => {
             // show user the loading modal
             this.setLoading(true);
 
             // remove selected artefact from redux states
-            await this.props.removeSelectedArtefact(this.props.artefacts.selectedArtefact._id)
-            .then(() => {
-              // stop showing user the loading modal
-              this.setLoading(false);
+            await this.props
+              .removeSelectedArtefact(this.props.artefacts.selectedArtefact._id)
+              .then(() => {
+                // stop showing user the loading modal
+                this.setLoading(false);
 
-              // navigate to artefacts
-              navigate('Artefacts');
-            })
-            .catch(err => {
-              // stop showing user the loading modal
-              this.setLoading(false);
-              // show error
-              console.log(err.response.data);
-            });
+                // navigate to artefacts
+                navigate("Artefacts");
+              })
+              .catch(err => {
+                // stop showing user the loading modal
+                this.setLoading(false);
+                // show error
+                console.log(err.response.data);
+              });
           }
-        },
+        }
       ],
       { cancelable: false }
     );
-  }
+  };
 
   // selected artefact's attribute change
   setSelectedArtefact = (key, value) => {
@@ -157,7 +172,8 @@ class SelectedArtefact extends Component {
     // show user the loading modal
     this.setLoading(true);
     // send and create artefact to the backend
-    this.props.editSelectedArtefact(this.state.selectedArtefact)
+    this.props
+      .editSelectedArtefact(this.state.selectedArtefact)
       .then(() => {
         // stop showing user the loading modal
         this.setLoading(false);
@@ -193,7 +209,9 @@ class SelectedArtefact extends Component {
     var commentsCount = 44;
 
     // whether the user has liked this artefact
-    var liked = this.props.artefacts.selectedArtefact.likes.includes(this.props.user.userData._id);
+    var liked = this.props.artefacts.selectedArtefact.likes.includes(
+      this.props.user.userData._id
+    );
 
     const likeButton = <LikeButton onPress={this.like.bind(this)} />;
 
@@ -208,7 +226,6 @@ class SelectedArtefact extends Component {
 
     return (
       <View style={styles.container}>
-
         {/* loading modal window */}
         <ActivityLoaderModal loading={this.state.loading} />
 
@@ -225,46 +242,48 @@ class SelectedArtefact extends Component {
             <TouchableOpacity
               style={styles.cover}
               onPress={() =>
-                this.setState({
-                  isImageViewVisible: true,
-                  statusBarHidden: true
-                })
+                this.setState({ ...this.state, isImageViewVisible: true })
               }
             />
           )}
         >
-
-        {/* open image in full screen */}
-        <ImageView
-          images={artefactImage}
-          isVisible={this.state.isImageViewVisible}
-          animationType={"fade"}
-          isSwipeCloseEnabled={true}
-        />
-
-        {/* desciption */}
-        <View style={styles.descriptionPlaceholder}>
-          <View style={{ flexDirection: "row" }}>
-
-          {/* title */}
-          <Text style={styles.title}>{this.props.artefacts.selectedArtefact.title}</Text>
-            <OptionButton 
-              toggleUpdateModal={this.toggleUpdateModal}
-              toggleDeleteModal={this.toggleDeleteModal}
-            />
-          </View>
-
-          <ArtefactModal
-            isModalVisible={this.state.isUpdateModalVisible}
-            toggleModal={this.toggleUpdateModal}
-            newArtefact={this.state.selectedArtefact}
-            onSubmit={this.onSubmit.bind(this)}
-            setNewArtefact={this.setSelectedArtefact.bind(this)}
+          {/* open image in full screen */}
+          <ImageView
+            images={artefactImage}
+            isVisible={this.state.isImageViewVisible}
+            animationType={"fade"}
+            isSwipeCloseEnabled={true}
+            onClose={() =>
+              this.setState({ ...this.state, isImageViewVisible: false })
+            }
           />
 
-          {/* description */}
-          <Text style={styles.description}>{this.props.artefacts.selectedArtefact.description}</Text>
-        </View>
+          {/* desciption */}
+          <View style={styles.descriptionPlaceholder}>
+            <View style={{ flexDirection: "row" }}>
+              {/* title */}
+              <Text style={styles.title}>
+                {this.props.artefacts.selectedArtefact.title}
+              </Text>
+              <OptionButton
+                toggleUpdateModal={this.toggleUpdateModal}
+                toggleDeleteModal={this.toggleDeleteModal}
+              />
+            </View>
+
+            <ArtefactModal
+              isModalVisible={this.state.isUpdateModalVisible}
+              toggleModal={this.toggleUpdateModal}
+              newArtefact={this.state.selectedArtefact}
+              onSubmit={this.onSubmit.bind(this)}
+              setNewArtefact={this.setSelectedArtefact.bind(this)}
+            />
+
+            {/* description */}
+            <Text style={styles.description}>
+              {this.props.artefacts.selectedArtefact.description}
+            </Text>
+          </View>
 
           {/* user detail */}
           <UserDetail
@@ -274,7 +293,9 @@ class SelectedArtefact extends Component {
 
           {/* likes/comments counters */}
           <View style={styles.likesIndicatorPlaceholder}>
-            <Text style={styles.indicator}>{likesCount} Likes {commentsCount} Comments</Text>
+            <Text style={styles.indicator}>
+              {likesCount} Likes {commentsCount} Comments
+            </Text>
           </View>
 
           {/* button */}
@@ -326,8 +347,8 @@ class SelectedArtefact extends Component {
               comment={comment3}
             />
           </View>
-        </HeaderImageScrollView>     
-      </View >
+        </HeaderImageScrollView>
+      </View>
     );
   }
 }
@@ -423,6 +444,12 @@ const mapStateToProps = state => ({
 // map required redux state and actions to local props
 export default connect(
   mapStateToProps,
-  { editSelectedArtefact, selectArtefact, getUserArtefacts, removeSelectedArtefact,
-    likeArtefact, unlikeArtefact }
+  {
+    editSelectedArtefact,
+    selectArtefact,
+    getUserArtefacts,
+    removeSelectedArtefact,
+    likeArtefact,
+    unlikeArtefact
+  }
 )(SelectedArtefact);
