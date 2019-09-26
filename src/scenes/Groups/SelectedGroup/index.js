@@ -25,6 +25,7 @@ import {
   deviceWidthDimension as wd,
   setToBottom
 } from "../../../utils/responsiveDesign"
+import { ScrollView } from "react-native-gesture-handler";
 
 
 // remove this
@@ -37,7 +38,7 @@ class SelectedGroup extends Component {
   state = {
     isImageViewVisible: false,
   }
-  
+
   // nav details
   static navigationOptions = {
     header: null,
@@ -54,16 +55,35 @@ class SelectedGroup extends Component {
 
     return (
       <View style={styles.container}>
-        <Text style={{ alignSelf: "center"}}>Pepe Group</Text>
+
+        <ScrollView showsVerticalScrollIndicator={false}>
+
+          {/* group cover photo */}
+          <View style={styles.coverPhoto}>
+
+          </View>
+
+          {/* group description */}
+          <View style={styles.groupInfo}>
+
+          </View>
+
+          {/* content */}
+          <View>
+            <Text style={{ alignSelf: "center" }}>Pepe Group</Text>
+          </View>
+        </ScrollView>
+
       </View>
     );
-  }
+  }        <Text style={{ alignSelf: "center" }}>Pepe Group</Text>
+
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems:"center",
+    alignItems: "center",
     justifyContent: "center"
   },
 
