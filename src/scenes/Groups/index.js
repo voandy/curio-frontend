@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { View, StyleSheet, ScrollView, Dimensions, Text } from "react-native";
 
 // import redux actions for groups
-import { createNewGroup, selectGroup } from "../../actions/groupsActions";
+import { createNewGroup, getSelectedGroup } from "../../actions/groupsActions";
 
 // custom components
 import CardCarousel from "../../component/CardCarousel";
@@ -80,7 +80,7 @@ class Groups extends Component {
   clickGroup = async groupId => {
     const { navigate } = this.props.navigation;
     // !!! DOESN'T WORK FOR NOW !!!
-    // await this.props.selectGroup(groupId);
+    await this.props.getSelectedGroup(groupId);
     navigate("SelectedGroup");
   };
 
@@ -237,5 +237,5 @@ const mapStateToProps = state => ({
 //  connect to redux and export
 export default connect(
   mapStateToProps,
-  { createNewGroup, selectGroup }
+  { createNewGroup, getSelectedGroup }
 )(Groups);
