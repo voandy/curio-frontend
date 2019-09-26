@@ -17,11 +17,7 @@ import ArtefactModal from "../../component/ArtefactModal";
 import AddButton from "../../component/AddButton";
 
 // redux actions
-import {
-  createNewArtefacts,
-  selectArtefact,
-  getUserArtefacts
-} from "../../actions/artefactsActions";
+import { createNewArtefacts, getSelectedArtefact, getUserArtefacts } from "../../actions/artefactsActions";
 
 // Custom respondsive design component
 import {
@@ -66,7 +62,8 @@ class Artefacts extends Component {
 
   // update selectedArtefact when it has already been changed
   componentWillUpdate(nextProps) {
-    if (this.props.artefacts !== nextProps.artefacts) {
+    if (this.props.artefacts !== nextProps.artefacts) { 
+    
       // reload userArtefacts to update userArtefacts in redux state
       this.props.getUserArtefacts(this.props.auth.user.id);
     }
@@ -133,8 +130,9 @@ class Artefacts extends Component {
     const { navigate } = this.props.navigation;
 
     // get artefact information and navigate to it
-    await this.props.selectArtefact(artefactId);
+    await this.props.getSelectedArtefact(artefactId);
 
+    // navigate to selected artefact
     navigate("SelectedArtefact");
   };
 
@@ -201,7 +199,6 @@ class Artefacts extends Component {
   };
 
   render() {
-    const { navigate } = this.props.navigation;
     return (
       <View style={styles.container}>
         {/* loading modal window */}
@@ -302,5 +299,5 @@ const mapStateToProps = state => ({
 // map required redux state and actions to local props
 export default connect(
   mapStateToProps,
-  { createNewArtefacts, selectArtefact, getUserArtefacts }
+  { createNewArtefacts, getSelectedArtefact, getUserArtefacts }
 )(Artefacts);

@@ -2,9 +2,7 @@ import axios from "axios";
 
 import {
   SET_USER_GROUPS,
-  ADD_NEW_GROUP,
-  GET_ERRORS,
-  SET_SELECTED_GROUP
+  SET_SELECTED_GROUP,
 } from "../types/groupsTypes";
 
 import {
@@ -57,7 +55,7 @@ export const createNewGroup = groupData => dispatch => {
               getUserGroupsAPIRequest(adminId)
                 .then(res => {
                   resolve(res);
-                  dispatch(addNewGroup(res.data));
+                  dispatch(setUserGroups(res.data));
                 })
                 .catch(err => {
                   console.log(err);
@@ -130,14 +128,6 @@ export const selectGroup = groupId => dispatch => {
 export const setUserGroups = decoded => {
   return {
     type: SET_USER_GROUPS,
-    payload: decoded
-  };
-};
-
-// assign new group to user
-export const addNewGroup = decoded => {
-  return {
-    type: ADD_NEW_GROUP,
     payload: decoded
   };
 };

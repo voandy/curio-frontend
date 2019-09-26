@@ -1,14 +1,8 @@
-import {
-  SET_USER_ARTEFACTS,
-  ADD_NEW_ARTEFACT,
-  SET_SELECTED_ARTEFACT,
-  UPDATE_SELECTED_ARTEFACT,
-  DELETE_SELECTED_ARTEFACT
-} from "../types/artefactsTypes";
+import { SET_USER_ARTEFACTS, SET_SELECTED_ARTEFACT } from "../types/artefactsTypes";
 import {
   createArtefactAPIRequest,
   getUserArtefactsAPIRequest,
-  selectArtefactAPIRequest,
+  getSelectedArtefactAPIRequest,
   updateSelectedArtefactAPIRequest,
   likeAPIRequest,
   unlikeAPIRequest,
@@ -41,16 +35,16 @@ export const likeArtefact = (artefactId, userId) => dispatch => {
   return new Promise((resolve, reject) => {
     // add like to artefact from user
     likeAPIRequest(artefactId, userId)
-      // success
-      .then(res => {
-        dispatch(updateSelectedArtefact(res.data));
-        resolve(res);
-      })
-      // failure
-      .catch(err => {
-        console.log("artefactActions: " + err);
-        reject(err);
-      });
+    // success
+    .then(res => {
+      dispatch(setSelectedArtefact(res.data));
+      resolve(res);
+    })
+    // failure
+    .catch(err => {
+      console.log("artefactActions: " + err);
+      reject(err);
+    });
   });
 };
 
@@ -59,16 +53,16 @@ export const unlikeArtefact = (artefactId, userId) => dispatch => {
   return new Promise((resolve, reject) => {
     // remove like to artefact from user
     unlikeAPIRequest(artefactId, userId)
-      // success
-      .then(res => {
-        dispatch(updateSelectedArtefact(res.data));
-        resolve(res);
-      })
-      // failure
-      .catch(err => {
-        console.log("artefactActions: " + err);
-        reject(err);
-      });
+    // success
+    .then(res => {
+      dispatch(setSelectedArtefact(res.data));
+      resolve(res);
+    })
+    // failure
+    .catch(err => {
+      console.log("artefactActions: " + err);
+      reject(err);
+    });
   });
 };
 
@@ -88,7 +82,7 @@ export const createNewArtefacts = artefact => dispatch => {
         createArtefactAPIRequest(newArtefact)
           .then(res => {
             // add the new artefact directly to redux state
-            dispatch(addNewArtefact(res.data));
+            dispatch(setUserArtefacts(res.data));
             resolve(res);
           })
           .catch(err => {
@@ -104,19 +98,20 @@ export const createNewArtefacts = artefact => dispatch => {
 };
 
 // select artefact of artefactId
-export const selectArtefact = artefactId => dispatch => {
+export const getSelectedArtefact = artefactId => dispatch => {
   return new Promise((resolve, reject) => {
     // get artefact based on artefactId
-    selectArtefactAPIRequest(artefactId)
-      .then(res => {
-        // add selected artefact to redux state
-        dispatch(setSelectedArtefact(res.data));
-        resolve(res);
-      })
-      .catch(err => {
-        console.log("Failed to select artefact" + err);
-        reject(err);
-      });
+    getSelectedArtefactAPIRequest(artefactId)
+    .then(res => {
+      
+      // add selected artefact to redux state
+      dispatch(setSelectedArtefact(res.data));
+      resolve(res);
+    })
+    .catch(err => {
+      console.log("Failed to select artefact" + err);
+      reject(err);
+    });
   });
 };
 
@@ -139,7 +134,7 @@ export const editSelectedArtefact = artefact => dispatch => {
       updateSelectedArtefactAPIRequest(selectedArtefact._id, selectedArtefact)
         .then(res => {
           // update selected artefact to redux state
-          dispatch(updateSelectedArtefact(res.data));
+          dispatch(setSelectedArtefact(res.data));
           resolve(res);
         })
         .catch(err => {
@@ -154,15 +149,13 @@ export const editSelectedArtefact = artefact => dispatch => {
 export const removeSelectedArtefact = artefactId => dispatch => {
   return new Promise((resolve, reject) => {
     deleteSelectedArtefactAPIRequest(artefactId)
-      .then(res => {
-        // delete selected artefact and update artefacts in redux state
-        dispatch(deleteSelectedArtefact(res.data));
-        resolve(res);
-      })
-      .catch(err => {
-        console.log("Failed to delete artefact" + err);
-        reject(err);
-      });
+    .then(res => {
+      resolve(res);
+    })
+    .catch(err => {
+      console.log("Failed to delete artefact" + err);
+      reject(err);
+    })
   });
 };
 
@@ -175,34 +168,10 @@ export const setUserArtefacts = decoded => {
   };
 };
 
-// add user's newly posted/created rtefacts into redux state
-export const addNewArtefact = decoded => {
-  return {
-    type: ADD_NEW_ARTEFACT,
-    payload: decoded
-  };
-};
-
 // assign new artefact to user
 export const setSelectedArtefact = decoded => {
   return {
     type: SET_SELECTED_ARTEFACT,
-    payload: decoded
-  };
-};
-
-// update selected artefact
-export const updateSelectedArtefact = decoded => {
-  return {
-    type: UPDATE_SELECTED_ARTEFACT,
-    payload: decoded
-  };
-};
-
-// delete selected artefact
-export const deleteSelectedArtefact = decoded => {
-  return {
-    type: DELETE_SELECTED_ARTEFACT,
     payload: decoded
   };
 };
