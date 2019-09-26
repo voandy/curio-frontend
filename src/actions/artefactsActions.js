@@ -20,12 +20,20 @@ import { uploadImageToGCS } from "../utils/imageUpload";
 // Async Redux actions //
 // get all artefacts of user based on userId
 export const getUserArtefacts = userId => dispatch => {
-  // get all artefacts posted by user
-  getUserArtefactsAPIRequest(userId)
-    // success
-    .then(res => dispatch(setUserArtefacts(res.data)))
-    // failure
-    .catch(err => console.log("artefactActions: " + err));
+  return new Promise((resolve, reject) => {
+    // get all artefacts posted by user
+    getUserArtefactsAPIRequest(userId)
+      // success
+      .then(res => {
+        dispatch(setUserArtefacts(res.data));
+        resolve(res);
+      })
+      // failure
+      .catch(err => {
+        console.log("artefactActions: " + err);
+        reject(err);
+      });
+  });
 };
 
 // like an artefact
