@@ -62,6 +62,44 @@ class SelectedGroup extends Component {
     return <>{groupMemberRows}</>;
   };
 
+  // return a row of group artefacts 
+  showGroupArtefacts = groupArtefacts => {
+    let groupArtefactRows = [];
+    let groupArtefactFeeds = [];
+    let rowKey = 0;
+    let groupArtefactKey = 0;
+
+    for (var i = 0; i < groupArtefacts.length; i++) {
+
+      // append group artefacts into array
+      groupArtefactFeeds.push(
+        <View style={styles.card} key={groupArtefactKey}>
+          <TouchableOpacity
+            activeOpacity={0.5}
+          >
+            <Image
+              style={styles.photo}
+              source={{ uri: groupArtefacts[i].details.images[0].URL }}
+            />
+            <Text> title: {groupArtefacts[i].details.title} </Text>
+            <Text> description: {groupArtefacts[i].details.description} </Text>
+            <Text> category: {groupArtefacts[i].details.category} </Text>
+            <Text> dateObtained {groupArtefacts[i].details.dateObtained} </Text>
+          </TouchableOpacity>
+        </View>
+      );
+      groupArtefactKey++;
+    }
+
+    // create a row out of the array of group artefacts
+    groupArtefactRows.push(
+      <View style={styles.feed} key={rowKey}>
+        {groupArtefactFeeds}
+      </View>
+    );   
+    return <>{groupArtefactRows}</>;
+  };
+
   render() {
     
     // selected group information
@@ -73,11 +111,12 @@ class SelectedGroup extends Component {
     const title = selectedGroup.title;
 
     // selected group's members information
-    console.log("selectedGroupMembers", this.props.groups.selectedGroupMembers);
+    // console.log("selectedGroupMembers", this.props.groups.selectedGroupMembers);
     const selectedGroupMembers = this.props.groups.selectedGroupMembers;
 
     // selected group's groupMembers information
     // console.log("selectedGroupArtefacts", this.props.groups.selectedGroupArtefacts);
+    const selectedGroupArtefacts = this.props.groups.selectedGroupArtefacts;
 
     return (
       <View style={styles.container}>
@@ -95,8 +134,10 @@ class SelectedGroup extends Component {
             <Text> dateCreated: {dateCreated} </Text>
           
           <Text style={styles.title}> Members </Text>
-              {this.showGroupMembers(selectedGroupMembers)}
+            {this.showGroupMembers(selectedGroupMembers)}
+
           <Text style={styles.title}> Artefacts </Text>
+            {this.showGroupArtefacts(selectedGroupArtefacts)}
         </ScrollView>
       </View>
     );
