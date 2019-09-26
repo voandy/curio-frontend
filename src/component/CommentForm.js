@@ -23,7 +23,6 @@ class CommentForm extends Component {
     return (
       <View style={styles.commentInput}>
         {/* user profile pic */}
-        {/* <Image style={styles.photo} source={this.props.userProfilePic} /> */}
         <Image
           style={styles.userProfilePic}
           source={{uri: this.props.profilePic}}
@@ -34,6 +33,8 @@ class CommentForm extends Component {
           placeholder="Add Comment"
           placeholderTextColor="#707070"
           style={styles.textInput}
+          multiline={false}
+          onSubmitEditing={this.props.onSubmitEditing}
         />
       </View>
     );

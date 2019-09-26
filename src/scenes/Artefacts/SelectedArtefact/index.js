@@ -28,10 +28,12 @@ import HeaderImageScrollView from 'react-native-image-header-scroll-view';
 import ImageView from 'react-native-image-view';
 import ArtefactModal from '../../../component/ArtefactModal';
 import ActivityLoaderModal from "../../../component/ActivityLoaderModal";
+import KeyboardShift from "../../../component/componentHelpers/KeyboardShift"
 
 // redux actions
 import { editSelectedArtefact, selectArtefact, getUserArtefacts, 
-  removeSelectedArtefact, likeArtefact, unlikeArtefact, getArtefactComments } 
+  removeSelectedArtefact, likeArtefact, unlikeArtefact, getArtefactComments, 
+  commentOnArtefact } 
   from "../../../actions/artefactsActions";
 
 // custom responsive design component
@@ -40,11 +42,6 @@ import {
   deviceWidthDimension as wd,
   setToBottom
 } from "../../../utils/responsiveDesign";
-
-// remove this
-const comment1 = "Ravioli, ravioli, give me the formuoli";
-const comment2 = "is mayonnaise an instrument? No patrick, mayonnaise is not an instrument... Horseradish is not either";
-const comment3 = "Goodbye everyone, I'll remember you all in therapy";
 
 class SelectedArtefact extends Component {
   state = {
@@ -68,11 +65,25 @@ class SelectedArtefact extends Component {
   };
 
   like = function () {
-    this.props.likeArtefact(this.props.artefacts.selectedArtefact._id, this.props.user.userData._id);
+    this.props.likeArtefact(
+      this.props.artefacts.selectedArtefact._id, 
+      this.props.user.userData._id
+    );
   }
 
   unlike = function () {
-    this.props.unlikeArtefact(this.props.artefacts.selectedArtefact._id, this.props.user.userData._id);
+    this.props.unlikeArtefact(
+      this.props.artefacts.selectedArtefact._id, 
+      this.props.user.userData._id
+    );
+  }
+
+  postComment = function (commentContent) {
+    this.props.commentOnArtefact(
+      this.props.artefacts.selectedArtefact._id,
+      this.props.user.userData._id,
+      commentContent
+    );
   }
 
   async componentDidMount() {
@@ -230,99 +241,111 @@ class SelectedArtefact extends Component {
     var commentsCount = this.props.artefacts.artefactComments.length;
 
     return (
-      <View style={styles.container}>
+      <KeyboardShift>
+        {() => (
+          <View style={styles.container}>
+            {/* loading modal window */}
+            <ActivityLoaderModal loading={this.state.loading} />
 
-        {/* loading modal window */}
-        <ActivityLoaderModal loading={this.state.loading} />
+            {/* header */}
+            <HeaderImageScrollView
+              maxHeight={Dimensions.get("window").height * 0.5}
+              minHeight={Dimensions.get("window").height * 0.2}
+              // use this to dynamically get image data
+              headerImage={{
+                uri: this.props.artefacts.selectedArtefact.images[0].URL
+              }}
+              renderForeground={() => (
+                // change this to open the image in full screen
+                <TouchableOpacity
+                  style={styles.cover}
+                  onPress={() =>
+                    this.setState({
+                      isImageViewVisible: true,
+                      statusBarHidden: true
+                    })
+                  }
+                />
+              )}
+            >
+              {/* open image in full screen */}
+              <ImageView
+                images={artefactImage}
+                isVisible={this.state.isImageViewVisible}
+                animationType={"fade"}
+                isSwipeCloseEnabled={true}
+              />
 
-        {/* header */}
-        <HeaderImageScrollView
-          maxHeight={Dimensions.get("window").height * 0.5}
-          minHeight={Dimensions.get("window").height * 0.2}
-          // use this to dynamically get image data
-          headerImage={{
-            uri: this.props.artefacts.selectedArtefact.images[0].URL
-          }}
-          renderForeground={() => (
-            // change this to open the image in full screen
-            <TouchableOpacity
-              style={styles.cover}
-              onPress={() =>
-                this.setState({
-                  isImageViewVisible: true,
-                  statusBarHidden: true
-                })
-              }
-            />
-          )}
-        >
+              {/* desciption */}
+              <View style={styles.descriptionPlaceholder}>
+                <View style={{ flexDirection: "row" }}>
+                  {/* title */}
+                  <Text style={styles.title}>
+                    {this.props.artefacts.selectedArtefact.title}
+                  </Text>
+                  <OptionButton
+                    toggleUpdateModal={this.toggleUpdateModal}
+                    toggleDeleteModal={this.toggleDeleteModal}
+                  />
+                </View>
 
-        {/* open image in full screen */}
-        <ImageView
-          images={artefactImage}
-          isVisible={this.state.isImageViewVisible}
-          animationType={"fade"}
-          isSwipeCloseEnabled={true}
-        />
+                <ArtefactModal
+                  isModalVisible={this.state.isUpdateModalVisible}
+                  toggleModal={this.toggleUpdateModal}
+                  newArtefact={this.state.selectedArtefact}
+                  onSubmit={this.onSubmit.bind(this)}
+                  setNewArtefact={this.setSelectedArtefact.bind(this)}
+                />
 
-        {/* desciption */}
-        <View style={styles.descriptionPlaceholder}>
-          <View style={{ flexDirection: "row" }}>
+                {/* description */}
+                <Text style={styles.description}>
+                  {this.props.artefacts.selectedArtefact.description}
+                </Text>
+              </View>
 
-          {/* title */}
-          <Text style={styles.title}>{this.props.artefacts.selectedArtefact.title}</Text>
-            <OptionButton 
-              toggleUpdateModal={this.toggleUpdateModal}
-              toggleDeleteModal={this.toggleDeleteModal}
-            />
+              {/* user detail */}
+              <UserDetail
+                image={{ uri: this.props.user.userData.profilePic }}
+                userName={this.props.user.userData.name}
+              />
+
+              {/* likes/comments counters */}
+              <View style={styles.likesIndicatorPlaceholder}>
+                <Text style={styles.indicator}>
+                  {likesCount} Likes {commentsCount} Comments
+                </Text>
+              </View>
+
+              {/* button */}
+              <View style={styles.likesButtonPlaceholder}>
+                {liked === true ? (
+                  <UnlikeButton onPress={this.unlike.bind(this)} />
+                ) : (
+                  <LikeButton onPress={this.like.bind(this)} />
+                )}
+
+                {/* Comment button */}
+                <CommentButton />
+              </View>
+
+              {/* comments */}
+              <View style={styles.comments}>
+                <Text style={styles.commentsTitle}>Comments</Text>
+
+                <CommentForm
+                  profilePic={this.props.user.userData.profilePic}
+                  onSubmitEditing={event => {
+                    this.postComment(event.nativeEvent.text);
+                  }}
+                />
+
+                {/* comments */}
+                {this.showComments(this.props.artefacts.artefactComments)}
+              </View>
+            </HeaderImageScrollView>
           </View>
-
-          <ArtefactModal
-            isModalVisible={this.state.isUpdateModalVisible}
-            toggleModal={this.toggleUpdateModal}
-            newArtefact={this.state.selectedArtefact}
-            onSubmit={this.onSubmit.bind(this)}
-            setNewArtefact={this.setSelectedArtefact.bind(this)}
-          />
-
-          {/* description */}
-          <Text style={styles.description}>{this.props.artefacts.selectedArtefact.description}</Text>
-        </View>
-
-          {/* user detail */}
-          <UserDetail
-            image={{ uri: this.props.user.userData.profilePic }}
-            userName={this.props.user.userData.name}
-          />
-
-          {/* likes/comments counters */}
-          <View style={styles.likesIndicatorPlaceholder}>
-            <Text style={styles.indicator}>{likesCount} Likes {commentsCount} Comments</Text>
-          </View>
-
-          {/* button */}
-          <View style={styles.likesButtonPlaceholder}>
-            {liked === true ? (
-              <UnlikeButton onPress={this.unlike.bind(this)} />
-              ) : (
-              <LikeButton onPress={this.like.bind(this)} />
-            )}
-
-            {/* Comment button */}
-            <CommentButton />
-          </View>
-
-          {/* comments */}
-          <View style={styles.comments}>
-            <Text style={styles.commentsTitle}>Comments</Text>
-
-                <CommentForm profilePic = {this.props.user.userData.profilePic} />
-
-            {/* comments */}
-            {this.showComments(this.props.artefacts.artefactComments)}
-          </View>
-        </HeaderImageScrollView>     
-      </View >
+        )}
+      </KeyboardShift>
     );
   }
 }
@@ -400,5 +423,5 @@ const mapStateToProps = state => ({
 export default connect(
   mapStateToProps,
   { editSelectedArtefact, selectArtefact, getUserArtefacts, removeSelectedArtefact,
-    likeArtefact, unlikeArtefact, getArtefactComments }
+    likeArtefact, unlikeArtefact, getArtefactComments, commentOnArtefact }
 )(SelectedArtefact);

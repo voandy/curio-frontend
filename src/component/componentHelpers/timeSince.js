@@ -1,3 +1,5 @@
+// credit: Sky Sanders
+// https://stackoverflow.com/questions/3177836/how-to-format-time-since-xxx-e-g-4-minutes-ago-similar-to-stack-exchange-site
 export const timeSince = function(date) {
   date = new Date(date);
   var seconds = Math.floor((new Date() - date) / 1000);

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-// register user based on user details
+// create new artefact
 export const createArtefactAPIRequest = newArtefact => {
   return new Promise((resolve, reject) => {
     axios
@@ -10,7 +10,7 @@ export const createArtefactAPIRequest = newArtefact => {
   });
 };
 
-// log user in with user details
+// get all artefacts owned by user
 export const getUserArtefactsAPIRequest = userId => {
   return new Promise((resolve, reject) => {
     axios
@@ -28,33 +28,45 @@ export const selectArtefactAPIRequest = artefactId => {
       .then(res => resolve(res))
       .catch(err => reject(err));
   });
-}
+};
 
 // update selected artefact based on artefactId
-export const updateSelectedArtefactAPIRequest = (artefactId, selectedArtefact) => {
+export const updateSelectedArtefactAPIRequest = (
+  artefactId,
+  selectedArtefact
+) => {
   return new Promise((resolve, reject) => {
     axios
-    .put("http://curioapp.herokuapp.com/api/artefact/id/" + artefactId, selectedArtefact)
-    .then(res => resolve(res))
-    .catch(err => reject(err));
+      .put(
+        "http://curioapp.herokuapp.com/api/artefact/id/" + artefactId,
+        selectedArtefact
+      )
+      .then(res => resolve(res))
+      .catch(err => reject(err));
   });
-}
+};
 
 // delete selected artefact of artefactId
-export const deleteSelectedArtefactAPIRequest = (artefactId) => {
+export const deleteSelectedArtefactAPIRequest = artefactId => {
   return new Promise((resolve, reject) => {
     axios
-    .delete("http://curioapp.herokuapp.com/api/artefact/id/" + artefactId)
-    .then(res => resolve(res))
-    .catch(err => reject(err));
+      .delete("http://curioapp.herokuapp.com/api/artefact/id/" + artefactId)
+      .then(res => resolve(res))
+      .catch(err => reject(err));
   });
-}
+};
 
 // like an artefact
 export const likeAPIRequest = (artefactId, userId) => {
   return new Promise((resolve, reject) => {
     axios
-      .post("http://curioapp.herokuapp.com/api/artefact/id/" + artefactId + "/userId/" + userId + "/like")
+      .post(
+        "http://curioapp.herokuapp.com/api/artefact/id/" +
+          artefactId +
+          "/userId/" +
+          userId +
+          "/like"
+      )
       .then(res => resolve(res))
       .catch(err => reject(err));
   });
@@ -64,7 +76,13 @@ export const likeAPIRequest = (artefactId, userId) => {
 export const unlikeAPIRequest = (artefactId, userId) => {
   return new Promise((resolve, reject) => {
     axios
-      .post("http://curioapp.herokuapp.com/api/artefact/id/" + artefactId + "/userId/" + userId + "/unlike")
+      .post(
+        "http://curioapp.herokuapp.com/api/artefact/id/" +
+          artefactId +
+          "/userId/" +
+          userId +
+          "/unlike"
+      )
       .then(res => resolve(res))
       .catch(err => reject(err));
   });
@@ -74,7 +92,32 @@ export const unlikeAPIRequest = (artefactId, userId) => {
 export const getArtefactCommentsAPIRequest = artefactId => {
   return new Promise((resolve, reject) => {
     axios
-      .get("http://curioapp.herokuapp.com/api/artefact/id/" + artefactId + "/getAllComments")
+      .get(
+        "http://curioapp.herokuapp.com/api/artefact/id/" +
+          artefactId +
+          "/getAllComments"
+      )
+      .then(res => resolve(res))
+      .catch(err => reject(err));
+  });
+};
+
+// post a comment on an artefact
+export const postArtefactCommentAPIRequest = (
+  artefactId,
+  userId,
+  newComment
+) => {
+  return new Promise((resolve, reject) => {
+    axios
+      .post(
+        "http://curioapp.herokuapp.com/api/artefact/id/" +
+          artefactId +
+          "/userId/" +
+          userId +
+          "/comment",
+        newComment
+      )
       .then(res => resolve(res))
       .catch(err => reject(err));
   });

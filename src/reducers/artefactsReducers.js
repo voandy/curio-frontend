@@ -1,4 +1,12 @@
-import { SET_USER_ARTEFACTS, ADD_NEW_ARTEFACT, SET_SELECTED_ARTEFACT, UPDATE_SELECTED_ARTEFACT, DELETE_SELECTED_ARTEFACT, SET_ARTEFACT_COMMENTS } from "../types/artefactsTypes";
+import {
+  SET_USER_ARTEFACTS,
+  ADD_NEW_ARTEFACT,
+  SET_SELECTED_ARTEFACT,
+  UPDATE_SELECTED_ARTEFACT,
+  DELETE_SELECTED_ARTEFACT,
+  SET_ARTEFACT_COMMENTS,
+  ADD_ARTEFACT_COMMENT
+} from "../types/artefactsTypes";
 
 const initialState = {
   userArtefacts: [],
@@ -22,21 +30,26 @@ export default function(state = initialState, action) {
       return {
         ...state,
         selectedArtefact: action.payload
-      }
+      };
     case UPDATE_SELECTED_ARTEFACT:
       return {
         ...state,
         selectedArtefact: action.payload
-      }
+      };
     case DELETE_SELECTED_ARTEFACT:
       return {
-        ...state,
-      }
+        ...state
+      };
     case SET_ARTEFACT_COMMENTS:
       return {
         ...state,
         artefactComments: action.payload
-      }
+      };
+    case ADD_ARTEFACT_COMMENT:
+      return {
+        ...state,
+        artefactComments: state.artefactComments.concat(action.payload)
+      };
     default:
       return state;
   }
