@@ -1,4 +1,4 @@
-import { SET_CURRENT_USER, USER_LOGOUT } from "../types/authTypes";
+import { SET_CURRENT_USER } from "../types/authTypes";
 
 const isEmpty = require("is-empty");
 const initialState = {
@@ -14,8 +14,6 @@ export default function(state = initialState, action) {
         isAuthenticated: !isEmpty(action.payload),
         user: action.payload
       };
-    case USER_LOGOUT:
-      return initialState;
     default:
       return state;
   }
