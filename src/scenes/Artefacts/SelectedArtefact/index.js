@@ -53,6 +53,7 @@ class SelectedArtefact extends Component {
     isImageViewVisible: false,
     isUpdateModalVisible: false,
     loading: false,
+    newComment: "",
     // statusBarHidden: false,
   };
 
@@ -63,6 +64,12 @@ class SelectedArtefact extends Component {
       elevation: 0 // remove shadow on Android
     }
   };
+
+  onChangeNewComment = (newComment) => {
+    this.setState({
+      newComment
+    })
+  }
 
   like = function () {
     this.props.likeArtefact(
@@ -95,7 +102,7 @@ class SelectedArtefact extends Component {
     const prevSelectedArtefact = this.props.artefacts.selectedArtefact;
     const selectedArtefact = nextProps.artefacts.selectedArtefact;
     if (prevSelectedArtefact !== selectedArtefact) { 
-
+      console.log("1");
       // edit selectedArtefact in redux state
       this.props.selectArtefact(selectedArtefact._id);
 
@@ -105,7 +112,9 @@ class SelectedArtefact extends Component {
 
     const prevArtefactComments = this.props.artefacts.artefactComments;
     const artefactComments = nextProps.artefacts.artefactComments;
-    if(prevArtefactComments !== artefactComments) {
+    if(prevArtefactComments.length !== artefactComments.length) {
+      console.log("prev", prevArtefactComments);
+      console.log("after", artefactComments);
       this.generateComments();
     }
   }
@@ -333,9 +342,12 @@ class SelectedArtefact extends Component {
                 <Text style={styles.commentsTitle}>Comments</Text>
 
                 <CommentForm
+                  newComment={this.state.newComment}
+                  onChangeNewComment={this.onChangeNewComment}
                   profilePic={this.props.user.userData.profilePic}
                   onSubmitEditing={event => {
                     this.postComment(event.nativeEvent.text);
+                    this.onChangeNewComment("");
                   }}
                 />
 

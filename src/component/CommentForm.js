@@ -34,6 +34,8 @@ class CommentForm extends Component {
           placeholderTextColor="#707070"
           style={styles.textInput}
           multiline={false}
+          value={this.props.newComment}
+          onChangeText={value => this.props.onChangeNewComment(value)}
           onSubmitEditing={this.props.onSubmitEditing}
         />
       </View>
