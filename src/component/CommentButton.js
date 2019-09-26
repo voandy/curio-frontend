@@ -20,7 +20,7 @@ class CommentButton extends Component {
 
   render() {
     return (
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity style={styles.button} onPress={this.props.onPress}>
       <Image
         style={styles.buttonIcon}
         source={require("../../assets/images/icons/comment.png")}

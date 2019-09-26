@@ -54,6 +54,11 @@ class SelectedArtefact extends Component {
     isUpdateModalVisible: false,
     loading: false,
     newComment: "",
+    // whether the user has liked this artefact
+    liked: this.props.artefacts.selectedArtefact.likes.includes(this.props.user.userData._id),
+    likesCount: this.props.artefacts.selectedArtefact.likes.length,
+    commentsCount: this.props.artefacts.artefactComments.length,
+    likingEnabled: true,
     // statusBarHidden: false,
   };
 
@@ -72,17 +77,49 @@ class SelectedArtefact extends Component {
   }
 
   like = function () {
-    this.props.likeArtefact(
-      this.props.artefacts.selectedArtefact._id, 
-      this.props.user.userData._id
-    );
+    if (this.state.likingEnabled) {
+      this.setState(
+        {
+          liked: true,
+          likesCount: this.state.likesCount + 1,
+          likingEnabled: false
+        }
+      );
+      this.props.likeArtefact(
+        this.props.artefacts.selectedArtefact._id, 
+        this.props.user.userData._id
+      ).then(function() {
+        this.setState({likingEnabled: true});
+      }.bind(this)).catch(function() {
+        this.setState({likingEnabled: true});
+        alert("An error occured. Please try again.");
+      }.bind(this));
+    } else {
+      alert("Sending request. Please wait.");
+    }
   }
 
   unlike = function () {
-    this.props.unlikeArtefact(
-      this.props.artefacts.selectedArtefact._id, 
-      this.props.user.userData._id
-    );
+    if (this.state.likingEnabled) {
+      this.setState(
+        {
+          liked: false,
+          likesCount: this.state.likesCount - 1,
+          likingEnabled: false
+        }
+      );
+      this.props.unlikeArtefact(
+        this.props.artefacts.selectedArtefact._id, 
+        this.props.user.userData._id
+      ).then(function() {
+        this.setState({likingEnabled: true});
+      }.bind(this)).catch(function() {
+        this.setState({likingEnabled: true});
+        alert("An error occured. Please try again.");
+      }.bind(this));
+    } else {
+      alert("Sending request. Please wait.");
+    }
   }
 
   postComment = function (commentContent) {
@@ -91,6 +128,10 @@ class SelectedArtefact extends Component {
       this.props.user.userData._id,
       commentContent
     );
+  }
+
+  scrollToEnd = function () {
+    this.scrollView.scrollToEnd();
   }
 
   async componentDidMount() {
@@ -102,10 +143,8 @@ class SelectedArtefact extends Component {
     const prevSelectedArtefact = this.props.artefacts.selectedArtefact;
     const selectedArtefact = nextProps.artefacts.selectedArtefact;
     if (prevSelectedArtefact !== selectedArtefact) { 
-      console.log("1");
       // edit selectedArtefact in redux state
       this.props.selectArtefact(selectedArtefact._id);
-
       // reload userArtefacts to update userArtefacts in redux state
       this.props.getUserArtefacts(selectedArtefact.userId);
     }
@@ -113,8 +152,6 @@ class SelectedArtefact extends Component {
     const prevArtefactComments = this.props.artefacts.artefactComments;
     const artefactComments = nextProps.artefacts.artefactComments;
     if(prevArtefactComments.length !== artefactComments.length) {
-      console.log("prev", prevArtefactComments);
-      console.log("after", artefactComments);
       this.generateComments();
     }
   }
@@ -122,6 +159,7 @@ class SelectedArtefact extends Component {
   generateComments = async () => {
     const artefactId = this.props.artefacts.selectedArtefact._id;
     await this.props.getArtefactComments(artefactId);
+    this.setState({commentsCount: this.props.artefacts.artefactComments.length});
   }
 
   showComments = function (comments) {
@@ -244,11 +282,6 @@ class SelectedArtefact extends Component {
       }
     ];
 
-    // whether the user has liked this artefact
-    var liked = this.props.artefacts.selectedArtefact.likes.includes(this.props.user.userData._id);
-    var likesCount = this.props.artefacts.selectedArtefact.likes.length;
-    var commentsCount = this.props.artefacts.artefactComments.length;
-
     return (
       <KeyboardShift>
         {() => (
@@ -258,6 +291,7 @@ class SelectedArtefact extends Component {
 
             {/* header */}
             <HeaderImageScrollView
+              ref={(scrollView) => { this.scrollView = scrollView }}
               maxHeight={Dimensions.get("window").height * 0.5}
               minHeight={Dimensions.get("window").height * 0.2}
               // use this to dynamically get image data
@@ -321,26 +355,25 @@ class SelectedArtefact extends Component {
               {/* likes/comments counters */}
               <View style={styles.likesIndicatorPlaceholder}>
                 <Text style={styles.indicator}>
-                  {likesCount} Likes {commentsCount} Comments
+                  {this.state.likesCount} Likes {this.state.commentsCount} Comments
                 </Text>
               </View>
 
               {/* button */}
               <View style={styles.likesButtonPlaceholder}>
-                {liked === true ? (
+                {this.state.liked === true ? (
                   <UnlikeButton onPress={this.unlike.bind(this)} />
                 ) : (
                   <LikeButton onPress={this.like.bind(this)} />
                 )}
-
                 {/* Comment button */}
-                <CommentButton />
+                <CommentButton onPress={() => this.scrollToEnd()} />
               </View>
-
               {/* comments */}
               <View style={styles.comments}>
                 <Text style={styles.commentsTitle}>Comments</Text>
-
+                {/* comments */}
+                {this.showComments(this.props.artefacts.artefactComments)}
                 <CommentForm
                   newComment={this.state.newComment}
                   onChangeNewComment={this.onChangeNewComment}
@@ -350,9 +383,6 @@ class SelectedArtefact extends Component {
                     this.onChangeNewComment("");
                   }}
                 />
-
-                {/* comments */}
-                {this.showComments(this.props.artefacts.artefactComments)}
               </View>
             </HeaderImageScrollView>
           </View>
@@ -412,7 +442,7 @@ const styles = StyleSheet.create({
 
   commentsTitle: {
     marginHorizontal: wd(0.05),
-    marginTop: wd(0.05),
+    // marginTop: wd(0.05),
     fontFamily: "HindSiliguri-Bold",
     alignSelf: "flex-start",
     fontSize: 24
