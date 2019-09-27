@@ -43,9 +43,7 @@ import {
 
 // custom responsive design component
 import {
-  deviceHeigthDimension as hp,
   deviceWidthDimension as wd,
-  setToBottom
 } from "../../../utils/responsiveDesign";
 
 // remove this
