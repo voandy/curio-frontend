@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
+import GroupOptionButton from "../../../component/GroupOptionButton";
 import {
   StyleSheet,
   Dimensions,
@@ -11,17 +12,34 @@ import {
   ScrollView,
 } from "react-native";
 
+// import redux actions for groups
+import { 
+  editSelectedGroup,
+} from "../../../actions/groupsActions";
+
 // Custom respondsive design component
 import {
   deviceHeigthDimension as hp,
   deviceWidthDimension as wd
 } from "../../../utils/responsiveDesign";
 
+// custom components
+import GroupModal from "../../../component/GroupModal";
+
 class SelectedGroup extends Component {
   
+
+    state = {
+      selectedGroup: {
+        ...this.props.groups.selectedGroup,
+        coverPhoto: this.props.groups.selectedGroup.coverPhoto
+      },
+      isUpdateModalVisible: false,
+      loading: false
+    };
+
   // nav details
   static navigationOptions = {
-    header: null,
     headerStyle: {
       elevation: 0 // remove shadow on Android
     }
@@ -100,10 +118,54 @@ class SelectedGroup extends Component {
     return <>{groupArtefactRows}</>;
   };
 
+  // selected artefact's attribute change
+  setSelectedGroup = (key, value) => {
+    this.setState({
+      selectedGroup: {
+        ...this.state.selectedGroup,
+        [key]: value
+      }
+    });
+  };
+
+  // setter function for "loading" to show user that something is loading
+  setLoading = loading => {
+    this.setState({
+      ...this.state,
+      loading
+    });
+  };
+
+  // toggle the modal for artefact update input
+  toggleUpdateModal = () => {
+    this.setState({ isUpdateModalVisible: !this.state.isUpdateModalVisible });
+  };
+
+  // post new artefact to the backend
+  onSubmit = async () => {
+    // show user the loading modal
+    this.setLoading(true);
+    // send and create artefact to the backend
+    this.props
+      .editSelectedGroup(this.state.selectedGroup)
+      .then(() => {
+        // stop showing user the loading modal
+        this.setLoading(false);
+        // close loading modal
+        this.toggleUpdateModal();
+      })
+      .catch(err => {
+        // stop showing user the loading modal
+        this.setLoading(false);
+        // show error
+        console.log(err.response.data);
+      });
+  };
+
   render() {
     
     // selected group information
-    // console.log("selectedGroup", this.props.groups.selectedGroup);
+    console.log("selectedGroup", this.props.groups.selectedGroup);
     const selectedGroup = this.props.groups.selectedGroup;
     const coverPhoto = selectedGroup.coverPhoto;
     const dateCreated = selectedGroup.dateCreated;
@@ -124,6 +186,19 @@ class SelectedGroup extends Component {
             showsVerticalScrollIndicator={false}
             scrollEventThrottle={16}
         >
+          <Text style={styles.title}> Group Functionalities </Text>
+            <GroupOptionButton
+              toggleUpdateModal={this.toggleUpdateModal}
+              toggleDeleteModal={this.toggleDeleteModal}
+            />
+              <GroupModal
+                isModalVisible={this.state.isUpdateModalVisible}
+                toggleModal={this.toggleUpdateModal}
+                newGroup={this.state.selectedGroup}
+                post={this.onSubmit.bind(this)}
+                onNewGroupChange={this.setSelectedGroup.bind(this)}
+              />
+
           <Text style={styles.title}> Group Information </Text>
 
             <Text> coverPhoto: </Text>
@@ -181,5 +256,5 @@ const mapStateToProps = state => ({
 //  connect to redux and export
 export default connect(
   mapStateToProps,
-  { }
+  { editSelectedGroup }
 )(SelectedGroup);

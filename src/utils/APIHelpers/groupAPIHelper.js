@@ -64,3 +64,12 @@ export const getGroupAllMembersAPIRequest = (groupId) => {
       .catch(err => reject(err));
   })
 }
+
+export const editGroupAPIRequest = (groupId) => {
+  return new Promise((resolve, reject) => {
+    axios
+      .put("http://curioapp.herokuapp.com/api/group/id/" + groupId)
+      .then(res => resolve(res))
+      .catch(err => reject(err));
+  });
+}

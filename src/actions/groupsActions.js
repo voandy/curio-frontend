@@ -12,6 +12,7 @@ import {
   putGroupAdminAPIRequest,
   getGroupAllArtefactsAPIRequest,
   getGroupAllMembersAPIRequest,
+  editGroupAPIRequest,
 } from "../utils/APIHelpers/groupAPIHelper";
 
 import { uploadImageToGCS } from "../utils/imageUpload";
@@ -125,6 +126,22 @@ export const getSelectedGroupAllMembers = groupId => dispatch => {
       });
   });
 };
+
+// edit group details
+export const editSelectedGroup = groupId => dispatch => {
+  return new Promise((resolve, reject) => {
+    editGroupAPIRequest(groupId)
+      .then(res => {
+        resolve(res);
+        dispatch(setSelectedGroupMembers(res.data))
+      })
+      // failure
+      .catch(err => {
+        console.log("groupActions: " + err);
+        reject(err);
+      });
+  })
+}
 
 export const setUserGroups = decoded => {
   return {

@@ -12,7 +12,13 @@ import {
 } from "react-native";
 
 // import redux actions for groups
-import { createNewGroup, getSelectedGroup, getSelectedGroupAllArtefacts, getSelectedGroupAllMembers } from "../../actions/groupsActions";
+import { 
+  createNewGroup, 
+  getSelectedGroup, 
+  getSelectedGroupAllArtefacts, 
+  getSelectedGroupAllMembers, 
+  editSelectedGroup,
+} from "../../actions/groupsActions";
 
 // custom components
 import CardCarousel from "../../component/CardCarousel";
