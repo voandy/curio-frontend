@@ -56,11 +56,20 @@ class SelectedArtefact extends Component {
     newComment: "",
     // whether the user has liked this artefact
     liked: this.props.artefacts.selectedArtefact.likes.includes(this.props.user.userData._id),
-    likesCount: this.props.artefacts.selectedArtefact.likes.length,
-    commentsCount: this.props.artefacts.artefactComments.length,
+    likesCount: 0,
+    commentsCount: 0,
     likingEnabled: true,
     // statusBarHidden: false,
   };
+
+  async componentDidMount() {
+    await this.generateComments();
+    this.setState({
+      commentsCount: this.props.artefacts.artefactComments.length,
+      likesCount: this.props.artefacts.selectedArtefact.likes.length,
+      likingEnabled: true
+    });
+  }
 
   // nav details
   static navigationOptions = {
@@ -132,10 +141,6 @@ class SelectedArtefact extends Component {
 
   scrollToEnd = function () {
     this.scrollView.scrollToEnd();
-  }
-
-  async componentDidMount() {
-    await this.generateComments();
   }
 
   // update selectedArtefact when it has already been changed
