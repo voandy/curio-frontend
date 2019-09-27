@@ -7,7 +7,7 @@ import {
     TouchableOpacity,
 } from 'react-native';
 
-/* artefacts shown in squares in artefacts page */
+/** artefacts shown in squares in artefacts page */
 class ArtefactFeed extends Component {
 
     render() {

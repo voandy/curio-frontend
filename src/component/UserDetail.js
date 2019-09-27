@@ -14,6 +14,8 @@ import {
     deviceWidthDimension as wd,
 } from "../utils/responsiveDesign"
 
+/** Touchable user detail that links to the user's pubic profile 
+ *  used in comments, artefact feeds and selected artefacts */
 class UserDetail extends Component {
     constructor(props) {
         super(props);
@@ -48,7 +50,7 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         marginHorizontal: wd(0.06),
         alignItems: "center",
-        width: Dimensions.get('window').width * 0.8,
+        width: Dimensions.get('window').width * 0.9,
         height: Dimensions.get('window').width * 0.15,
     },
 

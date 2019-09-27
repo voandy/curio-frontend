@@ -5,8 +5,8 @@ import {
     Text
 } from 'react-native';
 
-/* general add button 
- * used in groups, artefacts and selected groups pages */
+/** general add button 
+ *  used in groups, artefacts and selected groups pages */
 class AddButton extends Component {
 
     constructor(props) {

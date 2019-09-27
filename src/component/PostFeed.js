@@ -11,17 +11,22 @@ import {
 
 
 // custom component
-import UserDetail from "../../../component/UserDetail"
-import Line from "../../../component/Line"
+import UserDetail from "../component/UserDetail"
+import Line from "../component/Line"
 
 // custom responsive design component
 import {
     deviceHeigthDimension as hp,
     deviceWidthDimension as wd,
     setToBottom
-} from "../../../utils/responsiveDesign"
+} from "../../src/utils/responsiveDesign"
+
 
 class PostFeed extends Component {
+
+    constructor(props) {
+        super(props);
+    }
 
     render() {
 
@@ -29,16 +34,19 @@ class PostFeed extends Component {
             <View style={styles.container}>
 
                 <View style={styles.description}>
-                    <UserDetail userName="this.props.userName" />
+                    <UserDetail userName={this.props.userName} image={this.props.image} />
+                    {/* ^ add time= props.time */}
 
-                    <Text style={[styles.font, styles.title]}></Text>
+                    <Text style={[styles.font, styles.title]}>{this.props.title}</Text>
                 </View>
 
 
                 {/* image */}
-                {/* <Image source={this.props.image} style={styles.image} /> */}
-                <Image source={require("../../assets/images/test-delete-this/boi2.jpg")} style={styles.image} />
-                
+                {/* <TouchableOpacity onPress={this.props.onPress}> */}
+                <TouchableOpacity>
+                    <Image source={this.props.image} style={styles.image} />
+                </TouchableOpacity>
+
                 {/* likes and comments */}
                 <View style={styles.likesIndicatorPlaceholder}>
 
@@ -59,22 +67,28 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: "center",
         justifyContent: "center",
-        marginVertical: wd(0.05)
+        marginVertical: wd(0.05),
+        backgroundColor: "white"
     },
 
     font: {
-        fontFamily: "HindSiliguri-Bold",
+        fontFamily: "HindSiliguri-Regular",
+    },
+
+    title: {
+        marginHorizontal: wd(0.05),
+        marginBottom: wd(0.02)
     },
 
     image: {
         width: wd(1),
     },
 
-    likesIndicatorPlaceholder:{
+    likesIndicatorPlaceholder: {
 
     },
 
-    likesPlaceholder:{
+    likesPlaceholder: {
 
     },
 

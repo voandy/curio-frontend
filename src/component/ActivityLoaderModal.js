@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { StyleSheet } from "react-native";
 import AnimatedLoader from "react-native-animated-loader";
 
-/* loading modal screen overlay to proide feedback to users */
+/** loading modal screen overlay to proide feedback to users */
 export default class ActivityLoaderModal extends Component {
   render() {
     return (

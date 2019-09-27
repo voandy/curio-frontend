@@ -15,6 +15,7 @@ import {
     setToBottom
 } from "../utils/responsiveDesign"
 
+/**groups shown in a card form in groups page */
 class CardGroup extends Component {
 
     render() {

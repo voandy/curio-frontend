@@ -105,7 +105,7 @@ class Groups extends Component {
     }
 
     // sort array based on date obtained (from earliest to oldest)
-    unpinnedGroups.sort(function(a, b) {
+    unpinnedGroups.sort(function (a, b) {
       return new Date(b.dateCreated) - new Date(a.dateCreated);
     });
 
@@ -181,25 +181,21 @@ class Groups extends Component {
           {this.props.groups.userGroups.length !== 0 ? (
             <View>{this.showUnpinnedGroups(this.props.groups.userGroups)}</View>
           ) : (
-            <View style={styles.emptyFeed}>
-              <Text
-                style={{ fontSize: 16, fontFamily: "HindSiliguri-Regular" }}
-              >
-                Looks like you're not part of any groups yet
+              <View style={styles.emptyFeed}>
+                <Text
+                  style={{ textAlign: "center", fontSize: 16, fontFamily: "HindSiliguri-Regular" }}
+                >
+                  Looks like you're not part of any groups yet {"\n"}Click the "+" button to create a group
               </Text>
-              <Text
-                style={{ fontSize: 16, fontFamily: "HindSiliguri-Regular" }}
-              >
-                Click the "+" button to create a group
-              </Text>
-            </View>
-          )}
+              </View>
+            )}
         </ScrollView>
 
         {/* create new Group */}
         {/* <AddButton onPress={this.toggleModal} /> */}
         <AddButton onPress={() => navigate("GroupsForm")} />
 
+        {/* REMOVE THIS ONCE FORM IS DONE */}
         <GroupModal
           isModalVisible={this.state.isModalVisible}
           toggleModal={this.toggleModal}

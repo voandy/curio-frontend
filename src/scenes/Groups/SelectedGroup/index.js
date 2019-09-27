@@ -13,7 +13,8 @@ import {
 
 // custom component
 import UserIcon from "../../../component/UserIcon"
-import UserDetail from "../../../component/UserDetail"
+import AddButton from "../../../component/AddButton"
+import PostFeed from "../../../component/PostFeed"
 import Line from "../../../component/Line"
 import Comments from "../../../component/Comments"
 
@@ -87,9 +88,32 @@ class SelectedGroup extends Component {
 
           {/* content */}
           <View>
+            {/* {this.props.groups.userGroups.length !== 0 ? (
+              <View>{"ADD CONTENT HERE"}</View>
+            ) : (
+                <View style={styles.emptyFeed}>
+                  <Text
+                    style={{ textAlign: "center", marginTop: hp(0.05), marginBottom:hp(0.1), fontSize: 16, fontFamily: "HindSiliguri-Regular" }}
+                  >
+                    Get started by adding new memeber to the group {"\n"} and start post items here !
+                  </Text>
+                </View>
+              )} */}
+
+            <PostFeed
+              userName="Bob"
+              title="cold boi iz sad boi"
+              image={require("../../../../assets/images/test-delete-this/boi5.png")}
+              
+              // onPress={this.navigate("selectedArtefact")}
+              />
+
           </View>
         </ScrollView>
 
+        {/* toggle modal to add artefacts into groups */}
+        {/* <AddButton onPress={() => navigate("ArtefactsForm")} /> */}
+        <AddButton />
       </View>
     );
   }
@@ -100,7 +124,7 @@ const styles = StyleSheet.create({
     flex: 1,
     marginTop: StatusBar.currentHeight,
     alignItems: "center",
-    justifyContent: "center"
+    backgroundColor: "#F7F7F7",
   },
 
   font: {
@@ -120,7 +144,8 @@ const styles = StyleSheet.create({
 
   groupInfo: {
     alignItems: "center",
-    marginHorizontal: wd(0.1)
+    paddingHorizontal: wd(0.1),
+    backgroundColor: "white",
   },
 
   groupTitle: {
@@ -141,15 +166,15 @@ const styles = StyleSheet.create({
 
   groupMember: {
     height: wd(0.15),
-    flexDirection:"row",
-    alignItems:"center"
+    flexDirection: "row",
+    alignItems: "center"
   },
 
   memberButton: {
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#FF6E6E",
-    margin:wd(0.03),
+    margin: wd(0.03),
     width: wd(0.3),
     height: wd(0.1),
     borderRadius: 40,
@@ -160,7 +185,9 @@ const styles = StyleSheet.create({
     fontSize: wd(0.037),
     color: "white",
     fontFamily: "HindSiliguri-Bold"
-  }
+  },
+
+
 
 
 

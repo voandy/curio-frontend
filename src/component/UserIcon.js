@@ -11,7 +11,7 @@ import {
 } from "../utils/responsiveDesign"
 
 
-/* used for showing circular user icons
+/**used for showing circular user icons
  * used in groups, comments artefacts etc */
 class UserIcon extends Component {
     constructor(props) {
