@@ -87,7 +87,7 @@ class Groups extends Component {
   clickGroup = async groupId => {
     const { navigate } = this.props.navigation;
     // !!! DOESN'T WORK FOR NOW !!!
-    await this.props.getSelectedGroup(groupId);
+    // await this.props.getSelectedGroup(groupId);
     navigate("SelectedGroup");
   };
 
