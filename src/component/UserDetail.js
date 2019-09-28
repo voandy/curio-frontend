@@ -48,8 +48,8 @@ class UserDetail extends Component {
 const styles = StyleSheet.create({
     container: {
         flexDirection: "row",
-        marginHorizontal: wd(0.06),
         alignItems: "center",
+        alignSelf:"center",
         width: Dimensions.get('window').width * 0.9,
         height: Dimensions.get('window').width * 0.15,
     },

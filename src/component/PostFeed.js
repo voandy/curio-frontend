@@ -12,7 +12,8 @@ import {
 
 // custom component
 import UserDetail from "../component/UserDetail"
-import Line from "../component/Line"
+import { LikeButton, UnlikeButton } from "../component/LikeButton";
+import CommentButton from "../component/CommentButton";
 
 // custom responsive design component
 import {
@@ -34,7 +35,7 @@ class PostFeed extends Component {
             <View style={styles.container}>
 
                 <View style={styles.description}>
-                    <UserDetail userName={this.props.userName} image={this.props.image} />
+                    <UserDetail userName={this.props.userName} image={this.props.profileImage} />
                     {/* ^ add time= props.time */}
 
                     <Text style={[styles.font, styles.title]}>{this.props.title}</Text>
@@ -47,14 +48,21 @@ class PostFeed extends Component {
                     <Image source={this.props.image} style={styles.image} />
                 </TouchableOpacity>
 
-                {/* likes and comments */}
+                {/* likes/comments counters */}
                 <View style={styles.likesIndicatorPlaceholder}>
+                    <Text style={styles.indicator}>
+                        {/* {likesCount} Likes • {commentsCount} Comments */}
+                        5 Likes • 2 Comments
+                    </Text>
+                </View>
 
+                {/* button */}
+                <View style={styles.likesButtonPlaceholder}>
+                    {/* Like button */}
+                    <LikeButton />
 
-                    <View style={styles.likesPlaceholder}>
-
-                    </View>
-
+                    {/* Comment button */}
+                    <CommentButton />
                 </View>
 
             </View>
@@ -67,7 +75,7 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: "center",
         justifyContent: "center",
-        marginVertical: wd(0.05),
+        marginVertical: wd(0.02),
         backgroundColor: "white"
     },
 
@@ -75,8 +83,11 @@ const styles = StyleSheet.create({
         fontFamily: "HindSiliguri-Regular",
     },
 
+    description:{
+        // backgroundColor:"red",
+    },
+
     title: {
-        marginHorizontal: wd(0.05),
         marginBottom: wd(0.02)
     },
 
@@ -85,17 +96,20 @@ const styles = StyleSheet.create({
     },
 
     likesIndicatorPlaceholder: {
-
+        width:wd(0.9),
+        marginVertical: wd(0.03),
     },
 
-    likesPlaceholder: {
-
+    indicator: {
+        fontFamily: "HindSiliguri-Regular",
+        fontSize: 13,
+        color: "#939090"
     },
 
-
-
-
-
+    likesButtonPlaceholder: {
+        flexDirection: "row",
+        marginBottom: wd(0.03)
+    },
 });
 
 

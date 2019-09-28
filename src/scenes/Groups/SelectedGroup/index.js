@@ -103,10 +103,24 @@ class SelectedGroup extends Component {
             <PostFeed
               userName="Bob"
               title="cold boi iz sad boi"
+              profileImage={require("../../../../assets/images/test-delete-this/boi5.png")}
               image={require("../../../../assets/images/test-delete-this/boi5.png")}
-              
-              // onPress={this.navigate("selectedArtefact")}
-              />
+            // onPress={this.navigate("selectedArtefact")}
+            />
+
+            <PostFeed
+              userName="Bill"
+              title="Boooo"
+              profileImage={require("../../../../assets/images/test-delete-this/boi4.jpg")}
+              image={require("../../../../assets/images/test-delete-this/boi4.jpg")}
+            />
+
+            <PostFeed
+              userName="Francis"
+              title="cold boi iz sad boi"
+              profileImage={require("../../../../assets/images/test-delete-this/boi3.jpg")}
+              image={require("../../../../assets/images/test-delete-this/boi3.jpg")}
+            />
 
           </View>
         </ScrollView>
@@ -186,11 +200,6 @@ const styles = StyleSheet.create({
     color: "white",
     fontFamily: "HindSiliguri-Bold"
   },
-
-
-
-
-
 
 });
 
