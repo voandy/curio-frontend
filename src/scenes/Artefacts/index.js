@@ -1,7 +1,15 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { Dimensions, StyleSheet, ScrollView, View, Text, RefreshControl, TouchableOpacity, Image } from "react-native";
+import {
+  StyleSheet,
+  ScrollView,
+  View,
+  Text,
+  RefreshControl,
+  TouchableOpacity,
+  Image
+} from "react-native";
 // custom components
 import SimpleHeader from "../../component/SimpleHeader";
 import ArtefactFeed from "../../component/ArtefactFeed";
@@ -9,12 +17,12 @@ import ArtefactModal from "../../component/ArtefactModal";
 import AddButton from "../../component/AddButton";
 
 // redux actions
-import { createNewArtefacts, selectArtefact, getUserArtefacts } from "../../actions/artefactsActions";
+import { createNewArtefacts, getSelectedArtefact, getUserArtefacts, getArtefactComments } from "../../actions/artefactsActions";
 
 // Custom respondsive design component
 import {
   deviceHeigthDimension as hp,
-  deviceWidthDimension as wd,
+  deviceWidthDimension as wd
 } from "../../utils/responsiveDesign";
 
 // import the loader modal to help show loading process
@@ -31,7 +39,6 @@ const newArtefact = {
 };
 
 class Artefacts extends Component {
-
   // Navbar details
   static navigationOptions = {
     header: null
@@ -45,7 +52,7 @@ class Artefacts extends Component {
     },
     isModalVisible: false,
     loading: false,
-    refreshing: false,
+    refreshing: false
   };
 
   // Nav bar details
@@ -55,7 +62,7 @@ class Artefacts extends Component {
 
   // update selectedArtefact when it has already been changed
   componentWillUpdate(nextProps) {
-    if (this.props.artefacts !== nextProps.artefacts) { 
+    if (this.props.artefacts !== nextProps.artefacts) {
 
       // reload userArtefacts to update userArtefacts in redux state
       this.props.getUserArtefacts(this.props.auth.user.id);
@@ -119,14 +126,18 @@ class Artefacts extends Component {
   };
 
   // click a specific artefact and navigate to it
-  clickArtefact = async (artefactId) => {
+  clickArtefact = async artefactId => {
     const { navigate } = this.props.navigation;
 
-    // get artefact information and navigate to it
-    await this.props.selectArtefact(artefactId);
+    // get artefact information 
+    await this.props.getSelectedArtefact(artefactId);
+    
+    // get artefact comments
+    await this.props.getArtefactComments(artefactId);
 
+    // navigate to selected artefact
     navigate("SelectedArtefact");
-  }
+  };
 
   // return ArtefactFeedRows containing ArtefactFeed in different rows
   showArtefacts = artefacts => {
@@ -142,7 +153,7 @@ class Artefacts extends Component {
     // create ArtefactFeed object out of artefact and push it into artefactFeeds array
     for (var i = 0; i < artefacts.length; i++) {
       const artefactId = artefacts[i]._id;
-      
+
       artefactFeeds.push(
         // DOES NOT WORK!!!!!!!!
         // <ArtefactFeed
@@ -153,9 +164,15 @@ class Artefacts extends Component {
         // />
 
         <View style={styles.card} key={artefactKey}>
-            <TouchableOpacity onPress={() => this.clickArtefact(artefactId)} activeOpacity={0.5} >     
-                <Image style={styles.photo} source={{ uri: artefacts[i].images[0].URL }} />
-            </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => this.clickArtefact(artefactId)}
+            activeOpacity={0.5}
+          >
+            <Image
+              style={styles.photo}
+              source={{ uri: artefacts[i].images[0].URL }}
+            />
+          </TouchableOpacity>
         </View>
       );
       artefactKey++;
@@ -175,19 +192,19 @@ class Artefacts extends Component {
 
   // refresh page
   refreshArtefacts = async () => {
+    this.setState({ refreshing: true });
 
-    this.setState({ refreshing: true })
-
-    // get data from backend  
-    await this.props.getUserArtefacts(this.props.auth.user.id)
+    // get data from backend
+    await this.props.getUserArtefacts(this.props.auth.user.id);
 
     // resets refreshing state
-    this.setState({ refreshing: false })
-  }
+    this.setState({ refreshing: false });
+  };
 
   render() {
 
     const { navigate } = this.props.navigation;
+
     return (
       <View style={styles.container}>
         {/* loading modal window */}
@@ -199,7 +216,10 @@ class Artefacts extends Component {
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={16}
           refreshControl={
-            <RefreshControl refreshing={this.state.refreshing} onRefresh={this.refreshArtefacts} />
+            <RefreshControl
+              refreshing={this.state.refreshing}
+              onRefresh={this.refreshArtefacts}
+            />
           }
         >
           {/* all artefacts posted by the user */}
@@ -224,9 +244,9 @@ class Artefacts extends Component {
         </ScrollView>
 
         {/* create new Group */}
-        <AddButton onPress={() => this.toggleModal()} />
-        {/* <AddButton onPress={() => navigate("ArtefactsForm")} /> */}
+        <AddButton onPress={() => navigate("ArtefactsForm")} />
 
+        {/* REMOVE THIS */}
         <ArtefactModal
           isModalVisible={this.state.isModalVisible}
           toggleModal={this.toggleModal}
@@ -242,13 +262,13 @@ class Artefacts extends Component {
 const styles = StyleSheet.create({
   // ARTEFACT FEED
   photo: {
-    width: Dimensions.get('window').width * 0.3,
-    height: Dimensions.get('window').width * 0.3,
+    width: wd(0.3),
+    height: wd(0.3)
   },
   card: {
-      width: Dimensions.get('window').width * 0.3,
-      height: Dimensions.get('window').width * 0.3,
-      margin: Dimensions.get('window').width * 0.006,
+    width: wd(0.3),
+    height: wd(0.3),
+    margin: wd(0.006)
   },
 
   container: {
@@ -274,7 +294,7 @@ Artefacts.propTypes = {
   artefacts: PropTypes.object.isRequired,
   auth: PropTypes.object.isRequired,
   getUserArtefacts: PropTypes.func.isRequired,
-  createNewArtefacts: PropTypes.func.isRequired,
+  createNewArtefacts: PropTypes.func.isRequired
 };
 
 // map required redux state to local props
@@ -286,5 +306,5 @@ const mapStateToProps = state => ({
 // map required redux state and actions to local props
 export default connect(
   mapStateToProps,
-  { createNewArtefacts, selectArtefact, getUserArtefacts }
+  { createNewArtefacts, getSelectedArtefact, getUserArtefacts, getArtefactComments }
 )(Artefacts);

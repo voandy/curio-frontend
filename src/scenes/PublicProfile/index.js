@@ -22,10 +22,13 @@ import MyButton from "../../component/MyButton";
 import ProfileSetting from "../../component/ProfileSetting";
 import Line from "../../component/Line";
 
-//prettier-ignore
-const { setUserPushTokenAPIRequest } = require('../../utils/APIHelpers/userAPIHelper');
+// responsive design component
+import {
+    deviceHeigthDimension as hp,
+    deviceWidthDimension as wd
+  } from "../../utils/responsiveDesign";
 
-class Profile extends Component {
+class PublicProfile extends Component {
   constructor() {
     super();
   }
@@ -44,27 +47,10 @@ class Profile extends Component {
     }
   }
 
-  // logout button
-  //prettier-ignore
-  onLogoutClick = () => {
-    const { navigate } = this.props.navigation;
-    const userId = this.props.user.userData._id;
-    this.props.logoutUser()
-      .then(() => {
-        // set user's push token to null so that the backend won't set 
-        // a notification to an unlogged in device
-        console.log(userId);
-        setUserPushTokenAPIRequest(userId, null).catch(err => console.log(err));
-        navigate("Auth");
-      })
-      .catch(err => console.log(err));
-  };
-
   render() {
     // date format
     Moment.locale("en");
     const dt = this.props.user.userData.dateJoined;
-
     const { navigate } = this.props.navigation;
 
     return (
@@ -98,23 +84,6 @@ class Profile extends Component {
             joined since {Moment(dt).format("Do MMMM YYYY")}
           </Text>
 
-          {/* line separator */}
-          <Line />
-
-          <ProfileSetting text="Artefacts" />
-          <ProfileSetting text="Friends" />
-          <ProfileSetting
-            text="Account Settings"
-            onPress={() => navigate("AccountSetting")}
-          />
-
-          {/* line separator */}
-          <Line />
-
-          {/* logout button */}
-          <View style={styles.button}>
-            <MyButton onPress={this.onLogoutClick} text="LOG OUT" />
-          </View>
         </ScrollView>
       </View>
     );
@@ -154,8 +123,7 @@ const styles = StyleSheet.create({
   }
 });
 
-Profile.propTypes = {
-  logoutUser: PropTypes.func.isRequired,
+PublicProfile.propTypes = {
   getUserData: PropTypes.func.isRequired,
   user: PropTypes.object.isRequired
 };
@@ -166,5 +134,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { logoutUser, getUserData }
-)(Profile);
+  { getUserData }
+)(PublicProfile);

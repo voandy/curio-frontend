@@ -2,9 +2,7 @@ import axios from "axios";
 
 import {
   SET_USER_GROUPS,
-  ADD_NEW_GROUP,
-  GET_ERRORS,
-  SET_SELECTED_GROUP
+  SET_SELECTED_GROUP,
 } from "../types/groupsTypes";
 
 import {
@@ -24,13 +22,10 @@ export const getUserGroups = userId => dispatch => {
         resolve(res);
         dispatch(setUserGroups(res.data));
       })
+      // failure
       .catch(err => {
-        console.log(err);
+        console.log("groupActions: " + err);
         reject(err);
-        // dispatch({
-        //   type: GET_ERRORS,
-        //   payload: err.response.data
-        // });
       });
   });
 };
@@ -57,87 +52,50 @@ export const createNewGroup = groupData => dispatch => {
               getUserGroupsAPIRequest(adminId)
                 .then(res => {
                   resolve(res);
-                  dispatch(addNewGroup(res.data));
+                  dispatch(setUserGroups(res.data));
                 })
+                // failure
                 .catch(err => {
-                  console.log(err);
+                  console.log("groupActions: " + err);
                   reject(err);
-                  // dispatch({
-                  //   type: GET_ERRORS,
-                  //   payload: err.response.data
-                  // });
                 });
               // failed to set group admin
             })
+            // failure
             .catch(err => {
-              console.log(err);
+              console.log("groupActions: " + err);
               reject(err);
-              // dispatch({
-              //   type: GET_ERRORS,
-              //   payload: err.response.data
-              // });
             });
         })
-        // failed to create new group
+        // failure
         .catch(err => {
-          console.log(err);
+          console.log("groupActions: " + err);
           reject(err);
-          // dispatch({
-          //   type: GET_ERRORS,
-          //   payload: err.response.data
-          // });
         });
     });
   });
 };
 
 // when user clicks on (selects) a specific group
-export const selectGroup = groupId => dispatch => {
+export const getSelectedGroup = groupId => dispatch => {
   return new Promise((resolve, reject) => {
     getGroupDetailsAPIRequest(groupId)
       .then(res => {
         resolve(res);
         dispatch(setSelectedGroup(res.data));
       })
+      // failure
       .catch(err => {
-        console.log(err);
+        console.log("groupActions: " + err);
         reject(err);
-        // dispatch({
-        //   type: GET_ERRORS,
-        //   payload: err.response.data
-        // });
       });
   });
 };
-
-// export const selectGroup = groupId => dispatch => {
-//   return axios
-//     .get("http://curioapp.herokuapp.com/api/group/id/" + groupId)
-//     .then(res => {
-//       console.log(res);
-//       dispatch(setSelectedGroup(res.data));
-//     })
-//     .catch(err => {
-//       console.log(err);
-//       dispatch({
-//         type: GET_ERRORS,
-//         payload: err.response.data
-//       });
-//     });
-// };
 
 // assign user groups
 export const setUserGroups = decoded => {
   return {
     type: SET_USER_GROUPS,
-    payload: decoded
-  };
-};
-
-// assign new group to user
-export const addNewGroup = decoded => {
-  return {
-    type: ADD_NEW_GROUP,
     payload: decoded
   };
 };

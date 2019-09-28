@@ -21,7 +21,7 @@ export const getUserArtefactsAPIRequest = userId => {
 };
 
 // get an artefact based on artefactId
-export const selectArtefactAPIRequest = artefactId => {
+export const getSelectedArtefactAPIRequest = artefactId => {
   return new Promise((resolve, reject) => {
     axios
       .get("http://curioapp.herokuapp.com/api/artefact/id/" + artefactId)

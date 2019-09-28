@@ -2,8 +2,12 @@ import React, { Component } from "react";
 import {
     View,
     StyleSheet,
-    Dimensions,
 } from "react-native";
+
+// responsive design component
+import {
+    deviceWidthDimension as wd
+  } from "../utils/responsiveDesign";
 
 class Line extends Component {
 
@@ -18,7 +22,7 @@ const styles = StyleSheet.create({
     line: {
         borderBottomColor: "#939090",
         borderBottomWidth: 0.5,
-        width: Dimensions.get("window").width * 0.85,
+        width: wd(0.85),
         alignSelf: "center"
     },
 });

@@ -1,10 +1,17 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { View, StyleSheet, ScrollView, Dimensions, Text } from "react-native";
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  Dimensions,
+  Text,
+  StatusBar
+} from "react-native";
 
 // import redux actions for groups
-import { createNewGroup, selectGroup } from "../../actions/groupsActions";
+import { createNewGroup, getSelectedGroup } from "../../actions/groupsActions";
 
 // custom components
 import CardCarousel from "../../component/CardCarousel";
@@ -80,7 +87,7 @@ class Groups extends Component {
   clickGroup = async groupId => {
     const { navigate } = this.props.navigation;
     // !!! DOESN'T WORK FOR NOW !!!
-    // await this.props.selectGroup(groupId);
+    // await this.props.getSelectedGroup(groupId);
     navigate("SelectedGroup");
   };
 
@@ -98,7 +105,7 @@ class Groups extends Component {
     }
 
     // sort array based on date obtained (from earliest to oldest)
-    unpinnedGroups.sort(function(a, b) {
+    unpinnedGroups.sort(function (a, b) {
       return new Date(b.dateCreated) - new Date(a.dateCreated);
     });
 
@@ -134,7 +141,6 @@ class Groups extends Component {
   };
 
   render() {
-
     const { navigate } = this.props.navigation;
 
     return (
@@ -175,25 +181,21 @@ class Groups extends Component {
           {this.props.groups.userGroups.length !== 0 ? (
             <View>{this.showUnpinnedGroups(this.props.groups.userGroups)}</View>
           ) : (
-            <View style={styles.emptyFeed}>
-              <Text
-                style={{ fontSize: 16, fontFamily: "HindSiliguri-Regular" }}
-              >
-                Looks like you're not part of any groups yet
+              <View style={styles.emptyFeed}>
+                <Text
+                  style={{ textAlign: "center", fontSize: 16, fontFamily: "HindSiliguri-Regular" }}
+                >
+                  Looks like you're not part of any groups yet {"\n"}Click the "+" button to create a group
               </Text>
-              <Text
-                style={{ fontSize: 16, fontFamily: "HindSiliguri-Regular" }}
-              >
-                Click the "+" button to create a group
-              </Text>
-            </View>
-          )}
+              </View>
+            )}
         </ScrollView>
 
         {/* create new Group */}
         {/* <AddButton onPress={this.toggleModal} /> */}
         <AddButton onPress={() => navigate("GroupsForm")} />
 
+        {/* REMOVE THIS ONCE FORM IS DONE */}
         <GroupModal
           isModalVisible={this.state.isModalVisible}
           toggleModal={this.toggleModal}
@@ -208,7 +210,8 @@ class Groups extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
+    marginTop: StatusBar.currentHeight
   },
 
   feed: {
@@ -237,5 +240,5 @@ const mapStateToProps = state => ({
 //  connect to redux and export
 export default connect(
   mapStateToProps,
-  { createNewGroup, selectGroup }
+  { createNewGroup, getSelectedGroup }
 )(Groups);

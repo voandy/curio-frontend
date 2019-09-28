@@ -10,11 +10,10 @@ import {
 
 // custom responsive design component
 import {
-    deviceHeigthDimension as hp,
     deviceWidthDimension as wd,
-    setToBottom
 } from "../utils/responsiveDesign"
 
+/**groups shown in a card form in groups page */
 class CardGroup extends Component {
 
     render() {
@@ -46,9 +45,9 @@ class CardGroup extends Component {
 
 const styles = StyleSheet.create({
     card: {
-        width: Dimensions.get("window").width * 0.44,
+        width: wd(0.44),
         marginTop: 10,
-        marginLeft: Dimensions.get("window").width * 0.04,
+        marginLeft: wd(0.04),
         height: wd(0.5),
         borderRadius: 15,
         borderWidth: 0.05,
@@ -69,7 +68,7 @@ const styles = StyleSheet.create({
     },
 
     photo: {
-        width: Dimensions.get("window").width * 0.435,
+        width: wd(0.435),
         height: wd(0.35),
         marginTop: 10,
         borderTopLeftRadius: 15,

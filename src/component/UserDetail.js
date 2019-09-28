@@ -10,10 +10,11 @@ import {
 
 // custom responsive design component
 import {
-  deviceHeigthDimension as hp,
-  deviceWidthDimension as wd
-} from "../utils/responsiveDesign";
+    deviceWidthDimension as wd,
+} from "../utils/responsiveDesign"
 
+/** Touchable user detail that links to the user's pubic profile 
+ *  used in comments, artefact feeds and selected artefacts */
 class UserDetail extends Component {
   constructor(props) {
     super(props);
@@ -44,20 +45,20 @@ class UserDetail extends Component {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flexDirection: "row",
-    marginHorizontal: wd(0.06),
-    alignItems: "center",
-    width: Dimensions.get("window").width * 0.8,
-    height: Dimensions.get("window").width * 0.15
-  },
+    container: {
+        flexDirection: "row",
+        alignItems: "center",
+        alignSelf:"center",
+        width: wd(0.9),
+        height: wd(0.15),
+    },
 
-  photo: {
-    borderRadius: (Dimensions.get("window").width * 0.1) / 2,
-    width: Dimensions.get("window").width * 0.1,
-    height: Dimensions.get("window").width * 0.1,
-    marginRight: wd(0.06)
-  },
+    photo: {
+        borderRadius: wd(0.1) / 2,
+        width: wd(0.1),
+        height: wd(0.1),
+        marginRight: wd(0.06),
+    },
 
   userName: {
     fontFamily: "HindSiliguri-Bold"
