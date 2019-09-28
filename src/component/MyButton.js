@@ -6,7 +6,6 @@ import {
 } from "react-native";
 
 import {
-  deviceHeigthDimension as hp,
   deviceWidthDimension as wd
 } from "../utils/responsiveDesign";
 

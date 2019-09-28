@@ -33,7 +33,7 @@ class CommentButton extends Component {
 
 const styles = StyleSheet.create({
   button: {
-    width: Dimensions.get("window").width * 0.48, // just to make it look "justified"
+    width: wd(0.48), // just to make it look "justified"
     height: wd(0.06),
     flexDirection: "row",
     justifyContent: "center",
@@ -44,7 +44,6 @@ const styles = StyleSheet.create({
     width: wd(0.05),
     height: wd(0.05),
     marginRight: wd(0.01),
-    // tintColor: "#939090"
     tintColor: "#939090"
   },
 

@@ -10,7 +10,6 @@ import {
 
 // custom responsive design component
 import {
-    deviceHeigthDimension as hp,
     deviceWidthDimension as wd,
 } from "../utils/responsiveDesign"
 
@@ -50,14 +49,14 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         alignSelf:"center",
-        width: Dimensions.get('window').width * 0.9,
-        height: Dimensions.get('window').width * 0.15,
+        width: wd(0.9),
+        height: wd(0.15),
     },
 
     photo: {
-        borderRadius: Dimensions.get('window').width * 0.1 / 2,
-        width: Dimensions.get('window').width * 0.1,
-        height: Dimensions.get('window').width * 0.1,
+        borderRadius: wd(0.1) / 2,
+        width: wd(0.1),
+        height: wd(0.1),
         marginRight: wd(0.06),
     },
 

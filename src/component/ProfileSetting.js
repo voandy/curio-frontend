@@ -7,6 +7,14 @@ import {
   TouchableOpacity
 } from "react-native";
 
+// responsive design component
+import {
+  deviceWidthDimension as wd
+} from "../utils/responsiveDesign";
+
+/**seetings rows for the user
+ * used in profile page
+ */
 class ProfileSetting extends Component {
   constructor(props) {
     super(props);
@@ -39,7 +47,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignSelf: "center",
     alignItems: "center",
-    width: Dimensions.get("window").width * 0.8,
+    width: wd(0.8),
     height: 50,
     flexDirection: "row",
   },

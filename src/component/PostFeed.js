@@ -19,10 +19,11 @@ import CommentButton from "../component/CommentButton";
 import {
     deviceHeigthDimension as hp,
     deviceWidthDimension as wd,
-    setToBottom
-} from "../../src/utils/responsiveDesign"
+} from "../utils/responsiveDesign"
 
-
+/** artefacts feed posted in groups
+ * used in selected groups page
+*/
 class PostFeed extends Component {
 
     constructor(props) {

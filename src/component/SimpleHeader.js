@@ -1,6 +1,9 @@
 import React, { Component } from "react";
-import { View, StyleSheet, Text, Dimensions } from "react-native";
+import { View, StyleSheet, Text } from "react-native";
 
+/**Simpler header design from Header
+ * used in Notifications, Artefacts, profile page
+ */
 class SimpleHeader extends Component {
   render() {
     return (
