@@ -1,4 +1,4 @@
-import { SET_USER_ARTEFACTS, SET_SELECTED_ARTEFACT } from "../types/artefactsTypes";
+import { SET_USER_ARTEFACTS, SET_SELECTED_ARTEFACT, SET_ARTEFACT_COMMENTS, ADD_ARTEFACT_COMMENT } from "../types/artefactsTypes";
 import {
   createArtefactAPIRequest,
   getUserArtefactsAPIRequest,
@@ -6,7 +6,9 @@ import {
   updateSelectedArtefactAPIRequest,
   likeAPIRequest,
   unlikeAPIRequest,
-  deleteSelectedArtefactAPIRequest
+  deleteSelectedArtefactAPIRequest,
+  getArtefactCommentsAPIRequest,
+  postArtefactCommentAPIRequest
 } from "../utils/APIHelpers/artefactAPIHelpers";
 
 import { uploadImageToGCS } from "../utils/imageUpload";
@@ -102,16 +104,15 @@ export const getSelectedArtefact = artefactId => dispatch => {
   return new Promise((resolve, reject) => {
     // get artefact based on artefactId
     getSelectedArtefactAPIRequest(artefactId)
-    .then(res => {
-      
-      // add selected artefact to redux state
-      dispatch(setSelectedArtefact(res.data));
-      resolve(res);
-    })
-    .catch(err => {
-      console.log("Failed to select artefact" + err);
-      reject(err);
-    });
+      .then(res => {
+        // add selected artefact to redux state
+        dispatch(setSelectedArtefact(res.data));
+        resolve(res);
+      })
+      .catch(err => {
+        console.log("Failed to select artefact" + err);
+        reject(err);
+      });
   });
 };
 
@@ -149,13 +150,45 @@ export const editSelectedArtefact = artefact => dispatch => {
 export const removeSelectedArtefact = artefactId => dispatch => {
   return new Promise((resolve, reject) => {
     deleteSelectedArtefactAPIRequest(artefactId)
-    .then(res => {
-      resolve(res);
-    })
-    .catch(err => {
-      console.log("Failed to delete artefact" + err);
-      reject(err);
-    })
+      .then(res => {
+        resolve(res);
+      })
+      .catch(err => {
+        console.log("Failed to delete artefact" + err);
+        reject(err);
+      });
+  });
+};
+
+// get all comments made about an artefact
+export const getArtefactComments = artefactId => dispatch => {
+  getArtefactCommentsAPIRequest(artefactId)
+    // success
+    .then(res => dispatch(setArtefactComments(res.data)))
+    // failure
+    .catch(err => console.log("artefactActions: " + err));
+};
+
+// post comment on artefact
+export const commentOnArtefact = (
+  artefactId,
+  userId,
+  commentString
+) => dispatch => {
+  return new Promise((resolve, reject) => {
+    // post comment to server
+    var newComment = {content: commentString}
+    postArtefactCommentAPIRequest(artefactId, userId, newComment)
+      // success
+      .then(res => {
+        dispatch(addNewArtefactComment(res.data));
+        resolve(res);
+      })
+      // failure
+      .catch(err => {
+        console.log("Failed to create new comment: " + err);
+        reject(err);
+      });
   });
 };
 
@@ -172,6 +205,22 @@ export const setUserArtefacts = decoded => {
 export const setSelectedArtefact = decoded => {
   return {
     type: SET_SELECTED_ARTEFACT,
+    payload: decoded
+  };
+};
+
+// store artefact comments in redux state
+export const setArtefactComments = decoded => {
+  return {
+    type: SET_ARTEFACT_COMMENTS,
+    payload: decoded
+  };
+};
+
+// add new artefact comment to redux store
+export const addNewArtefactComment = decoded => {
+  return {
+    type: ADD_ARTEFACT_COMMENT,
     payload: decoded
   };
 };

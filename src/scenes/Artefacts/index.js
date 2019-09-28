@@ -17,7 +17,7 @@ import ArtefactModal from "../../component/ArtefactModal";
 import AddButton from "../../component/AddButton";
 
 // redux actions
-import { createNewArtefacts, getSelectedArtefact, getUserArtefacts } from "../../actions/artefactsActions";
+import { createNewArtefacts, getSelectedArtefact, getUserArtefacts, getArtefactComments } from "../../actions/artefactsActions";
 
 // Custom respondsive design component
 import {
@@ -129,8 +129,11 @@ class Artefacts extends Component {
   clickArtefact = async artefactId => {
     const { navigate } = this.props.navigation;
 
-    // get artefact information and navigate to it
+    // get artefact information 
     await this.props.getSelectedArtefact(artefactId);
+    
+    // get artefact comments
+    await this.props.getArtefactComments(artefactId);
 
     // navigate to selected artefact
     navigate("SelectedArtefact");
@@ -301,5 +304,5 @@ const mapStateToProps = state => ({
 // map required redux state and actions to local props
 export default connect(
   mapStateToProps,
-  { createNewArtefacts, getSelectedArtefact, getUserArtefacts }
+  { createNewArtefacts, getSelectedArtefact, getUserArtefacts, getArtefactComments }
 )(Artefacts);

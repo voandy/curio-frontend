@@ -20,29 +20,27 @@ import Moment from "moment";
 // custom component
 import { LikeButton, UnlikeButton } from "../../../component/LikeButton";
 import CommentButton from "../../../component/CommentButton";
-import UserDetail from "../../../component/UserDetail";
-import Line from "../../../component/Line";
-import Comments from "../../../component/Comments";
-import OptionButton from "../../../component/OptionButton";
-import HeaderImageScrollView from "react-native-image-header-scroll-view";
-import ImageView from "react-native-image-view";
-import ArtefactModal from "../../../component/ArtefactModal";
+import CommentForm from "../../../component/CommentForm";
+import UserDetail from "../../../component/UserDetail"
+import Line from "../../../component/Line"
+import Comments from "../../../component/Comments"
+import OptionButton from "../../../component/OptionButton"
+import HeaderImageScrollView from 'react-native-image-header-scroll-view';
+import ImageView from 'react-native-image-view';
+import ArtefactModal from '../../../component/ArtefactModal';
 import ActivityLoaderModal from "../../../component/ActivityLoaderModal";
+import KeyboardShift from "../../../component/componentHelpers/KeyboardShift"
 
 // redux actions
-import { editSelectedArtefact, getSelectedArtefact, getUserArtefacts, removeSelectedArtefact } from "../../../actions/artefactsActions";
-import { likeArtefact, unlikeArtefact } from "../../../actions/artefactsActions";
+import { editSelectedArtefact, getSelectedArtefact, getUserArtefacts, 
+  removeSelectedArtefact, likeArtefact, unlikeArtefact, getArtefactComments, 
+  commentOnArtefact } 
+  from "../../../actions/artefactsActions";
 
 // custom responsive design component
 import {
   deviceWidthDimension as wd,
 } from "../../../utils/responsiveDesign";
-
-// remove this
-const comment1 = "Ravioli, ravioli, give me the formuoli";
-const comment2 =
-  "is mayonnaise an instrument? No patrick, mayonnaise is not an instrument... Horseradish is not either";
-const comment3 = "Goodbye everyone, I'll remember you all in therapy";
 
 class SelectedArtefact extends Component {
   state = {
@@ -52,8 +50,23 @@ class SelectedArtefact extends Component {
     },
     isImageViewVisible: false,
     isUpdateModalVisible: false,
-    loading: false
+    loading: false,
+    newComment: "",
+    // whether the user has liked this artefact
+    liked: this.props.artefacts.selectedArtefact.likes.includes(this.props.user.userData._id),
+    likesCount: 0,
+    commentsCount: 0,
+    likingEnabled: true,
+    // statusBarHidden: false,
   };
+
+  async componentDidMount() {
+    this.setState({
+      commentsCount: this.props.artefacts.artefactComments.length,
+      likesCount: this.props.artefacts.selectedArtefact.likes.length,
+      likingEnabled: true
+    });
+  }
 
   // nav details
   static navigationOptions = {
@@ -63,22 +76,75 @@ class SelectedArtefact extends Component {
     }
   };
 
+  onChangeNewComment = (newComment) => {
+    this.setState({
+      newComment
+    })
+  }
+
   like = function () {
-    console.log("like");
-    this.props.likeArtefact(
-      this.props.artefacts.selectedArtefact._id,
-      this.props.user.userData._id
-    );
-  };
+    if (this.state.likingEnabled) {
+      this.setState(
+        {
+          liked: true,
+          likesCount: this.state.likesCount + 1,
+          likingEnabled: false
+        }
+      );
+      this.props.likeArtefact(
+        this.props.artefacts.selectedArtefact._id, 
+        this.props.user.userData._id
+      ).then(function() {
+        this.setState({likingEnabled: true});
+      }.bind(this)).catch(function() {
+        this.setState({likingEnabled: true});
+        alert("An error occured. Please try again.");
+      }.bind(this));
+    } else {
+      alert("Sending request. Please wait.");
+    }
+  }
 
   unlike = function () {
-    console.log("unlike");
-    console.log(this.props);
-    this.props.unlikeArtefact(
+    if (this.state.likingEnabled) {
+      this.setState(
+        {
+          liked: false,
+          likesCount: this.state.likesCount - 1,
+          likingEnabled: false
+        }
+      );
+      this.props.unlikeArtefact(
+        this.props.artefacts.selectedArtefact._id, 
+        this.props.user.userData._id
+      ).then(function() {
+        this.setState({likingEnabled: true});
+      }.bind(this)).catch(function() {
+        this.setState({likingEnabled: true});
+        alert("An error occured. Please try again.");
+      }.bind(this));
+    } else {
+      alert("Sending request. Please wait.");
+    }
+  }
+
+  generateComments = async () => {
+    const artefactId = this.props.artefacts.selectedArtefact._id;
+    await this.props.getArtefactComments(artefactId);
+    this.setState({commentsCount: this.props.artefacts.artefactComments.length});
+  }
+
+  postComment = function (commentContent) {
+    this.props.commentOnArtefact(
       this.props.artefacts.selectedArtefact._id,
-      this.props.user.userData._id
+      this.props.user.userData._id,
+      commentContent
     );
-  };
+  }
+
+  scrollToEnd = function () {
+    this.scrollView.scrollToEnd();
+  }
 
   // update selectedArtefact when it has already been changed
   componentWillUpdate(nextProps) {
@@ -91,6 +157,36 @@ class SelectedArtefact extends Component {
       // reload userArtefacts to update userArtefacts in redux state
       this.props.getUserArtefacts(selectedArtefact.userId);
     }
+
+    const prevArtefactComments = this.props.artefacts.artefactComments;
+    const artefactComments = nextProps.artefacts.artefactComments;
+    if(prevArtefactComments.length !== artefactComments.length) {
+      this.generateComments();
+    }
+  }
+
+  showComments = function (comments) {
+    var commentViews = [];
+
+    // sort comments by date
+    comments.sort(function(a, b) {
+      return new Date(a.datePosted) - new Date(b.datePosted);
+    });
+
+    // create a view for each comment
+    for (var i = 0; i < comments.length; i++) {
+      commentViews.push(
+        <Comments
+          key={i}
+          userProfilePic={comments[i].posterPic}
+          userName={comments[i].posterName}
+          datePosted={comments[i].datePosted}
+          comment={comments[i].content}
+        />
+      );
+    }
+
+    return commentViews;
   }
 
   // toggle the modal for artefact update input
@@ -180,9 +276,6 @@ class SelectedArtefact extends Component {
   };
 
   render() {
-    // FOR TESTING PURPOSES
-    // console.log("selected artefact is", this.props.artefacts.selectedArtefact);
-
     // date format
     Moment.locale("en");
 
@@ -196,152 +289,112 @@ class SelectedArtefact extends Component {
       }
     ];
 
-    var likesCount = this.props.artefacts.selectedArtefact.likes.length;
-    var commentsCount = 44;
-
-    // whether the user has liked this artefact
-    var liked = this.props.artefacts.selectedArtefact.likes.includes(
-      this.props.user.userData._id
-    );
-
-    const likeButton = <LikeButton onPress={this.like.bind(this)} />;
-
-    const unlikeButton = <UnlikeButton onPress={this.unlike.bind(this)} />;
-
-    var likeUnlike;
-    if (liked) {
-      likeUnlike = unlikeButton;
-    } else {
-      likeUnlike = likeButton;
-    }
-
     return (
-      <View style={styles.container}>
-        {/* loading modal window */}
-        <ActivityLoaderModal loading={this.state.loading} />
+      <KeyboardShift>
+        {() => (
+          <View style={styles.container}>
+            {/* loading modal window */}
+            <ActivityLoaderModal loading={this.state.loading} />
 
-        {/* header */}
-        <HeaderImageScrollView
-          maxHeight={Dimensions.get("window").height * 0.5}
-          minHeight={Dimensions.get("window").height * 0.2}
-          // use this to dynamically get image data
-          headerImage={{
-            uri: this.props.artefacts.selectedArtefact.images[0].URL
-          }}
-          renderForeground={() => (
-            // change this to open the image in full screen
-            <TouchableOpacity
-              style={styles.cover}
-              onPress={() =>
-                this.setState({ ...this.state, isImageViewVisible: true })
-              }
-            />
-          )}
-        >
-          {/* open image in full screen */}
-          <ImageView
-            glideAlways
-            isPinchZoomEnabled={false}
-            images={artefactImage}
-            isVisible={this.state.isImageViewVisible}
-            animationType={"fade"}
-            isSwipeCloseEnabled={true}
-            onClose={() =>
-              this.setState({ ...this.state, isImageViewVisible: false })
-            }
-          />
-
-          {/* desciption */}
-          <View style={styles.descriptionPlaceholder}>
-            <View style={{ flexDirection: "row" }}>
-              {/* title */}
-              <Text style={styles.title}>
-                {this.props.artefacts.selectedArtefact.title}
-              </Text>
-              <OptionButton
-                toggleUpdateModal={this.toggleUpdateModal}
-                toggleDeleteModal={this.toggleDeleteModal}
-              />
-            </View>
-
-            <ArtefactModal
-              isModalVisible={this.state.isUpdateModalVisible}
-              toggleModal={this.toggleUpdateModal}
-              newArtefact={this.state.selectedArtefact}
-              onSubmit={this.onSubmit.bind(this)}
-              setNewArtefact={this.setSelectedArtefact.bind(this)}
-            />
-
-            {/* description */}
-            <Text style={styles.description}>
-              {this.props.artefacts.selectedArtefact.description}
-            </Text>
-          </View>
-
-          {/* user detail */}
-          <UserDetail
-            image={{ uri: this.props.user.userData.profilePic }}
-            userName={this.props.user.userData.name}
-          />
-
-          {/* likes/comments counters */}
-          <View style={styles.likesIndicatorPlaceholder}>
-            <Text style={styles.indicator}>
-              {likesCount} Likes • {commentsCount} Comments
-            </Text>
-          </View>
-
-          {/* button */}
-          <View style={styles.likesButtonPlaceholder}>
-            {/* Like button */}
-            {likeUnlike}
-
-            {/* Comment button */}
-            <CommentButton />
-          </View>
-
-          {/* comments */}
-          <View style={styles.comments}>
-            <Text style={styles.commentsTitle}>Comments</Text>
-
-            <View style={styles.commentInput}>
-              {/* user profile pic */}
-              {/* <Image style={styles.photo} source={this.props.userProfilePic} /> */}
-              <Image
-                style={styles.userProfilePic}
-                source={require("../../../../assets/images/default-profile-pic.png")}
+            {/* header */}
+            <HeaderImageScrollView
+              ref={(scrollView) => { this.scrollView = scrollView }}
+              maxHeight={Dimensions.get("window").height * 0.5}
+              minHeight={Dimensions.get("window").height * 0.2}
+              // use this to dynamically get image data
+              headerImage={{
+                uri: this.props.artefacts.selectedArtefact.images[0].URL
+              }}
+              renderForeground={() => (
+                // change this to open the image in full screen
+                <TouchableOpacity
+                  style={styles.cover}
+                  onPress={() =>
+                    this.setState({
+                      isImageViewVisible: true,
+                      statusBarHidden: true
+                    })
+                  }
+                />
+              )}
+            >
+              {/* open image in full screen */}
+              <ImageView
+                images={artefactImage}
+                isVisible={this.state.isImageViewVisible}
+                animationType={"fade"}
+                isSwipeCloseEnabled={true}
               />
 
-              {/* comment input field */}
-              <TextInput
-                placeholder="Add Comment"
-                placeholderTextColor="#707070"
-                style={styles.textInput}
-              />
-            </View>
+              {/* desciption */}
+              <View style={styles.descriptionPlaceholder}>
+                <View style={{ flexDirection: "row" }}>
+                  {/* title */}
+                  <Text style={styles.title}>
+                    {this.props.artefacts.selectedArtefact.title}
+                  </Text>
+                  <OptionButton
+                    toggleUpdateModal={this.toggleUpdateModal}
+                    toggleDeleteModal={this.toggleDeleteModal}
+                  />
+                </View>
 
-            {/* comments */}
-            <Comments
-              userProfilePic={require("../../../../assets/images/default-profile-pic.png")}
-              userName="Spongebob"
-              time="1 hour ago"
-              comment={comment1}
-            />
-            <Comments
-              userProfilePic={require("../../../../assets/images/default-profile-pic.png")}
-              userName="Squidward"
-              time="5 hours ago"
-              comment={comment2}
-            />
-            <Comments
-              userProfilePic={require("../../../../assets/images/default-profile-pic.png")}
-              userName="Plankton"
-              time="20 hours ago"
-              comment={comment3}
-            />
+                <ArtefactModal
+                  isModalVisible={this.state.isUpdateModalVisible}
+                  toggleModal={this.toggleUpdateModal}
+                  newArtefact={this.state.selectedArtefact}
+                  onSubmit={this.onSubmit.bind(this)}
+                  setNewArtefact={this.setSelectedArtefact.bind(this)}
+                />
+
+                {/* description */}
+                <Text style={styles.description}>
+                  {this.props.artefacts.selectedArtefact.description}
+                </Text>
+              </View>
+
+              {/* user detail */}
+              <UserDetail
+                image={{ uri: this.props.user.userData.profilePic }}
+                userName={this.props.user.userData.name}
+              />
+
+              {/* likes/comments counters */}
+              <View style={styles.likesIndicatorPlaceholder}>
+                <Text style={styles.indicator}>
+                  {this.state.likesCount} Likes {this.state.commentsCount} Comments
+                </Text>
+              </View>
+
+              {/* button */}
+              <View style={styles.likesButtonPlaceholder}>
+                {this.state.liked === true ? (
+                  <UnlikeButton onPress={this.unlike.bind(this)} />
+                ) : (
+                  <LikeButton onPress={this.like.bind(this)} />
+                )}
+                {/* Comment button */}
+                <CommentButton onPress={() => this.scrollToEnd()} />
+              </View>
+              {/* comments */}
+              <View style={styles.comments}>
+                <Text style={styles.commentsTitle}>Comments</Text>
+                {/* comments */}
+                {this.showComments(this.props.artefacts.artefactComments)}
+                <CommentForm
+                  newComment={this.state.newComment}
+                  onChangeNewComment={this.onChangeNewComment}
+                  profilePic={this.props.user.userData.profilePic}
+                  onSubmitEditing={event => {
+                    this.postComment(event.nativeEvent.text);
+                    this.onChangeNewComment("");
+                  }}
+                />
+              </View>
+            </HeaderImageScrollView>
           </View>
-        </HeaderImageScrollView>
-      </View>
+        )}
+      </KeyboardShift>
     );
   }
 }
@@ -390,32 +443,13 @@ const styles = StyleSheet.create({
     marginVertical: wd(0.02)
   },
 
-  userProfilePic: {
-    width: wd(0.1),
-    height: wd(0.1),
-    marginLeft: wd(0.06),
-    marginRight: wd(0.03)
-  },
-
-  commentInput: {
-    flexDirection: "row",
-    width: Dimensions.get("window").width,
-    height: wd(0.1),
-    marginVertical: wd(0.03)
-  },
-
-  textInput: {
-    fontFamily: "HindSiliguri-Regular",
-    width: Dimensions.get("window").width * 0.7
-  },
-
   comments: {
     alignItems: "center"
   },
 
   commentsTitle: {
     marginHorizontal: wd(0.05),
-    marginTop: wd(0.05),
+    // marginTop: wd(0.05),
     fontFamily: "HindSiliguri-Bold",
     alignSelf: "flex-start",
     fontSize: 24
@@ -438,5 +472,5 @@ const mapStateToProps = state => ({
 export default connect(
   mapStateToProps,
   { editSelectedArtefact, getSelectedArtefact, getUserArtefacts, removeSelectedArtefact,
-    likeArtefact, unlikeArtefact }
+    likeArtefact, unlikeArtefact, getArtefactComments, commentOnArtefact }
 )(SelectedArtefact);

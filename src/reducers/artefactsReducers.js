@@ -1,8 +1,9 @@
-import { SET_USER_ARTEFACTS, SET_SELECTED_ARTEFACT} from "../types/artefactsTypes";
+import { SET_USER_ARTEFACTS, SET_SELECTED_ARTEFACT, SET_ARTEFACT_COMMENTS, ADD_ARTEFACT_COMMENT } from "../types/artefactsTypes";
 
 const initialState = {
   userArtefacts: [],
-  selectedArtefact: {}
+  selectedArtefact: {},
+  artefactComments: []
 };
 
 export default function(state = initialState, action) {
@@ -16,7 +17,17 @@ export default function(state = initialState, action) {
       return {
         ...state,
         selectedArtefact: action.payload
-      }
+      };
+    case SET_ARTEFACT_COMMENTS:
+      return {
+        ...state,
+        artefactComments: action.payload
+      };
+    case ADD_ARTEFACT_COMMENT:
+      return {
+        ...state,
+        artefactComments: state.artefactComments.concat(action.payload)
+      };
     default:
       return state;
   }
