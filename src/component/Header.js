@@ -9,6 +9,13 @@ import {
   TouchableOpacity
 } from "react-native";
 
+// responsive design component
+import {
+  deviceWidthDimension as wd
+} from "../utils/responsiveDesign";
+
+
+/**Main header for most pages, to use custom font and design */
 class Header extends Component {
   render() {
     return (
@@ -66,7 +73,7 @@ const styles = StyleSheet.create({
 
   search: {
     flexDirection: "row",
-    marginHorizontal: Dimensions.get("window").width * 0.07,
+    marginHorizontal: wd(0.07),
     backgroundColor: "white",
     elevation: 9,
     marginTop: 40,
@@ -87,12 +94,6 @@ const styles = StyleSheet.create({
     tintColor: "#707070"
   },
 
-  // headerText: {
-  //   fontSize: 24,
-  //   marginTop: 40,
-  //   marginLeft: 30,
-  // },
-
   headerButton: {
     alignContent: "center",
     marginTop: 10,
@@ -100,7 +101,6 @@ const styles = StyleSheet.create({
     borderColor: "#FF6E6E",
     borderWidth: 0,
     borderBottomWidth: 3
-    // justifyContent: "center"
   },
 
   headerButtonText: {

@@ -21,6 +21,10 @@ import {
   deviceWidthDimension as wd
 } from "../utils/responsiveDesign";
 
+
+
+//TO BE DESTROYED
+
 class ArtefactModal extends Component {
   // access camera roll to pick an image
   _pickImage = async () => {

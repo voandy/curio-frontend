@@ -10,7 +10,8 @@ import {
   View,
   Image,
   Text,
-  Alert
+  Alert,
+  StatusBar
 } from "react-native";
 
 // date converter
@@ -34,9 +35,7 @@ import { likeArtefact, unlikeArtefact } from "../../../actions/artefactsActions"
 
 // custom responsive design component
 import {
-  deviceHeigthDimension as hp,
   deviceWidthDimension as wd,
-  setToBottom
 } from "../../../utils/responsiveDesign";
 
 // remove this
@@ -64,7 +63,7 @@ class SelectedArtefact extends Component {
     }
   };
 
-  like = function() {
+  like = function () {
     console.log("like");
     this.props.likeArtefact(
       this.props.artefacts.selectedArtefact._id,
@@ -72,7 +71,7 @@ class SelectedArtefact extends Component {
     );
   };
 
-  unlike = function() {
+  unlike = function () {
     console.log("unlike");
     console.log(this.props);
     this.props.unlikeArtefact(
@@ -241,6 +240,8 @@ class SelectedArtefact extends Component {
         >
           {/* open image in full screen */}
           <ImageView
+            glideAlways
+            isPinchZoomEnabled={false}
             images={artefactImage}
             isVisible={this.state.isImageViewVisible}
             animationType={"fade"}
@@ -286,7 +287,7 @@ class SelectedArtefact extends Component {
           {/* likes/comments counters */}
           <View style={styles.likesIndicatorPlaceholder}>
             <Text style={styles.indicator}>
-              {likesCount} Likes {commentsCount} Comments
+              {likesCount} Likes • {commentsCount} Comments
             </Text>
           </View>
 
@@ -347,7 +348,8 @@ class SelectedArtefact extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
+    marginTop: StatusBar.currentHeight
   },
 
   cover: {
@@ -373,7 +375,6 @@ const styles = StyleSheet.create({
   },
 
   likesIndicatorPlaceholder: {
-    flexDirection: "row",
     marginHorizontal: wd(0.06),
     marginVertical: wd(0.03)
   },
@@ -390,8 +391,8 @@ const styles = StyleSheet.create({
   },
 
   userProfilePic: {
-    width: Dimensions.get("window").width * 0.1,
-    height: Dimensions.get("window").width * 0.1,
+    width: wd(0.1),
+    height: wd(0.1),
     marginLeft: wd(0.06),
     marginRight: wd(0.03)
   },

@@ -4,15 +4,17 @@ import {
     StyleSheet,
     Text,
     TextInput,
-    TouchableOpacity
 } from "react-native";
 
 // import reusable components
 import {
-    deviceHeigthDimension as hp,
     deviceWidthDimension as wd
 } from "../utils/responsiveDesign";
 
+
+/** text inputs for user to change their details
+ * used in profile settings page
+ */
 class SettingField extends Component {
     constructor(props) {
         super(props);
@@ -30,8 +32,6 @@ class SettingField extends Component {
             return "#939090"    // gray
         }
     }
-
-
 
     render() {
         return (

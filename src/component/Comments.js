@@ -14,6 +14,9 @@ import {
     deviceWidthDimension as wd,
 } from "../utils/responsiveDesign"
 
+/** touchable user detail that would link to the user's profile
+ *  used in comments, artefact feed in groups and selcted artefacts
+ */
 class UserDetail extends Component {
     constructor(props) {
         super(props);
@@ -56,21 +59,21 @@ const styles = StyleSheet.create({
     },
 
     userProfilePic: {
-        width: Dimensions.get('window').width * 0.1,
-        height: Dimensions.get('window').width * 0.1,
+        width:wd(0.1),
+        height:wd(0.1),
         marginLeft: wd(0.06),
         marginRight: wd(0.03),
     },
 
     bubble: {
-        width: Dimensions.get('window').width * 0.77,
+        width:wd(0.77),
         backgroundColor: "#E0E0E0",
         borderRadius: 10,
         alignContent: "center"
     },
 
     user: {
-        width: Dimensions.get('window').width * 0.77,
+        width:wd(0.77),
         flexDirection: "row",
         marginVertical: wd(0.01),
         marginHorizontal: wd(0.03)

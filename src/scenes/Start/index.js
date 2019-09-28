@@ -8,7 +8,7 @@ import {
   Animated
 } from "react-native";
 
-// import reusable components
+// respondsive design components
 import {
   deviceHeigthDimension as hp,
   deviceWidthDimension as wd

@@ -4,12 +4,13 @@ import { connect } from "react-redux";
 import GroupOptionButton from "../../../component/GroupOptionButton";
 import {
   StyleSheet,
-  Dimensions,
+  TouchableOpacity,
+  TextInput,
+  ScrollView,
+  StatusBar,
   View,
   Text,
   Image,
-  TouchableOpacity,
-  ScrollView,
 } from "react-native";
 
 // import redux actions for groups
@@ -17,18 +18,23 @@ import {
   editSelectedGroup,
 } from "../../../actions/groupsActions";
 
+// custom component
+import UserIcon from "../../../component/UserIcon"
+import AddButton from "../../../component/AddButton"
+import PostFeed from "../../../component/PostFeed"
+import Line from "../../../component/Line"
+import Comments from "../../../component/Comments"
+
 // Custom respondsive design component
 import {
   deviceHeigthDimension as hp,
-  deviceWidthDimension as wd
-} from "../../../utils/responsiveDesign";
+  deviceWidthDimension as wd,
+} from "../../../utils/responsiveDesign"
 
 // custom components
 import GroupModal from "../../../component/GroupModal";
 
 class SelectedGroup extends Component {
-  
-
     state = {
       selectedGroup: {
         ...this.props.groups.selectedGroup,
@@ -40,6 +46,7 @@ class SelectedGroup extends Component {
 
   // nav details
   static navigationOptions = {
+    header: null,
     headerStyle: {
       elevation: 0 // remove shadow on Android
     }
@@ -56,28 +63,11 @@ class SelectedGroup extends Component {
 
       // append group members into array
       groupMemberFeeds.push(
-        <View style={styles.card} key={groupMemberKey}>
-          <TouchableOpacity
-            activeOpacity={0.5}
-          >
-            <Image
-              style={styles.photo}
-              source={{ uri: groupMembers[i].details.profilePic }}
-            />
-            <Text> {groupMembers[i].details.name} </Text>
-          </TouchableOpacity>
-        </View>
+        <UserIcon key={groupMemberKey} image = {{ uri: groupMembers[i].details.profilePic }} />
       );
       groupMemberKey++;
     }
-
-    // create a row out of the array of group members
-    groupMemberRows.push(
-      <View style={styles.feed} key={rowKey}>
-        {groupMemberFeeds}
-      </View>
-    );   
-    return <>{groupMemberRows}</>;
+    return <>{groupMemberFeeds}</>;
   };
 
   // return a row of group artefacts 
@@ -91,31 +81,30 @@ class SelectedGroup extends Component {
 
       // append group artefacts into array
       groupArtefactFeeds.push(
-        <View style={styles.card} key={groupArtefactKey}>
-          <TouchableOpacity
-            activeOpacity={0.5}
-          >
-            <Image
-              style={styles.photo}
-              source={{ uri: groupArtefacts[i].details.images[0].URL }}
-            />
-            <Text> title: {groupArtefacts[i].details.title} </Text>
-            <Text> description: {groupArtefacts[i].details.description} </Text>
-            <Text> category: {groupArtefacts[i].details.category} </Text>
-            <Text> dateObtained {groupArtefacts[i].details.dateObtained} </Text>
-          </TouchableOpacity>
-        </View>
+        // <View style={styles.card} key={groupArtefactKey}>
+          // <TouchableOpacity
+          //   activeOpacity={0.5}
+          // >
+          //   <Image
+          //     style={styles.photo}
+          //     source={{ uri: groupArtefacts[i].details.images[0].URL }}
+          //   />
+          // </TouchableOpacity>
+        // </View>
+
+        <PostFeed
+          key={groupArtefactKey}
+          // change this to user's username later
+          userName= "NOT IMPLEMENTED YET"
+          title= {groupArtefacts[i].details.title}
+          // change this to user image later
+          profileImage={{ uri: groupArtefacts[i].details.images[0].URL }}
+          image={{ uri: groupArtefacts[i].details.images[0].URL }}
+        />
       );
       groupArtefactKey++;
     }
-
-    // create a row out of the array of group artefacts
-    groupArtefactRows.push(
-      <View style={styles.feed} key={rowKey}>
-        {groupArtefactFeeds}
-      </View>
-    );   
-    return <>{groupArtefactRows}</>;
+    return <>{groupArtefactFeeds}</>;
   };
 
   // selected artefact's attribute change
@@ -165,7 +154,7 @@ class SelectedGroup extends Component {
   render() {
     
     // selected group information
-    console.log("selectedGroup", this.props.groups.selectedGroup);
+    // console.log("selectedGroup", this.props.groups.selectedGroup);
     const selectedGroup = this.props.groups.selectedGroup;
     const coverPhoto = selectedGroup.coverPhoto;
     const dateCreated = selectedGroup.dateCreated;
@@ -177,15 +166,12 @@ class SelectedGroup extends Component {
     const selectedGroupMembers = this.props.groups.selectedGroupMembers;
 
     // selected group's groupMembers information
-    // console.log("selectedGroupArtefacts", this.props.groups.selectedGroupArtefacts);
+    console.log("selectedGroupArtefacts", this.props.groups.selectedGroupArtefacts);
     const selectedGroupArtefacts = this.props.groups.selectedGroupArtefacts;
 
     return (
       <View style={styles.container}>
-        <ScrollView
-            showsVerticalScrollIndicator={false}
-            scrollEventThrottle={16}
-        >
+        {/*         
           <Text style={styles.title}> Group Functionalities </Text>
             <GroupOptionButton
               toggleUpdateModal={this.toggleUpdateModal}
@@ -198,22 +184,66 @@ class SelectedGroup extends Component {
                 post={this.onSubmit.bind(this)}
                 onNewGroupChange={this.setSelectedGroup.bind(this)}
               />
+        */}
+        <ScrollView showsVerticalScrollIndicator={false}>
 
-          <Text style={styles.title}> Group Information </Text>
+          {/* group cover photo */}
+          <View style={styles.coverPhoto}>
+            {/* TODO USE THIS <Image style={styles.cover} source={this.props.coverPhoto} /> */}
+            <Image style={styles.cover} source={{uri: coverPhoto}} />
+          </View>
 
-            <Text> coverPhoto: </Text>
-              <Image style={[styles.photo]} source={{ uri: coverPhoto }} />
+          {/* group description */}
+          <View style={styles.groupInfo}>
+            {/* TODO USE THIS <Text style={styles.groupTitle}>{this.props.groupTitle}</Text> */}
+            <Text style={[styles.groupTitle, styles.font]}>{title}</Text>
 
-            <Text> title: {title} </Text>
-            <Text> description: {description} </Text>
-            <Text> dateCreated: {dateCreated} </Text>
-          
-          <Text style={styles.title}> Members </Text>
-            {this.showGroupMembers(selectedGroupMembers)}
+            <Text style={[styles.groupDescription, styles.subFont]}>{description}</Text>
 
-          <Text style={styles.title}> Artefacts </Text>
+            {/* TODO USE THIS <Text style={[styles.groupCount, styles.subFont]}>{this.props.groupCount} Members</Text> */}
+            <Text style={[styles.groupCount, styles.subFont]}>{selectedGroupMembers.length} Members</Text>
+
+            {/* member scrollable view */}
+            <View style={styles.groupMember}>
+              <ScrollView
+                style={{ flex: 0.7 }}
+                horizontal={true}
+                showsHorizontalScrollIndicator={false}>
+                
+                {this.showGroupMembers(selectedGroupMembers)}
+
+              </ScrollView>
+              <TouchableOpacity
+                //onPress{this.func}
+                style={styles.memberButton}>
+                <Text style={styles.buttonText}>Add Members</Text>
+              </TouchableOpacity>
+
+            </View>
+          </View>
+
+          {/* content */}
+          <View>
+            {/* {this.props.groups.userGroups.length !== 0 ? (
+              <View>{"ADD CONTENT HERE"}</View>
+            ) : (
+                <View style={styles.emptyFeed}>
+                  <Text
+                    style={{ textAlign: "center", marginTop: hp(0.05), marginBottom:hp(0.1), fontSize: 16, fontFamily: "HindSiliguri-Regular" }}
+                  >
+                    Get started by adding new memeber to the group {"\n"} and start post items here !
+                  </Text>
+                </View>
+              )} */}
+
             {this.showGroupArtefacts(selectedGroupArtefacts)}
+
+          </View>
         </ScrollView>
+
+        {/* toggle modal to add artefacts into groups */}
+        {/* <AddButton onPress={() => navigate("ArtefactsForm")} /> */}
+        <AddButton />
       </View>
     );
   }
@@ -222,26 +252,69 @@ class SelectedGroup extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    marginTop: StatusBar.currentHeight,
+    alignItems: "center",
+    backgroundColor: "#F7F7F7",
   },
 
-  // TEMPORARY STYLES
-  title: {
-    fontSize: 30,
-    fontWeight: "bold",
+  font: {
+    fontFamily: "HindSiliguri-Bold",
+    fontSize: hp(0.03),
   },
 
-  photo: {
-    width: wd(0.435),
-    height: wd(0.35),
-    marginTop: 10,
-    borderTopLeftRadius: 15,
-    borderTopRightRadius: 15,
+  subFont: {
+    fontFamily: "HindSiliguri-Regular",
+    fontSize: hp(0.02),
   },
 
-  feed: {
-    flexDirection: "column",
-    marginLeft: wd(0.032),
-    marginRight: wd(0.032)
+  cover: {
+    width: wd(1),
+    height: hp(0.4),
+  },
+
+  groupInfo: {
+    alignItems: "center",
+    paddingHorizontal: wd(0.1),
+    backgroundColor: "white",
+  },
+
+  groupTitle: {
+    textAlign: "center",
+    marginTop: hp(0.02),
+    marginBottom: hp(0.01),
+  },
+
+  groupDescription: {
+    textAlign: "center",
+    marginBottom: hp(0.01),
+  },
+
+  groupCount: {
+    color: "#737373",
+    marginBottom: hp(0.01),
+  },
+
+  groupMember: {
+    height: wd(0.15),
+    flexDirection: "row",
+    alignItems: "center"
+  },
+
+  memberButton: {
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#FF6E6E",
+    margin: wd(0.03),
+    width: wd(0.3),
+    height: wd(0.1),
+    borderRadius: 40,
+    elevation: 3
+  },
+
+  buttonText: {
+    fontSize: wd(0.037),
+    color: "white",
+    fontFamily: "HindSiliguri-Bold"
   },
 });
 
