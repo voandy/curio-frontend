@@ -94,6 +94,7 @@ const styles = StyleSheet.create({
 
     image: {
         width: wd(1),
+        height: wd(1),
     },
 
     likesIndicatorPlaceholder: {

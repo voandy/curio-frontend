@@ -1,16 +1,22 @@
 import React, { Component } from "react";
-
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import GroupOptionButton from "../../../component/GroupOptionButton";
 import {
-  Dimensions,
   StyleSheet,
   TouchableOpacity,
   TextInput,
   ScrollView,
   StatusBar,
   View,
+  Text,
   Image,
-  Text
 } from "react-native";
+
+// import redux actions for groups
+import { 
+  editSelectedGroup,
+} from "../../../actions/groupsActions";
 
 // custom component
 import UserIcon from "../../../component/UserIcon"
@@ -19,13 +25,24 @@ import PostFeed from "../../../component/PostFeed"
 import Line from "../../../component/Line"
 import Comments from "../../../component/Comments"
 
-// custom responsive design component
+// Custom respondsive design component
 import {
   deviceHeigthDimension as hp,
   deviceWidthDimension as wd,
 } from "../../../utils/responsiveDesign"
 
+// custom components
+import GroupModal from "../../../component/GroupModal";
+
 class SelectedGroup extends Component {
+    state = {
+      selectedGroup: {
+        ...this.props.groups.selectedGroup,
+        coverPhoto: this.props.groups.selectedGroup.coverPhoto
+      },
+      isUpdateModalVisible: false,
+      loading: false
+    };
 
   // nav details
   static navigationOptions = {
@@ -35,27 +52,156 @@ class SelectedGroup extends Component {
     }
   };
 
+  // return a row of group members 
+  showGroupMembers = groupMembers => {
+    let groupMemberRows = [];
+    let groupMemberFeeds = [];
+    let rowKey = 0;
+    let groupMemberKey = 0;
+
+    for (var i = 0; i < groupMembers.length; i++) {
+
+      // append group members into array
+      groupMemberFeeds.push(
+        <UserIcon key={groupMemberKey} image = {{ uri: groupMembers[i].details.profilePic }} />
+      );
+      groupMemberKey++;
+    }
+    return <>{groupMemberFeeds}</>;
+  };
+
+  // return a row of group artefacts 
+  showGroupArtefacts = groupArtefacts => {
+    let groupArtefactRows = [];
+    let groupArtefactFeeds = [];
+    let rowKey = 0;
+    let groupArtefactKey = 0;
+
+    for (var i = 0; i < groupArtefacts.length; i++) {
+
+      // append group artefacts into array
+      groupArtefactFeeds.push(
+        // <View style={styles.card} key={groupArtefactKey}>
+          // <TouchableOpacity
+          //   activeOpacity={0.5}
+          // >
+          //   <Image
+          //     style={styles.photo}
+          //     source={{ uri: groupArtefacts[i].details.images[0].URL }}
+          //   />
+          // </TouchableOpacity>
+        // </View>
+
+        <PostFeed
+          key={groupArtefactKey}
+          // change this to user's username later
+          userName= "NOT IMPLEMENTED YET"
+          title= {groupArtefacts[i].details.title}
+          // change this to user image later
+          profileImage={{ uri: groupArtefacts[i].details.images[0].URL }}
+          image={{ uri: groupArtefacts[i].details.images[0].URL }}
+        />
+      );
+      groupArtefactKey++;
+    }
+    return <>{groupArtefactFeeds}</>;
+  };
+
+  // selected artefact's attribute change
+  setSelectedGroup = (key, value) => {
+    this.setState({
+      selectedGroup: {
+        ...this.state.selectedGroup,
+        [key]: value
+      }
+    });
+  };
+
+  // setter function for "loading" to show user that something is loading
+  setLoading = loading => {
+    this.setState({
+      ...this.state,
+      loading
+    });
+  };
+
+  // toggle the modal for artefact update input
+  toggleUpdateModal = () => {
+    this.setState({ isUpdateModalVisible: !this.state.isUpdateModalVisible });
+  };
+
+  // post new artefact to the backend
+  onSubmit = async () => {
+    // show user the loading modal
+    this.setLoading(true);
+    // send and create artefact to the backend
+    this.props
+      .editSelectedGroup(this.state.selectedGroup)
+      .then(() => {
+        // stop showing user the loading modal
+        this.setLoading(false);
+        // close loading modal
+        this.toggleUpdateModal();
+      })
+      .catch(err => {
+        // stop showing user the loading modal
+        this.setLoading(false);
+        // show error
+        console.log(err.response.data);
+      });
+  };
+
   render() {
+    
+    // selected group information
+    // console.log("selectedGroup", this.props.groups.selectedGroup);
+    const selectedGroup = this.props.groups.selectedGroup;
+    const coverPhoto = selectedGroup.coverPhoto;
+    const dateCreated = selectedGroup.dateCreated;
+    const description = selectedGroup.description;
+    const title = selectedGroup.title;
+
+    // selected group's members information
+    // console.log("selectedGroupMembers", this.props.groups.selectedGroupMembers);
+    const selectedGroupMembers = this.props.groups.selectedGroupMembers;
+
+    // selected group's groupMembers information
+    console.log("selectedGroupArtefacts", this.props.groups.selectedGroupArtefacts);
+    const selectedGroupArtefacts = this.props.groups.selectedGroupArtefacts;
+
     return (
       <View style={styles.container}>
-
+        {/*         
+          <Text style={styles.title}> Group Functionalities </Text>
+            <GroupOptionButton
+              toggleUpdateModal={this.toggleUpdateModal}
+              toggleDeleteModal={this.toggleDeleteModal}
+            />
+              <GroupModal
+                isModalVisible={this.state.isUpdateModalVisible}
+                toggleModal={this.toggleUpdateModal}
+                newGroup={this.state.selectedGroup}
+                post={this.onSubmit.bind(this)}
+                onNewGroupChange={this.setSelectedGroup.bind(this)}
+              />
+        */}
         <ScrollView showsVerticalScrollIndicator={false}>
 
           {/* group cover photo */}
           <View style={styles.coverPhoto}>
             {/* TODO USE THIS <Image style={styles.cover} source={this.props.coverPhoto} /> */}
-            <Image style={styles.cover} source={require("../../../../assets/images/test-delete-this/boi3.jpg")} />
+            <Image style={styles.cover} source={{uri: coverPhoto}} />
           </View>
 
           {/* group description */}
           <View style={styles.groupInfo}>
             {/* TODO USE THIS <Text style={styles.groupTitle}>{this.props.groupTitle}</Text> */}
-            <Text style={[styles.groupTitle, styles.font]}>The Simpsons Fam</Text>
+            <Text style={[styles.groupTitle, styles.font]}>{title}</Text>
 
-            <Text style={[styles.groupDescription, styles.subFont]}>Holmer and bart is enjoying their showering time</Text>
+            <Text style={[styles.groupDescription, styles.subFont]}>{description}</Text>
 
             {/* TODO USE THIS <Text style={[styles.groupCount, styles.subFont]}>{this.props.groupCount} Members</Text> */}
-            <Text style={[styles.groupCount, styles.subFont]}>5 Members</Text>
+            <Text style={[styles.groupCount, styles.subFont]}>{selectedGroupMembers.length} Members</Text>
 
             {/* member scrollable view */}
             <View style={styles.groupMember}>
@@ -63,17 +209,8 @@ class SelectedGroup extends Component {
                 style={{ flex: 0.7 }}
                 horizontal={true}
                 showsHorizontalScrollIndicator={false}>
-
-                <UserIcon image={require("../../../../assets/images/default-profile-pic.png")} />
-                <UserIcon image={require("../../../../assets/images/default-profile-pic.png")} />
-                <UserIcon image={require("../../../../assets/images/default-profile-pic.png")} />
-                <UserIcon image={require("../../../../assets/images/default-profile-pic.png")} />
-                <UserIcon image={require("../../../../assets/images/default-profile-pic.png")} />
-                <UserIcon image={require("../../../../assets/images/default-profile-pic.png")} />
-                <UserIcon image={require("../../../../assets/images/default-profile-pic.png")} />
-                <UserIcon image={require("../../../../assets/images/default-profile-pic.png")} />
-                <UserIcon image={require("../../../../assets/images/default-profile-pic.png")} />
-                <UserIcon image={require("../../../../assets/images/default-profile-pic.png")} />
+                
+                {this.showGroupMembers(selectedGroupMembers)}
 
               </ScrollView>
               <TouchableOpacity
@@ -99,27 +236,7 @@ class SelectedGroup extends Component {
                 </View>
               )} */}
 
-            <PostFeed
-              userName="Bob"
-              title="cold boi iz sad boi"
-              profileImage={require("../../../../assets/images/test-delete-this/boi5.png")}
-              image={require("../../../../assets/images/test-delete-this/boi5.png")}
-            // onPress={this.navigate("selectedArtefact")}
-            />
-
-            <PostFeed
-              userName="Bill"
-              title="Boooo"
-              profileImage={require("../../../../assets/images/test-delete-this/boi4.jpg")}
-              image={require("../../../../assets/images/test-delete-this/boi4.jpg")}
-            />
-
-            <PostFeed
-              userName="Francis"
-              title="cold boi iz sad boi"
-              profileImage={require("../../../../assets/images/test-delete-this/boi3.jpg")}
-              image={require("../../../../assets/images/test-delete-this/boi3.jpg")}
-            />
+            {this.showGroupArtefacts(selectedGroupArtefacts)}
 
           </View>
         </ScrollView>
@@ -199,9 +316,18 @@ const styles = StyleSheet.create({
     color: "white",
     fontFamily: "HindSiliguri-Bold"
   },
-
 });
 
+SelectedGroup.propTypes = {
+  groups: PropTypes.object.isRequired,
+};
 
-// export 
-export default SelectedGroup
+const mapStateToProps = state => ({
+  groups: state.groups,
+});
+
+//  connect to redux and export
+export default connect(
+  mapStateToProps,
+  { editSelectedGroup }
+)(SelectedGroup);
