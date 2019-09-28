@@ -3,7 +3,6 @@ import {
   View,
   StyleSheet,
   Text,
-  Dimensions,
   Image,
   TouchableOpacity
 } from "react-native";
@@ -12,7 +11,6 @@ import {
 import {
   deviceHeigthDimension as hp,
   deviceWidthDimension as wd,
-  setToBottom
 } from "../utils/responsiveDesign"
 
 /** carousel for saved groups in groups page */
@@ -34,8 +32,8 @@ class CardCarousel extends Component {
 
 const styles = StyleSheet.create({
   card: {
-    width: Dimensions.get("window").width * 0.9,
-    marginHorizontal: Dimensions.get("window").width * 0.05,
+    width: wd(0.9),
+    marginHorizontal: wd(0.05),
     height: wd(0.45),
     borderRadius: 15,
     borderWidth: 1,
@@ -50,7 +48,7 @@ const styles = StyleSheet.create({
   },
 
   photo:{
-    width: Dimensions.get("window").width * 0.9,
+    width: wd(0.9),
     height: wd(0.45),
     borderRadius: 15,
   }

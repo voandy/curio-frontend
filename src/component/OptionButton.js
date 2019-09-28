@@ -9,6 +9,10 @@ import {
     deviceWidthDimension as wd
 } from "../utils/responsiveDesign";
 
+
+/**3 dot button, that shows a dropdown menu
+ * used in selected artefacts page to "edit" or "delete" the artefact
+ */
 class OptionButton extends Component {
     constructor(props) {
         super(props);

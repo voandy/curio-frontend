@@ -7,6 +7,11 @@ import {
     TouchableOpacity,
 } from 'react-native';
 
+// responsive design component
+import {
+    deviceWidthDimension as wd
+  } from "../utils/responsiveDesign";
+
 /** artefacts shown in squares in artefacts page */
 class ArtefactFeed extends Component {
 
@@ -27,14 +32,14 @@ class ArtefactFeed extends Component {
 const styles = StyleSheet.create({
 
     photo: {
-        width: Dimensions.get('window').width * 0.3,
-        height: Dimensions.get('window').width * 0.3,
+        width:wd(0.3),
+        height:wd(0.3),
     },
 
     card: {
-        width: Dimensions.get('window').width * 0.3,
-        height: Dimensions.get('window').width * 0.3,
-        margin: Dimensions.get('window').width * 0.006,
+        width:wd(0.3),
+        height:wd(0.3),
+        margin:wd(0.006),
     }
 })
 

@@ -9,10 +9,13 @@ import {
 } from "react-native";
 
 import {
-  deviceHeigthDimension as hp,
   deviceWidthDimension as wd
 } from "../utils/responsiveDesign";
 
+
+/**like button with 2 states (liked or unliked)
+ * used in comments, selected groups page and selected artefacts page
+ */
 class LikeButton extends Component {
   constructor(props) {
     super(props);
@@ -51,7 +54,7 @@ class UnlikeButton extends Component {
 
 const styles = StyleSheet.create({
   button: {
-    width: Dimensions.get("window").width * 0.48, // just to make it look "justified"
+    width: wd(0.48), // just to make it look "justified"
     height: wd(0.06),
     flexDirection: "row",
     justifyContent: "center",
@@ -62,7 +65,6 @@ const styles = StyleSheet.create({
     width: wd(0.05),
     height: wd(0.05),
     marginRight: wd(0.01),
-    // tintColor: "#939090"
     tintColor: "#939090"
   },
 
@@ -70,7 +72,6 @@ const styles = StyleSheet.create({
     width: wd(0.05),
     height: wd(0.05),
     marginRight: wd(0.01),
-    // tintColor: "#939090"
     tintColor: "#FF6E6E"
   },
 

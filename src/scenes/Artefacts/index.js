@@ -62,8 +62,8 @@ class Artefacts extends Component {
 
   // update selectedArtefact when it has already been changed
   componentWillUpdate(nextProps) {
-    if (this.props.artefacts !== nextProps.artefacts) { 
-    
+    if (this.props.artefacts !== nextProps.artefacts) {
+
       // reload userArtefacts to update userArtefacts in redux state
       this.props.getUserArtefacts(this.props.auth.user.id);
     }
@@ -144,7 +144,7 @@ class Artefacts extends Component {
     let artefactKey = 0;
 
     // sort array based on date obtained (from earliest to oldest)
-    artefacts.sort(function(a, b) {
+    artefacts.sort(function (a, b) {
       return new Date(b.datePosted) - new Date(a.datePosted);
     });
     // create ArtefactFeed object out of artefact and push it into artefactFeeds array
@@ -199,6 +199,9 @@ class Artefacts extends Component {
   };
 
   render() {
+
+    const { navigate } = this.props.navigation;
+
     return (
       <View style={styles.container}>
         {/* loading modal window */}
@@ -222,24 +225,25 @@ class Artefacts extends Component {
               {this.showArtefacts(this.props.artefacts.userArtefacts)}
             </View>
           ) : (
-            <View style={styles.emptyFeed}>
-              <Text
-                style={{ fontSize: 16, fontFamily: "HindSiliguri-Regular" }}
-              >
-                Looks like you haven't posted any artefacts
+              <View style={styles.emptyFeed}>
+                <Text
+                  style={{ fontSize: 16, fontFamily: "HindSiliguri-Regular" }}
+                >
+                  Looks like you haven't posted any artefacts
               </Text>
-              <Text
-                style={{ fontSize: 16, fontFamily: "HindSiliguri-Regular" }}
-              >
-                Click the "+" button to add some
+                <Text
+                  style={{ fontSize: 16, fontFamily: "HindSiliguri-Regular" }}
+                >
+                  Click the "+" button to add some
               </Text>
-            </View>
-          )}
+              </View>
+            )}
         </ScrollView>
 
         {/* create new Group */}
         <AddButton onPress={() => navigate("ArtefactsForm")} />
 
+        {/* REMOVE THIS */}
         <ArtefactModal
           isModalVisible={this.state.isModalVisible}
           toggleModal={this.toggleModal}

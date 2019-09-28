@@ -10,6 +10,9 @@ import {
   deviceWidthDimension as wd
 } from "../utils/responsiveDesign";
 
+/**similar design to MyButton but just smaller 
+ * used in areas artefacts and group forms
+*/
 class MySmallerButton extends Component {
   constructor(props) {
     super(props);

@@ -12,12 +12,14 @@ import {
 import {
     deviceHeigthDimension as hp,
     deviceWidthDimension as wd,
-    setToBottom
 } from "../utils/responsiveDesign"
 
 // date converter 
 import Moment from "moment";
 
+/**Notification rows in the notification screen
+ * pressable and should link to the screen that invoked the notification
+ */
 class NotificationFeed extends Component {
 
     // unbolds text after notification has been read
@@ -86,27 +88,27 @@ const styles = StyleSheet.create({
 
     card: {
         flex: 1,
-        width: Dimensions.get('window').width,
+        width: wd(1),
         height: 100,
         flexDirection: "row",
         alignItems: "center",
     },
 
     picPlaceholder: {
-        width: Dimensions.get('window').width * 0.2,
-        height: Dimensions.get('window').width * 0.2,
+        width: wd(0.2),
+        height: wd(0.2),
         alignItems: "center",
         justifyContent: "center",
         marginLeft: wd(0.03),
     },
 
     photo: {
-        width: Dimensions.get('window').width * 0.17,
-        height: Dimensions.get('window').width * 0.17,
+        width: wd(0.17),
+        height: wd(0.17),
     },
 
     notificationPlaceholder: {
-        width: Dimensions.get('window').width * 0.8,
+        width: wd(0.8),
     },
 
     notification: {
@@ -133,7 +135,7 @@ const styles = StyleSheet.create({
     line: {
         borderBottomColor: "#939090",
         borderBottomWidth: 0.4,
-        width: Dimensions.get("window").width * 0.9,
+        width: wd(0.9),
         alignSelf: "center"
     },
 })
