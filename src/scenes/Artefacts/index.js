@@ -62,7 +62,7 @@ class Artefacts extends Component {
 
   // update selectedArtefact when it has already been changed
   componentWillUpdate(nextProps) {
-    if (this.props.artefacts !== nextProps.artefacts) {
+    if (this.props.artefacts.userArtefacts !== nextProps.artefacts.userArtefacts) {
 
       // reload userArtefacts to update userArtefacts in redux state
       this.props.getUserArtefacts(this.props.auth.user.id);
@@ -242,7 +242,8 @@ class Artefacts extends Component {
         </ScrollView>
 
         {/* create new Group */}
-        <AddButton onPress={() => navigate("ArtefactsForm")} />
+        <AddButton onPress={() => this.toggleModal()} />
+        {/* <AddButton onPress={() => navigate("ArtefactsForm")} /> */}
 
         {/* REMOVE THIS */}
         <ArtefactModal

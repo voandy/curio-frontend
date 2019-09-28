@@ -83,8 +83,6 @@ export const createNewArtefacts = artefact => dispatch => {
         // send a post API request to backend to register user
         createArtefactAPIRequest(newArtefact)
           .then(res => {
-            // add the new artefact directly to redux state
-            dispatch(setUserArtefacts(res.data));
             resolve(res);
           })
           .catch(err => {
