@@ -15,6 +15,7 @@ import {
   setToBottom
 } from "../utils/responsiveDesign"
 
+/** carousel for saved groups in groups page */
 class CardCarousel extends Component {
   render() {
     return (

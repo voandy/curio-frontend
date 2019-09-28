@@ -14,6 +14,9 @@ import {
     deviceWidthDimension as wd,
 } from "../utils/responsiveDesign"
 
+/** touchable user detail that would link to the user's profile
+ *  used in comments, artefact feed in groups and selcted artefacts
+ */
 class UserDetail extends Component {
     constructor(props) {
         super(props);

@@ -109,7 +109,6 @@ const AppStack = createBottomTabNavigator(
   {
     GroupTab: {
       screen: GroupStack,
-      // screen: GroupsFormScreen,
       navigationOptions: {
         tabBarIcon: ({ tintColor }) => (
           <Image

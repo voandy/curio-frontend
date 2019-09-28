@@ -1,10 +1,12 @@
 import React from "react";
-import { View, Dimensions, StyleSheet } from "react-native";
+import { View, Dimensions, StatusBar, StyleSheet } from "react-native";
 
+// height of device by percentage
 export const deviceHeigthDimension = percentage => {
   return Dimensions.get("window").height * percentage;
 };
 
+// width of device by percentage
 export const deviceWidthDimension = percentage => {
   return Dimensions.get("window").width * percentage;
 };

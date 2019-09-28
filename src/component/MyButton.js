@@ -10,6 +10,9 @@ import {
   deviceWidthDimension as wd
 } from "../utils/responsiveDesign";
 
+
+/* general design button 
+ * used in areas in register, login and other pages through out the system */
 class MyButton extends Component {
   constructor(props) {
     super(props);
