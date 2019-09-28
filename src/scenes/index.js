@@ -19,6 +19,7 @@ import GroupsScreen from "./Groups";
 import ProfileScreen from "./Profile";
 import NotificationScreen from "./Notification";
 import ArtefactsScreen from "./Artefacts";
+import PublicProfileScreen from "./PublicProfile";
 import SelectedArtefactScreen from "./Artefacts/SelectedArtefact";
 import SelectedGroupScreen from "./Groups/SelectedGroup";
 import ArtefactsFormScreen from "./Artefacts/ArtefactsForm";

@@ -102,7 +102,9 @@ class Profile extends Component {
           <Line />
 
           <ProfileSetting text="Artefacts" />
-          <ProfileSetting text="Friends" />
+          <ProfileSetting 
+            text="Friends" 
+            />
           <ProfileSetting
             text="Account Settings"
             onPress={() => navigate("AccountSetting")}
