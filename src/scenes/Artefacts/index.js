@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import {
   StyleSheet,
   ScrollView,
+  StatusBar,
   View,
   Text,
   RefreshControl,
@@ -271,7 +272,8 @@ const styles = StyleSheet.create({
   },
 
   container: {
-    flex: 1
+    flex: 1,
+    marginTop: StatusBar.currentHeight
   },
 
   feed: {

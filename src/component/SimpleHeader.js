@@ -19,14 +19,14 @@ class SimpleHeader extends Component {
 
 const styles = StyleSheet.create({
   header: {
-    height: 100,
+    height: 70,
     borderBottomColor: "black",
     borderRadius: 1,
   },
 
   headerText: {
     fontSize: 24,
-    marginTop: 40,
+    marginTop: 20,
     marginLeft: 30,
     fontFamily: "HindSiliguri-Bold"
   }

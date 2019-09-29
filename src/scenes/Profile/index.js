@@ -8,6 +8,7 @@ import {
   Dimensions,
   StyleSheet,
   ScrollView,
+  StatusBar,
   View,
   Image,
   Text
@@ -125,7 +126,8 @@ class Profile extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
+    marginTop: StatusBar.currentHeight
   },
 
   userName: {

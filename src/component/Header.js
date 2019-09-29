@@ -17,6 +17,63 @@ import {
 
 /**Main header for most pages, to use custom font and design */
 class Header extends Component {
+
+  state = {
+    tab1: {
+      visible: true,
+    },
+    tab2: {
+      visible: false,
+    }
+  }
+
+
+  // TODO add more logic
+  // highlight the active tab when pressed
+  clickTab = (tab) => {
+
+    if (tab == this.state.tab1) {
+      this.setState(prevState => ({
+        tab1: {
+          ...prevState,
+          visible: true
+        },
+        tab2: {
+          ...prevState,
+          visible: false
+        }
+      }))
+    }
+    else {
+      this.setState(prevState => ({
+        tab1: {
+          ...prevState,
+          visible: false
+        },
+        tab2: {
+          ...prevState,
+          visible: true
+        }
+      }))
+    }
+  }
+
+
+  // change style properties for the tabs
+  activeTab = (tab) => {
+
+    if (tab.visible === true) {
+      return {
+        borderBottomWidth: 3
+      }
+    }
+    else {
+      return {
+        borderBottomWidth: 0
+      }
+    }
+  }
+
   render() {
     return (
       <View style={styles.header}>
@@ -36,27 +93,27 @@ class Header extends Component {
         </View>
 
         {/* header tab */}
-        {/* <View style={{ flexDirection: "row", justifyContent: "center" }}>
+        <View style={{ flexDirection: "row", justifyContent: "center" }}>
           <TouchableOpacity
-            // onPress
+            onPress={() => this.clickTab(this.state.tab1)}
             style={styles.headerButton}
+            activeOpacity={0.5}
           >
-            <Text style={[styles.headerButtonText, styles.font]}>
-              {" "}
-              {this.props.tab1}{" "}
+            <Text style={[styles.headerButtonText, styles.font, this.activeTab(this.state.tab1)]}>
+              {this.props.tab1}
             </Text>
           </TouchableOpacity>
 
           <TouchableOpacity
-            // onPress
+            onPress={() => this.clickTab(this.state.tab2)}
             style={styles.headerButton}
+            activeOpacity={0.5}
           >
-            <Text style={[styles.headerButtonText, styles.font]}>
-              {" "}
-              {this.props.tab2}{" "}
+            <Text style={[styles.headerButtonText, styles.font, this.activeTab(this.state.tab2)]}>
+              {this.props.tab2}
             </Text>
           </TouchableOpacity>
-        </View> */}
+        </View>
       </View>
     );
   }
@@ -68,7 +125,7 @@ const styles = StyleSheet.create({
   },
 
   header: {
-    height: 130
+    height: 120
   },
 
   search: {
@@ -76,7 +133,7 @@ const styles = StyleSheet.create({
     marginHorizontal: wd(0.07),
     backgroundColor: "white",
     elevation: 9,
-    marginTop: 40,
+    marginTop: 25,
     height: 45,
     borderRadius: 10
   },
@@ -98,14 +155,19 @@ const styles = StyleSheet.create({
     alignContent: "center",
     marginTop: 10,
     marginHorizontal: 15,
+  },
+
+  headerButtonText: {
+    fontSize: 18,
+    borderColor: "#FF6E6E",
+    borderWidth: 0,
+  },
+
+  activeHighlight: {
     borderColor: "#FF6E6E",
     borderWidth: 0,
     borderBottomWidth: 3
   },
-
-  headerButtonText: {
-    fontSize: 18
-  }
 });
 
 export default Header;

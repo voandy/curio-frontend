@@ -25,6 +25,7 @@ import SelectedGroupScreen from "./Groups/SelectedGroup";
 import ArtefactsFormScreen from "./Artefacts/ArtefactsForm";
 import GroupsFormScreen from "./Groups/GroupsForm";
 import AccountSettingScreen from "./Profile/AccountSetting";
+import SearchScreen from "./Search";
 
 import { getUserData } from "../actions/userActions";
 import { getUserArtefacts } from "../actions/artefactsActions";
@@ -77,7 +78,8 @@ class Scenes extends Component {
 const GroupStack = createStackNavigator({
   Groups: { screen: GroupsScreen },
   GroupsForm: { screen: GroupsFormScreen },
-  SelectedGroup: { screen: SelectedGroupScreen }
+  SelectedGroup: { screen: SelectedGroupScreen },
+  Search: {screen: SearchScreen},
 });
 
 const ArtefactStack = createStackNavigator({

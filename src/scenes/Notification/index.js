@@ -3,6 +3,7 @@ import { RefreshControl } from 'react-native';
 
 import {
   Dimensions,
+  StatusBar,
   StyleSheet,
   TouchableOpacity,
   ScrollView,
@@ -123,25 +124,7 @@ export default class Notification extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
+    marginTop: StatusBar.currentHeight
   },
-
-  titleText: {
-    fontSize: 30,
-    marginTop: 250,
-    alignSelf: "flex-start",
-    marginLeft: Dimensions.get("window").width * 0.07,
-    fontFamily: "HindSiliguri-Bold"
-  },
-
-  button: {
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#FF6E6E",
-    width: Dimensions.get("window").width * 0.4,
-    height: 50,
-    margin: 10,
-    borderRadius: 540,
-    elevation: 3
-  }
 });
