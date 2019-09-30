@@ -16,6 +16,9 @@ import {
 // import redux actions for groups
 import { 
   editSelectedGroup,
+  getSelectedGroup, 
+  getSelectedGroupAllArtefacts, 
+  getSelectedGroupAllMembers, 
 } from "../../../actions/groupsActions";
 
 // custom component
@@ -35,6 +38,9 @@ import {
 import GroupModal from "../../../component/GroupModal";
 
 class SelectedGroup extends Component {
+  constructor(props) {
+    super(props);
+
     state = {
       selectedGroup: {
         ...this.props.groups.selectedGroup,
@@ -43,6 +49,12 @@ class SelectedGroup extends Component {
       isUpdateModalVisible: false,
       loading: false
     };
+
+    groupId = this.props.navigation.getParam('groupId', 'NO-GROUP-ID');
+    this.props.getSelectedGroup(groupId);
+    this.props.getSelectedGroupAllArtefacts(groupId);
+    this.props.getSelectedGroupAllMembers(groupId);
+  }
 
   // nav details
   static navigationOptions = {
@@ -166,12 +178,12 @@ class SelectedGroup extends Component {
     const selectedGroupMembers = this.props.groups.selectedGroupMembers;
 
     // selected group's groupMembers information
-    console.log("selectedGroupArtefacts", this.props.groups.selectedGroupArtefacts);
+    // console.log("selectedGroupArtefacts", this.props.groups.selectedGroupArtefacts);
     const selectedGroupArtefacts = this.props.groups.selectedGroupArtefacts;
 
     return (
       <View style={styles.container}>
-        {/*         
+        {/*                 
           <Text style={styles.title}> Group Functionalities </Text>
             <GroupOptionButton
               toggleUpdateModal={this.toggleUpdateModal}
@@ -329,5 +341,10 @@ const mapStateToProps = state => ({
 //  connect to redux and export
 export default connect(
   mapStateToProps,
-  { editSelectedGroup }
+  { 
+    editSelectedGroup, 
+    getSelectedGroup, 
+    getSelectedGroupAllArtefacts, 
+    getSelectedGroupAllMembers,  
+  }
 )(SelectedGroup);

@@ -95,10 +95,7 @@ class Groups extends Component {
   clickGroup = async (groupId) => {
     const { navigate } = this.props.navigation;
 
-    this.props.getSelectedGroup(groupId);
-    this.props.getSelectedGroupAllArtefacts(groupId);
-    this.props.getSelectedGroupAllMembers(groupId);
-    navigate("SelectedGroup");
+    navigate('SelectedGroup', { groupId });
   };
 
   // show groups that are unpinned by user
