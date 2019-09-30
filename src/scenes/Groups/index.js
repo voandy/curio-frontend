@@ -220,8 +220,8 @@ class Groups extends Component {
         </ScrollView>
 
         {/* create new Group */}
-        {/* <AddButton onPress={this.toggleModal} /> */}
-        <AddButton onPress={() => navigate("GroupsForm")} />
+        <AddButton onPress={this.toggleModal} />
+        {/* <AddButton onPress={() => navigate("GroupsForm")} /> */}
 
         {/* REMOVE THIS ONCE FORM IS DONE */}
         <GroupModal

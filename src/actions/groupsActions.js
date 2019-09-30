@@ -3,6 +3,7 @@ import {
   SET_SELECTED_GROUP,
   SET_SELECTED_GROUP_ARTEFACTS,
   SET_SELECTED_GROUP_MEMBERS,
+  SET_USER_DATA_OF_ARTEFACTS,
 } from "../types/groupsTypes";
 
 import {
@@ -14,6 +15,10 @@ import {
   getGroupAllMembersAPIRequest,
   editGroupAPIRequest,
 } from "../utils/APIHelpers/groupAPIHelper";
+
+import {
+  getUserAPIRequest
+} from "../utils/APIHelpers/userAPIHelpers"
 
 import { uploadImageToGCS } from "../utils/imageUpload";
 
@@ -143,6 +148,30 @@ export const editSelectedGroup = groupId => dispatch => {
   })
 }
 
+// get all user details of artefacts in group
+export const getUserDataOfArtefacts = userIds => dispatch => {
+  return new Promise ((resolve, reject) => {
+    userDataOfArtefacts = [];
+
+    // get all users' data from the userIds
+    for (var i = 0; i < userIds.length; i ++) {
+      getUserAPIRequest(userIds[i])
+        .then(res => {
+          userDataOfArtefacts.push(res.data)
+        })
+        //failure
+        .catch(err => {
+          console.log("groupActions: " + err);
+          reject(err)
+        })
+    }
+
+    // successfully get all users' data and set the userDataOfArtefacts in reducer
+    resolve(res);
+    dispatch(setUserDataOfArtefacts(userDataOfArtefacts));
+  });
+}
+
 export const setUserGroups = decoded => {
   return {
     type: SET_USER_GROUPS,
@@ -167,6 +196,13 @@ export const setSelectedGroupArtefacts = decoded => {
 export const setSelectedGroupMembers = decoded => {
   return {
     type: SET_SELECTED_GROUP_MEMBERS,
+    payload: decoded
+  };
+};
+
+export const setUserDataOfArtefacts = decoded => {
+  return {
+    type: SET_USER_DATA_OF_ARTEFACTS,
     payload: decoded
   };
 };

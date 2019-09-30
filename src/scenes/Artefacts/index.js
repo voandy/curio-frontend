@@ -242,7 +242,7 @@ class Artefacts extends Component {
         </ScrollView>
 
         {/* create new Group */}
-        <AddButton onPress={() => this.toggleModal()} />
+        <AddButton onPress={this.toggleModal} />
         {/* <AddButton onPress={() => navigate("ArtefactsForm")} /> */}
 
         {/* REMOVE THIS */}
