@@ -1,6 +1,4 @@
-import {
-  SET_CURRENT_USER_DATA
-} from "../types/userTypes";
+import { SET_CURRENT_USER_DATA } from "../types/userTypes";
 
 import { getUserAPIRequest } from "../utils/APIHelpers/userAPIHelpers";
 

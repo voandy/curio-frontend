@@ -1,50 +1,107 @@
 import React, { Component } from "react";
-import { RefreshControl } from 'react-native';
+import { RefreshControl } from "react-native";
 
+// redux actions
+import { connect } from "react-redux";
 import {
-  Dimensions,
-  StatusBar,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-  View,
-  Image,
-  Text
-} from "react-native";
+  getUserNotifications,
+  setSeenStatusToTrue
+} from "../../actions/notificationActions";
+import {
+  getSelectedGroup,
+  getSelectedGroupAllArtefacts,
+  getSelectedGroupAllMembers
+} from "../../actions/groupsActions";
+import {
+  getSelectedArtefact,
+  getArtefactComments
+} from "../../actions/artefactsActions";
+
+import { StatusBar, StyleSheet, ScrollView, View, Text } from "react-native";
 
 // Custom component
 import SimpleHeader from "../../component/SimpleHeader";
-import NotificationFeed from "../../component/NotificationFeed"
+import NotificationFeed from "../../component/NotificationFeed";
 
-const jon = "John snow is not Jon snow, so he knows something";
-const varys = "botak dude that is sometimes a traitor";
-const tormund = "WILD ONE";
-const tyrion = "drunk as always";
-const joffrey = "deserved to die, was a pleasure to watch him chock to his death XD";
-
-
-export default class Notification extends Component {
-
+class Notification extends Component {
+  state = {
+    refreshing: false
+  };
   // Nav bar details
   static navigationOptions = {
     header: null
   };
 
-  // navigate to page 
-  // TODO add the proper routes
-  clickNotification = () => {
+  // navigate to page accordingly
+  clickNotification = async notif => {
+    // get notification details
+    const { refId, category } = notif;
+    await this.props.setSeenStatusToTrue(notif._id);
+    this.props.getUserNotifications(this.props.auth.user.id);
+    // navigate based on category
+    switch (category) {
+      case "artefact":
+        this.navigateToArtefactNotif(refId);
+        return;
+      case "group":
+        this.navigateToGroupNotif(refId);
+        return;
+      default:
+        console.log("Oops, check your notification type.");
+        return;
+    }
+  };
+
+  // helper function to navigate to selected group page
+  navigateToGroupNotif = async groupId => {
     const { navigate } = this.props.navigation;
+    // get all the required group details
+    this.props.getSelectedGroup(groupId);
+    this.props.getSelectedGroupAllArtefacts(groupId);
+    this.props.getSelectedGroupAllMembers(groupId);
+    // redirect user
+    navigate("SelectedGroup");
+  };
+
+  // helper function to navigate to selected artefact page
+  navigateToArtefactNotif = async artefactId => {
+    const { navigate } = this.props.navigation;
+    // get the selected artefact information
+    await this.props.getSelectedArtefact(artefactId);
+    // get the selected artefact comments
+    await this.props.getArtefactComments(artefactId);
+    // redirect user
     navigate("SelectedArtefact");
-  }
+  };
+
+  // refresh page
+  refreshNotificationsPage = async () => {
+    this.setState({ refreshing: true });
+    // get data from backend
+    await this.props.getUserNotifications(this.props.auth.user.id);
+    // resets refreshing state
+    this.setState({ refreshing: false });
+  };
+
+  // create all the notifications components to be rendered
+  renderAllNotifications = notifications => {
+    // sort array based on date posted (from earliest to oldest)
+    notifications.sort(function(a, b) {
+      return new Date(b.datePosted) - new Date(a.datePosted);
+    });
+    // create an individual component for each notification
+    const notificationsComponent = notifications.map(notif => (
+      <NotificationFeed
+        notification={notif}
+        key={notif._id}
+        onPress={this.clickNotification}
+      />
+    ));
+    // return the components array
+    return notificationsComponent;
+  };
 
   render() {
-
-    // date format
-    // const dt = this.state.userData.dateJoined;
-
-    // navigation in app
-    const { navigate } = this.props.navigation;
-
     return (
       <View style={styles.container}>
         <SimpleHeader title="Notification" />
@@ -54,68 +111,26 @@ export default class Notification extends Component {
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={16}
           refreshControl={
-            <RefreshControl />
+            <RefreshControl
+              refreshing={this.state.refreshing}
+              onRefresh={this.refreshNotificationsPage}
+            />
           }
         >
-
-          <NotificationFeed
-            name={"jon"}
-            text={jon}
-            hasRead={true}
-            image={require("../../../assets/images/default-profile-pic.png")}
-            onPress={() => this.clickNotification.bind(this)}
-          />
-          <NotificationFeed
-            name={"varys"}
-            text={varys}
-            hasRead={false}
-            image={require("../../../assets/images/default-profile-pic.png")}
-            onPress={() => this.clickNotification.bind(this)}
-          />
-          <NotificationFeed
-            name={"tormund"}
-            text={tormund}
-            hasRead={false}
-            image={require("../../../assets/images/default-profile-pic.png")}
-            onPress={() => this.clickNotification.bind(this)}
-          />
-          <NotificationFeed
-            name={"tyrion"}
-            text={tyrion}
-            hasRead={true}
-            image={require("../../../assets/images/default-profile-pic.png")}
-            onPress={() => this.clickNotification.bind(this)}
-          />
-          <NotificationFeed
-            name={"joffrey"}
-            text={joffrey}
-            hasRead={true}
-            image={require("../../../assets/images/default-profile-pic.png")}
-            onPress={() => this.clickNotification.bind(this)}
-          />
-          <NotificationFeed
-            name={"tyrion"}
-            text={tyrion}
-            hasRead={false}
-            image={require("../../../assets/images/default-profile-pic.png")}
-            onPress={() => this.clickNotification.bind(this)}
-          />
-          <NotificationFeed
-            name={"joffrey"}
-            text={joffrey}
-            hasRead={false}
-            image={require("../../../assets/images/default-profile-pic.png")}
-            onPress={() => this.clickNotification.bind(this)}
-          />
-
+          {this.renderAllNotifications(this.props.notification.notifications)}
 
           {/* no more notifications ! */}
-          <Text style={{
-            alignSelf: "center",
-            justifyContent: "center",
-            marginVertical: 40,
-            fontFamily: "HindSiliguri-Regular"
-          }}>  Hooray no more notifications </Text>
+          <Text
+            style={{
+              alignSelf: "center",
+              justifyContent: "center",
+              marginVertical: 40,
+              fontFamily: "HindSiliguri-Regular"
+            }}
+          >
+            {" "}
+            Hooray no more notifications{" "}
+          </Text>
         </ScrollView>
       </View>
     );
@@ -126,5 +141,24 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: StatusBar.currentHeight
-  },
+  }
 });
+
+// map required redux state to local props
+const mapStateToProps = state => ({
+  auth: state.auth,
+  notification: state.notification
+});
+
+export default connect(
+  mapStateToProps,
+  {
+    getUserNotifications,
+    setSeenStatusToTrue,
+    getSelectedGroup,
+    getSelectedGroupAllArtefacts,
+    getSelectedGroupAllMembers,
+    getSelectedArtefact,
+    getArtefactComments
+  }
+)(Notification);

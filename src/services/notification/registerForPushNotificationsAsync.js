@@ -5,7 +5,7 @@ const Permissions = require("expo-permissions");
 const axios = require("axios");
 
 //prettier-ignore
-const { setUserPushTokenAPIRequest } = require('../../utils/APIHelpers/userAPIHelper');
+const { setUserPushTokenAPIRequest } = require('../../utils/APIHelpers/userAPIHelpers');
 
 export async function registerForPushNotificationsAsync(userId) {
   const { status: existingStatus } = await Permissions.getAsync(

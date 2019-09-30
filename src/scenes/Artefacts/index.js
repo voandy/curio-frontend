@@ -18,7 +18,12 @@ import ArtefactModal from "../../component/ArtefactModal";
 import AddButton from "../../component/AddButton";
 
 // redux actions
-import { createNewArtefacts, getSelectedArtefact, getUserArtefacts, getArtefactComments } from "../../actions/artefactsActions";
+import {
+  createNewArtefacts,
+  getSelectedArtefact,
+  getUserArtefacts,
+  getArtefactComments
+} from "../../actions/artefactsActions";
 
 // Custom respondsive design component
 import {
@@ -63,8 +68,9 @@ class Artefacts extends Component {
 
   // update selectedArtefact when it has already been changed
   componentWillUpdate(nextProps) {
-    if (this.props.artefacts.userArtefacts !== nextProps.artefacts.userArtefacts) {
-
+    if (
+      this.props.artefacts.userArtefacts !== nextProps.artefacts.userArtefacts
+    ) {
       // reload userArtefacts to update userArtefacts in redux state
       this.props.getUserArtefacts(this.props.auth.user.id);
     }
@@ -130,9 +136,9 @@ class Artefacts extends Component {
   clickArtefact = async artefactId => {
     const { navigate } = this.props.navigation;
 
-    // get artefact information 
+    // get artefact information
     await this.props.getSelectedArtefact(artefactId);
-    
+
     // get artefact comments
     await this.props.getArtefactComments(artefactId);
 
@@ -148,7 +154,7 @@ class Artefacts extends Component {
     let artefactKey = 0;
 
     // sort array based on date obtained (from earliest to oldest)
-    artefacts.sort(function (a, b) {
+    artefacts.sort(function(a, b) {
       return new Date(b.datePosted) - new Date(a.datePosted);
     });
     // create ArtefactFeed object out of artefact and push it into artefactFeeds array
@@ -227,19 +233,19 @@ class Artefacts extends Component {
               {this.showArtefacts(this.props.artefacts.userArtefacts)}
             </View>
           ) : (
-              <View style={styles.emptyFeed}>
-                <Text
-                  style={{ fontSize: 16, fontFamily: "HindSiliguri-Regular" }}
-                >
-                  Looks like you haven't posted any artefacts
+            <View style={styles.emptyFeed}>
+              <Text
+                style={{ fontSize: 16, fontFamily: "HindSiliguri-Regular" }}
+              >
+                Looks like you haven't posted any artefacts
               </Text>
-                <Text
-                  style={{ fontSize: 16, fontFamily: "HindSiliguri-Regular" }}
-                >
-                  Click the "+" button to add some
+              <Text
+                style={{ fontSize: 16, fontFamily: "HindSiliguri-Regular" }}
+              >
+                Click the "+" button to add some
               </Text>
-              </View>
-            )}
+            </View>
+          )}
         </ScrollView>
 
         {/* create new Group */}
@@ -307,5 +313,10 @@ const mapStateToProps = state => ({
 // map required redux state and actions to local props
 export default connect(
   mapStateToProps,
-  { createNewArtefacts, getSelectedArtefact, getUserArtefacts, getArtefactComments }
+  {
+    createNewArtefacts,
+    getSelectedArtefact,
+    getUserArtefacts,
+    getArtefactComments
+  }
 )(Artefacts);
