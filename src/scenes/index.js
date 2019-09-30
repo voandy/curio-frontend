@@ -30,6 +30,7 @@ import SearchScreen from "./Search";
 import { getUserData } from "../actions/userActions";
 import { getUserArtefacts } from "../actions/artefactsActions";
 import { getUserGroups } from "../actions/groupsActions";
+import { getUserNotifications } from "../actions/notificationActions";
 
 //prettier-ignore
 const { registerForPushNotificationsAsync } = require("../services/notification/registerForPushNotificationsAsync");
@@ -44,6 +45,7 @@ class Scenes extends Component {
       await this.props.getUserData(user.id);
       await this.props.getUserArtefacts(user.id);
       await this.props.getUserGroups(user.id);
+      await this.props.getUserNotifications(user.id);
 
       // post user's expo-push-token to backend if haven't already
       registerForPushNotificationsAsync(user.id);
@@ -63,6 +65,7 @@ class Scenes extends Component {
       this.props.getUserData(user.id);
       this.props.getUserArtefacts(user.id);
       this.props.getUserGroups(user.id);
+      this.props.getUserNotifications(user.id);
 
       // post user's expo-push-token to backend if haven't already
       registerForPushNotificationsAsync(user.id);
@@ -79,7 +82,7 @@ const GroupStack = createStackNavigator({
   Groups: { screen: GroupsScreen },
   GroupsForm: { screen: GroupsFormScreen },
   SelectedGroup: { screen: SelectedGroupScreen },
-  Search: {screen: SearchScreen},
+  Search: { screen: SearchScreen }
 });
 
 const ArtefactStack = createStackNavigator({
@@ -202,5 +205,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { getUserData, getUserArtefacts, getUserGroups }
+  { getUserData, getUserArtefacts, getUserGroups, getUserNotifications }
 )(Scenes);

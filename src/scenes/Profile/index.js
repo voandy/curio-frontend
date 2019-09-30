@@ -24,7 +24,7 @@ import ProfileSetting from "../../component/ProfileSetting";
 import Line from "../../component/Line";
 
 //prettier-ignore
-const { setUserPushTokenAPIRequest } = require('../../utils/APIHelpers/userAPIHelper');
+const { setUserPushTokenAPIRequest } = require('../../utils/APIHelpers/userAPIHelpers');
 
 class Profile extends Component {
   constructor() {
@@ -103,9 +103,7 @@ class Profile extends Component {
           <Line />
 
           <ProfileSetting text="Artefacts" />
-          <ProfileSetting 
-            text="Friends" 
-            />
+          <ProfileSetting text="Friends" />
           <ProfileSetting
             text="Account Settings"
             onPress={() => navigate("AccountSetting")}
