@@ -36,7 +36,9 @@ class Notification extends Component {
   clickNotification = async notif => {
     // get notification details
     const { refId, category } = notif;
+    // user has read notification
     await this.props.setSeenStatusToTrue(notif._id);
+    // reload notification data on the page
     this.props.getUserNotifications(this.props.auth.user.id);
     // navigate based on category
     switch (category) {

@@ -22,7 +22,8 @@ export const setSeenStatusToTrue = notifId => dispatch => {
   return new Promise((resolve, reject) => {
     updateNotificationToReadAPIRequest(notifId)
       .then(res => {
-        // dispatch(setNotifications(res.data));
+        // console.log(res);
+        resolve(res);
       })
       .catch(err => {
         console.log(err);
