@@ -19,6 +19,7 @@ import {
   getSelectedGroup, 
   getSelectedGroupAllArtefacts, 
   getSelectedGroupAllMembers, 
+  getUserDataOfArtefacts,
 } from "../../../actions/groupsActions";
 
 // custom component
@@ -50,6 +51,7 @@ class SelectedGroup extends Component {
       loading: false
     };
 
+    // get all information required for the selectedGroup page
     groupId = this.props.navigation.getParam('groupId', 'NO-GROUP-ID');
     this.props.getSelectedGroup(groupId);
     this.props.getSelectedGroupAllArtefacts(groupId);
@@ -66,9 +68,7 @@ class SelectedGroup extends Component {
 
   // return a row of group members 
   showGroupMembers = groupMembers => {
-    let groupMemberRows = [];
     let groupMemberFeeds = [];
-    let rowKey = 0;
     let groupMemberKey = 0;
 
     for (var i = 0; i < groupMembers.length; i++) {
@@ -84,10 +84,17 @@ class SelectedGroup extends Component {
 
   // return a row of group artefacts 
   showGroupArtefacts = groupArtefacts => {
-    let groupArtefactRows = [];
     let groupArtefactFeeds = [];
-    let rowKey = 0;
+    let groupArtefactUserIds = [];
     let groupArtefactKey = 0;
+
+    // get user id from the artefacts
+    for (var i = 0; i < groupArtefacts.length; i++) {
+      groupArtefactUserIds.push(groupArtefacts[i].details.userId);
+    }
+
+    // get user data from user id extracted from the artefacts
+    this.props.getUserDataOfArtefacts(groupArtefactUserIds);
 
     for (var i = 0; i < groupArtefacts.length; i++) {
 
@@ -107,10 +114,10 @@ class SelectedGroup extends Component {
         <PostFeed
           key={groupArtefactKey}
           // change this to user's username later
-          userName= "NOT IMPLEMENTED YET"
+          userName= {this.props.groups.userDataOfArtefacts[i].name}
           title= {groupArtefacts[i].details.title}
           // change this to user image later
-          profileImage={{ uri: groupArtefacts[i].details.images[0].URL }}
+          profileImage={{ uri: this.props.groups.userDataOfArtefacts[i].profilePic }}
           image={{ uri: groupArtefacts[i].details.images[0].URL }}
         />
       );
@@ -345,6 +352,7 @@ export default connect(
     editSelectedGroup, 
     getSelectedGroup, 
     getSelectedGroupAllArtefacts, 
-    getSelectedGroupAllMembers,  
+    getSelectedGroupAllMembers,
+    getUserDataOfArtefacts,
   }
 )(SelectedGroup);

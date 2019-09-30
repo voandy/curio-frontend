@@ -4,6 +4,7 @@ import {
   SET_SELECTED_GROUP_ARTEFACTS,
   SET_SELECTED_GROUP_MEMBERS,
   SET_USER_DATA_OF_ARTEFACTS,
+  ADD_USER_DATA_OF_ARTEFACTS,
 } from "../types/groupsTypes";
 
 import {
@@ -151,24 +152,27 @@ export const editSelectedGroup = groupId => dispatch => {
 // get all user details of artefacts in group
 export const getUserDataOfArtefacts = userIds => dispatch => {
   return new Promise ((resolve, reject) => {
-    userDataOfArtefacts = [];
+    const promises = [];
 
     // get all users' data from the userIds
     for (var i = 0; i < userIds.length; i ++) {
-      getUserAPIRequest(userIds[i])
+
+      var promise = getUserAPIRequest(userIds[i])
         .then(res => {
-          userDataOfArtefacts.push(res.data)
+          resolve(res);
+          dispatch(addUserDataOfArtefacts(res.data));
         })
         //failure
         .catch(err => {
           console.log("groupActions: " + err);
           reject(err)
         })
+
+      promises.push(promise);
     }
 
     // successfully get all users' data and set the userDataOfArtefacts in reducer
-    resolve(res);
-    dispatch(setUserDataOfArtefacts(userDataOfArtefacts));
+    return Promise.all(promises);
   });
 }
 
@@ -203,6 +207,13 @@ export const setSelectedGroupMembers = decoded => {
 export const setUserDataOfArtefacts = decoded => {
   return {
     type: SET_USER_DATA_OF_ARTEFACTS,
+    payload: decoded
+  };
+};
+
+export const addUserDataOfArtefacts = decoded => {
+  return {
+    type: ADD_USER_DATA_OF_ARTEFACTS,
     payload: decoded
   };
 };

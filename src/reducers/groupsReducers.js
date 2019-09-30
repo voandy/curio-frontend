@@ -4,6 +4,7 @@ import {
   SET_SELECTED_GROUP_ARTEFACTS,
   SET_SELECTED_GROUP_MEMBERS,
   SET_USER_DATA_OF_ARTEFACTS,
+  ADD_USER_DATA_OF_ARTEFACTS,
 } from "../types/groupsTypes";
 
 const initialState = {
@@ -40,6 +41,11 @@ export default function(state = initialState, action) {
       return {
         ...state,
         userDataOfArtefacts: action.payload
+      }
+    case ADD_USER_DATA_OF_ARTEFACTS:
+      return {
+        ...state,
+        userDataOfArtefacts: state.userDataOfArtefacts.concat(action.payload)
       }
     default:
       return state;

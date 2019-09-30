@@ -15,9 +15,6 @@ import {
 // import redux actions for groups
 import { 
   createNewGroup, 
-  getSelectedGroup, 
-  getSelectedGroupAllArtefacts, 
-  getSelectedGroupAllMembers, 
   editSelectedGroup,
 } from "../../actions/groupsActions";
 
@@ -94,7 +91,6 @@ class Groups extends Component {
   // click a specific group on the Groups scene
   clickGroup = async (groupId) => {
     const { navigate } = this.props.navigation;
-
     navigate('SelectedGroup', { groupId });
   };
 
@@ -327,5 +323,5 @@ const mapStateToProps = state => ({
 //  connect to redux and export
 export default connect(
   mapStateToProps,
-  { createNewGroup, getSelectedGroup, getSelectedGroupAllArtefacts, getSelectedGroupAllMembers }
+  { createNewGroup }
 )(Groups);
