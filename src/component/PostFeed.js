@@ -52,8 +52,7 @@ class PostFeed extends Component {
                 {/* likes/comments counters */}
                 <View style={styles.likesIndicatorPlaceholder}>
                     <Text style={styles.indicator}>
-                        {/* {likesCount} Likes • {commentsCount} Comments */}
-                        5 Likes • 2 Comments
+                        {this.props.likesCount} Likes • {this.props.commentsCount} Comments
                     </Text>
                 </View>
 

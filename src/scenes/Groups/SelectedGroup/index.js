@@ -86,7 +86,6 @@ class SelectedGroup extends Component {
   showGroupArtefacts = groupArtefacts => {
     let groupArtefactFeeds = [];
     let groupArtefactUserIds = [];
-    let groupArtefactKey = 0;
 
     // get user id from the artefacts
     for (var i = 0; i < groupArtefacts.length; i++) {
@@ -94,34 +93,24 @@ class SelectedGroup extends Component {
     }
 
     // get user data from user id extracted from the artefacts
-    this.props.getUserDataOfArtefacts(groupArtefactUserIds);
+    // this.props.getUserDataOfArtefacts(groupArtefactUserIds);
 
     for (var i = 0; i < groupArtefacts.length; i++) {
 
       // append group artefacts into array
       groupArtefactFeeds.push(
-        // <View style={styles.card} key={groupArtefactKey}>
-          // <TouchableOpacity
-          //   activeOpacity={0.5}
-          // >
-          //   <Image
-          //     style={styles.photo}
-          //     source={{ uri: groupArtefacts[i].details.images[0].URL }}
-          //   />
-          // </TouchableOpacity>
-        // </View>
-
         <PostFeed
-          key={groupArtefactKey}
+          key={groupArtefacts[i].artefactId}
           // change this to user's username later
-          userName= {this.props.groups.userDataOfArtefacts[i].name}
+          userName= {groupArtefacts[i].user.name}
           title= {groupArtefacts[i].details.title}
           // change this to user image later
-          profileImage={{ uri: this.props.groups.userDataOfArtefacts[i].profilePic }}
+          profileImage={{ uri: groupArtefacts[i].user.profilePic}}
           image={{ uri: groupArtefacts[i].details.images[0].URL }}
+          likesCount= {groupArtefacts[i].details.likes.length}
+          commentsCount = {0}
         />
       );
-      groupArtefactKey++;
     }
     return <>{groupArtefactFeeds}</>;
   };
@@ -185,7 +174,7 @@ class SelectedGroup extends Component {
     const selectedGroupMembers = this.props.groups.selectedGroupMembers;
 
     // selected group's groupMembers information
-    // console.log("selectedGroupArtefacts", this.props.groups.selectedGroupArtefacts);
+    console.log("selectedGroupArtefacts", this.props.groups.selectedGroupArtefacts);
     const selectedGroupArtefacts = this.props.groups.selectedGroupArtefacts;
 
     return (

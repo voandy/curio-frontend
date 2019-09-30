@@ -2,16 +2,13 @@ import {
   SET_USER_GROUPS,
   SET_SELECTED_GROUP,
   SET_SELECTED_GROUP_ARTEFACTS,
-  SET_SELECTED_GROUP_MEMBERS,
-  SET_USER_DATA_OF_ARTEFACTS,
-  ADD_USER_DATA_OF_ARTEFACTS,
+  SET_SELECTED_GROUP_MEMBERS
 } from "../types/groupsTypes";
 
 const initialState = {
   userGroups: [],
   selectedGroup: {},
   selectedGroupArtefacts: [],
-  userDataOfArtefacts: [],
   selectedGroupMembers: [],
 };
 
@@ -37,16 +34,6 @@ export default function(state = initialState, action) {
         ...state,
         selectedGroupMembers: action.payload
       };
-    case SET_USER_DATA_OF_ARTEFACTS:
-      return {
-        ...state,
-        userDataOfArtefacts: action.payload
-      }
-    case ADD_USER_DATA_OF_ARTEFACTS:
-      return {
-        ...state,
-        userDataOfArtefacts: state.userDataOfArtefacts.concat(action.payload)
-      }
     default:
       return state;
   }
