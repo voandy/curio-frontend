@@ -14,7 +14,7 @@ import {
 } from "react-native";
 
 // import redux actions for groups
-import { 
+import {
   editSelectedGroup,
 } from "../../../actions/groupsActions";
 
@@ -35,14 +35,14 @@ import {
 import GroupModal from "../../../component/GroupModal";
 
 class SelectedGroup extends Component {
-    state = {
-      selectedGroup: {
-        ...this.props.groups.selectedGroup,
-        coverPhoto: this.props.groups.selectedGroup.coverPhoto
-      },
-      isUpdateModalVisible: false,
-      loading: false
-    };
+  state = {
+    selectedGroup: {
+      ...this.props.groups.selectedGroup,
+      coverPhoto: this.props.groups.selectedGroup.coverPhoto
+    },
+    isUpdateModalVisible: false,
+    loading: false
+  };
 
   // nav details
   static navigationOptions = {
@@ -63,7 +63,7 @@ class SelectedGroup extends Component {
 
       // append group members into array
       groupMemberFeeds.push(
-        <UserIcon key={groupMemberKey} image = {{ uri: groupMembers[i].details.profilePic }} />
+        <UserIcon key={groupMemberKey} image={{ uri: groupMembers[i].details.profilePic }} />
       );
       groupMemberKey++;
     }
@@ -82,21 +82,21 @@ class SelectedGroup extends Component {
       // append group artefacts into array
       groupArtefactFeeds.push(
         // <View style={styles.card} key={groupArtefactKey}>
-          // <TouchableOpacity
-          //   activeOpacity={0.5}
-          // >
-          //   <Image
-          //     style={styles.photo}
-          //     source={{ uri: groupArtefacts[i].details.images[0].URL }}
-          //   />
-          // </TouchableOpacity>
+        // <TouchableOpacity
+        //   activeOpacity={0.5}
+        // >
+        //   <Image
+        //     style={styles.photo}
+        //     source={{ uri: groupArtefacts[i].details.images[0].URL }}
+        //   />
+        // </TouchableOpacity>
         // </View>
 
         <PostFeed
           key={groupArtefactKey}
           // change this to user's username later
-          userName= "NOT IMPLEMENTED YET"
-          title= {groupArtefacts[i].details.title}
+          userName="NOT IMPLEMENTED YET"
+          title={groupArtefacts[i].details.title}
           // change this to user image later
           profileImage={{ uri: groupArtefacts[i].details.images[0].URL }}
           image={{ uri: groupArtefacts[i].details.images[0].URL }}
@@ -152,7 +152,7 @@ class SelectedGroup extends Component {
   };
 
   render() {
-    
+
     // selected group information
     // console.log("selectedGroup", this.props.groups.selectedGroup);
     const selectedGroup = this.props.groups.selectedGroup;
@@ -168,6 +168,9 @@ class SelectedGroup extends Component {
     // selected group's groupMembers information
     console.log("selectedGroupArtefacts", this.props.groups.selectedGroupArtefacts);
     const selectedGroupArtefacts = this.props.groups.selectedGroupArtefacts;
+
+    // navigation in app
+    const { navigate } = this.props.navigation;
 
     return (
       <View style={styles.container}>
@@ -190,7 +193,7 @@ class SelectedGroup extends Component {
           {/* group cover photo */}
           <View style={styles.coverPhoto}>
             {/* TODO USE THIS <Image style={styles.cover} source={this.props.coverPhoto} /> */}
-            <Image style={styles.cover} source={{uri: coverPhoto}} />
+            <Image style={styles.cover} source={{ uri: coverPhoto }} />
           </View>
 
           {/* group description */}
@@ -209,12 +212,12 @@ class SelectedGroup extends Component {
                 style={{ flex: 0.7 }}
                 horizontal={true}
                 showsHorizontalScrollIndicator={false}>
-                
+
                 {this.showGroupMembers(selectedGroupMembers)}
 
               </ScrollView>
               <TouchableOpacity
-                //onPress{this.func}
+                onPress={()=>navigate("UserSearch")}
                 style={styles.memberButton}>
                 <Text style={styles.buttonText}>Add Members</Text>
               </TouchableOpacity>

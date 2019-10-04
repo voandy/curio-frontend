@@ -24,7 +24,7 @@ import {
 // custom components
 import CardCarousel from "../../component/CardCarousel";
 import CardGroup from "../../component/CardGroup";
-import Header from "../../component/Header";
+import HeaderSearch from "../../component/HeaderSearch";
 import AddButton from "../../component/AddButton";
 import GroupModal from "../../component/GroupModal";
 
@@ -173,7 +173,8 @@ class Groups extends Component {
 
     return (
       <View style={styles.container}>
-        <Header tab1="Public" tab2="Private"/>
+        {/* <Header tab1="Public" tab2="Private" onPress={()=> navigate("GeneralSearch")}/> */}
+        <HeaderSearch tab1="Public" tab2="Private" onSubmit={()=> navigate("GeneralSearch")}/>
 
         {/* scrollable area for CONTENT */}
         <ScrollView
