@@ -19,7 +19,7 @@ import {
   getSelectedGroup, 
   getSelectedGroupAllArtefacts, 
   getSelectedGroupAllMembers, 
-  getUserDataOfArtefacts,
+  getAllSelectedGroupArtefactComments,
 } from "../../../actions/groupsActions";
 
 // custom component
@@ -85,15 +85,17 @@ class SelectedGroup extends Component {
   // return a row of group artefacts 
   showGroupArtefacts = groupArtefacts => {
     let groupArtefactFeeds = [];
-    let groupArtefactUserIds = [];
+    let groupArtefactIds = [];
 
-    // get user id from the artefacts
     for (var i = 0; i < groupArtefacts.length; i++) {
-      groupArtefactUserIds.push(groupArtefacts[i].details.userId);
+      groupArtefactIds.push(groupArtefacts[i].artefactId);
     }
 
-    // get user data from user id extracted from the artefacts
-    // this.props.getUserDataOfArtefacts(groupArtefactUserIds);
+    console.log("before", this.props.groups);
+
+    this.props.getAllSelectedGroupArtefactComments(groupArtefactIds);
+
+    console.log("after", this.props.groups);
 
     for (var i = 0; i < groupArtefacts.length; i++) {
 
@@ -174,7 +176,7 @@ class SelectedGroup extends Component {
     const selectedGroupMembers = this.props.groups.selectedGroupMembers;
 
     // selected group's groupMembers information
-    console.log("selectedGroupArtefacts", this.props.groups.selectedGroupArtefacts);
+    // console.log("selectedGroupArtefacts", this.props.groups.selectedGroupArtefacts);
     const selectedGroupArtefacts = this.props.groups.selectedGroupArtefacts;
 
     return (
@@ -342,6 +344,6 @@ export default connect(
     getSelectedGroup, 
     getSelectedGroupAllArtefacts, 
     getSelectedGroupAllMembers,
-    getUserDataOfArtefacts,
+    getAllSelectedGroupArtefactComments
   }
 )(SelectedGroup);

@@ -160,11 +160,13 @@ export const removeSelectedArtefact = artefactId => dispatch => {
 
 // get all comments made about an artefact
 export const getArtefactComments = artefactId => dispatch => {
-  getArtefactCommentsAPIRequest(artefactId)
+  return new Promise((resolve, reject) => {
+    getArtefactCommentsAPIRequest(artefactId)
     // success
     .then(res => dispatch(setArtefactComments(res.data)))
     // failure
     .catch(err => console.log("artefactActions: " + err));
+  });
 };
 
 // post comment on artefact
