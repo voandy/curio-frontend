@@ -6,6 +6,7 @@ import groupsReducers from "./groupsReducers";
 import artefactsReducers from "./artefactsReducers";
 import registerReducers from "./registerReducers";
 import notificationReducers from "./notificationReducers";
+import searchReducers from "./searchReducers";
 
 // import auth types constant
 import { USER_LOGOUT } from "../types/authTypes";
@@ -17,7 +18,8 @@ export const appReducer = combineReducers({
   groups: groupsReducers,
   artefacts: artefactsReducers,
   register: registerReducers,
-  notification: notificationReducers
+  notification: notificationReducers,
+  search: searchReducers
 });
 
 export default rootReducer = (state, action) => {
