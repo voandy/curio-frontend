@@ -25,7 +25,8 @@ import SelectedGroupScreen from "./Groups/SelectedGroup";
 import ArtefactsFormScreen from "./Artefacts/ArtefactsForm";
 import GroupsFormScreen from "./Groups/GroupsForm";
 import AccountSettingScreen from "./Profile/AccountSetting";
-import SearchScreen from "./Search";
+import GeneralSearchScreen from "./GeneralSearch";
+import UserSearchScreen from "./Groups/UserSearch";
 
 import { getUserData } from "../actions/userActions";
 import { getUserArtefacts } from "../actions/artefactsActions";
@@ -82,7 +83,8 @@ const GroupStack = createStackNavigator({
   Groups: { screen: GroupsScreen },
   GroupsForm: { screen: GroupsFormScreen },
   SelectedGroup: { screen: SelectedGroupScreen },
-  Search: { screen: SearchScreen }
+  GeneralSearch: { screen: GeneralSearchScreen },
+  UserSearch: { screen: UserSearchScreen }
 });
 
 const ArtefactStack = createStackNavigator({

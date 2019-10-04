@@ -2,7 +2,6 @@ import React, { Component } from "react";
 
 import {
   StyleSheet,
-  TouchableOpacity,
   ScrollView,
   View,
   StatusBar
@@ -10,13 +9,7 @@ import {
 
 // Custom component
 import SearchFeed from "../../component/SearchFeed";
-import Header from "../../component/Header";
-
-// import width/height responsive functions
-import {
-    deviceHeigthDimension as hp,
-    deviceWidthDimension as wd
-  } from "../../utils/responsiveDesign";
+import HeaderSearch from "../../component/HeaderSearch";
 
 export default class Search extends Component {
 
@@ -32,7 +25,8 @@ export default class Search extends Component {
 
     return (
       <View style={styles.container}>
-        <Header tab1="Users" tab2="Groups"/>
+        {/* TODO add onSubmit here */}
+        <HeaderSearch tab1="Users" tab2="Groups"/>
 
         {/* scrollable area for CONTENT */}
         <ScrollView
