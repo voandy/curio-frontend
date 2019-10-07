@@ -121,7 +121,7 @@ class Groups extends Component {
       cardGroups.push(
         // DOES NOT WORK FOR NOW!!!
         // <CardGroup
-        //   onPress={() => this.clickGroup}
+        //   onPress={()=>this.clickGroup(groupId)}
         //   key={groupKey}
         //   groupId={groupId}
         //   text={text}
@@ -202,6 +202,7 @@ class Groups extends Component {
           {/* unpinned groups */}
           {this.props.groups.userGroups.length !== 0 ? (
             <View>{this.showUnpinnedGroups(this.props.groups.userGroups)}</View>
+            // <CardGroup image={require("../../../assets/images/test-delete-this/boi1.jpg")} text="Groupewfqwfwefqfqwefqwfe 1"/>
           ) : (
               <View style={styles.emptyFeed}>
                 <Text

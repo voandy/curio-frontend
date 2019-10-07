@@ -192,6 +192,8 @@ class SelectedGroup extends Component {
 
     // this.showGroupArtefactsComments(selectedGroupArtefacts);
 
+    const { navigate } = this.props.navigation;
+
     return (
       <View style={styles.container}>
         {/*                 
