@@ -4,8 +4,7 @@ import {
   SET_SELECTED_GROUP_ARTEFACTS,
   SET_SELECTED_GROUP_MEMBERS,
   ADD_SELECTED_GROUP_ARTEFACTS_COMMENTS,
-  REQUEST_ALL_SELECTED_GROUP_ARTEFACT_COMMENTS,
-  RECEIVE_ALL_SELECTED_GROUP_ARTEFACT_COMMENTS,
+  SET_SELECTED_GROUP_ARTEFACT_COMMENTS,
 } from "../types/groupsTypes";
 
 const initialState = {
@@ -43,16 +42,6 @@ export default function(state = initialState, action) {
       return {
         ...state,
         selectedGroupArtefactsComments: state.selectedGroupArtefactsComments.concat(action.payload)
-      }
-    case REQUEST_ALL_SELECTED_GROUP_ARTEFACT_COMMENTS:
-      return {
-        ...state,
-        loadingSelectedGroupArtefactComments: true
-      }
-    case RECEIVE_ALL_SELECTED_GROUP_ARTEFACT_COMMENTS:
-      return {
-        ...state,
-        loadingSelectedGroupArtefactComments: false
       }
     default:
       return state;

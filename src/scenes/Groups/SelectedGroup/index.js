@@ -19,7 +19,7 @@ import {
   getSelectedGroup, 
   getSelectedGroupAllArtefacts, 
   getSelectedGroupAllMembers, 
-  getAllSelectedGroupArtefactComments,
+  getSelectedGroupArtefactComments,
 } from "../../../actions/groupsActions";
 
 // custom component
@@ -48,7 +48,8 @@ class SelectedGroup extends Component {
         coverPhoto: this.props.groups.selectedGroup.coverPhoto
       },
       isUpdateModalVisible: false,
-      loading: false
+      loading: false,
+      artefactsComments: []
     };
 
     // get all information required for the selectedGroup page
@@ -85,17 +86,6 @@ class SelectedGroup extends Component {
   // return a row of group artefacts 
   showGroupArtefacts = groupArtefacts => {
     let groupArtefactFeeds = [];
-    let groupArtefactIds = [];
-
-    for (var i = 0; i < groupArtefacts.length; i++) {
-      groupArtefactIds.push(groupArtefacts[i].artefactId);
-    }
-
-    console.log("before", this.props.groups);
-
-    this.props.getAllSelectedGroupArtefactComments(groupArtefactIds);
-
-    console.log("after", this.props.groups);
 
     for (var i = 0; i < groupArtefacts.length; i++) {
 
@@ -114,8 +104,29 @@ class SelectedGroup extends Component {
         />
       );
     }
+
     return <>{groupArtefactFeeds}</>;
   };
+
+  // show group artefacts' comments
+  showGroupArtefactsComments = async (groupArtefacts) => {
+
+    // get ids of group artefacts
+    var groupArtefactIds = [];
+    for (var i = 0; i < groupArtefacts.length; i++) {
+      groupArtefactIds.push(groupArtefacts[i].artefactId);
+    }
+
+    var promises = groupArtefactIds.map(this.props.getSelectedGroupArtefactComments);
+
+    await Promise.all(promises)
+      .then(res => {
+        console.log(this.props.groups.selectedGroupArtefactsComments);
+      })
+      .catch(err => {
+        console.log(err);
+      })
+  }
 
   // selected artefact's attribute change
   setSelectedGroup = (key, value) => {
@@ -178,6 +189,8 @@ class SelectedGroup extends Component {
     // selected group's groupMembers information
     // console.log("selectedGroupArtefacts", this.props.groups.selectedGroupArtefacts);
     const selectedGroupArtefacts = this.props.groups.selectedGroupArtefacts;
+
+    // this.showGroupArtefactsComments(selectedGroupArtefacts);
 
     return (
       <View style={styles.container}>
@@ -247,7 +260,7 @@ class SelectedGroup extends Component {
               )} */}
 
             {this.showGroupArtefacts(selectedGroupArtefacts)}
-
+            
           </View>
         </ScrollView>
 
@@ -344,6 +357,6 @@ export default connect(
     getSelectedGroup, 
     getSelectedGroupAllArtefacts, 
     getSelectedGroupAllMembers,
-    getAllSelectedGroupArtefactComments
+    getSelectedGroupArtefactComments
   }
 )(SelectedGroup);

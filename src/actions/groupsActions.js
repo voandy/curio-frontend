@@ -163,30 +163,6 @@ export const getSelectedGroupArtefactComments = artefactId => dispatch => {
   });
 };
 
-export const getAllSelectedGroupArtefactComments = artefactIds => dispatch => {
-  
-  return function(dispatch) {
-
-    // updating the app state to inform that api calls are starting
-    dispatch(requestAllSelectedGroupArtefactComments());
-
-    artefactIds.map(artefactId =>
-      getSelectedGroupArtefactComments(artefactId)
-    ).then(res => {
-
-      resolve(res);
-      
-      // updating the app state to inform that api calls are done
-      dispatch(requestAllSelectedGroupArtefactComments());
-    })
-    // failure
-    .catch(err => {
-      console.log("groupActions: " + err);
-      reject(err);
-    })
-  }
-};
-
 export const setUserGroups = decoded => {
   return {
     type: SET_USER_GROUPS,
@@ -218,20 +194,6 @@ export const setSelectedGroupMembers = decoded => {
 export const addSelectedGroupArtefactComments = decoded => {
   return {
     type: ADD_SELECTED_GROUP_ARTEFACTS_COMMENTS,
-    payload: decoded
-  }
-}
-
-export const requestAllSelectedGroupArtefactComments = decoded => {
-  return {
-    type: REQUEST_ALL_SELECTED_GROUP_ARTEFACT_COMMENTS,
-    payload: decoded
-  }
-}
-
-export const receiveAllSelectedGroupArtefactComments = decoded => {
-  return {
-    type: RECEIVE_ALL_SELECTED_GROUP_ARTEFACT_COMMENTS,
     payload: decoded
   }
 }
