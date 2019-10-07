@@ -1,6 +1,6 @@
 import setAuthToken from "../utils/auth/setAuthToken";
 import { AsyncStorage } from "react-native";
-import { SET_CURRENT_USER } from "../types/authTypes";
+import { SET_CURRENT_USER, USER_LOGOUT } from "../types/authTypes";
 import {
   registerUserAPIRequest,
   loginUserAPIRequest
@@ -91,6 +91,8 @@ export const logoutUser = () => dispatch => {
       setAuthToken(false);
       // Set current user to empty object {} which will set isAuthenticated to false
       dispatch(setCurrentUser({}));
+      // user is logged out
+      dispatch(logUserOut());
       // return success message
       resolve("User logged out successfully!");
     } catch {
@@ -108,3 +110,9 @@ export const setCurrentUser = decoded => {
     payload: decoded
   };
 };
+
+export const logUserOut = () => {
+  return {
+    type: USER_LOGOUT,
+  }
+}

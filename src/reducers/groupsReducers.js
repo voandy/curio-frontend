@@ -3,14 +3,17 @@ import {
   SET_SELECTED_GROUP,
   SET_SELECTED_GROUP_ARTEFACTS,
   SET_SELECTED_GROUP_MEMBERS,
-  EDIT_SELECTED_GROUP,
+  ADD_SELECTED_GROUP_ARTEFACTS_COMMENTS,
+  SET_SELECTED_GROUP_ARTEFACT_COMMENTS,
 } from "../types/groupsTypes";
 
 const initialState = {
   userGroups: [],
   selectedGroup: {},
   selectedGroupArtefacts: [],
-  selectedGroupMembers: []
+  selectedGroupMembers: [],
+  selectedGroupArtefactsComments: [],
+  loadingSelectedGroupArtefactComments: false
 };
 
 export default function(state = initialState, action) {
@@ -35,6 +38,11 @@ export default function(state = initialState, action) {
         ...state,
         selectedGroupMembers: action.payload
       };
+    case ADD_SELECTED_GROUP_ARTEFACTS_COMMENTS:
+      return {
+        ...state,
+        selectedGroupArtefactsComments: state.selectedGroupArtefactsComments.concat(action.payload)
+      }
     default:
       return state;
   }

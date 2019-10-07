@@ -15,9 +15,6 @@ import {
 // import redux actions for groups
 import { 
   createNewGroup, 
-  getSelectedGroup, 
-  getSelectedGroupAllArtefacts, 
-  getSelectedGroupAllMembers, 
   editSelectedGroup,
 } from "../../actions/groupsActions";
 
@@ -94,11 +91,7 @@ class Groups extends Component {
   // click a specific group on the Groups scene
   clickGroup = async (groupId) => {
     const { navigate } = this.props.navigation;
-
-    this.props.getSelectedGroup(groupId);
-    this.props.getSelectedGroupAllArtefacts(groupId);
-    this.props.getSelectedGroupAllMembers(groupId);
-    navigate("SelectedGroup");
+    navigate('SelectedGroup', { groupId });
   };
 
   // show groups that are unpinned by user
@@ -221,8 +214,8 @@ class Groups extends Component {
         </ScrollView>
 
         {/* create new Group */}
-        {/* <AddButton onPress={this.toggleModal} /> */}
-        <AddButton onPress={() => navigate("GroupsForm")} />
+        <AddButton onPress={this.toggleModal} />
+        {/* <AddButton onPress={() => navigate("GroupsForm")} /> */}
 
         {/* REMOVE THIS ONCE FORM IS DONE */}
         <GroupModal
@@ -331,5 +324,5 @@ const mapStateToProps = state => ({
 //  connect to redux and export
 export default connect(
   mapStateToProps,
-  { createNewGroup, getSelectedGroup, getSelectedGroupAllArtefacts, getSelectedGroupAllMembers }
+  { createNewGroup }
 )(Groups);

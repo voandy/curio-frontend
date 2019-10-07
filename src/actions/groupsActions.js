@@ -3,6 +3,7 @@ import {
   SET_SELECTED_GROUP,
   SET_SELECTED_GROUP_ARTEFACTS,
   SET_SELECTED_GROUP_MEMBERS,
+  ADD_SELECTED_GROUP_ARTEFACTS_COMMENTS,
 } from "../types/groupsTypes";
 
 import {
@@ -14,6 +15,10 @@ import {
   getGroupAllMembersAPIRequest,
   editGroupAPIRequest,
 } from "../utils/APIHelpers/groupAPIHelper";
+
+import {
+  getArtefactCommentsAPIRequest
+} from "../utils/APIHelpers/artefactAPIHelpers";
 
 import { uploadImageToGCS } from "../utils/imageUpload";
 
@@ -143,6 +148,21 @@ export const editSelectedGroup = groupId => dispatch => {
   })
 }
 
+export const getSelectedGroupArtefactComments = artefactId => dispatch => {
+  return new Promise((resolve, reject) => {
+    getArtefactCommentsAPIRequest(artefactId)
+      .then(res => {
+        resolve(res);
+        dispatch(addSelectedGroupArtefactComments(res.data));
+      })
+      // failure
+      .catch(err => {
+        console.log("groupActions: " + err);
+        reject(err);
+      })
+  });
+};
+
 export const setUserGroups = decoded => {
   return {
     type: SET_USER_GROUPS,
@@ -170,3 +190,10 @@ export const setSelectedGroupMembers = decoded => {
     payload: decoded
   };
 };
+
+export const addSelectedGroupArtefactComments = decoded => {
+  return {
+    type: ADD_SELECTED_GROUP_ARTEFACTS_COMMENTS,
+    payload: decoded
+  }
+}

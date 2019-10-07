@@ -16,6 +16,10 @@ import {
 // import redux actions for groups
 import {
   editSelectedGroup,
+  getSelectedGroup, 
+  getSelectedGroupAllArtefacts, 
+  getSelectedGroupAllMembers, 
+  getSelectedGroupArtefactComments,
 } from "../../../actions/groupsActions";
 
 // custom component
@@ -35,14 +39,25 @@ import {
 import GroupModal from "../../../component/GroupModal";
 
 class SelectedGroup extends Component {
-  state = {
-    selectedGroup: {
-      ...this.props.groups.selectedGroup,
-      coverPhoto: this.props.groups.selectedGroup.coverPhoto
-    },
-    isUpdateModalVisible: false,
-    loading: false
-  };
+  constructor(props) {
+    super(props);
+
+    state = {
+      selectedGroup: {
+        ...this.props.groups.selectedGroup,
+        coverPhoto: this.props.groups.selectedGroup.coverPhoto
+      },
+      isUpdateModalVisible: false,
+      loading: false,
+      artefactsComments: []
+    };
+
+    // get all information required for the selectedGroup page
+    groupId = this.props.navigation.getParam('groupId', 'NO-GROUP-ID');
+    this.props.getSelectedGroup(groupId);
+    this.props.getSelectedGroupAllArtefacts(groupId);
+    this.props.getSelectedGroupAllMembers(groupId);
+  }
 
   // nav details
   static navigationOptions = {
@@ -54,9 +69,7 @@ class SelectedGroup extends Component {
 
   // return a row of group members 
   showGroupMembers = groupMembers => {
-    let groupMemberRows = [];
     let groupMemberFeeds = [];
-    let rowKey = 0;
     let groupMemberKey = 0;
 
     for (var i = 0; i < groupMembers.length; i++) {
@@ -72,40 +85,48 @@ class SelectedGroup extends Component {
 
   // return a row of group artefacts 
   showGroupArtefacts = groupArtefacts => {
-    let groupArtefactRows = [];
     let groupArtefactFeeds = [];
-    let rowKey = 0;
-    let groupArtefactKey = 0;
 
     for (var i = 0; i < groupArtefacts.length; i++) {
 
       // append group artefacts into array
       groupArtefactFeeds.push(
-        // <View style={styles.card} key={groupArtefactKey}>
-        // <TouchableOpacity
-        //   activeOpacity={0.5}
-        // >
-        //   <Image
-        //     style={styles.photo}
-        //     source={{ uri: groupArtefacts[i].details.images[0].URL }}
-        //   />
-        // </TouchableOpacity>
-        // </View>
-
         <PostFeed
-          key={groupArtefactKey}
+          key={groupArtefacts[i].artefactId}
           // change this to user's username later
-          userName="NOT IMPLEMENTED YET"
-          title={groupArtefacts[i].details.title}
+          userName= {groupArtefacts[i].user.name}
+          title= {groupArtefacts[i].details.title}
           // change this to user image later
-          profileImage={{ uri: groupArtefacts[i].details.images[0].URL }}
+          profileImage={{ uri: groupArtefacts[i].user.profilePic}}
           image={{ uri: groupArtefacts[i].details.images[0].URL }}
+          likesCount= {groupArtefacts[i].details.likes.length}
+          commentsCount = {0}
         />
       );
-      groupArtefactKey++;
     }
+
     return <>{groupArtefactFeeds}</>;
   };
+
+  // show group artefacts' comments
+  showGroupArtefactsComments = async (groupArtefacts) => {
+
+    // get ids of group artefacts
+    var groupArtefactIds = [];
+    for (var i = 0; i < groupArtefacts.length; i++) {
+      groupArtefactIds.push(groupArtefacts[i].artefactId);
+    }
+
+    var promises = groupArtefactIds.map(this.props.getSelectedGroupArtefactComments);
+
+    await Promise.all(promises)
+      .then(res => {
+        console.log(this.props.groups.selectedGroupArtefactsComments);
+      })
+      .catch(err => {
+        console.log(err);
+      })
+  }
 
   // selected artefact's attribute change
   setSelectedGroup = (key, value) => {
@@ -166,15 +187,14 @@ class SelectedGroup extends Component {
     const selectedGroupMembers = this.props.groups.selectedGroupMembers;
 
     // selected group's groupMembers information
-    console.log("selectedGroupArtefacts", this.props.groups.selectedGroupArtefacts);
+    // console.log("selectedGroupArtefacts", this.props.groups.selectedGroupArtefacts);
     const selectedGroupArtefacts = this.props.groups.selectedGroupArtefacts;
 
-    // navigation in app
-    const { navigate } = this.props.navigation;
+    // this.showGroupArtefactsComments(selectedGroupArtefacts);
 
     return (
       <View style={styles.container}>
-        {/*         
+        {/*                 
           <Text style={styles.title}> Group Functionalities </Text>
             <GroupOptionButton
               toggleUpdateModal={this.toggleUpdateModal}
@@ -240,7 +260,7 @@ class SelectedGroup extends Component {
               )} */}
 
             {this.showGroupArtefacts(selectedGroupArtefacts)}
-
+            
           </View>
         </ScrollView>
 
@@ -332,5 +352,11 @@ const mapStateToProps = state => ({
 //  connect to redux and export
 export default connect(
   mapStateToProps,
-  { editSelectedGroup }
+  { 
+    editSelectedGroup, 
+    getSelectedGroup, 
+    getSelectedGroupAllArtefacts, 
+    getSelectedGroupAllMembers,
+    getSelectedGroupArtefactComments
+  }
 )(SelectedGroup);
