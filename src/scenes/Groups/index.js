@@ -201,8 +201,7 @@ class Groups extends Component {
 
           {/* unpinned groups */}
           {this.props.groups.userGroups.length !== 0 ? (
-            <View>{this.showUnpinnedGroups(this.props.groups.userGroups)}</View>
-            // <CardGroup image={require("../../../assets/images/test-delete-this/boi1.jpg")} text="Groupewfqwfwefqfqwefqwfe 1"/>
+            <View style={{marginBottom:10}}>{this.showUnpinnedGroups(this.props.groups.userGroups)}</View>
           ) : (
               <View style={styles.emptyFeed}>
                 <Text
@@ -215,8 +214,8 @@ class Groups extends Component {
         </ScrollView>
 
         {/* create new Group */}
-        <AddButton onPress={this.toggleModal} />
-        {/* <AddButton onPress={() => navigate("GroupsForm")} /> */}
+        {/* <AddButton onPress={this.toggleModal} /> */}
+        <AddButton onPress={() => navigate("GroupsForm")} />
 
         {/* REMOVE THIS ONCE FORM IS DONE */}
         <GroupModal
