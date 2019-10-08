@@ -78,15 +78,15 @@ class SelectedArtefact extends Component {
   };
 
   // update selectedArtefact when it has already been changed
-  componentWillUpdate(nextProps) {
+  async componentWillUpdate(nextProps) {
 
-    if (this.props.artefacts.selectedArtefact !== nextProps.artefacts.selectedArtefact) {
-      // edit selectedArtefact in redux state
-      this.props.getSelectedArtefact(nextProps.artefacts.selectedArtefact._id);
+    // if (this.props.artefacts.selectedArtefact !== nextProps.artefacts.selectedArtefact) {
+    //   // edit selectedArtefact in redux state
+    //   this.props.getSelectedArtefact(nextProps.artefacts.selectedArtefact._id);
 
-      // reload userArtefacts to update userArtefacts in redux state
-      this.props.getUserArtefacts(this.props.user.userData._id);
-    }
+    //   // reload userArtefacts to update userArtefacts in redux state
+    //   this.props.getUserArtefacts(this.props.user.userData._id);
+    // }
 
     if(this.props.artefacts.artefactComments.length !== nextProps.artefacts.artefactComments.length) {
       this.generateComments();
