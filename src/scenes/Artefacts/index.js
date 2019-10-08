@@ -249,17 +249,7 @@ class Artefacts extends Component {
         </ScrollView>
 
         {/* create new Group */}
-        <AddButton onPress={this.toggleModal} />
-        {/* <AddButton onPress={() => navigate("ArtefactsForm")} /> */}
-
-        {/* REMOVE THIS */}
-        <ArtefactModal
-          isModalVisible={this.state.isModalVisible}
-          toggleModal={this.toggleModal}
-          newArtefact={this.state.newArtefact}
-          onSubmit={this.onSubmit.bind(this)}
-          setNewArtefact={this.setNewArtefact.bind(this)}
-        />
+        <AddButton onPress={() => navigate("ArtefactsForm")} />
       </View>
     );
   }
@@ -271,6 +261,7 @@ const styles = StyleSheet.create({
     width: wd(0.3),
     height: wd(0.3)
   },
+  
   card: {
     width: wd(0.3),
     height: wd(0.3),
