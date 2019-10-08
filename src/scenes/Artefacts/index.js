@@ -133,17 +133,11 @@ class Artefacts extends Component {
   };
 
   // click a specific artefact and navigate to it
-  clickArtefact = async artefactId => {
+  clickArtefact = async (artefactId) => {
     const { navigate } = this.props.navigation;
 
-    // get artefact information
-    await this.props.getSelectedArtefact(artefactId);
-
-    // get artefact comments
-    await this.props.getArtefactComments(artefactId);
-
     // navigate to selected artefact
-    navigate("SelectedArtefact");
+    navigate("SelectedArtefact", { artefactId });
   };
 
   // return ArtefactFeedRows containing ArtefactFeed in different rows
@@ -162,7 +156,7 @@ class Artefacts extends Component {
       const artefactId = artefacts[i]._id;
 
       artefactFeeds.push(
-        // DOES NOT WORK!!!!!!!!
+        // DOES NOT WORK FOR NOW!!!!!!!!
         // <ArtefactFeed
         //   onPress={() => this.clickArtefact.bind(this)}
         //   artefactId = {artefacts[i]._id}

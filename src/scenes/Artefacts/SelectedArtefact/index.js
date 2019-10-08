@@ -43,6 +43,15 @@ import {
 } from "../../../utils/responsiveDesign";
 
 class SelectedArtefact extends Component {
+  constructor(props) {
+    super(props);
+
+    // get all information required for the selectedGroup page
+    artefactId = this.props.navigation.getParam('artefactId', 'NO-ARTEFACT-ID');
+    this.props.getSelectedArtefact(artefactId);
+    this.props.getArtefactComments(artefactId);
+  }
+
   state = {
     selectedArtefact: {
       ...this.props.artefacts.selectedArtefact,
@@ -54,19 +63,11 @@ class SelectedArtefact extends Component {
     newComment: "",
     // whether the user has liked this artefact
     liked: this.props.artefacts.selectedArtefact.likes.includes(this.props.user.userData._id),
-    likesCount: 0,
-    commentsCount: 0,
+    likesCount: this.props.artefacts.selectedArtefact.likes.length,
+    commentsCount: this.props.artefacts.artefactComments.length,
     likingEnabled: true,
     // statusBarHidden: false,
   };
-
-  async componentDidMount() {
-    this.setState({
-      commentsCount: this.props.artefacts.artefactComments.length,
-      likesCount: this.props.artefacts.selectedArtefact.likes.length,
-      likingEnabled: true
-    });
-  }
 
   // nav details
   static navigationOptions = {
@@ -75,6 +76,22 @@ class SelectedArtefact extends Component {
       elevation: 0 // remove shadow on Android
     }
   };
+
+  // update selectedArtefact when it has already been changed
+  componentWillUpdate(nextProps) {
+
+    if (this.props.artefacts.selectedArtefact !== nextProps.artefacts.selectedArtefact) {
+      // edit selectedArtefact in redux state
+      this.props.getSelectedArtefact(nextProps.artefacts.selectedArtefact._id);
+
+      // reload userArtefacts to update userArtefacts in redux state
+      this.props.getUserArtefacts(this.props.user.userData._id);
+    }
+
+    if(this.props.artefacts.artefactComments.length !== nextProps.artefacts.artefactComments.length) {
+      this.generateComments();
+    }
+  }
 
   onChangeNewComment = (newComment) => {
     this.setState({
@@ -144,25 +161,6 @@ class SelectedArtefact extends Component {
 
   scrollToEnd = function () {
     this.scrollView.scrollToEnd();
-  }
-
-  // update selectedArtefact when it has already been changed
-  componentWillUpdate(nextProps) {
-    const prevSelectedArtefact = this.props.artefacts.selectedArtefact;
-    const selectedArtefact = nextProps.artefacts.selectedArtefact;
-    if (prevSelectedArtefact !== selectedArtefact) {
-      // edit selectedArtefact in redux state
-      this.props.getSelectedArtefact(selectedArtefact._id);
-
-      // reload userArtefacts to update userArtefacts in redux state
-      this.props.getUserArtefacts(selectedArtefact.userId);
-    }
-
-    const prevArtefactComments = this.props.artefacts.artefactComments;
-    const artefactComments = nextProps.artefacts.artefactComments;
-    if(prevArtefactComments.length !== artefactComments.length) {
-      this.generateComments();
-    }
   }
 
   showComments = function (comments) {
@@ -294,7 +292,7 @@ class SelectedArtefact extends Component {
         {() => (
           <View style={styles.container}>
             {/* loading modal window */}
-            <ActivityLoaderModal loading={this.state.loading} />
+            {/* <ActivityLoaderModal loading={this.state.loading} /> */}
 
             {/* header */}
             <HeaderImageScrollView
