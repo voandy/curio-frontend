@@ -48,8 +48,7 @@ class SelectedArtefact extends Component {
 
     this.state = {
       selectedArtefact: {
-        ...this.props.artefacts.selectedArtefact,
-        imageURI: require("../../../../assets/images/default-profile-pic.png")
+        ...this.props.artefacts.selectedArtefact
       },
       isImageViewVisible: false,
       isUpdateModalVisible: false,
@@ -66,6 +65,10 @@ class SelectedArtefact extends Component {
 
     // get all information required for the selectedGroup page
     artefactId = this.props.navigation.getParam('artefactId', 'NO-ARTEFACT-ID');
+    this.getSelectedArtefactData(artefactId);
+  }
+
+  async getSelectedArtefactData(artefactId) {
     this.props.getSelectedArtefact(artefactId);
     this.props.getArtefactComments(artefactId);
   }
