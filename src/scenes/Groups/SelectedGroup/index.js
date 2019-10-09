@@ -267,7 +267,7 @@ class SelectedGroup extends Component {
         </ScrollView>
 
         {/* toggle modal to add artefacts into groups */}
-        <AddButton onPress={() => navigate("ArtefactsForm")} />
+        <AddButton />
       </View>
     );
   }

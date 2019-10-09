@@ -214,17 +214,7 @@ class Groups extends Component {
         </ScrollView>
 
         {/* create new Group */}
-        {/* <AddButton onPress={this.toggleModal} /> */}
         <AddButton onPress={() => navigate("GroupsForm")} />
-
-        {/* REMOVE THIS ONCE FORM IS DONE */}
-        <GroupModal
-          isModalVisible={this.state.isModalVisible}
-          toggleModal={this.toggleModal}
-          newGroup={this.state.newGroup}
-          post={this.postNewGroup.bind(this)}
-          onNewGroupChange={this.onNewGroupChange.bind(this)}
-        />
       </View>
     );
   }
