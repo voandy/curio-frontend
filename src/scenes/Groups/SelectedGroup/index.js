@@ -39,14 +39,11 @@ import {
 // custom components
 import GroupModal from "../../../component/GroupModal";
 
-const initialState = {
-  selectedGroup: {},
-  isUpdateModalVisible: false,
-  loading: false
-};
 class SelectedGroup extends Component {
   constructor(props) {
     super(props);
+    // clear redux state in case user force quits the app and reopen it
+    this.props.clearSelectedGroup();
     // Setup initial state
     this.state = {
       selectedGroup: {
@@ -71,10 +68,11 @@ class SelectedGroup extends Component {
     }
   };
 
-  // clear both local and redux state on unmount
+  // clear redux state on unmount (usual case of clearing state)
+  // this is needed to improve app responsiveness compared to having clearSelectedGroup
+  // in constructor alone
   componentWillUnmount() {
     this.props.clearSelectedGroup();
-    this.setState(initialState);
   }
 
   // return a row of group members
