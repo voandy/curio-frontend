@@ -211,7 +211,7 @@ class SelectedGroup extends Component {
                 onPress={() => navigate("UserSearch")}
                 style={styles.memberButton}
               >
-                <Text style={styles.buttonText}>Add Members</Text>
+                <Text style={styles.buttonText}>Invite</Text>
               </TouchableOpacity>
             </View>
           </View>
