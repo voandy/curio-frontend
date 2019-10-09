@@ -34,7 +34,7 @@ import KeyboardShift from "../../../component/componentHelpers/KeyboardShift"
 // redux actions
 import { editSelectedArtefact, getSelectedArtefact, getUserArtefacts, 
   removeSelectedArtefact, likeArtefact, unlikeArtefact, getArtefactComments, 
-  commentOnArtefact } 
+  commentOnArtefact, clearSelectedArtefact } 
   from "../../../actions/artefactsActions";
 
 // custom responsive design component
@@ -45,6 +45,9 @@ import {
 class SelectedArtefact extends Component {
   constructor(props) {
     super(props);
+
+    // clear redux state in case user force quits the app and reopen it
+    this.props.clearSelectedArtefact();
 
     this.state = {
       selectedArtefact: {
@@ -68,23 +71,24 @@ class SelectedArtefact extends Component {
     this.getSelectedArtefactData(artefactId);
   }
 
+  // asynchronously make api calls to get selectedArtefact data into redux state
   async getSelectedArtefactData(artefactId) {
     this.props.getSelectedArtefact(artefactId);
     this.props.getArtefactComments(artefactId);
   }
   
-  componentDidMount() {
-    this.setState({
-      selectedArtefact: {
-        ...this.state.selectedArtefact,
-        imageURI: this.props.artefacts.selectedArtefact.images[0].URL
-      },
-      liked: this.props.artefacts.selectedArtefact.likes.includes(this.props.user.userData._id),
-      likesCount: this.props.artefacts.selectedArtefact.likes.length,
-      commentsCount: this.props.artefacts.artefactComments.length,
-      likingEnabled: true,
-    })
-  }
+  // componentDidMount() {
+  //   this.setState({
+  //     selectedArtefact: {
+  //       ...this.state.selectedArtefact,
+  //       imageURI: this.props.artefacts.selectedArtefact.images[0].URL
+  //     },
+  //     liked: this.props.artefacts.selectedArtefact.likes.includes(this.props.user.userData._id),
+  //     likesCount: this.props.artefacts.selectedArtefact.likes.length,
+  //     commentsCount: this.props.artefacts.artefactComments.length,
+  //     likingEnabled: true,
+  //   })
+  // }
 
   // nav details
   static navigationOptions = {
@@ -94,21 +98,21 @@ class SelectedArtefact extends Component {
     }
   };
 
-  // update selectedArtefact when it has already been changed
-  async componentWillUpdate(nextProps) {
+  // // update selectedArtefact when it has already been changed
+  // async componentWillUpdate(nextProps) {
 
-    // if (this.props.artefacts.selectedArtefact !== nextProps.artefacts.selectedArtefact) {
-    //   // edit selectedArtefact in redux state
-    //   this.props.getSelectedArtefact(nextProps.artefacts.selectedArtefact._id);
+  //   // if (this.props.artefacts.selectedArtefact !== nextProps.artefacts.selectedArtefact) {
+  //   //   // edit selectedArtefact in redux state
+  //   //   this.props.getSelectedArtefact(nextProps.artefacts.selectedArtefact._id);
 
-    //   // reload userArtefacts to update userArtefacts in redux state
-    //   this.props.getUserArtefacts(this.props.user.userData._id);
-    // }
+  //   //   // reload userArtefacts to update userArtefacts in redux state
+  //   //   this.props.getUserArtefacts(this.props.user.userData._id);
+  //   // }
 
-    if(this.props.artefacts.artefactComments.length !== nextProps.artefacts.artefactComments.length) {
-      this.generateComments();
-    }
-  }
+  //   if(this.props.artefacts.artefactComments.length !== nextProps.artefacts.artefactComments.length) {
+  //     this.generateComments();
+  //   }
+  // }
 
   onChangeNewComment = (newComment) => {
     this.setState({
@@ -287,6 +291,12 @@ class SelectedArtefact extends Component {
   };
 
   render() {
+
+    // does not render when selectedArtefact is empty
+    if (Object.keys(this.props.artefacts.selectedArtefact).length === 0) {
+      return(null);
+    }
+
     // date format
     Moment.locale("en");
 
@@ -369,7 +379,6 @@ class SelectedArtefact extends Component {
                 image={{ uri: this.props.user.userData.profilePic }}
                 userName={this.props.user.userData.name}
               />
-
               {/* likes/comments counters */}
               <View style={styles.likesIndicatorPlaceholder}>
                 <Text style={styles.indicator}>
@@ -483,5 +492,5 @@ const mapStateToProps = state => ({
 export default connect(
   mapStateToProps,
   { editSelectedArtefact, getSelectedArtefact, getUserArtefacts, removeSelectedArtefact,
-    likeArtefact, unlikeArtefact, getArtefactComments, commentOnArtefact }
+    likeArtefact, unlikeArtefact, getArtefactComments, commentOnArtefact, clearSelectedArtefact }
 )(SelectedArtefact);

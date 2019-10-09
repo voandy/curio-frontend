@@ -192,6 +192,12 @@ export const commentOnArtefact = (
   });
 };
 
+
+// clear selectedArtefact 
+export const clearSelectedArtefact = () => dispatch => {
+  dispatch(setSelectedArtefact({}));
+}
+
 // Redux actions //
 // store all of the user's artefacts into redux state
 export const setUserArtefacts = decoded => {
