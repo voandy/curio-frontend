@@ -49,7 +49,7 @@ class SelectedArtefact extends Component {
     this.state = {
       selectedArtefact: {
         ...this.props.artefacts.selectedArtefact,
-        imageURI: this.props.artefacts.selectedArtefact.images[0].URL
+        imageURI: require("../../../../assets/images/default-profile-pic.png")
       },
       isImageViewVisible: false,
       isUpdateModalVisible: false,
@@ -72,6 +72,10 @@ class SelectedArtefact extends Component {
   
   componentDidMount() {
     this.setState({
+      selectedArtefact: {
+        ...this.state.selectedArtefact,
+        imageURI: this.props.artefacts.selectedArtefact.images[0].URL
+      },
       liked: this.props.artefacts.selectedArtefact.likes.includes(this.props.user.userData._id),
       likesCount: this.props.artefacts.selectedArtefact.likes.length,
       commentsCount: this.props.artefacts.artefactComments.length,
@@ -127,8 +131,6 @@ class SelectedArtefact extends Component {
         this.setState({likingEnabled: true});
         alert("An error occured. Please try again.");
       }.bind(this));
-    } else {
-      alert("Sending request. Please wait.");
     }
   }
 
@@ -150,8 +152,6 @@ class SelectedArtefact extends Component {
         this.setState({likingEnabled: true});
         alert("An error occured. Please try again.");
       }.bind(this));
-    } else {
-      alert("Sending request. Please wait.");
     }
   }
 
