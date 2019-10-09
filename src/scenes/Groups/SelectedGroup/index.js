@@ -5,7 +5,6 @@ import OptionButton from "../../../component/OptionButton";
 import {
   StyleSheet,
   TouchableOpacity,
-  TextInput,
   ScrollView,
   StatusBar,
   View,
