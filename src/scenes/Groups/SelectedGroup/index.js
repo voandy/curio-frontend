@@ -54,6 +54,11 @@ class SelectedGroup extends Component {
     // get all information required for the selectedGroup page
     // get group id from the parameter passed in, get "NO-GROUP-ID" if not found
     groupId = this.props.navigation.getParam("groupId", "NO-GROUP-ID");
+    this.getSelectedGroupData(groupId);
+  }
+
+  // get selected group data asynchronously
+  getSelectedGroupData = async (groupId) => {
     this.props.getSelectedGroup(groupId);
     this.props.getSelectedGroupAllArtefacts(groupId);
     this.props.getSelectedGroupAllMembers(groupId);
