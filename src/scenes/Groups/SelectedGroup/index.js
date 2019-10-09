@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import GroupOptionButton from "../../../component/GroupOptionButton";
+import OptionButton from "../../../component/OptionButton"
 import {
   StyleSheet,
   TouchableOpacity,
@@ -16,9 +16,9 @@ import {
 // import redux actions for groups
 import {
   editSelectedGroup,
-  getSelectedGroup, 
-  getSelectedGroupAllArtefacts, 
-  getSelectedGroupAllMembers, 
+  getSelectedGroup,
+  getSelectedGroupAllArtefacts,
+  getSelectedGroupAllMembers,
   getSelectedGroupArtefactComments,
 } from "../../../actions/groupsActions";
 
@@ -94,13 +94,13 @@ class SelectedGroup extends Component {
         <PostFeed
           key={groupArtefacts[i].artefactId}
           // change this to user's username later
-          userName= {groupArtefacts[i].user.name}
-          title= {groupArtefacts[i].details.title}
+          userName={groupArtefacts[i].user.name}
+          title={groupArtefacts[i].details.title}
           // change this to user image later
-          profileImage={{ uri: groupArtefacts[i].user.profilePic}}
+          profileImage={{ uri: groupArtefacts[i].user.profilePic }}
           image={{ uri: groupArtefacts[i].details.images[0].URL }}
-          likesCount= {groupArtefacts[i].details.likes.length}
-          commentsCount = {0}
+          likesCount={groupArtefacts[i].details.likes.length}
+          commentsCount={0}
         />
       );
     }
@@ -196,20 +196,7 @@ class SelectedGroup extends Component {
 
     return (
       <View style={styles.container}>
-        {/*                 
-          <Text style={styles.title}> Group Functionalities </Text>
-            <GroupOptionButton
-              toggleUpdateModal={this.toggleUpdateModal}
-              toggleDeleteModal={this.toggleDeleteModal}
-            />
-              <GroupModal
-                isModalVisible={this.state.isUpdateModalVisible}
-                toggleModal={this.toggleUpdateModal}
-                newGroup={this.state.selectedGroup}
-                post={this.onSubmit.bind(this)}
-                onNewGroupChange={this.setSelectedGroup.bind(this)}
-              />
-        */}
+
         <ScrollView showsVerticalScrollIndicator={false}>
 
           {/* group cover photo */}
@@ -220,12 +207,22 @@ class SelectedGroup extends Component {
 
           {/* group description */}
           <View style={styles.groupInfo}>
-            {/* TODO USE THIS <Text style={styles.groupTitle}>{this.props.groupTitle}</Text> */}
-            <Text style={[styles.groupTitle, styles.font]}>{title}</Text>
+
+            <View style={{ flexDirection: "row", paddingLeft:wd(0.05), justifyContent:"center"}}>
+              {/* title */}
+              <Text style={[styles.groupTitle, styles.font]}>{title}</Text>
+
+              <OptionButton
+                firstOption={"Edit Group"}
+                secondOption={"Delete Group"}
+                toggleFirstOption={this.toggleUpdateModal}
+                toggleSecondOption={this.toggleDeleteModal}
+              />
+            </View>
+
 
             <Text style={[styles.groupDescription, styles.subFont]}>{description}</Text>
 
-            {/* TODO USE THIS <Text style={[styles.groupCount, styles.subFont]}>{this.props.groupCount} Members</Text> */}
             <Text style={[styles.groupCount, styles.subFont]}>{selectedGroupMembers.length} Members</Text>
 
             {/* member scrollable view */}
@@ -239,7 +236,7 @@ class SelectedGroup extends Component {
 
               </ScrollView>
               <TouchableOpacity
-                onPress={()=>navigate("UserSearch")}
+                onPress={() => navigate("UserSearch")}
                 style={styles.memberButton}>
                 <Text style={styles.buttonText}>Add Members</Text>
               </TouchableOpacity>
@@ -262,12 +259,21 @@ class SelectedGroup extends Component {
               )} */}
 
             {this.showGroupArtefacts(selectedGroupArtefacts)}
-            
+
           </View>
         </ScrollView>
 
         {/* toggle modal to add artefacts into groups */}
         <AddButton />
+
+        {/* REMOVE THIS LATER ON */}
+        <GroupModal
+          isModalVisible={this.state.isUpdateModalVisible}
+          toggleModal={this.toggleUpdateModal}
+          newGroup={this.state.selectedGroup}
+          post={this.onSubmit.bind(this)}
+          onNewGroupChange={this.setSelectedGroup.bind(this)}
+        />
       </View>
     );
   }
@@ -303,8 +309,10 @@ const styles = StyleSheet.create({
   },
 
   groupTitle: {
+    width:wd(0.76),
     textAlign: "center",
-    marginTop: hp(0.02),
+    alignSelf: "center",
+    marginTop: hp(0.01),
     marginBottom: hp(0.01),
   },
 
@@ -353,10 +361,10 @@ const mapStateToProps = state => ({
 //  connect to redux and export
 export default connect(
   mapStateToProps,
-  { 
-    editSelectedGroup, 
-    getSelectedGroup, 
-    getSelectedGroupAllArtefacts, 
+  {
+    editSelectedGroup,
+    getSelectedGroup,
+    getSelectedGroupAllArtefacts,
     getSelectedGroupAllMembers,
     getSelectedGroupArtefactComments
   }

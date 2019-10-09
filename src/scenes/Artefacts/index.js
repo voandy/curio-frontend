@@ -250,7 +250,6 @@ class Artefacts extends Component {
 }
 
 const styles = StyleSheet.create({
-  // ARTEFACT FEED
   photo: {
     width: wd(0.3),
     height: wd(0.3)
