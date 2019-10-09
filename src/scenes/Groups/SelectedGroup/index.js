@@ -1,11 +1,10 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import OptionButton from "../../../component/OptionButton"
+import OptionButton from "../../../component/OptionButton";
 import {
   StyleSheet,
   TouchableOpacity,
-  TextInput,
   ScrollView,
   StatusBar,
   View,
@@ -15,8 +14,9 @@ import {
 
 // import redux actions for groups
 import {
-  editSelectedGroup,
   getSelectedGroup,
+  editSelectedGroup,
+  clearSelectedGroup,
   getSelectedGroupAllArtefacts,
   getSelectedGroupAllMembers,
   getSelectedGroupArtefactComments
@@ -41,18 +41,18 @@ import GroupModal from "../../../component/GroupModal";
 class SelectedGroup extends Component {
   constructor(props) {
     super(props);
-
+    // clear redux state in case user force quits the app and reopen it
+    this.props.clearSelectedGroup();
+    // Setup initial state
     this.state = {
       selectedGroup: {
-        ...this.props.groups.selectedGroup,
-        coverPhoto: this.props.groups.selectedGroup.coverPhoto
+        ...this.props.groups.selectedGroup
       },
       isUpdateModalVisible: false,
-      loading: false,
-      artefactsComments: []
+      loading: false
     };
-
     // get all information required for the selectedGroup page
+    // get group id from the parameter passed in, get "NO-GROUP-ID" if not found
     groupId = this.props.navigation.getParam("groupId", "NO-GROUP-ID");
     this.props.getSelectedGroup(groupId);
     this.props.getSelectedGroupAllArtefacts(groupId);
@@ -67,9 +67,16 @@ class SelectedGroup extends Component {
     }
   };
 
+  // clear redux state on unmount (usual case of clearing state)
+  // this is needed to improve app responsiveness compared to having clearSelectedGroup
+  // in constructor alone
+  componentWillUnmount() {
+    this.props.clearSelectedGroup();
+  }
+
   // return a row of group members
   showGroupMembers = groupMembers => {
-    // map each member to an individual component
+    // transform each member to an UserIcon component
     //prettier-ignore
     const groupMembersComponent = groupMembers.map(member => (
       <UserIcon 
@@ -80,16 +87,15 @@ class SelectedGroup extends Component {
     return groupMembersComponent;
   };
 
-  // return a row of group artefacts
+  // return all group artefacts components
   showGroupArtefacts = groupArtefacts => {
+    // transform each artefact to a PostFeed component
     // prettier-ignore
     const groupArtefactsComponent = groupArtefacts.map(artefact => (
       <PostFeed
         key={artefact.artefactId}
-        // change this to user's username later
         userName={artefact.user.name}
         title={artefact.details.title}
-        // change this to user image later
         profileImage={{ uri: artefact.user.profilePic }}
         image={{ uri: artefact.details.images[0].URL }}
         likesCount={artefact.details.likes.length}
@@ -97,27 +103,6 @@ class SelectedGroup extends Component {
       />
     ));
     return groupArtefactsComponent;
-  };
-
-  // show group artefacts' comments
-  showGroupArtefactsComments = async groupArtefacts => {
-    // get ids of group artefacts
-    var groupArtefactIds = [];
-    for (var i = 0; i < groupArtefacts.length; i++) {
-      groupArtefactIds.push(groupArtefacts[i].artefactId);
-    }
-
-    var promises = groupArtefactIds.map(
-      this.props.getSelectedGroupArtefactComments
-    );
-
-    await Promise.all(promises)
-      .then(res => {
-        console.log(this.props.groups.selectedGroupArtefactsComments);
-      })
-      .catch(err => {
-        console.log(err);
-      });
   };
 
   // selected artefact's attribute change
@@ -133,7 +118,6 @@ class SelectedGroup extends Component {
   // setter function for "loading" to show user that something is loading
   setLoading = loading => {
     this.setState({
-      ...this.state,
       loading
     });
   };
@@ -165,43 +149,38 @@ class SelectedGroup extends Component {
   };
 
   render() {
-    // selected group information
-    // console.log("selectedGroup", this.props.groups.selectedGroup);
-    const selectedGroup = this.props.groups.selectedGroup;
-    const coverPhoto = selectedGroup.coverPhoto;
-    const dateCreated = selectedGroup.dateCreated;
-    const description = selectedGroup.description;
-    const title = selectedGroup.title;
-
-    // selected group's members information
-    // console.log("selectedGroupMembers", this.props.groups.selectedGroupMembers);
-    const selectedGroupMembers = this.props.groups.selectedGroupMembers;
-
-    // selected group's groupMembers information
-    // console.log("selectedGroupArtefacts", this.props.groups.selectedGroupArtefacts);
-    const selectedGroupArtefacts = this.props.groups.selectedGroupArtefacts;
-
-    // this.showGroupArtefactsComments(selectedGroupArtefacts);
-
+    // extract selected group information
+    const {
+      coverPhoto,
+      dateCreated,
+      description,
+      title
+    } = this.props.groups.selectedGroup;
+    // extract redux store information
+    const { selectedGroupMembers, selectedGroupArtefacts } = this.props.groups;
+    // extract navigate function
     const { navigate } = this.props.navigation;
 
     return (
       <View style={styles.container}>
-
+        {/* container to let user scroll within main component */}
         <ScrollView showsVerticalScrollIndicator={false}>
           {/* group cover photo */}
           <View style={styles.coverPhoto}>
-            {/* TODO USE THIS <Image style={styles.cover} source={this.props.coverPhoto} /> */}
             <Image style={styles.cover} source={{ uri: coverPhoto }} />
           </View>
-
           {/* group description */}
           <View style={styles.groupInfo}>
-
-            <View style={{ flexDirection: "row", paddingLeft:wd(0.05), justifyContent:"center"}}>
+            <View
+              style={{
+                flexDirection: "row",
+                paddingLeft: wd(0.05),
+                justifyContent: "center"
+              }}
+            >
               {/* title */}
               <Text style={[styles.groupTitle, styles.font]}>{title}</Text>
-
+              {/* option button */}
               <OptionButton
                 firstOption={"Edit Group"}
                 secondOption={"Delete Group"}
@@ -209,16 +188,17 @@ class SelectedGroup extends Component {
                 toggleSecondOption={this.toggleDeleteModal}
               />
             </View>
-
-
+            {/* descriptions */}
             <Text style={[styles.groupDescription, styles.subFont]}>
               {description}
             </Text>
-
-            <Text style={[styles.groupCount, styles.subFont]}>{selectedGroupMembers.length} Members</Text>
-
-            {/* member scrollable view */}
+            {/* show group members count */}
+            <Text style={[styles.groupCount, styles.subFont]}>
+              {selectedGroupMembers.length} Members
+            </Text>
+            {/* container for group members and button */}
             <View style={styles.groupMember}>
+              {/* show members in scrollable view */}
               <ScrollView
                 style={{ flex: 0.7 }}
                 horizontal={true}
@@ -226,6 +206,7 @@ class SelectedGroup extends Component {
               >
                 {this.showGroupMembers(selectedGroupMembers)}
               </ScrollView>
+              {/* Add members button */}
               <TouchableOpacity
                 onPress={() => navigate("UserSearch")}
                 style={styles.memberButton}
@@ -234,8 +215,7 @@ class SelectedGroup extends Component {
               </TouchableOpacity>
             </View>
           </View>
-
-          {/* content */}
+          {/* container for all artefacts */}
           <View>
             {/* {this.props.groups.userGroups.length !== 0 ? (
               <View>{"ADD CONTENT HERE"}</View>
@@ -248,11 +228,10 @@ class SelectedGroup extends Component {
                   </Text>
                 </View>
               )} */}
-
+            {/* Show all artefacts in group */}
             {this.showGroupArtefacts(selectedGroupArtefacts)}
           </View>
         </ScrollView>
-
         {/* toggle modal to add artefacts into groups */}
         <AddButton />
 
@@ -299,11 +278,11 @@ const styles = StyleSheet.create({
   },
 
   groupTitle: {
-    width:wd(0.76),
+    width: wd(0.76),
     textAlign: "center",
     alignSelf: "center",
     marginTop: hp(0.01),
-    marginBottom: hp(0.01),
+    marginBottom: hp(0.01)
   },
 
   groupDescription: {
@@ -352,8 +331,9 @@ const mapStateToProps = state => ({
 export default connect(
   mapStateToProps,
   {
-    editSelectedGroup,
     getSelectedGroup,
+    editSelectedGroup,
+    clearSelectedGroup,
     getSelectedGroupAllArtefacts,
     getSelectedGroupAllMembers,
     getSelectedGroupArtefactComments
