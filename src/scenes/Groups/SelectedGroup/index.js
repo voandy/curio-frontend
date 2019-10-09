@@ -42,7 +42,7 @@ class SelectedGroup extends Component {
   constructor(props) {
     super(props);
 
-    state = {
+    this.state = {
       selectedGroup: {
         ...this.props.groups.selectedGroup,
         coverPhoto: this.props.groups.selectedGroup.coverPhoto

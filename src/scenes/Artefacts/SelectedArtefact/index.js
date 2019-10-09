@@ -46,28 +46,38 @@ class SelectedArtefact extends Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      selectedArtefact: {
+        ...this.props.artefacts.selectedArtefact,
+        imageURI: this.props.artefacts.selectedArtefact.images[0].URL
+      },
+      isImageViewVisible: false,
+      isUpdateModalVisible: false,
+      loading: false,
+      newComment: "",
+
+      // whether the user has liked this artefact
+      liked: 0,
+      likesCount: 0,
+      commentsCount: 0,
+      likingEnabled: true,
+      // statusBarHidden: false,
+    };
+
     // get all information required for the selectedGroup page
     artefactId = this.props.navigation.getParam('artefactId', 'NO-ARTEFACT-ID');
     this.props.getSelectedArtefact(artefactId);
     this.props.getArtefactComments(artefactId);
   }
-
-  state = {
-    selectedArtefact: {
-      ...this.props.artefacts.selectedArtefact,
-      imageURI: this.props.artefacts.selectedArtefact.images[0].URL
-    },
-    isImageViewVisible: false,
-    isUpdateModalVisible: false,
-    loading: false,
-    newComment: "",
-    // whether the user has liked this artefact
-    liked: this.props.artefacts.selectedArtefact.likes.includes(this.props.user.userData._id),
-    likesCount: this.props.artefacts.selectedArtefact.likes.length,
-    commentsCount: this.props.artefacts.artefactComments.length,
-    likingEnabled: true,
-    // statusBarHidden: false,
-  };
+  
+  componentDidMount() {
+    this.setState({
+      liked: this.props.artefacts.selectedArtefact.likes.includes(this.props.user.userData._id),
+      likesCount: this.props.artefacts.selectedArtefact.likes.length,
+      commentsCount: this.props.artefacts.artefactComments.length,
+      likingEnabled: true,
+    })
+  }
 
   // nav details
   static navigationOptions = {
