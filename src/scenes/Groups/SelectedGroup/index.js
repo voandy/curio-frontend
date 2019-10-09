@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import GroupOptionButton from "../../../component/GroupOptionButton";
+import OptionButton from "../../../component/OptionButton"
 import {
   StyleSheet,
   TouchableOpacity,
@@ -187,20 +187,7 @@ class SelectedGroup extends Component {
 
     return (
       <View style={styles.container}>
-        {/*                 
-          <Text style={styles.title}> Group Functionalities </Text>
-            <GroupOptionButton
-              toggleUpdateModal={this.toggleUpdateModal}
-              toggleDeleteModal={this.toggleDeleteModal}
-            />
-              <GroupModal
-                isModalVisible={this.state.isUpdateModalVisible}
-                toggleModal={this.toggleUpdateModal}
-                newGroup={this.state.selectedGroup}
-                post={this.onSubmit.bind(this)}
-                onNewGroupChange={this.setSelectedGroup.bind(this)}
-              />
-        */}
+
         <ScrollView showsVerticalScrollIndicator={false}>
           {/* group cover photo */}
           <View style={styles.coverPhoto}>
@@ -210,17 +197,25 @@ class SelectedGroup extends Component {
 
           {/* group description */}
           <View style={styles.groupInfo}>
-            {/* TODO USE THIS <Text style={styles.groupTitle}>{this.props.groupTitle}</Text> */}
-            <Text style={[styles.groupTitle, styles.font]}>{title}</Text>
+
+            <View style={{ flexDirection: "row", paddingLeft:wd(0.05), justifyContent:"center"}}>
+              {/* title */}
+              <Text style={[styles.groupTitle, styles.font]}>{title}</Text>
+
+              <OptionButton
+                firstOption={"Edit Group"}
+                secondOption={"Delete Group"}
+                toggleFirstOption={this.toggleUpdateModal}
+                toggleSecondOption={this.toggleDeleteModal}
+              />
+            </View>
+
 
             <Text style={[styles.groupDescription, styles.subFont]}>
               {description}
             </Text>
 
-            {/* TODO USE THIS <Text style={[styles.groupCount, styles.subFont]}>{this.props.groupCount} Members</Text> */}
-            <Text style={[styles.groupCount, styles.subFont]}>
-              {selectedGroupMembers.length} Members
-            </Text>
+            <Text style={[styles.groupCount, styles.subFont]}>{selectedGroupMembers.length} Members</Text>
 
             {/* member scrollable view */}
             <View style={styles.groupMember}>
@@ -260,6 +255,15 @@ class SelectedGroup extends Component {
 
         {/* toggle modal to add artefacts into groups */}
         <AddButton />
+
+        {/* REMOVE THIS LATER ON */}
+        <GroupModal
+          isModalVisible={this.state.isUpdateModalVisible}
+          toggleModal={this.toggleUpdateModal}
+          newGroup={this.state.selectedGroup}
+          post={this.onSubmit.bind(this)}
+          onNewGroupChange={this.setSelectedGroup.bind(this)}
+        />
       </View>
     );
   }
@@ -295,9 +299,11 @@ const styles = StyleSheet.create({
   },
 
   groupTitle: {
+    width:wd(0.76),
     textAlign: "center",
-    marginTop: hp(0.02),
-    marginBottom: hp(0.01)
+    alignSelf: "center",
+    marginTop: hp(0.01),
+    marginBottom: hp(0.01),
   },
 
   groupDescription: {
