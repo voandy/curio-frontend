@@ -3,7 +3,7 @@ import {
     View,
     StyleSheet,
     Text,
-    Dimensions,
+    Alert,
     Image,
     TouchableOpacity
 } from "react-native";
@@ -16,12 +16,56 @@ import {
 /**groups shown in a card form in groups page */
 class CardGroup extends Component {
 
+    state = {
+        favourite: false,
+        key: this.props.key
+    }
+
+    changeFavourite = () => {
+        this.setState({
+            favourite: !this.state.favourite
+        })
+    }
+
+    // alert prompt to pin or unpin groups
+    showAlert = () => {
+        let message = ""
+
+        if(this.state.favourite == false){
+            message="Do you want to pin this group?"
+        }else{
+            message="Do you want to unpin this group?"
+        }
+
+        Alert.alert(
+            message,
+            "",
+            [
+                { text: "Cancel", onPress: null },
+                { text: "Yes", onPress: () => this.changeFavourite() },
+            ],
+            { cancelable: false },
+        );
+    }
+
     render() {
 
         return (
             <View style={styles.card}>
 
-                <TouchableOpacity onPress={this.props.onPress(this.props.groupId)}>
+                <View style={{ position: "absolute", top: 5, right: 5, elevation: 2 }} >
+
+                    {this.state.favourite === true ? (
+                        <Image source={require("../../assets/images/icons/favourite.png")} />
+                    ) : (
+                            <Image source={require("../../assets/images/icons/unfavourite.png")} />
+                        )}
+                </View>
+
+                {/* <TouchableOpacity onPress={this.props.onPress(this.props.groupId)}> */}
+                <TouchableOpacity 
+                    onLongPress={() => this.showAlert()}
+                    onPress={this.props.onPress}>
                     {/* Image  */}
                     <View style={styles.picPlaceholder}>
                         <Image style={[styles.photo]} source={this.props.image} />
@@ -50,15 +94,14 @@ const styles = StyleSheet.create({
         marginLeft: wd(0.04),
         height: wd(0.5),
         borderRadius: 15,
-        borderWidth: 0.05,
-        elevation: 1,
+        borderWidth: 1,
         borderColor: "#E2E2E2",
         alignContent: "center",
         alignItems: "center",
     },
 
-    font:{
-        fontFamily: "HindSiliguri-Regular"
+    font: {
+        fontFamily: "HindSiliguri-Regular",
     },
 
     picPlaceholder: {
@@ -68,8 +111,8 @@ const styles = StyleSheet.create({
     },
 
     photo: {
-        width: wd(0.435),
-        height: wd(0.35),
+        width: wd(0.44),
+        height: wd(0.37),
         marginTop: 10,
         borderTopLeftRadius: 15,
         borderTopRightRadius: 15,
@@ -77,13 +120,14 @@ const styles = StyleSheet.create({
 
     textPlaceholder: {
         flex: 0.3,
-        margin: 5,
+        justifyContent: "center"
     },
 
     title: {
-        flex: 0.4,
+        // flex: 0.4,
         marginHorizontal: 5,
         marginTop: 3,
+        fontSize: wd(0.035)
     },
 
     userProfile: {
@@ -98,7 +142,7 @@ const styles = StyleSheet.create({
         marginHorizontal: 5
     },
 
-    userName:{
+    userName: {
         color: "#939090"
     }
 });

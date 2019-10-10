@@ -3,7 +3,7 @@ import {
   SET_SELECTED_GROUP,
   SET_SELECTED_GROUP_ARTEFACTS,
   SET_SELECTED_GROUP_MEMBERS,
-  ADD_SELECTED_GROUP_ARTEFACTS_COMMENTS,
+  ADD_SELECTED_GROUP_ARTEFACTS_COMMENTS
 } from "../types/groupsTypes";
 
 import {
@@ -13,12 +13,10 @@ import {
   putGroupAdminAPIRequest,
   getGroupAllArtefactsAPIRequest,
   getGroupAllMembersAPIRequest,
-  editGroupAPIRequest,
+  editGroupAPIRequest
 } from "../utils/APIHelpers/groupAPIHelper";
 
-import {
-  getArtefactCommentsAPIRequest
-} from "../utils/APIHelpers/artefactAPIHelpers";
+import { getArtefactCommentsAPIRequest } from "../utils/APIHelpers/artefactAPIHelpers";
 
 import { uploadImageToGCS } from "../utils/imageUpload";
 
@@ -138,15 +136,15 @@ export const editSelectedGroup = groupId => dispatch => {
     editGroupAPIRequest(groupId)
       .then(res => {
         resolve(res);
-        dispatch(setSelectedGroupMembers(res.data))
+        dispatch(setSelectedGroupMembers(res.data));
       })
       // failure
       .catch(err => {
         console.log("groupActions: " + err);
         reject(err);
       });
-  })
-}
+  });
+};
 
 export const getSelectedGroupArtefactComments = artefactId => dispatch => {
   return new Promise((resolve, reject) => {
@@ -159,8 +157,16 @@ export const getSelectedGroupArtefactComments = artefactId => dispatch => {
       .catch(err => {
         console.log("groupActions: " + err);
         reject(err);
-      })
+      });
   });
+};
+
+// action to clear out selected group
+// formatted in this way to make it consistent
+export const clearSelectedGroup = () => dispatch => {
+  dispatch(setSelectedGroup({}));
+  dispatch(setSelectedGroupArtefacts([]));
+  dispatch(setSelectedGroupMembers([]));
 };
 
 export const setUserGroups = decoded => {
@@ -195,5 +201,5 @@ export const addSelectedGroupArtefactComments = decoded => {
   return {
     type: ADD_SELECTED_GROUP_ARTEFACTS_COMMENTS,
     payload: decoded
-  }
-}
+  };
+};

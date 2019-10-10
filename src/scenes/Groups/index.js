@@ -121,7 +121,7 @@ class Groups extends Component {
       cardGroups.push(
         // DOES NOT WORK FOR NOW!!!
         // <CardGroup
-        //   onPress={() => this.clickGroup}
+        //   onPress={()=>this.clickGroup(groupId)}
         //   key={groupKey}
         //   groupId={groupId}
         //   text={text}
@@ -201,7 +201,7 @@ class Groups extends Component {
 
           {/* unpinned groups */}
           {this.props.groups.userGroups.length !== 0 ? (
-            <View>{this.showUnpinnedGroups(this.props.groups.userGroups)}</View>
+            <View style={{marginBottom:10}}>{this.showUnpinnedGroups(this.props.groups.userGroups)}</View>
           ) : (
               <View style={styles.emptyFeed}>
                 <Text
@@ -214,17 +214,7 @@ class Groups extends Component {
         </ScrollView>
 
         {/* create new Group */}
-        <AddButton onPress={this.toggleModal} />
-        {/* <AddButton onPress={() => navigate("GroupsForm")} /> */}
-
-        {/* REMOVE THIS ONCE FORM IS DONE */}
-        <GroupModal
-          isModalVisible={this.state.isModalVisible}
-          toggleModal={this.toggleModal}
-          newGroup={this.state.newGroup}
-          post={this.postNewGroup.bind(this)}
-          onNewGroupChange={this.onNewGroupChange.bind(this)}
-        />
+        <AddButton onPress={() => navigate("GroupsForm")} />
       </View>
     );
   }

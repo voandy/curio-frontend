@@ -24,8 +24,8 @@ class OptionButton extends Component {
             button={require("../../assets/images/icons/option.png")}
             buttonStyle = {styles.icon}
             destructiveIndex={1}            // only on ios (red indicator)
-            options={["Edit Artefact", "Delete Artefact"]}
-            actions={[this.props.toggleUpdateModal, this.props.toggleDeleteModal]}
+            options={[this.props.firstOption, this.props.secondOption]}
+            actions={[this.props.toggleFirstOption, this.props.toggleSecondOption]}
         />
         );
     }
@@ -36,8 +36,7 @@ const styles = StyleSheet.create({
     icon: {
         width: wd(0.04),
         height: wd(0.04),
-        marginTop: wd(0.05),
-        marginLeft: wd(0.13),
+        marginVertical: wd(0.05),
         resizeMode: "contain",
     }
 });
