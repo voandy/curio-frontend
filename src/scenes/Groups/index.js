@@ -1,21 +1,17 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { 
-  View, 
-  StyleSheet, 
-  ScrollView, 
-  Dimensions, 
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  Dimensions,
   Text,
-  TouchableOpacity,
-  Image,
   StatusBar
 } from "react-native";
 
 // import redux actions for groups
-import { 
-  createNewGroup, 
-} from "../../actions/groupsActions";
+import { createNewGroup } from "../../actions/groupsActions";
 
 // custom components
 import CardCarousel from "../../component/CardCarousel";
@@ -90,76 +86,61 @@ class Groups extends Component {
   };
 
   // click a specific group on the Groups scene
-  clickGroup = async (groupId) => {
+  clickGroup = async groupId => {
     const { navigate } = this.props.navigation;
-    navigate('SelectedGroup', { groupId });
+    navigate("SelectedGroup", { groupId });
   };
 
-  // show groups that are unpinned by user
-  showUnpinnedGroups = groups => {
-    let unpinnedGroups = groups.concat();
-    let cardGroupRows = [];
-    let cardGroups = [];
-    let rowKey = 0;
-    let groupKey = 0;
-
-    // remove user's pinned groups
-    for (var i = 0; i < unpinnedGroups.length; i++) {
-      // console.log("cover photo is", unpinnedGroups[i].coverPhoto);
-    }
-
+  // show and renders groups components row-by-row
+  showGroups = () => {
+    var groups = this.props.groups.userGroups;
     // sort array based on date obtained (from earliest to oldest)
-    unpinnedGroups.sort(function (a, b) {
+    groups.sort(function(a, b) {
       return new Date(b.dateCreated) - new Date(a.dateCreated);
     });
+    // tranform each group element into a component
+    const groupComponent = groups.map(group => (
+      <CardGroup
+        key={group.groupId}
+        userId={this.props.auth.user.id}
+        groupId={group.groupId}
+        image={{ uri: group.details.coverPhoto }}
+        title={group.details.title}
+        onPress={this.clickGroup.bind(this)}
+        pinned={group.pinned}
+      />
+    ));
+    // prep a temporary array for row-by-row grouping logic
+    //prettier-ignore
+    var tempMapArray = [...Array(groupComponent.length).keys()].filter(n => !(n % 2))
+    // put group component into row-by-row card groups
+    const cardGroupComponent = tempMapArray.map(n => (
+      <View style={styles.feed} key={n}>
+        {[groupComponent[n], groupComponent[n + 1]]}
+      </View>
+    ));
+    return cardGroupComponent;
+  };
 
-    // create CardGroup object out of group and push it into cardGroups array
-    for (var i = 0; i < unpinnedGroups.length; i++) {
-      const groupId = unpinnedGroups[i].details._id;
-      const text = unpinnedGroups[i].details.title;
-      const imageURI = unpinnedGroups[i].details.coverPhoto;
-
-      cardGroups.push(
-        // DOES NOT WORK FOR NOW!!!
-        // <CardGroup
-        //   onPress={()=>this.clickGroup(groupId)}
-        //   key={groupKey}
-        //   groupId={groupId}
-        //   text={text}
-        //   image={{ uri: imageURI }}
-        // />
-
-        // Temporary CardGroup
-        <View key={groupKey} style={styles.card}>
-          <TouchableOpacity onPress={() => this.clickGroup(groupId)}>
-              <View style={styles.picPlaceholder}>
-                  <Image style={[styles.photo]} source={{ uri: imageURI }} />
-              </View>
-              <View style={styles.textPlaceholder}>
-                  <Text style={[styles.title, styles.font]}>{text}</Text>
-
-              </View>
-          </TouchableOpacity>
-        </View>
-      );
-      groupKey++;
-
-      // create a new row after the previous row has been filled with 2 groups and fill the previous row into cardGroupRows
-      if (
-        unpinnedGroups.length === 1 ||
-        cardGroups.length === 2 ||
-        (i !== 0 && i === unpinnedGroups.length - 1)
-      ) {
-        cardGroupRows.push(
-          <View style={styles.feed} key={rowKey}>
-            {cardGroups}
-          </View>
-        );
-        cardGroups = [];
-        rowKey++;
-      }
-    }
-    return <>{cardGroupRows}</>;
+  // show all the pinned groups in carousel
+  showPinnedGroups = () => {
+    var groups = this.props.groups.userGroups;
+    // retain only pinned groups
+    groups = groups.filter(group => group.pinned);
+    // sort array based on date obtained (from earliest to oldest)
+    groups.sort(function(a, b) {
+      return new Date(b.dateCreated) - new Date(a.dateCreated);
+    });
+    const pinnedGroupComponent = groups.map(group => (
+      <CardCarousel
+        key={group.groupId}
+        image={group.details.coverPhoto}
+        groupId={group.groupId}
+        userId={this.props.auth.user.id}
+        onPress={this.clickGroup.bind(this)}
+      />
+    ));
+    return pinnedGroupComponent;
   };
 
   render() {
@@ -167,60 +148,58 @@ class Groups extends Component {
 
     return (
       <KeyboardShift>
-        {() => 
-        <View style={styles.container}>
-          {/* <Header tab1="Public" tab2="Private" onPress={()=> navigate("GeneralSearch")}/> */}
-          <HeaderSearch tab1="Public" tab2="Private" onSubmit={()=> navigate("GeneralSearch")}/>
+        {() => (
+          <View style={styles.container}>
+            {/* <Header tab1="Public" tab2="Private" onPress={()=> navigate("GeneralSearch")}/> */}
+            <HeaderSearch
+              tab1="Public"
+              tab2="Private"
+              onSubmit={() => navigate("GeneralSearch")}
+            />
 
-          {/* scrollable area for CONTENT */}
-          <ScrollView
-            showsVerticalScrollIndicator={false}
-            scrollEventThrottle={16}
-            style={{ backgroundColor: gray }}
-          >
-            {/* carousel pinned groups */}
-            <View style={{ height: wd(0.52), backgroundColor: "white" }}>
-              <ScrollView
-                horizontal={true}
-                showsHorizontalScrollIndicator={false}
-                decelerationRate={0.8}
-                snapToAlignment={"center"}
-                snapToInterval={Dimensions.get("window").width}
-              >
-                <CardCarousel
-                  image={require("../../../assets/images/test-delete-this/boi1.jpg")}
-                />
-                <CardCarousel
-                  image={require("../../../assets/images/test-delete-this/boi2.jpg")}
-                />
-                <CardCarousel
-                  image={require("../../../assets/images/test-delete-this/boi3.jpg")}
-                />
-                <CardCarousel
-                  image={require("../../../assets/images/test-delete-this/boi4.jpg")}
-                />
-              </ScrollView>
-            </View>
+            {/* scrollable area for CONTENT */}
+            <ScrollView
+              showsVerticalScrollIndicator={false}
+              scrollEventThrottle={16}
+              style={{ backgroundColor: gray }}
+            >
+              {/* carousel pinned groups */}
+              <View style={{ height: wd(0.52), backgroundColor: "white" }}>
+                <ScrollView
+                  horizontal={true}
+                  showsHorizontalScrollIndicator={false}
+                  decelerationRate={0.8}
+                  snapToAlignment={"center"}
+                  snapToInterval={Dimensions.get("window").width}
+                >
+                  {this.showPinnedGroups()}
+                </ScrollView>
+              </View>
 
-            {/* unpinned groups */}
-            {this.props.groups.userGroups.length !== 0 ? (
-              <View style={{marginBottom:10}}>{this.showUnpinnedGroups(this.props.groups.userGroups)}</View>
-            ) : (
+              {/* unpinned groups */}
+              {this.props.groups.userGroups.length !== 0 ? (
+                <View style={{ marginBottom: 10 }}>{this.showGroups()}</View>
+              ) : (
                 <View style={styles.emptyFeed}>
                   <Text
-                    style={{ textAlign: "center", fontSize: 16, fontFamily: "HindSiliguri-Regular" }}
+                    style={{
+                      textAlign: "center",
+                      fontSize: 16,
+                      fontFamily: "HindSiliguri-Regular"
+                    }}
                   >
-                    Looks like you're not part of any groups yet {"\n"}Click the "+" button to create a group
-                </Text>
+                    Looks like you're not part of any groups yet {"\n"}Click the
+                    "+" button to create a group
+                  </Text>
                 </View>
               )}
-          </ScrollView>
+            </ScrollView>
 
-          {/* create new Group */}
-          <AddButton onPress={() => navigate("GroupsForm")} />
-        </View>
-      }
-    </KeyboardShift>
+            {/* create new Group */}
+            <AddButton onPress={() => navigate("GroupsForm")} />
+          </View>
+        )}
+      </KeyboardShift>
     );
   }
 }
@@ -254,55 +233,55 @@ const styles = StyleSheet.create({
     elevation: 1,
     borderColor: "#E2E2E2",
     alignContent: "center",
-    alignItems: "center",
-},
+    alignItems: "center"
+  },
 
-font:{
+  font: {
     fontFamily: "HindSiliguri-Regular"
-},
+  },
 
-picPlaceholder: {
+  picPlaceholder: {
     flex: 0.7,
     alignItems: "center",
-    justifyContent: "center",
-},
+    justifyContent: "center"
+  },
 
-photo: {
+  photo: {
     width: Dimensions.get("window").width * 0.435,
     height: wd(0.35),
     marginTop: 10,
     borderTopLeftRadius: 15,
-    borderTopRightRadius: 15,
-},
+    borderTopRightRadius: 15
+  },
 
-textPlaceholder: {
+  textPlaceholder: {
     flex: 0.3,
-    margin: 5,
-},
+    margin: 5
+  },
 
-title: {
+  title: {
     flex: 0.4,
     marginHorizontal: 5,
-    marginTop: 3,
-},
+    marginTop: 3
+  },
 
-userProfile: {
+  userProfile: {
     flex: 0.6,
     flexDirection: "row",
     alignItems: "center"
-},
+  },
 
-userProfilePic: {
+  userProfilePic: {
     width: wd(0.07),
     height: wd(0.07),
     marginHorizontal: 5
-},
+  },
 
-userName:{
+  userName: {
     color: "#939090"
-}
+  }
 
-// STYLES FOR CARD GROUP (END)
+  // STYLES FOR CARD GROUP (END)
 });
 
 Groups.propTypes = {
@@ -313,7 +292,8 @@ Groups.propTypes = {
 
 const mapStateToProps = state => ({
   groups: state.groups,
-  auth: state.auth
+  auth: state.auth,
+  user: state.user
 });
 
 //  connect to redux and export

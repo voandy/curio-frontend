@@ -46,41 +46,71 @@ export const putGroupAdminAPIRequest = (groupId, userId) => {
 };
 
 // get all artefacts of a group
-export const getGroupAllArtefactsAPIRequest = (groupId) => {
+export const getGroupAllArtefactsAPIRequest = groupId => {
   return new Promise((resolve, reject) => {
     axios
-      .get("http://curioapp.herokuapp.com/api/group/id/" + groupId + "/artefacts")
+      .get(
+        "http://curioapp.herokuapp.com/api/group/id/" + groupId + "/artefacts"
+      )
       .then(res => resolve(res))
       .catch(err => reject(err));
-  })
-}
+  });
+};
 
 // get all artefacts of a group
-export const getGroupAllMembersAPIRequest = (groupId) => {
+export const getGroupAllMembersAPIRequest = groupId => {
   return new Promise((resolve, reject) => {
     axios
       .get("http://curioapp.herokuapp.com/api/group/id/" + groupId + "/members")
       .then(res => resolve(res))
       .catch(err => reject(err));
-  })
-}
+  });
+};
 
 // edit group data api call
-export const editGroupAPIRequest = (groupId) => {
+export const editGroupAPIRequest = groupId => {
   return new Promise((resolve, reject) => {
     axios
       .put("http://curioapp.herokuapp.com/api/group/id/" + groupId)
       .then(res => resolve(res))
       .catch(err => reject(err));
   });
-}
+};
+
+export const pinGroupAPIRequest = (userId, groupId) => {
+  return new Promise((resolve, reject) => {
+    axios
+      .post(
+        "http://curioapp.herokuapp.com/api/user/id/" +
+          userId +
+          "/pin/groupId/" +
+          groupId
+      )
+      .then(res => resolve(res))
+      .catch(err => reject(err));
+  });
+};
+
+export const unpinGroupAPIRequest = (userId, groupId) => {
+  return new Promise((resolve, reject) => {
+    axios
+      .post(
+        "http://curioapp.herokuapp.com/api/user/id/" +
+          userId +
+          "/unpin/groupId/" +
+          groupId
+      )
+      .then(res => resolve(res))
+      .catch(err => reject(err));
+  });
+};
 
 // delete group api call
-export const deleteGroupAPIRequest = (groupId) => {
+export const deleteGroupAPIRequest = groupId => {
   return new Promise((resolve, reject) => {
     axios
       .delete("http://curioapp.herokuapp.com/api/group/id/" + groupId)
       .then(res => resolve(res))
       .catch(err => reject(err));
-  })
-}
+  });
+};
