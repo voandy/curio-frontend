@@ -11,6 +11,8 @@ import {
   TouchableOpacity,
   Image
 } from "react-native";
+import * as _ from "underscore";
+
 // custom components
 import SimpleHeader from "../../component/SimpleHeader";
 import ArtefactFeed from "../../component/ArtefactFeed";
@@ -45,33 +47,29 @@ const newArtefact = {
 };
 
 class Artefacts extends Component {
-  // Navbar details
-  static navigationOptions = {
-    header: null
-  };
+  constructor(props) {
+    super(props);
 
-  // local state
-  state = {
-    newArtefact: {
-      ...newArtefact,
-      userId: this.props.auth.user.id
-    },
-    isModalVisible: false,
-    loading: false,
-    refreshing: false
-  };
+    this.state = {
+      newArtefact: {
+        ...newArtefact,
+        userId: this.props.auth.user.id
+      },
+      isModalVisible: false,
+      loading: false,
+      refreshing: false
+    }
+  }
 
   // Nav bar details
   static navigationOptions = {
     header: null
   };
 
-  // update selectedArtefact when it has already been changed
-  componentWillUpdate(nextProps) {
-    if (
-      this.props.artefacts.userArtefacts !== nextProps.artefacts.userArtefacts
-    ) {
-      console.log("In Artefact/index.js componentWillUpdate: looping...");
+  componentDidUpdate(prevProps) {
+
+    // update selectedArtefacts when an artefact has been deleted
+    if (prevProps.artefacts.userArtefacts.length !== this.props.artefacts.userArtefacts.length + 1) {
       // reload userArtefacts to update userArtefacts in redux state
       this.props.getUserArtefacts(this.props.auth.user.id);
     }
@@ -124,6 +122,7 @@ class Artefacts extends Component {
         // close loading modal
         this.toggleModal();
         this.resetNewArtefact();
+        
       })
       .catch(err => {
         // stop showing user the loading modal
