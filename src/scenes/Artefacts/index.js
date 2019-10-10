@@ -71,6 +71,7 @@ class Artefacts extends Component {
     if (
       this.props.artefacts.userArtefacts !== nextProps.artefacts.userArtefacts
     ) {
+      console.log("In Artefact/index.js componentWillUpdate: looping...");
       // reload userArtefacts to update userArtefacts in redux state
       this.props.getUserArtefacts(this.props.auth.user.id);
     }
@@ -133,7 +134,7 @@ class Artefacts extends Component {
   };
 
   // click a specific artefact and navigate to it
-  clickArtefact = async (artefactId) => {
+  clickArtefact = async artefactId => {
     const { navigate } = this.props.navigation;
 
     // navigate to selected artefact
@@ -254,7 +255,7 @@ const styles = StyleSheet.create({
     width: wd(0.3),
     height: wd(0.3)
   },
-  
+
   card: {
     width: wd(0.3),
     height: wd(0.3),
