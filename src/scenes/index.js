@@ -83,6 +83,7 @@ const GroupStack = createStackNavigator({
   Groups: { screen: GroupsScreen },
   GroupsForm: { screen: GroupsFormScreen },
   SelectedGroup: { screen: SelectedGroupScreen },
+  SelectedArtefact: { screen: SelectedArtefactScreen },
   GeneralSearch: { screen: GeneralSearchScreen },
   UserSearch: { screen: UserSearchScreen }
 });
