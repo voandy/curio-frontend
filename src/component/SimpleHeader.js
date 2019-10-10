@@ -84,7 +84,6 @@ class SimpleHeader extends Component {
   // show tabs for filtering search options
   showTab = () => {
     if (this.props.showTab != true) {
-      console.log("hiuwehfiwuhf")
 
       return null
     }
