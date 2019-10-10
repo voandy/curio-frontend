@@ -133,7 +133,7 @@ class Artefacts extends Component {
   };
 
   // click a specific artefact and navigate to it
-  clickArtefact = async (artefactId) => {
+  clickArtefact = async artefactId => {
     const { navigate } = this.props.navigation;
 
     // navigate to selected artefact
@@ -254,7 +254,7 @@ const styles = StyleSheet.create({
     width: wd(0.3),
     height: wd(0.3)
   },
-  
+
   card: {
     width: wd(0.3),
     height: wd(0.3),
