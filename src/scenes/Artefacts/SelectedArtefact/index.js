@@ -408,6 +408,7 @@ class SelectedArtefact extends Component {
               <UserDetail
                 image={{ uri: this.props.user.userData.profilePic }}
                 userName={this.props.user.userData.name}
+                dateAdded={this.props.artefacts.selectedArtefact.datePosted}
               />
               {/* likes/comments counters */}
               <View style={styles.likesIndicatorPlaceholder}>
