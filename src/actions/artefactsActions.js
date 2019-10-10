@@ -207,6 +207,7 @@ export const commentOnArtefact = (
 // clear selectedArtefact 
 export const clearSelectedArtefact = () => dispatch => {
   dispatch(setSelectedArtefact({}));
+  dispatch(setArtefactComments([]));
 }
 
 // Redux actions //

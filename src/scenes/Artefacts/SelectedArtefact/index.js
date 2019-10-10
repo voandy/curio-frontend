@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
+import { _ } from "underscore";
 
 import {
   Dimensions,
@@ -50,14 +51,16 @@ class SelectedArtefact extends Component {
     this.props.clearSelectedArtefact();
 
     this.state = {
+
+      // will be used to be posted for editing selected Artefact
       selectedArtefact: {
         ...this.props.artefacts.selectedArtefact
       },
       isImageViewVisible: false,
       isUpdateModalVisible: false,
       loading: false,
+      
       newComment: "",
-
       // whether the user has liked this artefact
       liked: 0,
       likesCount: 0,
@@ -65,10 +68,6 @@ class SelectedArtefact extends Component {
       likingEnabled: true,
       // statusBarHidden: false,
     };
-
-    // get all information required for the selectedGroup page
-    artefactId = this.props.navigation.getParam('artefactId', 'NO-ARTEFACT-ID');
-    this.getSelectedArtefactData(artefactId);
   }
 
   // asynchronously make api calls to get selectedArtefact data into redux state
@@ -77,18 +76,11 @@ class SelectedArtefact extends Component {
     this.props.getArtefactComments(artefactId);
   }
   
-  // componentDidMount() {
-  //   this.setState({
-  //     selectedArtefact: {
-  //       ...this.state.selectedArtefact,
-  //       imageURI: this.props.artefacts.selectedArtefact.images[0].URL
-  //     },
-  //     liked: this.props.artefacts.selectedArtefact.likes.includes(this.props.user.userData._id),
-  //     likesCount: this.props.artefacts.selectedArtefact.likes.length,
-  //     commentsCount: this.props.artefacts.artefactComments.length,
-  //     likingEnabled: true,
-  //   })
-  // }
+  componentDidMount() {
+    // get all information required for the selectedGroup page
+    artefactId = this.props.navigation.getParam('artefactId', 'NO-ARTEFACT-ID');
+    this.getSelectedArtefactData(artefactId);
+  }
 
   // nav details
   static navigationOptions = {
@@ -98,21 +90,38 @@ class SelectedArtefact extends Component {
     }
   };
 
-  // // update selectedArtefact when it has already been changed
-  // async componentWillUpdate(nextProps) {
+  async componentDidUpdate(prevProps) {
 
-  //   // if (this.props.artefacts.selectedArtefact !== nextProps.artefacts.selectedArtefact) {
-  //   //   // edit selectedArtefact in redux state
-  //   //   this.props.getSelectedArtefact(nextProps.artefacts.selectedArtefact._id);
+    // assign selectedArtefact along with likes when selectedArtefact data has been retrieved from api call for the first time
+    if (Object.keys(prevProps.artefacts.selectedArtefact).length === 0 && Object.keys(this.props.artefacts.selectedArtefact).length !== 0) {
+      this.setState({
+        selectedArtefact: {
+          ...this.props.artefacts.selectedArtefact,
+          imageURI: this.props.artefacts.selectedArtefact.images[0].URL
+        },
+        liked: this.props.artefacts.selectedArtefact.likes.includes(this.props.user.userData._id),
+        likesCount: this.props.artefacts.selectedArtefact.likes.length,
+      })
+    }
 
-  //   //   // reload userArtefacts to update userArtefacts in redux state
-  //   //   this.props.getUserArtefacts(this.props.user.userData._id);
-  //   // }
+    // assign selectedArtefact along with likes when selectedArtefact data has been retrieved from api call for the first time
+    if (prevProps.artefacts.artefactComments.length !== this.props.artefacts.artefactComments.length) {
+      this.setState({
+        commentsCount: this.props.artefacts.artefactComments.length,
+      })
+    }
 
-  //   if(this.props.artefacts.artefactComments.length !== nextProps.artefacts.artefactComments.length) {
-  //     this.generateComments();
-  //   }
-  // }
+    // re-generate comments when a new artefact comment has been  made
+    if (prevProps.artefacts.artefactComments.length + 1 === this.props.artefacts.artefactComments.length) {
+      const artefactId = this.props.artefacts.selectedArtefact._id;
+      await this.props.getArtefactComments(artefactId);
+    }
+  }
+
+  // clear redux state when component is unmounting
+  componentWillUnmount() {
+    this.props.clearSelectedArtefact();
+  }
 
   onChangeNewComment = (newComment) => {
     this.setState({
@@ -160,12 +169,6 @@ class SelectedArtefact extends Component {
         alert("An error occured. Please try again.");
       }.bind(this));
     }
-  }
-
-  generateComments = async () => {
-    const artefactId = this.props.artefacts.selectedArtefact._id;
-    await this.props.getArtefactComments(artefactId);
-    this.setState({commentsCount: this.props.artefacts.artefactComments.length});
   }
 
   postComment = function (commentContent) {
@@ -291,7 +294,6 @@ class SelectedArtefact extends Component {
   };
 
   render() {
-
     // does not render when selectedArtefact is empty
     if (Object.keys(this.props.artefacts.selectedArtefact).length === 0) {
       return(null);
