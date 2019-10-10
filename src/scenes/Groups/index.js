@@ -15,7 +15,6 @@ import {
 // import redux actions for groups
 import { 
   createNewGroup, 
-  editSelectedGroup,
 } from "../../actions/groupsActions";
 
 // custom components

@@ -39,6 +39,7 @@ const { registerForPushNotificationsAsync } = require("../services/notification/
 class Scenes extends Component {
   async componentDidMount() {
     if (this.props.auth.isAuthenticated) {
+
       // get user authentication data
       const { user } = this.props.auth;
 

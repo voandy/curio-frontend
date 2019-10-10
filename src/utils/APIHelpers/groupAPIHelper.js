@@ -65,6 +65,7 @@ export const getGroupAllMembersAPIRequest = (groupId) => {
   })
 }
 
+// edit group data api call
 export const editGroupAPIRequest = (groupId) => {
   return new Promise((resolve, reject) => {
     axios
@@ -72,4 +73,14 @@ export const editGroupAPIRequest = (groupId) => {
       .then(res => resolve(res))
       .catch(err => reject(err));
   });
+}
+
+// delete group api call
+export const deleteGroupAPIRequest = (groupId) => {
+  return new Promise((resolve, reject) => {
+    axios
+      .delete("http://curioapp.herokuapp.com/api/group/id/" + groupId)
+      .then(res => resolve(res))
+      .catch(err => reject(err));
+  })
 }

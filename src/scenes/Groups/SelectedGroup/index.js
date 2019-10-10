@@ -9,7 +9,8 @@ import {
   StatusBar,
   View,
   Text,
-  Image
+  Image,
+  Alert,
 } from "react-native";
 
 // import redux actions for groups
@@ -19,7 +20,8 @@ import {
   clearSelectedGroup,
   getSelectedGroupAllArtefacts,
   getSelectedGroupAllMembers,
-  getSelectedGroupArtefactComments
+  getSelectedGroupArtefactComments,
+  deleteSelectedGroup,
 } from "../../../actions/groupsActions";
 
 // custom component
@@ -162,6 +164,48 @@ class SelectedGroup extends Component {
         // show error
         console.log(err.response.data);
       });
+  };
+
+  // toggle the modal for artefact deletion
+  toggleDeleteModal = async () => {
+    const { navigate } = this.props.navigation;
+
+    Alert.alert(
+      "Delete Artefact",
+      "Are you sure you want to delete your artefact?",
+      [
+        {
+          text: "No",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel"
+        },
+        {
+          text: "Yes",
+          onPress: async () => {
+            // show user the loading modal
+            this.setLoading(true);
+            console.log("deleting group");
+            // remove selected artefact from redux states
+            await this.props
+              .deleteSelectedGroup(this.props.groups.selectedGroup._id)
+              .then(() => {
+                // stop showing user the loading modal
+                this.setLoading(false);
+
+                // navigate to groups
+                navigate("Groups");
+              })
+              .catch(err => {
+                // stop showing user the loading modal
+                this.setLoading(false);
+                // show error
+                console.log(err.response.data);
+              });
+          }
+        }
+      ],
+      { cancelable: false }
+    );
   };
 
   render() {
@@ -352,6 +396,7 @@ export default connect(
     clearSelectedGroup,
     getSelectedGroupAllArtefacts,
     getSelectedGroupAllMembers,
-    getSelectedGroupArtefactComments
+    getSelectedGroupArtefactComments,
+    deleteSelectedGroup
   }
 )(SelectedGroup);
