@@ -22,26 +22,31 @@ import Moment from "moment";
 import { LikeButton, UnlikeButton } from "../../../component/LikeButton";
 import CommentButton from "../../../component/CommentButton";
 import CommentForm from "../../../component/CommentForm";
-import UserDetail from "../../../component/UserDetail"
-import Line from "../../../component/Line"
-import Comments from "../../../component/Comments"
-import OptionButton from "../../../component/OptionButton"
-import HeaderImageScrollView from 'react-native-image-header-scroll-view';
-import ImageView from 'react-native-image-view';
-import ArtefactModal from '../../../component/ArtefactModal';
+import UserDetail from "../../../component/UserDetail";
+import Line from "../../../component/Line";
+import Comments from "../../../component/Comments";
+import OptionButton from "../../../component/OptionButton";
+import HeaderImageScrollView from "react-native-image-header-scroll-view";
+import ImageView from "react-native-image-view";
+import ArtefactModal from "../../../component/ArtefactModal";
 import ActivityLoaderModal from "../../../component/ActivityLoaderModal";
-import KeyboardShift from "../../../component/componentHelpers/KeyboardShift"
+import KeyboardShift from "../../../component/componentHelpers/KeyboardShift";
 
 // redux actions
-import { editSelectedArtefact, getSelectedArtefact, getUserArtefacts, 
-  removeSelectedArtefact, likeArtefact, unlikeArtefact, getArtefactComments, 
-  commentOnArtefact, clearSelectedArtefact } 
-  from "../../../actions/artefactsActions";
+import {
+  editSelectedArtefact,
+  getSelectedArtefact,
+  getUserArtefacts,
+  removeSelectedArtefact,
+  likeArtefact,
+  unlikeArtefact,
+  getArtefactComments,
+  commentOnArtefact,
+  clearSelectedArtefact
+} from "../../../actions/artefactsActions";
 
 // custom responsive design component
-import {
-  deviceWidthDimension as wd,
-} from "../../../utils/responsiveDesign";
+import { deviceWidthDimension as wd } from "../../../utils/responsiveDesign";
 
 class SelectedArtefact extends Component {
   constructor(props) {
@@ -51,7 +56,6 @@ class SelectedArtefact extends Component {
     this.props.clearSelectedArtefact();
 
     this.state = {
-
       // will be used to be posted for editing selected Artefact
       selectedArtefact: {
         ...this.props.artefacts.selectedArtefact
@@ -59,13 +63,13 @@ class SelectedArtefact extends Component {
       isImageViewVisible: false,
       isUpdateModalVisible: false,
       loading: false,
-      
+
       newComment: "",
       // whether the user has liked this artefact
       liked: 0,
       likesCount: 0,
       commentsCount: 0,
-      likingEnabled: true,
+      likingEnabled: true
       // statusBarHidden: false,
     };
   }
@@ -75,10 +79,10 @@ class SelectedArtefact extends Component {
     this.props.getSelectedArtefact(artefactId);
     this.props.getArtefactComments(artefactId);
   }
-  
+
   componentDidMount() {
     // get all information required for the selectedGroup page
-    artefactId = this.props.navigation.getParam('artefactId', 'NO-ARTEFACT-ID');
+    artefactId = this.props.navigation.getParam("artefactId", "NO-ARTEFACT-ID");
     this.getSelectedArtefactData(artefactId);
   }
 
@@ -91,28 +95,38 @@ class SelectedArtefact extends Component {
   };
 
   async componentDidUpdate(prevProps) {
-
     // assign selectedArtefact along with likes when selectedArtefact data has been retrieved from api call for the first time
-    if (Object.keys(prevProps.artefacts.selectedArtefact).length === 0 && Object.keys(this.props.artefacts.selectedArtefact).length !== 0) {
+    if (
+      Object.keys(prevProps.artefacts.selectedArtefact).length === 0 &&
+      Object.keys(this.props.artefacts.selectedArtefact).length !== 0
+    ) {
       this.setState({
         selectedArtefact: {
           ...this.props.artefacts.selectedArtefact,
           imageURI: this.props.artefacts.selectedArtefact.images[0].URL
         },
-        liked: this.props.artefacts.selectedArtefact.likes.includes(this.props.user.userData._id),
-        likesCount: this.props.artefacts.selectedArtefact.likes.length,
-      })
+        liked: this.props.artefacts.selectedArtefact.likes.includes(
+          this.props.user.userData._id
+        ),
+        likesCount: this.props.artefacts.selectedArtefact.likes.length
+      });
     }
 
     // assign selectedArtefact along with likes when selectedArtefact data has been retrieved from api call for the first time
-    if (prevProps.artefacts.artefactComments.length !== this.props.artefacts.artefactComments.length) {
+    if (
+      prevProps.artefacts.artefactComments.length !==
+      this.props.artefacts.artefactComments.length
+    ) {
       this.setState({
-        commentsCount: this.props.artefacts.artefactComments.length,
-      })
+        commentsCount: this.props.artefacts.artefactComments.length
+      });
     }
 
     // re-generate comments when a new artefact comment has been  made
-    if (prevProps.artefacts.artefactComments.length + 1 === this.props.artefacts.artefactComments.length) {
+    if (
+      prevProps.artefacts.artefactComments.length + 1 ===
+      this.props.artefacts.artefactComments.length
+    ) {
       const artefactId = this.props.artefacts.selectedArtefact._id;
       await this.props.getArtefactComments(artefactId);
     }
@@ -123,67 +137,77 @@ class SelectedArtefact extends Component {
     this.props.clearSelectedArtefact();
   }
 
-  onChangeNewComment = (newComment) => {
+  onChangeNewComment = newComment => {
     this.setState({
       newComment
-    })
-  }
+    });
+  };
 
-  like = function () {
+  like = function() {
     if (this.state.likingEnabled) {
-      this.setState(
-        {
-          liked: true,
-          likesCount: this.state.likesCount + 1,
-          likingEnabled: false
-        }
-      );
-      this.props.likeArtefact(
-        this.props.artefacts.selectedArtefact._id, 
-        this.props.user.userData._id
-      ).then(function() {
-        this.setState({likingEnabled: true});
-      }.bind(this)).catch(function() {
-        this.setState({likingEnabled: true});
-        alert("An error occured. Please try again.");
-      }.bind(this));
+      this.setState({
+        liked: true,
+        likesCount: this.state.likesCount + 1,
+        likingEnabled: false
+      });
+      this.props
+        .likeArtefact(
+          this.props.artefacts.selectedArtefact._id,
+          this.props.user.userData._id
+        )
+        .then(
+          function() {
+            this.setState({ likingEnabled: true });
+          }.bind(this)
+        )
+        .catch(
+          function() {
+            this.setState({ likingEnabled: true });
+            alert("An error occured. Please try again.");
+          }.bind(this)
+        );
     }
-  }
+  };
 
-  unlike = function () {
+  unlike = function() {
     if (this.state.likingEnabled) {
-      this.setState(
-        {
-          liked: false,
-          likesCount: this.state.likesCount - 1,
-          likingEnabled: false
-        }
-      );
-      this.props.unlikeArtefact(
-        this.props.artefacts.selectedArtefact._id, 
-        this.props.user.userData._id
-      ).then(function() {
-        this.setState({likingEnabled: true});
-      }.bind(this)).catch(function() {
-        this.setState({likingEnabled: true});
-        alert("An error occured. Please try again.");
-      }.bind(this));
+      this.setState({
+        liked: false,
+        likesCount: this.state.likesCount - 1,
+        likingEnabled: false
+      });
+      this.props
+        .unlikeArtefact(
+          this.props.artefacts.selectedArtefact._id,
+          this.props.user.userData._id
+        )
+        .then(
+          function() {
+            this.setState({ likingEnabled: true });
+          }.bind(this)
+        )
+        .catch(
+          function() {
+            this.setState({ likingEnabled: true });
+            alert("An error occured. Please try again.");
+          }.bind(this)
+        );
     }
-  }
+  };
 
-  postComment = function (commentContent) {
+  postComment = function(commentContent) {
     this.props.commentOnArtefact(
       this.props.artefacts.selectedArtefact._id,
       this.props.user.userData._id,
       commentContent
     );
-  }
+  };
 
-  scrollToEnd = function () {
+  scrollToEnd = function() {
     this.scrollView.scrollToEnd();
-  }
+  };
 
-  showComments = function (comments) {
+  showComments = function(comments) {
     var commentViews = [];
 
     // sort comments by date
@@ -205,7 +229,7 @@ class SelectedArtefact extends Component {
     }
 
     return commentViews;
-  }
+  };
 
   // toggle the modal for artefact update input
   toggleUpdateModal = () => {
@@ -296,7 +320,7 @@ class SelectedArtefact extends Component {
   render() {
     // does not render when selectedArtefact is empty
     if (Object.keys(this.props.artefacts.selectedArtefact).length === 0) {
-      return(null);
+      return null;
     }
 
     // date format
@@ -321,7 +345,9 @@ class SelectedArtefact extends Component {
 
             {/* header */}
             <HeaderImageScrollView
-              ref={(scrollView) => { this.scrollView = scrollView }}
+              ref={scrollView => {
+                this.scrollView = scrollView;
+              }}
               maxHeight={Dimensions.get("window").height * 0.5}
               minHeight={Dimensions.get("window").height * 0.2}
               // use this to dynamically get image data
@@ -386,7 +412,8 @@ class SelectedArtefact extends Component {
               {/* likes/comments counters */}
               <View style={styles.likesIndicatorPlaceholder}>
                 <Text style={styles.indicator}>
-                  {this.state.likesCount} Likes {this.state.commentsCount} Comments
+                  {this.state.likesCount} Likes {this.state.commentsCount}{" "}
+                  Comments
                 </Text>
               </View>
 
@@ -495,6 +522,15 @@ const mapStateToProps = state => ({
 // map required redux state and actions to local props
 export default connect(
   mapStateToProps,
-  { editSelectedArtefact, getSelectedArtefact, getUserArtefacts, removeSelectedArtefact,
-    likeArtefact, unlikeArtefact, getArtefactComments, commentOnArtefact, clearSelectedArtefact }
+  {
+    editSelectedArtefact,
+    getSelectedArtefact,
+    getUserArtefacts,
+    removeSelectedArtefact,
+    likeArtefact,
+    unlikeArtefact,
+    getArtefactComments,
+    commentOnArtefact,
+    clearSelectedArtefact
+  }
 )(SelectedArtefact);
