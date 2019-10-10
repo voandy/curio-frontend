@@ -58,11 +58,11 @@ class SelectedGroup extends Component {
   }
 
   // get selected group data asynchronously
-  getSelectedGroupData = async (groupId) => {
+  getSelectedGroupData = async groupId => {
     this.props.getSelectedGroup(groupId);
     this.props.getSelectedGroupAllArtefacts(groupId);
     this.props.getSelectedGroupAllMembers(groupId);
-  }
+  };
 
   // nav details
   static navigationOptions = {
@@ -78,37 +78,6 @@ class SelectedGroup extends Component {
   componentWillUnmount() {
     this.props.clearSelectedGroup();
   }
-
-  // return a row of group members
-  showGroupMembers = groupMembers => {
-    // transform each member to an UserIcon component
-    //prettier-ignore
-    const groupMembersComponent = groupMembers.map(member => (
-      <UserIcon 
-        key={ member._id } 
-        image={{ uri: member.details.profilePic }} 
-      />
-    ));
-    return groupMembersComponent;
-  };
-
-  // return all group artefacts components
-  showGroupArtefacts = groupArtefacts => {
-    // transform each artefact to a PostFeed component
-    // prettier-ignore
-    const groupArtefactsComponent = groupArtefacts.map(artefact => (
-      <PostFeed
-        key={artefact.artefactId}
-        userName={artefact.user.name}
-        title={artefact.details.title}
-        profileImage={{ uri: artefact.user.profilePic }}
-        image={{ uri: artefact.details.images[0].URL }}
-        likesCount={artefact.details.likes.length}
-        commentsCount={artefact.commentCount ? artefact.commentCount : 0}
-      />
-    ));
-    return groupArtefactsComponent;
-  };
 
   // selected artefact's attribute change
   setSelectedGroup = (key, value) => {
@@ -130,6 +99,48 @@ class SelectedGroup extends Component {
   // toggle the modal for artefact update input
   toggleUpdateModal = () => {
     this.setState({ isUpdateModalVisible: !this.state.isUpdateModalVisible });
+  };
+
+  // return a row of group members
+  showGroupMembers = groupMembers => {
+    // transform each member to an UserIcon component
+    //prettier-ignore
+    const groupMembersComponent = groupMembers.map(member => (
+      <UserIcon 
+        key={ member._id } 
+        image={{ uri: member.details.profilePic }} 
+      />
+    ));
+    return groupMembersComponent;
+  };
+
+  // return all group artefacts components
+  showGroupArtefacts = groupArtefacts => {
+    console.log(groupArtefacts[0]);
+    // transform each artefact to a PostFeed component
+    // prettier-ignore
+    const groupArtefactsComponent = groupArtefacts.map(artefact => (
+      <PostFeed
+        key={artefact.artefactId}
+        artefactId={artefact.artefactId}
+        userName={artefact.user.name}
+        title={artefact.details.title}
+        profileImage={{ uri: artefact.user.profilePic }}
+        image={{ uri: artefact.details.images[0].URL }}
+        likesCount={artefact.details.likes.length}
+        dateAdded={artefact.dateAdded}
+        commentsCount={artefact.commentCount ? artefact.commentCount : 0}
+        onPress={this.clickArtefact.bind(this)}
+      />
+    ));
+    return groupArtefactsComponent;
+  };
+
+  // click a specific artefact and navigate to it
+  clickArtefact = artefactId => {
+    const { navigate } = this.props.navigation;
+    // navigate to selected artefact
+    navigate("SelectedArtefact", { artefactId });
   };
 
   // post new artefact to the backend
