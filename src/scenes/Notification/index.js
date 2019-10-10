@@ -57,23 +57,15 @@ class Notification extends Component {
   // helper function to navigate to selected group page
   navigateToGroupNotif = async groupId => {
     const { navigate } = this.props.navigation;
-    // get all the required group details
-    this.props.getSelectedGroup(groupId);
-    this.props.getSelectedGroupAllArtefacts(groupId);
-    this.props.getSelectedGroupAllMembers(groupId);
     // redirect user
-    navigate("SelectedGroup");
+    navigate("SelectedGroup", { groupId });
   };
 
   // helper function to navigate to selected artefact page
   navigateToArtefactNotif = async artefactId => {
     const { navigate } = this.props.navigation;
-    // get the selected artefact information
-    await this.props.getSelectedArtefact(artefactId);
-    // get the selected artefact comments
-    await this.props.getArtefactComments(artefactId);
     // redirect user
-    navigate("SelectedArtefact");
+    navigate("SelectedArtefact", { artefactId });
   };
 
   // refresh page
