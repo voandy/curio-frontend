@@ -28,8 +28,6 @@ import {
 import UserIcon from "../../../component/UserIcon";
 import AddButton from "../../../component/AddButton";
 import PostFeed from "../../../component/PostFeed";
-import Line from "../../../component/Line";
-import Comments from "../../../component/Comments";
 
 // Custom respondsive design component
 import {

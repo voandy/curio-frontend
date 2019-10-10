@@ -28,6 +28,7 @@ import {
 import ActivityLoaderModal from "../../../component/ActivityLoaderModal";
 // custom components
 import MySmallerButton from "../../../component/MySmallerButton";
+import KeyboardShift from "../../../component/componentHelpers/KeyboardShift";
 
 // default states for newGroup
 const newGroup = {
@@ -147,112 +148,116 @@ class GroupsForm extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
-        {/* loading modal window */}
-        <ActivityLoaderModal loading={this.state.loading} />
+      <KeyboardShift>
+      {() =>
+        <View style={styles.container}>
+          {/* loading modal window */}
+          <ActivityLoaderModal loading={this.state.loading} />
 
-        {/* scrollable container for all content */}
-        <ScrollView showsVerticalScrollIndicator={false}>
-          <View style={{ alignItems: "center" }}>
-            {/* Add image button */}
-            <View style={styles.imagePlaceholder}>
-              <Text style={[styles.font, styles.imageText]}>
-                Create a group, share artefacts amongst yourselves
-              </Text>
+          {/* scrollable container for all content */}
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <View style={{ alignItems: "center" }}>
+              {/* Add image button */}
+              <View style={styles.imagePlaceholder}>
+                <Text style={[styles.font, styles.imageText]}>
+                  Create a group, share artefacts amongst yourselves
+                </Text>
 
-              <TouchableOpacity activeOpacity={0.5} onPress={this.pickImage}>
-              {this.state.newGroup.imageURI !== undefined &&
-                this.state.newGroup.imageURI !== "" ? (
-                    <Image
-                      style={styles.imageSelected}
-                      source={{ uri: this.state.newGroup.imageURI}}
-                    />
-                  ) : (
-                    <Image
-                      style={styles.imageSelected}
-                      source={require("../../../../assets/images/icons/addPicture.png")}
-                    />
-                  )}
-              </TouchableOpacity>
+                <TouchableOpacity activeOpacity={0.5} onPress={this.pickImage}>
+                {this.state.newGroup.imageURI !== undefined &&
+                  this.state.newGroup.imageURI !== "" ? (
+                      <Image
+                        style={styles.imageSelected}
+                        source={{ uri: this.state.newGroup.imageURI}}
+                      />
+                    ) : (
+                      <Image
+                        style={styles.imageSelected}
+                        source={require("../../../../assets/images/icons/addPicture.png")}
+                      />
+                    )}
+                </TouchableOpacity>
 
-              <Text style={[styles.subFont, styles.imageText]}>
-                Add a cover photo
-              </Text>
-            </View>
+                <Text style={[styles.subFont, styles.imageText]}>
+                  Add a cover photo
+                </Text>
+              </View>
 
-            {/* Title */}
-            <View style={styles.inputRow}>
-              <Image
-                style={styles.icon}
-                source={require("../../../../assets/images/icons/title.png")}
-              />
-              <View style={styles.inputField}>
-                <Text style={styles.font}>Group name</Text>
-                <TextInput
-                  placeholder="Title"
-                  autoCapitalize="none"
-                  placeholderTextColor="#868686"
-                  style={styles.inputFont}
-                  onChangeText={value =>  this.setTitle(value)}
-                  value={this.state.newGroup.title}
+              {/* Title */}
+              <View style={styles.inputRow}>
+                <Image
+                  style={styles.icon}
+                  source={require("../../../../assets/images/icons/title.png")}
                 />
+                <View style={styles.inputField}>
+                  <Text style={styles.font}>Group name</Text>
+                  <TextInput
+                    placeholder="Title"
+                    autoCapitalize="none"
+                    placeholderTextColor="#868686"
+                    style={styles.inputFont}
+                    onChangeText={value =>  this.setTitle(value)}
+                    value={this.state.newGroup.title}
+                  />
+                </View>
               </View>
-            </View>
 
-            {/* Description */}
-            <View style={styles.inputRow}>
-              <Image
-                style={styles.icon}
-                source={require("../../../../assets/images/icons/description.png")}
-              />
-              <View style={styles.inputField}>
-                <Text style={styles.font}>Description</Text>
-                <TextInput
-                  placeholder="Description of the group"
-                  autoCapitalize="none"
-                  placeholderTextColor="#868686"
-                  style={styles.inputFont}
-                  onChangeText={value => this.setDescription(value)}
-                  value={this.state.newGroup.description}
+              {/* Description */}
+              <View style={styles.inputRow}>
+                <Image
+                  style={styles.icon}
+                  source={require("../../../../assets/images/icons/description.png")}
                 />
+                <View style={styles.inputField}>
+                  <Text style={styles.font}>Description</Text>
+                  <TextInput
+                    placeholder="Description of the group"
+                    autoCapitalize="none"
+                    placeholderTextColor="#868686"
+                    style={styles.inputFont}
+                    onChangeText={value => this.setDescription(value)}
+                    value={this.state.newGroup.description}
+                  />
+                </View>
+              </View>
+
+              {/* Privacy */}
+              <View style={styles.inputRow}>
+                <Image
+                  style={styles.icon}
+                  source={require("../../../../assets/images/icons/category.png")}
+                />
+                <View style={styles.inputField}>
+                  <Text style={styles.font}>Privacy</Text>
+
+                  <Picker
+                    style={styles.pickerLong}
+                    selectedValue={this.state.newGroup.privacy}
+                    onValueChange={(itemValue, itemIndex) =>
+                      this.setPrivacy(itemValue)}
+                  >
+                    <Picker.Item label="Public" value={0} />
+                    <Picker.Item label="Private" value={1} />
+                  </Picker>
+
+                </View>
+              </View>
+
+              {/* submit button */}
+              <View
+                style={{
+                  alignItems: "flex-end",
+                  marginVertical: wd(0.05),
+                  width: wd(0.8)
+                }}
+              >
+                <MySmallerButton text="POST" onPress={() => this.onSubmit()} />
               </View>
             </View>
-
-            {/* Privacy */}
-            <View style={styles.inputRow}>
-              <Image
-                style={styles.icon}
-                source={require("../../../../assets/images/icons/category.png")}
-              />
-              <View style={styles.inputField}>
-                <Text style={styles.font}>Privacy</Text>
-
-                <Picker
-                  style={styles.pickerLong}
-                  selectedValue={this.state.newGroup.privacy}
-                  onValueChange={(itemValue, itemIndex) =>
-                    this.setPrivacy(itemValue)}
-                >
-                  <Picker.Item label="Public" value={0} />
-                  <Picker.Item label="Private" value={1} />
-                </Picker>
-
-              </View>
-            </View>
-
-            {/* submit button */}
-            <View
-              style={{
-                alignItems: "flex-end",
-                marginVertical: wd(0.05),
-                width: wd(0.8)
-              }}
-            >
-              <MySmallerButton text="POST" onPress={() => this.onSubmit()} />
-            </View>
-          </View>
-        </ScrollView>
-      </View>
+          </ScrollView>
+        </View>
+      }
+      </KeyboardShift>
     );
   }
 }

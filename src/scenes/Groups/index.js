@@ -23,6 +23,7 @@ import CardGroup from "../../component/CardGroup";
 import HeaderSearch from "../../component/HeaderSearch";
 import AddButton from "../../component/AddButton";
 import GroupModal from "../../component/GroupModal";
+import KeyboardShift from "../../component/componentHelpers/KeyboardShift";
 
 // Custom respondsive design component
 import {
@@ -164,57 +165,61 @@ class Groups extends Component {
     const { navigate } = this.props.navigation;
 
     return (
-      <View style={styles.container}>
-        {/* <Header tab1="Public" tab2="Private" onPress={()=> navigate("GeneralSearch")}/> */}
-        <HeaderSearch tab1="Public" tab2="Private" onSubmit={()=> navigate("GeneralSearch")}/>
+      <KeyboardShift>
+        {() => 
+        <View style={styles.container}>
+          {/* <Header tab1="Public" tab2="Private" onPress={()=> navigate("GeneralSearch")}/> */}
+          <HeaderSearch tab1="Public" tab2="Private" onSubmit={()=> navigate("GeneralSearch")}/>
 
-        {/* scrollable area for CONTENT */}
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          scrollEventThrottle={16}
-          style={{ backgroundColor: gray }}
-        >
-          {/* carousel pinned groups */}
-          <View style={{ height: wd(0.52), backgroundColor: "white" }}>
-            <ScrollView
-              horizontal={true}
-              showsHorizontalScrollIndicator={false}
-              decelerationRate={0.8}
-              snapToAlignment={"center"}
-              snapToInterval={Dimensions.get("window").width}
-            >
-              <CardCarousel
-                image={require("../../../assets/images/test-delete-this/boi1.jpg")}
-              />
-              <CardCarousel
-                image={require("../../../assets/images/test-delete-this/boi2.jpg")}
-              />
-              <CardCarousel
-                image={require("../../../assets/images/test-delete-this/boi3.jpg")}
-              />
-              <CardCarousel
-                image={require("../../../assets/images/test-delete-this/boi4.jpg")}
-              />
-            </ScrollView>
-          </View>
+          {/* scrollable area for CONTENT */}
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            scrollEventThrottle={16}
+            style={{ backgroundColor: gray }}
+          >
+            {/* carousel pinned groups */}
+            <View style={{ height: wd(0.52), backgroundColor: "white" }}>
+              <ScrollView
+                horizontal={true}
+                showsHorizontalScrollIndicator={false}
+                decelerationRate={0.8}
+                snapToAlignment={"center"}
+                snapToInterval={Dimensions.get("window").width}
+              >
+                <CardCarousel
+                  image={require("../../../assets/images/test-delete-this/boi1.jpg")}
+                />
+                <CardCarousel
+                  image={require("../../../assets/images/test-delete-this/boi2.jpg")}
+                />
+                <CardCarousel
+                  image={require("../../../assets/images/test-delete-this/boi3.jpg")}
+                />
+                <CardCarousel
+                  image={require("../../../assets/images/test-delete-this/boi4.jpg")}
+                />
+              </ScrollView>
+            </View>
 
-          {/* unpinned groups */}
-          {this.props.groups.userGroups.length !== 0 ? (
-            <View style={{marginBottom:10}}>{this.showUnpinnedGroups(this.props.groups.userGroups)}</View>
-          ) : (
-              <View style={styles.emptyFeed}>
-                <Text
-                  style={{ textAlign: "center", fontSize: 16, fontFamily: "HindSiliguri-Regular" }}
-                >
-                  Looks like you're not part of any groups yet {"\n"}Click the "+" button to create a group
-              </Text>
-              </View>
-            )}
-        </ScrollView>
+            {/* unpinned groups */}
+            {this.props.groups.userGroups.length !== 0 ? (
+              <View style={{marginBottom:10}}>{this.showUnpinnedGroups(this.props.groups.userGroups)}</View>
+            ) : (
+                <View style={styles.emptyFeed}>
+                  <Text
+                    style={{ textAlign: "center", fontSize: 16, fontFamily: "HindSiliguri-Regular" }}
+                  >
+                    Looks like you're not part of any groups yet {"\n"}Click the "+" button to create a group
+                </Text>
+                </View>
+              )}
+          </ScrollView>
 
-        {/* create new Group */}
-        <AddButton onPress={() => navigate("GroupsForm")} />
-      </View>
+          {/* create new Group */}
+          <AddButton onPress={() => navigate("GroupsForm")} />
+        </View>
+      }
+    </KeyboardShift>
     );
   }
 }
