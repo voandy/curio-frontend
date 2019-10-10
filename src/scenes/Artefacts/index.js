@@ -45,32 +45,30 @@ const newArtefact = {
 };
 
 class Artefacts extends Component {
-  // Navbar details
-  static navigationOptions = {
-    header: null
-  };
+  constructor(props) {
+    super(props);
 
-  // local state
-  state = {
-    newArtefact: {
-      ...newArtefact,
-      userId: this.props.auth.user.id
-    },
-    isModalVisible: false,
-    loading: false,
-    refreshing: false
-  };
+    this.state = {
+      newArtefact: {
+        ...newArtefact,
+        userId: this.props.auth.user.id
+      },
+      isModalVisible: false,
+      loading: false,
+      refreshing: false
+    }
+  }
 
   // Nav bar details
   static navigationOptions = {
     header: null
   };
 
-  // update selectedArtefact when it has already been changed
-  componentWillUpdate(nextProps) {
-    if (
-      this.props.artefacts.userArtefacts !== nextProps.artefacts.userArtefacts
-    ) {
+  componentDidUpdate(prevProps) {
+    
+    // update selectedArtefact when it has already been changed
+    if (Object.keys(prevProps.artefacts.userArtefacts).length !== Object.keys(this.props.artefacts.userArtefacts).length) {
+
       // reload userArtefacts to update userArtefacts in redux state
       this.props.getUserArtefacts(this.props.auth.user.id);
     }

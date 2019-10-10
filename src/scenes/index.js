@@ -43,26 +43,6 @@ class Scenes extends Component {
       const { user } = this.props.auth;
 
       // get user data and artefacts
-      await this.props.getUserData(user.id);
-      await this.props.getUserArtefacts(user.id);
-      await this.props.getUserGroups(user.id);
-      await this.props.getUserNotifications(user.id);
-
-      // post user's expo-push-token to backend if haven't already
-      registerForPushNotificationsAsync(user.id);
-    }
-  }
-
-  // Temporary fix to retrieve user, groups and artefacts data
-  // when after a user logs in
-  componentWillUpdate(nextProps) {
-    const previousUser = this.props.auth.user;
-    const user = nextProps.auth.user;
-    if (
-      Object.keys(previousUser).length === 0 &&
-      Object.keys(user).length > 0
-    ) {
-      const { user } = nextProps.auth;
       this.props.getUserData(user.id);
       this.props.getUserArtefacts(user.id);
       this.props.getUserGroups(user.id);
