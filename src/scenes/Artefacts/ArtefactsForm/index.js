@@ -140,8 +140,7 @@ class ArtefactsForm extends Component {
     // wait for user to pick an image
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 4]
+      allowsEditing: true
     });
     // set imageURI in local state
     if (!result.cancelled) {

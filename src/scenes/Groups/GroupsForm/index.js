@@ -83,8 +83,7 @@ class GroupsForm extends Component {
     // obtain image
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 4]
+      allowsEditing: true
     });
 
     // set imageURI in local state
