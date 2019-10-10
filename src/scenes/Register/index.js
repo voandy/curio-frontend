@@ -8,10 +8,13 @@ import {
   deviceHeigthDimension as hp,
   deviceWidthDimension as wd
 } from "../../utils/responsiveDesign";
+
 // import manager to manage register stage
 import RegisterManager from "./registerManager";
 // import the loader modal to help show loading process
 import ActivityLoaderModal from "../../component/ActivityLoaderModal";
+// adjust keyboards to prevent sreen blockage
+import KeyboardShift from "../../component/componentHelpers/KeyboardShift";
 
 class Register extends Component {
   state = {
@@ -53,35 +56,39 @@ class Register extends Component {
         // navigate user to Welcome page
         navigate("Welcome");
       })
-      // error with logging in the user
+        // error with logging in the user
+        .catch(err => {
+          this.setLoading(false);
+          // log error
+          console.log("At Registration: " + err);
+        });
+    })
+      // failed to register
       .catch(err => {
         this.setLoading(false);
         // log error
-        console.log("At Registration: " + err);
+        console.log(err);
       });
-    })
-    // failed to register
-    .catch(err => {
-      this.setLoading(false);
-      // log error
-      console.log(err);
-    });
   };
 
   render() {
     return (
-      <View style={styles.container}>
-        {/* loading modal window */}
-        <ActivityLoaderModal loading={this.state.loading} />
-        {/* heading */}
-        <Text style={styles.titleText}> Welcome, </Text>
-        <Text style={styles.subTitleText}> Enter your details to signup. </Text>
+      <KeyboardShift>
+        {() => (
+          <View style={styles.container}>
+            {/* loading modal window */}
+            <ActivityLoaderModal loading={this.state.loading} />
+            {/* heading */}
+            <Text style={styles.titleText}> Welcome, </Text>
+            <Text style={styles.subTitleText}> Enter your details to signup. </Text>
 
-        {/* main card view */}
-        <View style={styles.card}>
-          <RegisterManager onSubmit={this.onSubmit.bind(this)} />
-        </View>
-      </View>
+            {/* main card view */}
+            <View style={styles.card}>
+              <RegisterManager onSubmit={this.onSubmit.bind(this)} />
+            </View>
+          </View>
+        )}
+      </KeyboardShift>
     );
   }
 }

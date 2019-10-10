@@ -70,7 +70,7 @@ class Profile extends Component {
 
     return (
       <View style={styles.container}>
-        <SimpleHeader title="Profile" />
+        <SimpleHeader title="Profile" showSearch={false}/>
 
         {/* scrollable area for CONTENT */}
         <ScrollView

@@ -21,6 +21,7 @@ import {
 import CardCarousel from "../../component/CardCarousel";
 import CardGroup from "../../component/CardGroup";
 import HeaderSearch from "../../component/HeaderSearch";
+import SimpleHeader from "../../component/SimpleHeader";
 import AddButton from "../../component/AddButton";
 import GroupModal from "../../component/GroupModal";
 import KeyboardShift from "../../component/componentHelpers/KeyboardShift";

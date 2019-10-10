@@ -11,7 +11,6 @@ import {
   TouchableOpacity,
   Image
 } from "react-native";
-import * as _ from "underscore";
 
 // custom components
 import SimpleHeader from "../../component/SimpleHeader";
@@ -148,7 +147,7 @@ class Artefacts extends Component {
     let artefactKey = 0;
 
     // sort array based on date obtained (from earliest to oldest)
-    artefacts.sort(function(a, b) {
+    artefacts.sort(function (a, b) {
       return new Date(b.datePosted) - new Date(a.datePosted);
     });
     // create ArtefactFeed object out of artefact and push it into artefactFeeds array
@@ -209,7 +208,12 @@ class Artefacts extends Component {
         {/* loading modal window */}
         <ActivityLoaderModal loading={this.state.loading} />
         {/* header */}
-        <SimpleHeader title="My Artefacts" />
+        <SimpleHeader
+          title="My Artefacts"
+          showTab={true}
+          tab1="Private"
+          tab2="Public"
+          onSubmit={() => navigate("GeneralSearch")} />
         {/* scrollable area for CONTENT */}
         <ScrollView
           showsVerticalScrollIndicator={false}
@@ -227,19 +231,19 @@ class Artefacts extends Component {
               {this.showArtefacts(this.props.artefacts.userArtefacts)}
             </View>
           ) : (
-            <View style={styles.emptyFeed}>
-              <Text
-                style={{ fontSize: 16, fontFamily: "HindSiliguri-Regular" }}
-              >
-                Looks like you haven't posted any artefacts
+              <View style={styles.emptyFeed}>
+                <Text
+                  style={{ fontSize: 16, fontFamily: "HindSiliguri-Regular" }}
+                >
+                  Looks like you haven't posted any artefacts
               </Text>
-              <Text
-                style={{ fontSize: 16, fontFamily: "HindSiliguri-Regular" }}
-              >
-                Click the "+" button to add some
+                <Text
+                  style={{ fontSize: 16, fontFamily: "HindSiliguri-Regular" }}
+                >
+                  Click the "+" button to add some
               </Text>
-            </View>
-          )}
+              </View>
+            )}
         </ScrollView>
 
         {/* create new Group */}
