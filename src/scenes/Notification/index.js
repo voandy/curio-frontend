@@ -68,12 +68,8 @@ class Notification extends Component {
   // helper function to navigate to selected artefact page
   navigateToArtefactNotif = async artefactId => {
     const { navigate } = this.props.navigation;
-    // get the selected artefact information
-    await this.props.getSelectedArtefact(artefactId);
-    // get the selected artefact comments
-    await this.props.getArtefactComments(artefactId);
-    // redirect user
-    navigate("SelectedArtefact");
+    // navigate to selected artefact
+    navigate("SelectedArtefact", { artefactId });
   };
 
   // refresh page
