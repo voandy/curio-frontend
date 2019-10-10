@@ -44,7 +44,12 @@ class NotificationFeed extends Component {
           <View style={styles.card}>
             {/* Image  */}
             <View style={styles.picPlaceholder}>
-              <Image style={styles.photo} source={{ uri: thumbnailURL }} />
+              <Image
+                style={styles.photo}
+                source={{ uri: thumbnailURL }}
+                resizeMethod="resize"
+                resizeMode="contain"
+              />
             </View>
             {/* Message */}
             <View style={styles.notificationPlaceholder}>
@@ -89,7 +94,8 @@ const styles = StyleSheet.create({
 
   photo: {
     width: wd(0.17),
-    height: wd(0.17)
+    height: wd(0.17),
+    borderRadius: wd(0.17)
   },
 
   notificationPlaceholder: {
