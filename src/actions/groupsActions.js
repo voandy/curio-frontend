@@ -15,14 +15,15 @@ import {
   getGroupAllMembersAPIRequest,
   editGroupAPIRequest,
   pinGroupAPIRequest,
-  unpinGroupAPIRequest
+  unpinGroupAPIRequest,
+  deleteGroupAPIRequest
 } from "../utils/APIHelpers/groupAPIHelper";
 
 import { getArtefactCommentsAPIRequest } from "../utils/APIHelpers/artefactAPIHelpers";
 
 import { uploadImageToGCS } from "../utils/imageUpload";
 
-// // get groups of user based on userId
+// get groups of user based on userId
 export const getUserGroups = userId => dispatch => {
   return new Promise((resolve, reject) => {
     getUserGroupsAPIRequest(userId)
@@ -158,6 +159,21 @@ export const getSelectedGroupArtefactComments = artefactId => dispatch => {
       // failure
       .catch(err => {
         console.log("groupActions: " + err);
+        reject(err);
+      });
+  });
+};
+
+// delete selected artefact
+export const deleteSelectedGroup = groupId => dispatch => {
+  return new Promise((resolve, reject) => {
+    deleteGroupAPIRequest(groupId)
+      .then(res => {
+        // dispatch(getUserGroups(userId));
+        resolve(res);
+      })
+      .catch(err => {
+        console.log("Failed to delete group" + err);
         reject(err);
       });
   });

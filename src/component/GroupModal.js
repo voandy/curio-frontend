@@ -120,7 +120,7 @@ class GroupModal extends Component {
                     </View>
 
                     {/* create group button */}
-                    <TouchableOpacity onPress={this.props.post} style={styles.button}>
+                    <TouchableOpacity onPress={this.props.onSubmit} style={styles.button}>
                         <Text style={styles.buttonText}>Create Group</Text>
                     </TouchableOpacity>
                 </View>

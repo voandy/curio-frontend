@@ -39,30 +39,11 @@ const { registerForPushNotificationsAsync } = require("../services/notification/
 class Scenes extends Component {
   async componentDidMount() {
     if (this.props.auth.isAuthenticated) {
+
       // get user authentication data
       const { user } = this.props.auth;
 
       // get user data and artefacts
-      await this.props.getUserData(user.id);
-      await this.props.getUserArtefacts(user.id);
-      await this.props.getUserGroups(user.id);
-      await this.props.getUserNotifications(user.id);
-
-      // post user's expo-push-token to backend if haven't already
-      registerForPushNotificationsAsync(user.id);
-    }
-  }
-
-  // Temporary fix to retrieve user, groups and artefacts data
-  // when after a user logs in
-  componentWillUpdate(nextProps) {
-    const previousUser = this.props.auth.user;
-    const user = nextProps.auth.user;
-    if (
-      Object.keys(previousUser).length === 0 &&
-      Object.keys(user).length > 0
-    ) {
-      const { user } = nextProps.auth;
       this.props.getUserData(user.id);
       this.props.getUserArtefacts(user.id);
       this.props.getUserGroups(user.id);
@@ -91,13 +72,15 @@ const GroupStack = createStackNavigator({
 const ArtefactStack = createStackNavigator({
   Artefacts: { screen: ArtefactsScreen },
   ArtefactsForm: { screen: ArtefactsFormScreen },
-  SelectedArtefact: { screen: SelectedArtefactScreen }
+  SelectedArtefact: { screen: SelectedArtefactScreen },
+  GeneralSearch: { screen: GeneralSearchScreen },
 });
 
 const NotificationStack = createStackNavigator({
   Notification: { screen: NotificationScreen },
   SelectedArtefact: { screen: SelectedArtefactScreen },
-  SelectedGroup: { screen: SelectedGroupScreen }
+  SelectedGroup: { screen: SelectedGroupScreen },
+  GeneralSearch: { screen: GeneralSearchScreen },
 });
 
 const ProfileStack = createStackNavigator({

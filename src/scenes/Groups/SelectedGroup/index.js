@@ -9,7 +9,8 @@ import {
   StatusBar,
   View,
   Text,
-  Image
+  Image,
+  Alert,
 } from "react-native";
 
 // import redux actions for groups
@@ -19,15 +20,14 @@ import {
   clearSelectedGroup,
   getSelectedGroupAllArtefacts,
   getSelectedGroupAllMembers,
-  getSelectedGroupArtefactComments
+  getSelectedGroupArtefactComments,
+  deleteSelectedGroup,
 } from "../../../actions/groupsActions";
 
 // custom component
 import UserIcon from "../../../component/UserIcon";
 import AddButton from "../../../component/AddButton";
 import PostFeed from "../../../component/PostFeed";
-import Line from "../../../component/Line";
-import Comments from "../../../component/Comments";
 
 // Custom respondsive design component
 import {
@@ -116,7 +116,6 @@ class SelectedGroup extends Component {
 
   // return all group artefacts components
   showGroupArtefacts = groupArtefacts => {
-    console.log(groupArtefacts[0]);
     // transform each artefact to a PostFeed component
     // prettier-ignore
     const groupArtefactsComponent = groupArtefacts.map(artefact => (
@@ -143,6 +142,48 @@ class SelectedGroup extends Component {
     navigate("SelectedArtefact", { artefactId });
   };
 
+  // toggle the modal for group deletion
+  toggleDeleteModal = async () => {
+    const { navigate } = this.props.navigation;
+
+    Alert.alert(
+      "Delete Group",
+      "Are you sure you want to delete this group?",
+      [
+        {
+          text: "No",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel"
+        },
+        {
+          text: "Yes",
+          onPress: async () => {
+            // show user the loading modal
+            // this.setLoading(true);
+
+            // // remove selected artefact from redux states
+            // await this.props
+            //   .removeSelectedArtefact(this.props.artefacts.selectedArtefact._id)
+            //   .then(() => {
+            //     // stop showing user the loading modal
+            //     this.setLoading(false);
+
+            //     // navigate to artefacts
+            //     navigate("Artefacts");
+            //   })
+            //   .catch(err => {
+            //     // stop showing user the loading modal
+            //     this.setLoading(false);
+            //     // show error
+            //     console.log(err.response.data);
+            //   });
+          }
+        }
+      ],
+      { cancelable: false }
+    );
+  };
+
   // post new artefact to the backend
   onSubmit = async () => {
     // show user the loading modal
@@ -162,6 +203,48 @@ class SelectedGroup extends Component {
         // show error
         console.log(err.response.data);
       });
+  };
+
+  // toggle the modal for artefact deletion
+  toggleDeleteModal = async () => {
+    const { navigate } = this.props.navigation;
+
+    Alert.alert(
+      "Delete Artefact",
+      "Are you sure you want to delete your artefact?",
+      [
+        {
+          text: "No",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel"
+        },
+        {
+          text: "Yes",
+          onPress: async () => {
+            // show user the loading modal
+            this.setLoading(true);
+            console.log("deleting group");
+            // remove selected artefact from redux states
+            await this.props
+              .deleteSelectedGroup(this.props.groups.selectedGroup._id)
+              .then(() => {
+                // stop showing user the loading modal
+                this.setLoading(false);
+
+                // navigate to groups
+                navigate("Groups");
+              })
+              .catch(err => {
+                // stop showing user the loading modal
+                this.setLoading(false);
+                // show error
+                console.log(err.response.data);
+              });
+          }
+        }
+      ],
+      { cancelable: false }
+    );
   };
 
   render() {
@@ -256,7 +339,7 @@ class SelectedGroup extends Component {
           isModalVisible={this.state.isUpdateModalVisible}
           toggleModal={this.toggleUpdateModal}
           newGroup={this.state.selectedGroup}
-          post={this.onSubmit.bind(this)}
+          onSubmit={this.onSubmit.bind(this)}
           onNewGroupChange={this.setSelectedGroup.bind(this)}
         />
       </View>
@@ -352,6 +435,7 @@ export default connect(
     clearSelectedGroup,
     getSelectedGroupAllArtefacts,
     getSelectedGroupAllMembers,
-    getSelectedGroupArtefactComments
+    getSelectedGroupArtefactComments,
+    deleteSelectedGroup
   }
 )(SelectedGroup);

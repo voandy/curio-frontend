@@ -17,8 +17,10 @@ import { createNewGroup } from "../../actions/groupsActions";
 import CardCarousel from "../../component/CardCarousel";
 import CardGroup from "../../component/CardGroup";
 import HeaderSearch from "../../component/HeaderSearch";
+import SimpleHeader from "../../component/SimpleHeader";
 import AddButton from "../../component/AddButton";
 import GroupModal from "../../component/GroupModal";
+import KeyboardShift from "../../component/componentHelpers/KeyboardShift";
 
 // Custom respondsive design component
 import {
@@ -145,55 +147,59 @@ class Groups extends Component {
     const { navigate } = this.props.navigation;
 
     return (
-      <View style={styles.container}>
-        {/* <Header tab1="Public" tab2="Private" onPress={()=> navigate("GeneralSearch")}/> */}
-        <HeaderSearch
-          tab1="Public"
-          tab2="Private"
-          onSubmit={() => navigate("GeneralSearch")}
-        />
+      <KeyboardShift>
+        {() => (
+          <View style={styles.container}>
+            {/* <Header tab1="Public" tab2="Private" onPress={()=> navigate("GeneralSearch")}/> */}
+            <HeaderSearch
+              tab1="Public"
+              tab2="Private"
+              onSubmit={() => navigate("GeneralSearch")}
+            />
 
-        {/* scrollable area for CONTENT */}
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          scrollEventThrottle={16}
-          style={{ backgroundColor: gray }}
-        >
-          {/* carousel pinned groups */}
-          <View style={{ height: wd(0.52), backgroundColor: "white" }}>
+            {/* scrollable area for CONTENT */}
             <ScrollView
-              horizontal={true}
-              showsHorizontalScrollIndicator={false}
-              decelerationRate={0.8}
-              snapToAlignment={"center"}
-              snapToInterval={Dimensions.get("window").width}
+              showsVerticalScrollIndicator={false}
+              scrollEventThrottle={16}
+              style={{ backgroundColor: gray }}
             >
-              {this.showPinnedGroups()}
+              {/* carousel pinned groups */}
+              <View style={{ height: wd(0.52), backgroundColor: "white" }}>
+                <ScrollView
+                  horizontal={true}
+                  showsHorizontalScrollIndicator={false}
+                  decelerationRate={0.8}
+                  snapToAlignment={"center"}
+                  snapToInterval={Dimensions.get("window").width}
+                >
+                  {this.showPinnedGroups()}
+                </ScrollView>
+              </View>
+
+              {/* unpinned groups */}
+              {this.props.groups.userGroups.length !== 0 ? (
+                <View style={{ marginBottom: 10 }}>{this.showGroups()}</View>
+              ) : (
+                <View style={styles.emptyFeed}>
+                  <Text
+                    style={{
+                      textAlign: "center",
+                      fontSize: 16,
+                      fontFamily: "HindSiliguri-Regular"
+                    }}
+                  >
+                    Looks like you're not part of any groups yet {"\n"}Click the
+                    "+" button to create a group
+                  </Text>
+                </View>
+              )}
             </ScrollView>
+
+            {/* create new Group */}
+            <AddButton onPress={() => navigate("GroupsForm")} />
           </View>
-
-          {/* unpinned groups */}
-          {this.props.groups.userGroups.length !== 0 ? (
-            <View style={{ marginBottom: 10 }}>{this.showGroups()}</View>
-          ) : (
-            <View style={styles.emptyFeed}>
-              <Text
-                style={{
-                  textAlign: "center",
-                  fontSize: 16,
-                  fontFamily: "HindSiliguri-Regular"
-                }}
-              >
-                Looks like you're not part of any groups yet {"\n"}Click the "+"
-                button to create a group
-              </Text>
-            </View>
-          )}
-        </ScrollView>
-
-        {/* create new Group */}
-        <AddButton onPress={() => navigate("GroupsForm")} />
-      </View>
+        )}
+      </KeyboardShift>
     );
   }
 }
