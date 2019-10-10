@@ -26,18 +26,23 @@ class UserDetail extends Component {
     return (
       // TODO link to user profile
       // <TouchableOpacity onPress={} style={styles.container}>
+      // show user profile picture
       <TouchableOpacity style={styles.container}>
-        <Image style={styles.photo} source={this.props.image} />
+        <Image
+          style={styles.photo}
+          source={this.props.image}
+          resizeMethod="resize"
+          resizeMode="contain"
+        />
 
-        {/* user details */}
+        {/* user name */}
         <View style={styles.userDetailPlaceholder}>
           <View>
             <Text style={styles.userName}>{this.props.userName}</Text>
           </View>
 
+          {/* Display readable date added */}
           <View>
-            {/* TODO set time dynamically */}
-            {/* <Text style={styles.timeTitle}> {Moment(dt).format("H")} hours ago </Text> */}
             <Text style={styles.time}>{readableDateAdded}</Text>
           </View>
         </View>
@@ -56,7 +61,7 @@ const styles = StyleSheet.create({
   },
 
   photo: {
-    borderRadius: wd(0.1) / 2,
+    borderRadius: wd(0.1),
     width: wd(0.1),
     height: wd(0.1),
     marginRight: wd(0.06)
