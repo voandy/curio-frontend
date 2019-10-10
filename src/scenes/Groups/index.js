@@ -92,69 +92,39 @@ class Groups extends Component {
   };
 
   // show groups that are unpinned by user
-  showUnpinnedGroups = groups => {
-    let unpinnedGroups = groups.concat();
-    let cardGroupRows = [];
-    let cardGroups = [];
-    let rowKey = 0;
-    let groupKey = 0;
-
-    // remove user's pinned groups
-    for (var i = 0; i < unpinnedGroups.length; i++) {
-      // console.log("cover photo is", unpinnedGroups[i].coverPhoto);
-    }
-
+  showGroups = groups => {
     // sort array based on date obtained (from earliest to oldest)
-    unpinnedGroups.sort(function(a, b) {
+    groups.sort(function(a, b) {
       return new Date(b.dateCreated) - new Date(a.dateCreated);
     });
-
-    // create CardGroup object out of group and push it into cardGroups array
-    for (var i = 0; i < unpinnedGroups.length; i++) {
-      const groupId = unpinnedGroups[i].details._id;
-      const text = unpinnedGroups[i].details.title;
-      const imageURI = unpinnedGroups[i].details.coverPhoto;
-
-      cardGroups.push(
-        // DOES NOT WORK FOR NOW!!!
-        // <CardGroup
-        //   onPress={()=>this.clickGroup(groupId)}
-        //   key={groupKey}
-        //   groupId={groupId}
-        //   text={text}
-        //   image={{ uri: imageURI }}
-        // />
-
-        // Temporary CardGroup
-        <View key={groupKey} style={styles.card}>
-          <TouchableOpacity onPress={() => this.clickGroup(groupId)}>
-            <View style={styles.picPlaceholder}>
-              <Image style={[styles.photo]} source={{ uri: imageURI }} />
-            </View>
-            <View style={styles.textPlaceholder}>
-              <Text style={[styles.title, styles.font]}>{text}</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-      );
-      groupKey++;
-
-      // create a new row after the previous row has been filled with 2 groups and fill the previous row into cardGroupRows
-      if (
-        unpinnedGroups.length === 1 ||
-        cardGroups.length === 2 ||
-        (i !== 0 && i === unpinnedGroups.length - 1)
-      ) {
-        cardGroupRows.push(
-          <View style={styles.feed} key={rowKey}>
-            {cardGroups}
+    // tranform each group element into a component
+    const groupComponent = groups.map(group => (
+      <View key={group.groupId} style={styles.card}>
+        <TouchableOpacity onPress={() => this.clickGroup(group.details._id)}>
+          <View style={styles.picPlaceholder}>
+            <Image
+              style={[styles.photo]}
+              source={{ uri: group.details.coverPhoto }}
+            />
           </View>
-        );
-        cardGroups = [];
-        rowKey++;
-      }
-    }
-    return <>{cardGroupRows}</>;
+          <View style={styles.textPlaceholder}>
+            <Text style={[styles.title, styles.font]}>
+              {group.details.title}
+            </Text>
+          </View>
+        </TouchableOpacity>
+      </View>
+    ));
+    // prep a temporary array for row-by-row grouping logic
+    //prettier-ignore
+    var tempMapArray = [...Array(groupComponent.length).keys()].filter(n => !(n % 2))
+    // put group component into row-by-row card groups
+    const cardGroupComponent = tempMapArray.map(n => (
+      <View style={styles.feed} key={n}>
+        {[groupComponent[n], groupComponent[n + 1]]}
+      </View>
+    ));
+    return cardGroupComponent;
   };
 
   render() {
@@ -202,7 +172,7 @@ class Groups extends Component {
           {/* unpinned groups */}
           {this.props.groups.userGroups.length !== 0 ? (
             <View style={{ marginBottom: 10 }}>
-              {this.showUnpinnedGroups(this.props.groups.userGroups)}
+              {this.showGroups(this.props.groups.userGroups)}
             </View>
           ) : (
             <View style={styles.emptyFeed}>
