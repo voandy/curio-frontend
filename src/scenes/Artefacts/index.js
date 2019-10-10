@@ -11,7 +11,6 @@ import {
   TouchableOpacity,
   Image
 } from "react-native";
-import * as _ from "underscore";
 
 // custom components
 import SimpleHeader from "../../component/SimpleHeader";
