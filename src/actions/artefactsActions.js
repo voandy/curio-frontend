@@ -88,7 +88,18 @@ export const createNewArtefacts = artefact => dispatch => {
         // send a post API request to backend to register user
         createArtefactAPIRequest(newArtefact)
           .then(res => {
-            resolve(res);
+              // get all artefacts posted by user
+              getUserArtefactsAPIRequest(newArtefact.userId)
+              // success
+              .then(res => {
+                dispatch(setUserArtefacts(res.data));
+                resolve(res);
+              })
+              // failure
+              .catch(err => {
+                console.log("artefactActions: " + err);
+                reject(err);
+              });
           })
           .catch(err => {
             console.log("Failed to create new artefact: " + err);

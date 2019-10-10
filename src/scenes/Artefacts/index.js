@@ -11,6 +11,8 @@ import {
   TouchableOpacity,
   Image
 } from "react-native";
+import * as _ from "underscore";
+
 // custom components
 import SimpleHeader from "../../component/SimpleHeader";
 import ArtefactFeed from "../../component/ArtefactFeed";
@@ -65,10 +67,9 @@ class Artefacts extends Component {
   };
 
   componentDidUpdate(prevProps) {
-    
-    // update selectedArtefact when it has already been changed
-    if (Object.keys(prevProps.artefacts.userArtefacts).length !== Object.keys(this.props.artefacts.userArtefacts).length) {
 
+    // update selectedArtefacts when an artefact has been deleted
+    if (prevProps.artefacts.userArtefacts.length !== this.props.artefacts.userArtefacts.length + 1) {
       // reload userArtefacts to update userArtefacts in redux state
       this.props.getUserArtefacts(this.props.auth.user.id);
     }
@@ -121,6 +122,7 @@ class Artefacts extends Component {
         // close loading modal
         this.toggleModal();
         this.resetNewArtefact();
+        
       })
       .catch(err => {
         // stop showing user the loading modal
