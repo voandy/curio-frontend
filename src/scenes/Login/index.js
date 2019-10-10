@@ -16,6 +16,8 @@ import MyButton from "../../component/MyButton";
 import { setToBottom } from "../../utils/responsiveDesign";
 // import the loader modal to help show loading process
 import ActivityLoaderModal from "../../component/ActivityLoaderModal";
+// adjust keyboards to prevent sreen blockage
+import KeyboardShift from "../../component/componentHelpers/KeyboardShift";
 
 const initialState = {
   email: "",
@@ -93,7 +95,7 @@ class Login extends Component {
       .catch(err => {
         this.setLoading(false);
         // set state to display error
-        this.setState({...this.state, errors: err.response.data})
+        this.setState({ ...this.state, errors: err.response.data })
       });
   };
 
@@ -101,52 +103,56 @@ class Login extends Component {
     const { errors } = this.state;
 
     return (
-      <View style={styles.container}>
-        {/* loading modal window */}
-        <ActivityLoaderModal loading={this.state.loading} />
-        {/* heading */}
-        <Text style={styles.titleText}> Alrighty, </Text>
-        <Text style={styles.subTitleText}> Enter your details to login. </Text>
-        {/* main card view */}
-        <View style={styles.card}>
-          {/* Email */}
-          <Text style={styles.inputText}> EMAIL / USERNAME </Text>
-          <TextInput
-            style={styles.input}
-            autoCapitalize="none"
-            placeholderTextColor="#454545"
-            onChangeText={val => this.onChangeText("email", val)}
-          />
-          <Text style={styles.error}>
-            {errors.email}
-            {errors.emailnotfound}
-          </Text>
-          {/* Password */}
-          <Text style={styles.inputText}> PASSWORD </Text>
-          <TextInput
-            style={styles.input}
-            secureTextEntry={true}
-            autoCapitalize="none"
-            placeholderTextColor="#454545"
-            onChangeText={val => this.onChangeText("password", val)}
-          />
-          {/* error messages, if any */}
-          <Text style={styles.error}>
-            {errors.password}
-            {errors.passwordincorrect}
-          </Text>
-          {/* forgot password */}
-          <TouchableOpacity style={styles.forgot}>
-            <Text style={styles.forgotText}>Forgot Password?</Text>
-          </TouchableOpacity>
-          {/* login button */}
-          {setToBottom(
-            <View style={{ marginBottom: 30 }}>
-              <MyButton onPress={this.onSubmit} text="LOGIN" />
+      <KeyboardShift>
+        {() => (
+          <View style={styles.container}>
+            {/* loading modal window */}
+            <ActivityLoaderModal loading={this.state.loading} />
+            {/* heading */}
+            <Text style={styles.titleText}> Alrighty, </Text>
+            <Text style={styles.subTitleText}> Enter your details to login. </Text>
+            {/* main card view */}
+            <View style={styles.card}>
+              {/* Email */}
+              <Text style={styles.inputText}> EMAIL / USERNAME </Text>
+              <TextInput
+                style={styles.input}
+                autoCapitalize="none"
+                placeholderTextColor="#454545"
+                onChangeText={val => this.onChangeText("email", val)}
+              />
+              <Text style={styles.error}>
+                {errors.email}
+                {errors.emailnotfound}
+              </Text>
+              {/* Password */}
+              <Text style={styles.inputText}> PASSWORD </Text>
+              <TextInput
+                style={styles.input}
+                secureTextEntry={true}
+                autoCapitalize="none"
+                placeholderTextColor="#454545"
+                onChangeText={val => this.onChangeText("password", val)}
+              />
+              {/* error messages, if any */}
+              <Text style={styles.error}>
+                {errors.password}
+                {errors.passwordincorrect}
+              </Text>
+              {/* forgot password */}
+              <TouchableOpacity style={styles.forgot}>
+                <Text style={styles.forgotText}>Forgot Password?</Text>
+              </TouchableOpacity>
+              {/* login button */}
+              {setToBottom(
+                <View style={{ marginBottom: 30 }}>
+                  <MyButton onPress={this.onSubmit} text="LOGIN" />
+                </View>
+              )}
             </View>
-          )}
-        </View>
-      </View>
+          </View>
+        )}
+      </KeyboardShift>
     );
   }
 }

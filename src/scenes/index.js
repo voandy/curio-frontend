@@ -91,13 +91,15 @@ const GroupStack = createStackNavigator({
 const ArtefactStack = createStackNavigator({
   Artefacts: { screen: ArtefactsScreen },
   ArtefactsForm: { screen: ArtefactsFormScreen },
-  SelectedArtefact: { screen: SelectedArtefactScreen }
+  SelectedArtefact: { screen: SelectedArtefactScreen },
+  GeneralSearch: { screen: GeneralSearchScreen },
 });
 
 const NotificationStack = createStackNavigator({
   Notification: { screen: NotificationScreen },
   SelectedArtefact: { screen: SelectedArtefactScreen },
-  SelectedGroup: { screen: SelectedGroupScreen }
+  SelectedGroup: { screen: SelectedGroupScreen },
+  GeneralSearch: { screen: GeneralSearchScreen },
 });
 
 const ProfileStack = createStackNavigator({
