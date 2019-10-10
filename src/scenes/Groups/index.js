@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { 
-  View, 
-  StyleSheet, 
-  ScrollView, 
-  Dimensions, 
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  Dimensions,
   Text,
   TouchableOpacity,
   Image,
@@ -13,10 +13,7 @@ import {
 } from "react-native";
 
 // import redux actions for groups
-import { 
-  createNewGroup, 
-  editSelectedGroup,
-} from "../../actions/groupsActions";
+import { createNewGroup } from "../../actions/groupsActions";
 
 // custom components
 import CardCarousel from "../../component/CardCarousel";
@@ -89,9 +86,9 @@ class Groups extends Component {
   };
 
   // click a specific group on the Groups scene
-  clickGroup = async (groupId) => {
+  clickGroup = async groupId => {
     const { navigate } = this.props.navigation;
-    navigate('SelectedGroup', { groupId });
+    navigate("SelectedGroup", { groupId });
   };
 
   // show groups that are unpinned by user
@@ -108,7 +105,7 @@ class Groups extends Component {
     }
 
     // sort array based on date obtained (from earliest to oldest)
-    unpinnedGroups.sort(function (a, b) {
+    unpinnedGroups.sort(function(a, b) {
       return new Date(b.dateCreated) - new Date(a.dateCreated);
     });
 
@@ -131,13 +128,12 @@ class Groups extends Component {
         // Temporary CardGroup
         <View key={groupKey} style={styles.card}>
           <TouchableOpacity onPress={() => this.clickGroup(groupId)}>
-              <View style={styles.picPlaceholder}>
-                  <Image style={[styles.photo]} source={{ uri: imageURI }} />
-              </View>
-              <View style={styles.textPlaceholder}>
-                  <Text style={[styles.title, styles.font]}>{text}</Text>
-
-              </View>
+            <View style={styles.picPlaceholder}>
+              <Image style={[styles.photo]} source={{ uri: imageURI }} />
+            </View>
+            <View style={styles.textPlaceholder}>
+              <Text style={[styles.title, styles.font]}>{text}</Text>
+            </View>
           </TouchableOpacity>
         </View>
       );
@@ -167,7 +163,11 @@ class Groups extends Component {
     return (
       <View style={styles.container}>
         {/* <Header tab1="Public" tab2="Private" onPress={()=> navigate("GeneralSearch")}/> */}
-        <HeaderSearch tab1="Public" tab2="Private" onSubmit={()=> navigate("GeneralSearch")}/>
+        <HeaderSearch
+          tab1="Public"
+          tab2="Private"
+          onSubmit={() => navigate("GeneralSearch")}
+        />
 
         {/* scrollable area for CONTENT */}
         <ScrollView
@@ -201,16 +201,23 @@ class Groups extends Component {
 
           {/* unpinned groups */}
           {this.props.groups.userGroups.length !== 0 ? (
-            <View style={{marginBottom:10}}>{this.showUnpinnedGroups(this.props.groups.userGroups)}</View>
+            <View style={{ marginBottom: 10 }}>
+              {this.showUnpinnedGroups(this.props.groups.userGroups)}
+            </View>
           ) : (
-              <View style={styles.emptyFeed}>
-                <Text
-                  style={{ textAlign: "center", fontSize: 16, fontFamily: "HindSiliguri-Regular" }}
-                >
-                  Looks like you're not part of any groups yet {"\n"}Click the "+" button to create a group
+            <View style={styles.emptyFeed}>
+              <Text
+                style={{
+                  textAlign: "center",
+                  fontSize: 16,
+                  fontFamily: "HindSiliguri-Regular"
+                }}
+              >
+                Looks like you're not part of any groups yet {"\n"}Click the "+"
+                button to create a group
               </Text>
-              </View>
-            )}
+            </View>
+          )}
         </ScrollView>
 
         {/* create new Group */}
@@ -249,55 +256,55 @@ const styles = StyleSheet.create({
     elevation: 1,
     borderColor: "#E2E2E2",
     alignContent: "center",
-    alignItems: "center",
-},
+    alignItems: "center"
+  },
 
-font:{
+  font: {
     fontFamily: "HindSiliguri-Regular"
-},
+  },
 
-picPlaceholder: {
+  picPlaceholder: {
     flex: 0.7,
     alignItems: "center",
-    justifyContent: "center",
-},
+    justifyContent: "center"
+  },
 
-photo: {
+  photo: {
     width: Dimensions.get("window").width * 0.435,
     height: wd(0.35),
     marginTop: 10,
     borderTopLeftRadius: 15,
-    borderTopRightRadius: 15,
-},
+    borderTopRightRadius: 15
+  },
 
-textPlaceholder: {
+  textPlaceholder: {
     flex: 0.3,
-    margin: 5,
-},
+    margin: 5
+  },
 
-title: {
+  title: {
     flex: 0.4,
     marginHorizontal: 5,
-    marginTop: 3,
-},
+    marginTop: 3
+  },
 
-userProfile: {
+  userProfile: {
     flex: 0.6,
     flexDirection: "row",
     alignItems: "center"
-},
+  },
 
-userProfilePic: {
+  userProfilePic: {
     width: wd(0.07),
     height: wd(0.07),
     marginHorizontal: 5
-},
+  },
 
-userName:{
+  userName: {
     color: "#939090"
-}
+  }
 
-// STYLES FOR CARD GROUP (END)
+  // STYLES FOR CARD GROUP (END)
 });
 
 Groups.propTypes = {
