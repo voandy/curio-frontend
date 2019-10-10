@@ -1,39 +1,39 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import GroupOptionButton from "../../../component/GroupOptionButton";
+import OptionButton from "../../../component/OptionButton";
 import {
   StyleSheet,
   TouchableOpacity,
-  TextInput,
   ScrollView,
   StatusBar,
   View,
   Text,
-  Image,
+  Image
 } from "react-native";
 
 // import redux actions for groups
 import {
+  getSelectedGroup,
   editSelectedGroup,
-  getSelectedGroup, 
-  getSelectedGroupAllArtefacts, 
-  getSelectedGroupAllMembers, 
-  getSelectedGroupArtefactComments,
+  clearSelectedGroup,
+  getSelectedGroupAllArtefacts,
+  getSelectedGroupAllMembers,
+  getSelectedGroupArtefactComments
 } from "../../../actions/groupsActions";
 
 // custom component
-import UserIcon from "../../../component/UserIcon"
-import AddButton from "../../../component/AddButton"
-import PostFeed from "../../../component/PostFeed"
-import Line from "../../../component/Line"
-import Comments from "../../../component/Comments"
+import UserIcon from "../../../component/UserIcon";
+import AddButton from "../../../component/AddButton";
+import PostFeed from "../../../component/PostFeed";
+import Line from "../../../component/Line";
+import Comments from "../../../component/Comments";
 
 // Custom respondsive design component
 import {
   deviceHeigthDimension as hp,
-  deviceWidthDimension as wd,
-} from "../../../utils/responsiveDesign"
+  deviceWidthDimension as wd
+} from "../../../utils/responsiveDesign";
 
 // custom components
 import GroupModal from "../../../component/GroupModal";
@@ -41,19 +41,24 @@ import GroupModal from "../../../component/GroupModal";
 class SelectedGroup extends Component {
   constructor(props) {
     super(props);
-
+    // clear redux state in case user force quits the app and reopen it
+    this.props.clearSelectedGroup();
+    // Setup initial state
     this.state = {
       selectedGroup: {
-        ...this.props.groups.selectedGroup,
-        coverPhoto: this.props.groups.selectedGroup.coverPhoto
+        ...this.props.groups.selectedGroup
       },
       isUpdateModalVisible: false,
-      loading: false,
-      artefactsComments: []
+      loading: false
     };
-
     // get all information required for the selectedGroup page
-    groupId = this.props.navigation.getParam('groupId', 'NO-GROUP-ID');
+    // get group id from the parameter passed in, get "NO-GROUP-ID" if not found
+    groupId = this.props.navigation.getParam("groupId", "NO-GROUP-ID");
+    this.getSelectedGroupData(groupId);
+  }
+
+  // get selected group data asynchronously
+  getSelectedGroupData = async (groupId) => {
     this.props.getSelectedGroup(groupId);
     this.props.getSelectedGroupAllArtefacts(groupId);
     this.props.getSelectedGroupAllMembers(groupId);
@@ -67,66 +72,43 @@ class SelectedGroup extends Component {
     }
   };
 
-  // return a row of group members 
-  showGroupMembers = groupMembers => {
-    let groupMemberFeeds = [];
-    let groupMemberKey = 0;
-
-    for (var i = 0; i < groupMembers.length; i++) {
-
-      // append group members into array
-      groupMemberFeeds.push(
-        <UserIcon key={groupMemberKey} image={{ uri: groupMembers[i].details.profilePic }} />
-      );
-      groupMemberKey++;
-    }
-    return <>{groupMemberFeeds}</>;
-  };
-
-  // return a row of group artefacts 
-  showGroupArtefacts = groupArtefacts => {
-    let groupArtefactFeeds = [];
-
-    for (var i = 0; i < groupArtefacts.length; i++) {
-
-      // append group artefacts into array
-      groupArtefactFeeds.push(
-        <PostFeed
-          key={groupArtefacts[i].artefactId}
-          // change this to user's username later
-          userName= {groupArtefacts[i].user.name}
-          title= {groupArtefacts[i].details.title}
-          // change this to user image later
-          profileImage={{ uri: groupArtefacts[i].user.profilePic}}
-          image={{ uri: groupArtefacts[i].details.images[0].URL }}
-          likesCount= {groupArtefacts[i].details.likes.length}
-          commentsCount = {0}
-        />
-      );
-    }
-
-    return <>{groupArtefactFeeds}</>;
-  };
-
-  // show group artefacts' comments
-  showGroupArtefactsComments = async (groupArtefacts) => {
-
-    // get ids of group artefacts
-    var groupArtefactIds = [];
-    for (var i = 0; i < groupArtefacts.length; i++) {
-      groupArtefactIds.push(groupArtefacts[i].artefactId);
-    }
-
-    var promises = groupArtefactIds.map(this.props.getSelectedGroupArtefactComments);
-
-    await Promise.all(promises)
-      .then(res => {
-        console.log(this.props.groups.selectedGroupArtefactsComments);
-      })
-      .catch(err => {
-        console.log(err);
-      })
+  // clear redux state on unmount (usual case of clearing state)
+  // this is needed to improve app responsiveness compared to having clearSelectedGroup
+  // in constructor alone
+  componentWillUnmount() {
+    this.props.clearSelectedGroup();
   }
+
+  // return a row of group members
+  showGroupMembers = groupMembers => {
+    // transform each member to an UserIcon component
+    //prettier-ignore
+    const groupMembersComponent = groupMembers.map(member => (
+      <UserIcon 
+        key={ member._id } 
+        image={{ uri: member.details.profilePic }} 
+      />
+    ));
+    return groupMembersComponent;
+  };
+
+  // return all group artefacts components
+  showGroupArtefacts = groupArtefacts => {
+    // transform each artefact to a PostFeed component
+    // prettier-ignore
+    const groupArtefactsComponent = groupArtefacts.map(artefact => (
+      <PostFeed
+        key={artefact.artefactId}
+        userName={artefact.user.name}
+        title={artefact.details.title}
+        profileImage={{ uri: artefact.user.profilePic }}
+        image={{ uri: artefact.details.images[0].URL }}
+        likesCount={artefact.details.likes.length}
+        commentsCount={artefact.commentCount ? artefact.commentCount : 0}
+      />
+    ));
+    return groupArtefactsComponent;
+  };
 
   // selected artefact's attribute change
   setSelectedGroup = (key, value) => {
@@ -141,7 +123,6 @@ class SelectedGroup extends Component {
   // setter function for "loading" to show user that something is loading
   setLoading = loading => {
     this.setState({
-      ...this.state,
       loading
     });
   };
@@ -173,79 +154,73 @@ class SelectedGroup extends Component {
   };
 
   render() {
-
-    // selected group information
-    // console.log("selectedGroup", this.props.groups.selectedGroup);
-    const selectedGroup = this.props.groups.selectedGroup;
-    const coverPhoto = selectedGroup.coverPhoto;
-    const dateCreated = selectedGroup.dateCreated;
-    const description = selectedGroup.description;
-    const title = selectedGroup.title;
-
-    // selected group's members information
-    // console.log("selectedGroupMembers", this.props.groups.selectedGroupMembers);
-    const selectedGroupMembers = this.props.groups.selectedGroupMembers;
-
-    // selected group's groupMembers information
-    // console.log("selectedGroupArtefacts", this.props.groups.selectedGroupArtefacts);
-    const selectedGroupArtefacts = this.props.groups.selectedGroupArtefacts;
-
-    // this.showGroupArtefactsComments(selectedGroupArtefacts);
+    // extract selected group information
+    const {
+      coverPhoto,
+      dateCreated,
+      description,
+      title
+    } = this.props.groups.selectedGroup;
+    // extract redux store information
+    const { selectedGroupMembers, selectedGroupArtefacts } = this.props.groups;
+    // extract navigate function
+    const { navigate } = this.props.navigation;
 
     return (
       <View style={styles.container}>
-        {/*                 
-          <Text style={styles.title}> Group Functionalities </Text>
-            <GroupOptionButton
-              toggleUpdateModal={this.toggleUpdateModal}
-              toggleDeleteModal={this.toggleDeleteModal}
-            />
-              <GroupModal
-                isModalVisible={this.state.isUpdateModalVisible}
-                toggleModal={this.toggleUpdateModal}
-                newGroup={this.state.selectedGroup}
-                post={this.onSubmit.bind(this)}
-                onNewGroupChange={this.setSelectedGroup.bind(this)}
-              />
-        */}
+        {/* container to let user scroll within main component */}
         <ScrollView showsVerticalScrollIndicator={false}>
-
           {/* group cover photo */}
           <View style={styles.coverPhoto}>
-            {/* TODO USE THIS <Image style={styles.cover} source={this.props.coverPhoto} /> */}
             <Image style={styles.cover} source={{ uri: coverPhoto }} />
           </View>
-
           {/* group description */}
           <View style={styles.groupInfo}>
-            {/* TODO USE THIS <Text style={styles.groupTitle}>{this.props.groupTitle}</Text> */}
-            <Text style={[styles.groupTitle, styles.font]}>{title}</Text>
-
-            <Text style={[styles.groupDescription, styles.subFont]}>{description}</Text>
-
-            {/* TODO USE THIS <Text style={[styles.groupCount, styles.subFont]}>{this.props.groupCount} Members</Text> */}
-            <Text style={[styles.groupCount, styles.subFont]}>{selectedGroupMembers.length} Members</Text>
-
-            {/* member scrollable view */}
+            <View
+              style={{
+                flexDirection: "row",
+                paddingLeft: wd(0.05),
+                justifyContent: "center"
+              }}
+            >
+              {/* title */}
+              <Text style={[styles.groupTitle, styles.font]}>{title}</Text>
+              {/* option button */}
+              <OptionButton
+                firstOption={"Edit Group"}
+                secondOption={"Delete Group"}
+                toggleFirstOption={this.toggleUpdateModal}
+                toggleSecondOption={this.toggleDeleteModal}
+              />
+            </View>
+            {/* descriptions */}
+            <Text style={[styles.groupDescription, styles.subFont]}>
+              {description}
+            </Text>
+            {/* show group members count */}
+            <Text style={[styles.groupCount, styles.subFont]}>
+              {selectedGroupMembers.length} Members
+            </Text>
+            {/* container for group members and button */}
             <View style={styles.groupMember}>
+              {/* show members in scrollable view */}
               <ScrollView
                 style={{ flex: 0.7 }}
                 horizontal={true}
-                showsHorizontalScrollIndicator={false}>
-
+                showsHorizontalScrollIndicator={false}
+              >
                 {this.showGroupMembers(selectedGroupMembers)}
-
               </ScrollView>
+              {/* Add members button */}
               <TouchableOpacity
-                onPress={()=>navigate("UserSearch")}
-                style={styles.memberButton}>
-                <Text style={styles.buttonText}>Add Members</Text>
+                onPress={() => navigate("UserSearch")}
+                style={styles.memberButton}
+              >
+                <Text style={styles.buttonText}>Invite</Text>
               </TouchableOpacity>
-
             </View>
           </View>
-
-          {/* content */}
+          {/* container for all artefacts */}
           <View>
             {/* {this.props.groups.userGroups.length !== 0 ? (
               <View>{"ADD CONTENT HERE"}</View>
@@ -258,15 +233,21 @@ class SelectedGroup extends Component {
                   </Text>
                 </View>
               )} */}
-
+            {/* Show all artefacts in group */}
             {this.showGroupArtefacts(selectedGroupArtefacts)}
-            
           </View>
         </ScrollView>
-
         {/* toggle modal to add artefacts into groups */}
-        {/* <AddButton onPress={() => navigate("ArtefactsForm")} /> */}
         <AddButton />
+
+        {/* REMOVE THIS LATER ON */}
+        <GroupModal
+          isModalVisible={this.state.isUpdateModalVisible}
+          toggleModal={this.toggleUpdateModal}
+          newGroup={this.state.selectedGroup}
+          post={this.onSubmit.bind(this)}
+          onNewGroupChange={this.setSelectedGroup.bind(this)}
+        />
       </View>
     );
   }
@@ -277,44 +258,46 @@ const styles = StyleSheet.create({
     flex: 1,
     marginTop: StatusBar.currentHeight,
     alignItems: "center",
-    backgroundColor: "#F7F7F7",
+    backgroundColor: "#F7F7F7"
   },
 
   font: {
     fontFamily: "HindSiliguri-Bold",
-    fontSize: hp(0.03),
+    fontSize: hp(0.03)
   },
 
   subFont: {
     fontFamily: "HindSiliguri-Regular",
-    fontSize: hp(0.02),
+    fontSize: hp(0.02)
   },
 
   cover: {
     width: wd(1),
-    height: hp(0.4),
+    height: hp(0.4)
   },
 
   groupInfo: {
     alignItems: "center",
     paddingHorizontal: wd(0.1),
-    backgroundColor: "white",
+    backgroundColor: "white"
   },
 
   groupTitle: {
+    width: wd(0.76),
     textAlign: "center",
-    marginTop: hp(0.02),
-    marginBottom: hp(0.01),
+    alignSelf: "center",
+    marginTop: hp(0.01),
+    marginBottom: hp(0.01)
   },
 
   groupDescription: {
     textAlign: "center",
-    marginBottom: hp(0.01),
+    marginBottom: hp(0.01)
   },
 
   groupCount: {
     color: "#737373",
-    marginBottom: hp(0.01),
+    marginBottom: hp(0.01)
   },
 
   groupMember: {
@@ -338,24 +321,25 @@ const styles = StyleSheet.create({
     fontSize: wd(0.037),
     color: "white",
     fontFamily: "HindSiliguri-Bold"
-  },
+  }
 });
 
 SelectedGroup.propTypes = {
-  groups: PropTypes.object.isRequired,
+  groups: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => ({
-  groups: state.groups,
+  groups: state.groups
 });
 
 //  connect to redux and export
 export default connect(
   mapStateToProps,
-  { 
-    editSelectedGroup, 
-    getSelectedGroup, 
-    getSelectedGroupAllArtefacts, 
+  {
+    getSelectedGroup,
+    editSelectedGroup,
+    clearSelectedGroup,
+    getSelectedGroupAllArtefacts,
     getSelectedGroupAllMembers,
     getSelectedGroupArtefactComments
   }

@@ -357,8 +357,10 @@ class SelectedArtefact extends Component {
                     {this.props.artefacts.selectedArtefact.title}
                   </Text>
                   <OptionButton
-                    toggleUpdateModal={this.toggleUpdateModal}
-                    toggleDeleteModal={this.toggleDeleteModal}
+                    firstOption={"Edit Artefact"}
+                    secondOption={"Delete Artefact"}
+                    toggleFirstOption={this.toggleUpdateModal}
+                    toggleSecondOption={this.toggleDeleteModal}
                   />
                 </View>
 
@@ -440,7 +442,7 @@ const styles = StyleSheet.create({
     fontFamily: "HindSiliguri-Bold",
     fontSize: 20,
     marginTop: wd(0.03),
-    width: Dimensions.get("window").width * 0.7
+    width: Dimensions.get("window").width * 0.8
   },
 
   description: {

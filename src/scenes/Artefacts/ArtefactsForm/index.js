@@ -49,9 +49,7 @@ class ArtefactsForm extends Component {
       ...newArtefact,
       userId: this.props.auth.user.id
     },
-    isModalVisible: false,
     loading: false,
-    refreshing: false
   };
 
   // nav details
@@ -247,23 +245,11 @@ class ArtefactsForm extends Component {
                   <Picker.Item label="Art" value="Art" />
                   <Picker.Item label="Books" value="Books" />
                   <Picker.Item label="Furniture" value="Furniture" />
-                  <Picker.Item
-                    label="Clothing and Fabric"
-                    value="Clothing and Fabric"
-                  />
-                  <Picker.Item
-                    label="Coins and Currency"
-                    value="Coins and Currency"
-                  />
+                  <Picker.Item label="Clothing and Fabric" value="Clothing and Fabric"/>
+                  <Picker.Item label="Coins and Currency" value="Coins and Currency"/>
                   <Picker.Item label="Pottery" value="Pottery" />
-                  <Picker.Item
-                    label="Flims and Television"
-                    value="Flims and Television"
-                  />
-                  <Picker.Item
-                    label="Kitchen Collectable"
-                    value="Kitchen Collectable"
-                  />
+                  <Picker.Item label="Flims and Television" value="Flims and Television"/>
+                  <Picker.Item label="Kitchen Collectable" value="Kitchen Collectable"/>
                   <Picker.Item label="Music" value="Music" />
                   <Picker.Item label="Technology" value="Technology" />
                   <Picker.Item label="Pepe" value="Pepe" />

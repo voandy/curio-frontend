@@ -12,14 +12,16 @@ import {
   Picker
 } from "react-native";
 
-// redux actions
+// redux actions and expo modules
 import DatePicker from "react-native-datepicker";
+import * as ImagePicker from "expo-image-picker";
+import * as ImageManipulator from "expo-image-manipulator";
+import { createNewGroup } from "../../../actions/groupsActions";
 
 // Custom respondsive design component
 import {
   deviceHeigthDimension as hp,
   deviceWidthDimension as wd,
-  setToBottom
 } from "../../../utils/responsiveDesign";
 
 // import the loader modal to help show loading process
@@ -27,15 +29,71 @@ import ActivityLoaderModal from "../../../component/ActivityLoaderModal";
 // custom components
 import MySmallerButton from "../../../component/MySmallerButton";
 
+// default states for newGroup
+const newGroup = {
+  adminId: "",
+  title: "",
+  description: "",
+  privacy: true,
+  imageURI: ""
+};
+
 class GroupsForm extends Component {
   // local state
-  state = {};
+  state = {
+    newGroup: {
+      ...newGroup,
+      adminId: this.props.auth.user.id
+    },
+    loading: false,
+  };
 
   // nav details
   static navigationOptions = {
     title: "Create new group",
     headerStyle: {
       elevation: 0 // remove shadow on Android
+    }
+  };
+
+  // newGroup's attribute change
+  setNewGroup = (key, value) => {
+    this.setState({
+      newGroup: {
+        ...this.state.newGroup,
+        [key]: value
+      }
+    });
+  };
+
+  // revert newGroup to initial state
+  resetNewGroup = () => {
+    this.setState({
+      ...this.state,
+      newGroup: {
+        ...newGroup,
+        adminId: this.props.auth.user.id
+      }
+    });
+  };
+
+  // access camera roll
+  pickImage = async () => {
+    // obtain image
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 4]
+    });
+
+    // set imageURI in local state
+    if (!result.cancelled) {
+      const manipResult = await ImageManipulator.manipulateAsync(
+        result.uri,
+        [{ resize: { width: 1024 } }],
+        { format: "jpeg", compress: 0.5 }
+      );
+      this.setImageURI(manipResult.uri);
     }
   };
 
@@ -47,7 +105,45 @@ class GroupsForm extends Component {
     });
   };
 
-  onSubmit = async () => {};
+  // Setters for all the local state for newArtefacts
+  setTitle = title => {
+    this.setNewGroup("title", title);
+  };
+
+  setDescription = description => {
+    this.setNewGroup("description", description);
+  };
+
+  setPrivacy = privacy => {
+    this.setNewGroup("privacy", privacy);
+  };
+
+  setImageURI = imageURI => {
+    this.setNewGroup("imageURI", imageURI);
+  };
+
+  // creates a new group and
+  onSubmit = async () => {
+    const { navigate } = this.props.navigation;
+    await this.setNewGroup("adminId", this.props.auth.user.id);
+    // show user the loading modal
+    this.setLoading(true);
+    // send and create group to the backend
+    this.props.createNewGroup(this.state.newGroup)
+      .then(() => {
+          // stop showing user the loading modal
+          this.setLoading(false);
+          // reset new group details
+          this.resetNewGroup();
+          navigate("Groups");
+      })
+      .catch(err => {
+          // stop showing user the loading modal
+          this.setLoading(false);
+          // show error
+          console.log(err.response.data);
+      });
+  };
 
   render() {
     return (
@@ -64,29 +160,25 @@ class GroupsForm extends Component {
                 Create a group, share artefacts amongst yourselves
               </Text>
 
-              <TouchableOpacity activeOpacity={0.5} onPress={this._pickImage}>
-                {/* {this.props.newGroup.imageURI !== undefined &&
-                                this.props.newGroup.imageURI !== "" ? ( */}
-                {this.props.imageURI !== undefined &&
-                this.props.imageURI !== "" ? (
-                  <Image
-                    style={styles.imageSelected}
-                    source={{ uri: this.props.imageURI }}
-                  />
-                ) : (
-                  <Image
-                    style={styles.imageSelected}
-                    source={require("../../../../assets/images/icons/addPicture.png")}
-                  />
-                )}
+              <TouchableOpacity activeOpacity={0.5} onPress={this.pickImage}>
+              {this.state.newGroup.imageURI !== undefined &&
+                this.state.newGroup.imageURI !== "" ? (
+                    <Image
+                      style={styles.imageSelected}
+                      source={{ uri: this.state.newGroup.imageURI}}
+                    />
+                  ) : (
+                    <Image
+                      style={styles.imageSelected}
+                      source={require("../../../../assets/images/icons/addPicture.png")}
+                    />
+                  )}
               </TouchableOpacity>
 
               <Text style={[styles.subFont, styles.imageText]}>
                 Add a cover photo
               </Text>
             </View>
-
-            {/* input fields */}
 
             {/* Title */}
             <View style={styles.inputRow}>
@@ -101,8 +193,8 @@ class GroupsForm extends Component {
                   autoCapitalize="none"
                   placeholderTextColor="#868686"
                   style={styles.inputFont}
-                  // onChangeText={value => this.setCategory(value)}
-                  // value={this.props.newArtefact.category}
+                  onChangeText={value =>  this.setTitle(value)}
+                  value={this.state.newGroup.title}
                 />
               </View>
             </View>
@@ -120,8 +212,8 @@ class GroupsForm extends Component {
                   autoCapitalize="none"
                   placeholderTextColor="#868686"
                   style={styles.inputFont}
-                  // onChangeText={value => this.setCategory(value)}
-                  // value={this.props.newArtefact.category}
+                  onChangeText={value => this.setDescription(value)}
+                  value={this.state.newGroup.description}
                 />
               </View>
             </View>
@@ -134,14 +226,17 @@ class GroupsForm extends Component {
               />
               <View style={styles.inputField}>
                 <Text style={styles.font}>Privacy</Text>
+
                 <Picker
                   style={styles.pickerLong}
-                  // onValueChange={(itemValue, itemIndex) =>
-                  // this.props.onNewGroupChange("privacy", itemValue)}
+                  selectedValue={this.state.newGroup.privacy}
+                  onValueChange={(itemValue, itemIndex) =>
+                    this.setPrivacy(itemValue)}
                 >
-                  <Picker.Item label="Public" />
-                  <Picker.Item label="Private" />
+                  <Picker.Item label="Public" value={0} />
+                  <Picker.Item label="Private" value={1} />
                 </Picker>
+
               </View>
             </View>
 
@@ -153,8 +248,7 @@ class GroupsForm extends Component {
                 width: wd(0.8)
               }}
             >
-              {/* TODO add onPress={() => onSubmit} */}
-              <MySmallerButton text="POST" />
+              <MySmallerButton text="POST" onPress={() => this.onSubmit()} />
             </View>
           </View>
         </ScrollView>
@@ -240,7 +334,8 @@ const styles = StyleSheet.create({
 
 // check for prop types correctness
 GroupsForm.propTypes = {
-  auth: PropTypes.object.isRequired
+  auth: PropTypes.object.isRequired,
+  createNewGroup: PropTypes.func.isRequired
 };
 
 // map required redux state to local props
@@ -249,4 +344,7 @@ const mapStateToProps = state => ({
 });
 
 // map required redux state and actions to local props
-export default connect(mapStateToProps)(GroupsForm);
+export default connect(
+  mapStateToProps,
+  {createNewGroup}
+)(GroupsForm);

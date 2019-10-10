@@ -1,4 +1,9 @@
-import { SET_USER_ARTEFACTS, SET_SELECTED_ARTEFACT, SET_ARTEFACT_COMMENTS, ADD_ARTEFACT_COMMENT } from "../types/artefactsTypes";
+import {
+  SET_USER_ARTEFACTS,
+  SET_SELECTED_ARTEFACT,
+  SET_ARTEFACT_COMMENTS,
+  ADD_ARTEFACT_COMMENT
+} from "../types/artefactsTypes";
 import {
   createArtefactAPIRequest,
   getUserArtefactsAPIRequest,
@@ -37,16 +42,16 @@ export const likeArtefact = (artefactId, userId) => dispatch => {
   return new Promise((resolve, reject) => {
     // add like to artefact from user
     likeAPIRequest(artefactId, userId)
-    // success
-    .then(res => {
-      dispatch(setSelectedArtefact(res.data));
-      resolve(res);
-    })
-    // failure
-    .catch(err => {
-      console.log("artefactActions: " + err);
-      reject(err);
-    });
+      // success
+      .then(res => {
+        dispatch(setSelectedArtefact(res.data));
+        resolve(res);
+      })
+      // failure
+      .catch(err => {
+        console.log("artefactActions: " + err);
+        reject(err);
+      });
   });
 };
 
@@ -55,16 +60,16 @@ export const unlikeArtefact = (artefactId, userId) => dispatch => {
   return new Promise((resolve, reject) => {
     // remove like to artefact from user
     unlikeAPIRequest(artefactId, userId)
-    // success
-    .then(res => {
-      dispatch(setSelectedArtefact(res.data));
-      resolve(res);
-    })
-    // failure
-    .catch(err => {
-      console.log("artefactActions: " + err);
-      reject(err);
-    });
+      // success
+      .then(res => {
+        dispatch(setSelectedArtefact(res.data));
+        resolve(res);
+      })
+      // failure
+      .catch(err => {
+        console.log("artefactActions: " + err);
+        reject(err);
+      });
   });
 };
 
@@ -162,10 +167,16 @@ export const removeSelectedArtefact = artefactId => dispatch => {
 export const getArtefactComments = artefactId => dispatch => {
   return new Promise((resolve, reject) => {
     getArtefactCommentsAPIRequest(artefactId)
-    // success
-    .then(res => dispatch(setArtefactComments(res.data)))
-    // failure
-    .catch(err => console.log("artefactActions: " + err));
+      // success
+      .then(res => {
+        dispatch(setArtefactComments(res.data));
+        resolve(res);
+      })
+      // failure
+      .catch(err => {
+        console.log("artefactActions: " + err);
+        reject(err);
+      });
   });
 };
 
@@ -177,7 +188,7 @@ export const commentOnArtefact = (
 ) => dispatch => {
   return new Promise((resolve, reject) => {
     // post comment to server
-    var newComment = {content: commentString}
+    var newComment = { content: commentString };
     postArtefactCommentAPIRequest(artefactId, userId, newComment)
       // success
       .then(res => {
