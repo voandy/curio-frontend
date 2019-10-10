@@ -7,8 +7,6 @@ import {
   ScrollView,
   Dimensions,
   Text,
-  TouchableOpacity,
-  Image,
   StatusBar
 } from "react-native";
 
@@ -91,29 +89,24 @@ class Groups extends Component {
     navigate("SelectedGroup", { groupId });
   };
 
-  // show groups that are unpinned by user
-  showGroups = groups => {
+  // show and renders groups components row-by-row
+  showGroups = () => {
+    var groups = this.props.groups.userGroups;
     // sort array based on date obtained (from earliest to oldest)
     groups.sort(function(a, b) {
       return new Date(b.dateCreated) - new Date(a.dateCreated);
     });
     // tranform each group element into a component
     const groupComponent = groups.map(group => (
-      <View key={group.groupId} style={styles.card}>
-        <TouchableOpacity onPress={() => this.clickGroup(group.details._id)}>
-          <View style={styles.picPlaceholder}>
-            <Image
-              style={[styles.photo]}
-              source={{ uri: group.details.coverPhoto }}
-            />
-          </View>
-          <View style={styles.textPlaceholder}>
-            <Text style={[styles.title, styles.font]}>
-              {group.details.title}
-            </Text>
-          </View>
-        </TouchableOpacity>
-      </View>
+      <CardGroup
+        key={group.groupId}
+        userId={this.props.auth.user.id}
+        groupId={group.groupId}
+        image={{ uri: group.details.coverPhoto }}
+        title={group.details.title}
+        onPress={this.clickGroup.bind(this)}
+        pinned={group.pinned}
+      />
     ));
     // prep a temporary array for row-by-row grouping logic
     //prettier-ignore
@@ -125,6 +118,27 @@ class Groups extends Component {
       </View>
     ));
     return cardGroupComponent;
+  };
+
+  // show all the pinned groups in carousel
+  showPinnedGroups = () => {
+    var groups = this.props.groups.userGroups;
+    // retain only pinned groups
+    groups = groups.filter(group => group.pinned);
+    // sort array based on date obtained (from earliest to oldest)
+    groups.sort(function(a, b) {
+      return new Date(b.dateCreated) - new Date(a.dateCreated);
+    });
+    const pinnedGroupComponent = groups.map(group => (
+      <CardCarousel
+        key={group.groupId}
+        image={group.details.coverPhoto}
+        groupId={group.groupId}
+        userId={this.props.auth.user.id}
+        onPress={this.clickGroup.bind(this)}
+      />
+    ));
+    return pinnedGroupComponent;
   };
 
   render() {
@@ -154,26 +168,13 @@ class Groups extends Component {
               snapToAlignment={"center"}
               snapToInterval={Dimensions.get("window").width}
             >
-              <CardCarousel
-                image={require("../../../assets/images/test-delete-this/boi1.jpg")}
-              />
-              <CardCarousel
-                image={require("../../../assets/images/test-delete-this/boi2.jpg")}
-              />
-              <CardCarousel
-                image={require("../../../assets/images/test-delete-this/boi3.jpg")}
-              />
-              <CardCarousel
-                image={require("../../../assets/images/test-delete-this/boi4.jpg")}
-              />
+              {this.showPinnedGroups()}
             </ScrollView>
           </View>
 
           {/* unpinned groups */}
           {this.props.groups.userGroups.length !== 0 ? (
-            <View style={{ marginBottom: 10 }}>
-              {this.showGroups(this.props.groups.userGroups)}
-            </View>
+            <View style={{ marginBottom: 10 }}>{this.showGroups()}</View>
           ) : (
             <View style={styles.emptyFeed}>
               <Text
@@ -285,7 +286,8 @@ Groups.propTypes = {
 
 const mapStateToProps = state => ({
   groups: state.groups,
-  auth: state.auth
+  auth: state.auth,
+  user: state.user
 });
 
 //  connect to redux and export
