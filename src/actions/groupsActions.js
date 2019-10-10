@@ -13,7 +13,9 @@ import {
   putGroupAdminAPIRequest,
   getGroupAllArtefactsAPIRequest,
   getGroupAllMembersAPIRequest,
-  editGroupAPIRequest
+  editGroupAPIRequest,
+  pinGroupAPIRequest,
+  unpinGroupAPIRequest
 } from "../utils/APIHelpers/groupAPIHelper";
 
 import { getArtefactCommentsAPIRequest } from "../utils/APIHelpers/artefactAPIHelpers";
@@ -25,8 +27,8 @@ export const getUserGroups = userId => dispatch => {
   return new Promise((resolve, reject) => {
     getUserGroupsAPIRequest(userId)
       .then(res => {
-        resolve(res);
         dispatch(setUserGroups(res.data));
+        resolve(res);
       })
       // failure
       .catch(err => {
@@ -167,6 +169,34 @@ export const clearSelectedGroup = () => dispatch => {
   dispatch(setSelectedGroup({}));
   dispatch(setSelectedGroupArtefacts([]));
   dispatch(setSelectedGroupMembers([]));
+};
+
+export const pinGroup = (userId, groupId) => dispatch => {
+  return new Promise((resolve, reject) => {
+    pinGroupAPIRequest(userId, groupId)
+      .then(() => {
+        dispatch(getUserGroups(userId));
+        resolve();
+      })
+      .catch(err => {
+        console.log(err);
+        reject(err);
+      });
+  });
+};
+
+export const unpinGroup = (userId, groupId) => dispatch => {
+  return new Promise((resolve, reject) => {
+    unpinGroupAPIRequest(userId, groupId)
+      .then(() => {
+        dispatch(getUserGroups(userId));
+        resolve();
+      })
+      .catch(err => {
+        console.log(err);
+        reject(err);
+      });
+  });
 };
 
 export const setUserGroups = decoded => {
