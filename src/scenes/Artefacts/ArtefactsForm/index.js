@@ -43,14 +43,21 @@ const newArtefact = {
 };
 
 class ArtefactsForm extends Component {
-  // local state
-  state = {
-    newArtefact: {
-      ...newArtefact,
-      userId: this.props.auth.user.id
-    },
-    loading: false,
-  };
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      newArtefact: {
+        ...newArtefact,
+        
+        // get newArtefact information
+        ...this.props.navigation.getParam("newArtefact", "NO-NEW-ARTEFACT"),
+
+        userId: this.props.auth.user.id
+      },
+      loading: false,
+    };  
+  }
 
   // nav details
   static navigationOptions = {
@@ -113,12 +120,11 @@ class ArtefactsForm extends Component {
   };
 
   // post new artefact to the backend
-  onSubmit = () => {
+  onNewArtefactSubmit = () => {
     const { navigate } = this.props.navigation;
     // show user the loading modal
     this.setLoading(true);
     // send and create artefact to the backend
-    //prettier-ignore
     this.props.createNewArtefacts(this.state.newArtefact)
       .then(() => {
           // stop showing user the loading modal
@@ -132,6 +138,27 @@ class ArtefactsForm extends Component {
           this.setLoading(false);
           // show error
           console.log(err.response.data);
+      });
+  };
+
+  // post edited artefact to the backend
+  onEditArtefactSubmit = async () => {
+    // show user the loading modal
+    this.setLoading(true);
+    // send and create artefact to the backend
+    this.props.editSelectedArtefact(this.state.newArtefact)
+      .then(() => {
+        // stop showing user the loading modal
+        this.setLoading(false);
+        // reset new artefacts details
+        this.resetNewArtefact();
+        navigate("Artefacts");
+      })
+      .catch(err => {
+        // stop showing user the loading modal
+        this.setLoading(false);
+        // show error
+        console.log(err.response.data);
       });
   };
 
@@ -319,7 +346,13 @@ class ArtefactsForm extends Component {
               }}
             >
               {/* TODO add onPress={() => onSubmit} */}
-              <MySmallerButton text="POST" onPress={() => this.onSubmit()} />
+
+              {/* edit artefact or create new artefact */}
+              <MySmallerButton text="POST" onPress={() => 
+                {this.props.navigation.getParam("isEditingArtefact") === true ? this.onEditArtefactSubmit() 
+                : this.onNewArtefactSubmit()
+                }
+              } />
             </View>
           </View>
         </ScrollView>

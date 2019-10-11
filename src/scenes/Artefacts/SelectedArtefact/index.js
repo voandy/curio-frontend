@@ -55,10 +55,6 @@ class SelectedArtefact extends Component {
     this.props.clearSelectedArtefact();
 
     this.state = {
-      // will be used to be posted for editing selected Artefact
-      selectedArtefact: {
-        ...this.props.artefacts.selectedArtefact
-      },
       isImageViewVisible: false,
       isUpdateModalVisible: false,
       loading: false,
@@ -232,7 +228,14 @@ class SelectedArtefact extends Component {
 
   // toggle the modal for artefact update input
   toggleUpdateModal = () => {
-    this.setState({ isUpdateModalVisible: !this.state.isUpdateModalVisible });
+    const { navigate } = this.props.navigation;
+
+    // navigate to ArtefactsForm while passing the editedSelectedArtefact
+    navigate("ArtefactsForm", 
+      { 
+        isEditingArtefact: true,
+        newArtefact: this.props.artefacts.selectedArtefact
+      });
   };
 
   // toggle the modal for artefact deletion
@@ -260,7 +263,7 @@ class SelectedArtefact extends Component {
               .then(() => {
                 // stop showing user the loading modal
                 this.setLoading(false);
-
+                
                 // navigate to artefacts
                 navigate("Artefacts");
               })
@@ -277,16 +280,6 @@ class SelectedArtefact extends Component {
     );
   };
 
-  // selected artefact's attribute change
-  setSelectedArtefact = (key, value) => {
-    this.setState({
-      selectedArtefact: {
-        ...this.state.selectedArtefact,
-        [key]: value
-      }
-    });
-  };
-
   // setter function for "loading" to show user that something is loading
   setLoading = loading => {
     this.setState({
@@ -294,28 +287,7 @@ class SelectedArtefact extends Component {
       loading
     });
   };
-
-  // post new artefact to the backend
-  onSubmit = async () => {
-    // show user the loading modal
-    this.setLoading(true);
-    // send and create artefact to the backend
-    this.props
-      .editSelectedArtefact(this.state.selectedArtefact)
-      .then(() => {
-        // stop showing user the loading modal
-        this.setLoading(false);
-        // close loading modal
-        this.toggleUpdateModal();
-      })
-      .catch(err => {
-        // stop showing user the loading modal
-        this.setLoading(false);
-        // show error
-        console.log(err.response.data);
-      });
-  };
-
+  
   render() {
     // does not render when selectedArtefact is empty
     if (Object.keys(this.props.artefacts.selectedArtefact).length === 0) {
@@ -389,13 +361,13 @@ class SelectedArtefact extends Component {
                   />
                 </View>
 
-                <ArtefactModal
+                {/* <ArtefactModal
                   isModalVisible={this.state.isUpdateModalVisible}
                   toggleModal={this.toggleUpdateModal}
                   newArtefact={this.state.selectedArtefact}
                   onSubmit={this.onSubmit.bind(this)}
                   setNewArtefact={this.setSelectedArtefact.bind(this)}
-                />
+                /> */}
 
                 {/* description */}
                 <Text style={styles.description}>

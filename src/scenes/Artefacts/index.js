@@ -247,7 +247,13 @@ class Artefacts extends Component {
         </ScrollView>
 
         {/* create new Group */}
-        <AddButton onPress={() => navigate("ArtefactsForm")} />
+        <AddButton onPress={
+          () => navigate("ArtefactsForm", 
+          { 
+            isEditingArtefact: false,
+            newArtefact: {}
+          })
+        } />
       </View>
     );
   }
