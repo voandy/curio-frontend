@@ -1,28 +1,51 @@
 import React, { Component } from "react";
-import {
-  View,
-  StyleSheet,
-  Text,
-  Image,
-  TouchableOpacity
-} from "react-native";
+import { View, StyleSheet, Alert, Image, TouchableOpacity } from "react-native";
+import { connect } from "react-redux";
+
+import { unpinGroup } from "../actions/groupsActions";
 
 // custom responsive design component
 import {
   deviceHeigthDimension as hp,
-  deviceWidthDimension as wd,
-} from "../utils/responsiveDesign"
+  deviceWidthDimension as wd
+} from "../utils/responsiveDesign";
 
 /** carousel for saved groups in groups page */
 class CardCarousel extends Component {
+  // alert prompt to pin or unpin groups
+  showAlert = () => {
+    //prettier-ignore
+    const message = "Do you want to unpin this group?"
+    const userId = this.props.userId;
+    const groupId = this.props.groupId;
+    // show alert
+    Alert.alert(
+      message,
+      "",
+      [
+        { text: "Cancel", onPress: null },
+        {
+          text: "Yes",
+          onPress: () => this.props.unpinGroup(userId, groupId)
+        }
+      ],
+      { cancelable: false }
+    );
+  };
+
   render() {
     return (
       <View style={styles.card}>
-
-        <TouchableOpacity>
+        <View style={{ position: "absolute", top: 5, right: 5, elevation: 2 }}>
+          <Image source={require("../../assets/images/icons/favourite.png")} />
+        </View>
+        <TouchableOpacity
+          onLongPress={() => this.showAlert()}
+          onPress={() => this.props.onPress(this.props.groupId)}
+        >
           {/* Image  */}
           <View style={styles.picPlaceholder}>
-            <Image style={styles.photo} source={this.props.image} />
+            <Image style={styles.photo} source={{ uri: this.props.image }} />
           </View>
         </TouchableOpacity>
       </View>
@@ -44,15 +67,17 @@ const styles = StyleSheet.create({
 
   picPlaceholder: {
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "center"
   },
 
-  photo:{
+  photo: {
     width: wd(0.9),
     height: wd(0.45),
-    borderRadius: 15,
+    borderRadius: 15
   }
-
 });
 
-export default CardCarousel;
+export default connect(
+  null,
+  { unpinGroup }
+)(CardCarousel);
