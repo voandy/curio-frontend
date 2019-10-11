@@ -20,6 +20,7 @@ import ProfileScreen from "./Profile";
 import NotificationScreen from "./Notification";
 import ArtefactsScreen from "./Artefacts";
 import PublicProfileScreen from "./PublicProfile";
+import InvitationScreen from "./Invitation";
 import SelectedArtefactScreen from "./Artefacts/SelectedArtefact";
 import SelectedGroupScreen from "./Groups/SelectedGroup";
 import ArtefactsFormScreen from "./Artefacts/ArtefactsForm";
@@ -66,7 +67,8 @@ const GroupStack = createStackNavigator({
   SelectedGroup: { screen: SelectedGroupScreen },
   SelectedArtefact: { screen: SelectedArtefactScreen },
   GeneralSearch: { screen: GeneralSearchScreen },
-  UserSearch: { screen: UserSearchScreen }
+  UserSearch: { screen: UserSearchScreen },
+
 });
 
 const ArtefactStack = createStackNavigator({
@@ -81,6 +83,7 @@ const NotificationStack = createStackNavigator({
   SelectedArtefact: { screen: SelectedArtefactScreen },
   SelectedGroup: { screen: SelectedGroupScreen },
   GeneralSearch: { screen: GeneralSearchScreen },
+  Invitation: { screen: InvitationScreen },
 });
 
 const ProfileStack = createStackNavigator({
