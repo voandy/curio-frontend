@@ -101,6 +101,75 @@ class SelectedGroup extends Component {
     this.setState({ isUpdateModalVisible: !this.state.isUpdateModalVisible });
   };
 
+  // toggle the modal for artefact deletion
+  toggleDeleteModal = async () => {
+    Alert.alert(
+      "Delete Artefact",
+      "Are you sure you want to delete your artefact?",
+      [
+        {
+          text: "No",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel"
+        },
+        {
+          text: "Yes",
+          onPress: this.onDeleteArtefact()
+        }
+      ],
+      { cancelable: false }
+    );
+  };
+
+  // click a specific artefact and navigate to it
+  clickArtefact = artefactId => {
+    const { navigate } = this.props.navigation;
+    // navigate to selected artefact
+    navigate("SelectedArtefact", { artefactId });
+  };
+
+  onDeleteArtefact = async () => {
+    const { navigate } = this.props.navigation;
+    // show user the loading modal
+    this.setLoading(true);
+    // remove selected artefact from redux states
+    //prettier-ignore
+    await this.props.deleteSelectedGroup(this.props.groups.selectedGroup._id)
+      .then(() => {
+        // stop showing user the loading modal
+        this.setLoading(false);
+        // navigate to groups
+        navigate("Groups");
+      })
+      .catch(err => {
+        // stop showing user the loading modal
+        this.setLoading(false);
+        // show error
+        console.log(err.response.data);
+      });
+  };
+
+  // post new artefact to the backend
+  onSubmit = async () => {
+    // show user the loading modal
+    this.setLoading(true);
+    // send and create artefact to the backend
+    this.props
+      .editSelectedGroup(this.state.selectedGroup)
+      .then(() => {
+        // stop showing user the loading modal
+        this.setLoading(false);
+        // close loading modal
+        this.toggleUpdateModal();
+      })
+      .catch(err => {
+        // stop showing user the loading modal
+        this.setLoading(false);
+        // show error
+        console.log(err.response.data);
+      });
+  };
+
   // return a row of group members
   showGroupMembers = groupMembers => {
     // transform each member to an UserIcon component
@@ -133,74 +202,6 @@ class SelectedGroup extends Component {
       />
     ));
     return groupArtefactsComponent;
-  };
-
-  // click a specific artefact and navigate to it
-  clickArtefact = artefactId => {
-    const { navigate } = this.props.navigation;
-    // navigate to selected artefact
-    navigate("SelectedArtefact", { artefactId });
-  };
-
-  // post new artefact to the backend
-  onSubmit = async () => {
-    // show user the loading modal
-    this.setLoading(true);
-    // send and create artefact to the backend
-    this.props
-      .editSelectedGroup(this.state.selectedGroup)
-      .then(() => {
-        // stop showing user the loading modal
-        this.setLoading(false);
-        // close loading modal
-        this.toggleUpdateModal();
-      })
-      .catch(err => {
-        // stop showing user the loading modal
-        this.setLoading(false);
-        // show error
-        console.log(err.response.data);
-      });
-  };
-
-  // toggle the modal for artefact deletion
-  toggleDeleteModal = async () => {
-    const { navigate } = this.props.navigation;
-
-    Alert.alert(
-      "Delete Artefact",
-      "Are you sure you want to delete your artefact?",
-      [
-        {
-          text: "No",
-          onPress: () => console.log("Cancel Pressed"),
-          style: "cancel"
-        },
-        {
-          text: "Yes",
-          onPress: async () => {
-            // show user the loading modal
-            this.setLoading(true);
-            // remove selected artefact from redux states
-            //prettier-ignore
-            await this.props.deleteSelectedGroup(this.props.groups.selectedGroup._id)
-              .then(() => {
-                // stop showing user the loading modal
-                this.setLoading(false);
-                // navigate to groups
-                navigate("Groups");
-              })
-              .catch(err => {
-                // stop showing user the loading modal
-                this.setLoading(false);
-                // show error
-                console.log(err.response.data);
-              });
-          }
-        }
-      ],
-      { cancelable: false }
-    );
   };
 
   render() {
