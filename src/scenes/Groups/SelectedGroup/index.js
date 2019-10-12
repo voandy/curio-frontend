@@ -10,7 +10,8 @@ import {
   View,
   Text,
   Image,
-  Alert
+  Alert,
+  RefreshControl
 } from "react-native";
 
 // import redux actions for groups
@@ -49,7 +50,8 @@ class SelectedGroup extends Component {
         ...this.props.groups.selectedGroup
       },
       isUpdateModalVisible: false,
-      loading: false
+      loading: false,
+      refreshing: false
     };
     // get all information required for the selectedGroup page
     // get group id from the parameter passed in, get "NO-GROUP-ID" if not found
@@ -96,6 +98,25 @@ class SelectedGroup extends Component {
     });
   };
 
+  // refresh page
+  refreshSelectedGroupPage = async () => {
+    this.setState({ refreshing: true });
+    // get data from backend
+    groupId = this.props.navigation.getParam("groupId", "NO-GROUP-ID");
+    // reload everything at once, only refresh once everything is done loading
+    Promise.all([
+      this.props.getSelectedGroup(groupId),
+      this.props.getSelectedGroupAllArtefacts(groupId),
+      this.props.getSelectedGroupAllMembers(groupId)
+    ])
+      // resets refreshing state
+      .then(() => this.setState({ refreshing: false }))
+      .catch(() => {
+        this.setState({ refreshing: false });
+        alert("Please try again later");
+      });
+  };
+
   // toggle the modal for artefact update input
   toggleUpdateModal = () => {
     this.setState({ isUpdateModalVisible: !this.state.isUpdateModalVisible });
@@ -128,6 +149,7 @@ class SelectedGroup extends Component {
     navigate("SelectedArtefact", { artefactId });
   };
 
+  // delete the current selected group
   onDeleteSelectedGroup = async () => {
     const { navigate } = this.props.navigation;
     // show user the loading modal
@@ -154,8 +176,8 @@ class SelectedGroup extends Component {
     // show user the loading modal
     this.setLoading(true);
     // send and create artefact to the backend
-    this.props
-      .editSelectedGroup(this.state.selectedGroup)
+    //prettier-ignore
+    this.props.editSelectedGroup(this.state.selectedGroup)
       .then(() => {
         // stop showing user the loading modal
         this.setLoading(false);
@@ -220,7 +242,15 @@ class SelectedGroup extends Component {
     return (
       <View style={styles.container}>
         {/* container to let user scroll within main component */}
-        <ScrollView showsVerticalScrollIndicator={false}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.refreshing}
+              onRefresh={this.refreshGroupPage}
+            />
+          }
+        >
           {/* group cover photo */}
           <View style={styles.coverPhoto}>
             <Image style={styles.cover} source={{ uri: coverPhoto }} />

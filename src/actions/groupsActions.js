@@ -90,8 +90,8 @@ export const getSelectedGroup = groupId => dispatch => {
   return new Promise((resolve, reject) => {
     getGroupDetailsAPIRequest(groupId)
       .then(res => {
-        resolve(res);
         dispatch(setSelectedGroup(res.data));
+        resolve(res);
       })
       // failure
       .catch(err => {
@@ -106,8 +106,8 @@ export const getSelectedGroupAllArtefacts = groupId => dispatch => {
   return new Promise((resolve, reject) => {
     getGroupAllArtefactsAPIRequest(groupId)
       .then(res => {
-        resolve(res);
         dispatch(setSelectedGroupArtefacts(res.data));
+        resolve(res);
       })
       // failure
       .catch(err => {
@@ -122,8 +122,8 @@ export const getSelectedGroupAllMembers = groupId => dispatch => {
   return new Promise((resolve, reject) => {
     getGroupAllMembersAPIRequest(groupId)
       .then(res => {
-        resolve(res);
         dispatch(setSelectedGroupMembers(res.data));
+        resolve(res);
       })
       // failure
       .catch(err => {
@@ -138,8 +138,8 @@ export const editSelectedGroup = groupId => dispatch => {
   return new Promise((resolve, reject) => {
     editGroupAPIRequest(groupId)
       .then(res => {
-        resolve(res);
         dispatch(setSelectedGroupMembers(res.data));
+        resolve(res);
       })
       // failure
       .catch(err => {
@@ -153,8 +153,8 @@ export const getSelectedGroupArtefactComments = artefactId => dispatch => {
   return new Promise((resolve, reject) => {
     getArtefactCommentsAPIRequest(artefactId)
       .then(res => {
-        resolve(res);
         dispatch(addSelectedGroupArtefactComments(res.data));
+        resolve(res);
       })
       // failure
       .catch(err => {
