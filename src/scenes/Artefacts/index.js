@@ -57,7 +57,7 @@ class Artefacts extends Component {
       isModalVisible: false,
       loading: false,
       refreshing: false
-    }
+    };
   }
 
   // Nav bar details
@@ -66,9 +66,11 @@ class Artefacts extends Component {
   };
 
   componentDidUpdate(prevProps) {
-
     // update selectedArtefacts when an artefact has been deleted
-    if (prevProps.artefacts.userArtefacts.length !== this.props.artefacts.userArtefacts.length + 1) {
+    if (
+      prevProps.artefacts.userArtefacts.length !==
+      this.props.artefacts.userArtefacts.length + 1
+    ) {
       // reload userArtefacts to update userArtefacts in redux state
       this.props.getUserArtefacts(this.props.auth.user.id);
     }
@@ -147,7 +149,7 @@ class Artefacts extends Component {
     let artefactKey = 0;
 
     // sort array based on date obtained (from earliest to oldest)
-    artefacts.sort(function (a, b) {
+    artefacts.sort(function(a, b) {
       return new Date(b.datePosted) - new Date(a.datePosted);
     });
     // create ArtefactFeed object out of artefact and push it into artefactFeeds array
@@ -193,10 +195,8 @@ class Artefacts extends Component {
   // refresh page
   refreshArtefacts = async () => {
     this.setState({ refreshing: true });
-
     // get data from backend
     await this.props.getUserArtefacts(this.props.auth.user.id);
-
     // resets refreshing state
     this.setState({ refreshing: false });
   };
@@ -213,7 +213,8 @@ class Artefacts extends Component {
           showTab={true}
           tab1="Private"
           tab2="Public"
-          onSubmit={() => navigate("GeneralSearch")} />
+          onSubmit={() => navigate("GeneralSearch")}
+        />
         {/* scrollable area for CONTENT */}
         <ScrollView
           showsVerticalScrollIndicator={false}
@@ -231,29 +232,30 @@ class Artefacts extends Component {
               {this.showArtefacts(this.props.artefacts.userArtefacts)}
             </View>
           ) : (
-              <View style={styles.emptyFeed}>
-                <Text
-                  style={{ fontSize: 16, fontFamily: "HindSiliguri-Regular" }}
-                >
-                  Looks like you haven't posted any artefacts
+            <View style={styles.emptyFeed}>
+              <Text
+                style={{ fontSize: 16, fontFamily: "HindSiliguri-Regular" }}
+              >
+                Looks like you haven't posted any artefacts
               </Text>
-                <Text
-                  style={{ fontSize: 16, fontFamily: "HindSiliguri-Regular" }}
-                >
-                  Click the "+" button to add some
+              <Text
+                style={{ fontSize: 16, fontFamily: "HindSiliguri-Regular" }}
+              >
+                Click the "+" button to add some
               </Text>
-              </View>
-            )}
+            </View>
+          )}
         </ScrollView>
 
         {/* create new Group */}
-        <AddButton onPress={
-          () => navigate("ArtefactsForm", 
-          { 
-            isEditingArtefact: false,
-            newArtefact: {}
-          })
-        } />
+        <AddButton
+          onPress={() =>
+            navigate("ArtefactsForm", {
+              isEditingArtefact: false,
+              newArtefact: {}
+            })
+          }
+        />
       </View>
     );
   }

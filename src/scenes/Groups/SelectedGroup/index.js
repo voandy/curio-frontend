@@ -21,7 +21,6 @@ import {
   getSelectedGroupAllArtefacts,
   getSelectedGroupAllMembers,
   getSelectedGroupArtefactComments,
-  deleteSelectedGroup,
 } from "../../../actions/groupsActions";
 
 // custom component
