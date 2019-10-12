@@ -7,12 +7,11 @@ import {
   ScrollView,
   Dimensions,
   Text,
-  StatusBar,
-  RefreshControl
+  StatusBar
 } from "react-native";
 
 // import redux actions for groups
-import { createNewGroup, getUserGroups } from "../../actions/groupsActions";
+import { createNewGroup } from "../../actions/groupsActions";
 
 // custom components
 import CardCarousel from "../../component/CardCarousel";
@@ -48,22 +47,12 @@ class Groups extends Component {
 
   state = {
     isModalVisible: false,
-    newGroup,
-    refreshing: false
+    newGroup
   };
 
   // CHANGE THIS LATER
   toggleModal = () => {
     this.setState({ isModalVisible: !this.state.isModalVisible });
-  };
-
-  // refresh page
-  refreshGroupPage = async () => {
-    this.setState({ refreshing: true });
-    // get data from backend
-    await this.props.getUserGroups(this.props.auth.user.id);
-    // resets refreshing state
-    this.setState({ refreshing: false });
   };
 
   // revert newGroup to initial state
@@ -173,12 +162,6 @@ class Groups extends Component {
               showsVerticalScrollIndicator={false}
               scrollEventThrottle={16}
               style={{ backgroundColor: gray }}
-              refreshControl={
-                <RefreshControl
-                  refreshing={this.state.refreshing}
-                  onRefresh={this.refreshGroupPage}
-                />
-              }
             >
               {/* carousel pinned groups */}
               <View style={{ height: wd(0.52), backgroundColor: "white" }}>
@@ -316,5 +299,5 @@ const mapStateToProps = state => ({
 //  connect to redux and export
 export default connect(
   mapStateToProps,
-  { createNewGroup, getUserGroups }
+  { createNewGroup }
 )(Groups);

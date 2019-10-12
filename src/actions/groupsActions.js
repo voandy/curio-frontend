@@ -165,11 +165,11 @@ export const getSelectedGroupArtefactComments = artefactId => dispatch => {
 };
 
 // delete selected artefact
-export const deleteSelectedGroup = groupId => (dispatch, getState) => {
+export const deleteSelectedGroup = groupId => dispatch => {
   return new Promise((resolve, reject) => {
     deleteGroupAPIRequest(groupId)
       .then(res => {
-        dispatch(getUserGroups(getState().user.userData._id));
+        // dispatch(getUserGroups(userId));
         resolve(res);
       })
       .catch(err => {
