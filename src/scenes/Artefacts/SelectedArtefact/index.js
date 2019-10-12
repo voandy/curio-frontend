@@ -75,12 +75,6 @@ class SelectedArtefact extends Component {
     this.props.getArtefactComments(artefactId);
   }
 
-  componentDidMount() {
-    // get all information required for the selectedGroup page
-    artefactId = this.props.navigation.getParam("artefactId", "NO-ARTEFACT-ID");
-    this.getSelectedArtefactData(artefactId);
-  }
-
   // nav details
   static navigationOptions = {
     header: null,
@@ -89,11 +83,16 @@ class SelectedArtefact extends Component {
     }
   };
 
+  componentDidMount() {
+    // get all information required for the selectedGroup page
+    artefactId = this.props.navigation.getParam("artefactId", "NO-ARTEFACT-ID");
+    this.getSelectedArtefactData(artefactId);
+  }
+
   async componentDidUpdate(prevProps) {
     // extract prev & selected artefact details
     const prevArtefact = prevProps.artefacts.selectedArtefact;
     const currentArtefact = this.props.artefacts.selectedArtefact;
-
     // assign selectedArtefact along with likes when selectedArtefact data
     // has been retrieved from api call for the first time
     if (
@@ -109,7 +108,6 @@ class SelectedArtefact extends Component {
         likesCount: currentArtefact.likes.length
       });
     }
-
     // extract prev & selected artefact comments details
     const prevComments = prevProps.artefacts.artefactComments;
     const currentComments = this.props.artefacts.artefactComments;
@@ -121,7 +119,6 @@ class SelectedArtefact extends Component {
         commentsCount: currentComments.length
       });
     }
-
     // re-generate comments when a new artefact comment has been made
     if (prevComments.length + 1 === currentComments.length) {
       const artefactId = currentArtefact._id;
@@ -134,10 +131,70 @@ class SelectedArtefact extends Component {
     this.props.clearSelectedArtefact();
   }
 
+  // setter function for "loading" to show user that something is loading
+  setLoading = loading => {
+    this.setState({
+      ...this.state,
+      loading
+    });
+  };
+
   onChangeNewComment = newComment => {
     this.setState({
       newComment
     });
+  };
+
+  // toggle the modal for artefact update input
+  toggleUpdateModal = () => {
+    const { navigate } = this.props.navigation;
+
+    // navigate to ArtefactsForm while passing the editedSelectedArtefact
+    navigate("ArtefactsForm", {
+      isEditingArtefact: true,
+      newArtefact: this.props.artefacts.selectedArtefact
+    });
+  };
+
+  // toggle the modal for artefact deletion
+  toggleDeleteModal = async () => {
+    Alert.alert(
+      "Delete Artefact",
+      "Are you sure you want to delete your artefact?",
+      [
+        {
+          text: "No",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel"
+        },
+        {
+          text: "Yes",
+          onPress: () => this.onDeleteSelectedArtefact()
+        }
+      ],
+      { cancelable: false }
+    );
+  };
+
+  onDeleteSelectedArtefact = async () => {
+    const { navigate } = this.props.navigation;
+    // show user the loading modal
+    this.setLoading(true);
+    // remove selected artefact from redux states
+    //prettier-ignore
+    await this.props.removeSelectedArtefact(this.props.artefacts.selectedArtefact._id)
+      .then(() => {
+        // stop showing user the loading modal
+        this.setLoading(false);
+        // navigate to artefacts
+        navigate("Artefacts");
+      })
+      .catch(err => {
+        // stop showing user the loading modal
+        this.setLoading(false);
+        // show error
+        console.log(err.response.data);
+      });
   };
 
   like = function() {
@@ -192,16 +249,16 @@ class SelectedArtefact extends Component {
     }
   };
 
+  scrollToEnd = function() {
+    this.scrollView.scrollToEnd();
+  };
+
   postComment = function(commentContent) {
     this.props.commentOnArtefact(
       this.props.artefacts.selectedArtefact._id,
       this.props.user.userData._id,
       commentContent
     );
-  };
-
-  scrollToEnd = function() {
-    this.scrollView.scrollToEnd();
   };
 
   showComments = function(comments) {
@@ -226,67 +283,6 @@ class SelectedArtefact extends Component {
     }
 
     return commentViews;
-  };
-
-  // toggle the modal for artefact update input
-  toggleUpdateModal = () => {
-    const { navigate } = this.props.navigation;
-
-    // navigate to ArtefactsForm while passing the editedSelectedArtefact
-    navigate("ArtefactsForm", {
-      isEditingArtefact: true,
-      newArtefact: this.props.artefacts.selectedArtefact
-    });
-  };
-
-  // toggle the modal for artefact deletion
-  toggleDeleteModal = async () => {
-    const { navigate } = this.props.navigation;
-
-    Alert.alert(
-      "Delete Artefact",
-      "Are you sure you want to delete your artefact?",
-      [
-        {
-          text: "No",
-          onPress: () => console.log("Cancel Pressed"),
-          style: "cancel"
-        },
-        {
-          text: "Yes",
-          onPress: async () => {
-            // show user the loading modal
-            this.setLoading(true);
-
-            // remove selected artefact from redux states
-            await this.props
-              .removeSelectedArtefact(this.props.artefacts.selectedArtefact._id)
-              .then(() => {
-                // stop showing user the loading modal
-                this.setLoading(false);
-
-                // navigate to artefacts
-                navigate("Artefacts");
-              })
-              .catch(err => {
-                // stop showing user the loading modal
-                this.setLoading(false);
-                // show error
-                console.log(err.response.data);
-              });
-          }
-        }
-      ],
-      { cancelable: false }
-    );
-  };
-
-  // setter function for "loading" to show user that something is loading
-  setLoading = loading => {
-    this.setState({
-      ...this.state,
-      loading
-    });
   };
 
   render() {
@@ -343,7 +339,7 @@ class SelectedArtefact extends Component {
               <ImageView
                 images={artefactImage}
                 isVisible={this.state.isImageViewVisible}
-                onClose={()=> this.setState({isImageViewVisible:false})}
+                onClose={() => this.setState({ isImageViewVisible: false })}
                 animationType={"fade"}
                 isSwipeCloseEnabled={true}
               />
