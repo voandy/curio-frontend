@@ -114,7 +114,7 @@ class SelectedGroup extends Component {
         },
         {
           text: "Yes",
-          onPress: this.onDeleteArtefact()
+          onPress: () => this.onDeleteSelectedGroup()
         }
       ],
       { cancelable: false }
@@ -128,7 +128,7 @@ class SelectedGroup extends Component {
     navigate("SelectedArtefact", { artefactId });
   };
 
-  onDeleteArtefact = async () => {
+  onDeleteSelectedGroup = async () => {
     const { navigate } = this.props.navigation;
     // show user the loading modal
     this.setLoading(true);
