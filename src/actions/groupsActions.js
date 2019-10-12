@@ -134,14 +134,34 @@ export const getSelectedGroupAllMembers = groupId => dispatch => {
 };
 
 // edit group details
-export const editSelectedGroup = groupId => dispatch => {
+export const editSelectedGroup = group => (dispatch, getState) => {
   return new Promise((resolve, reject) => {
-    editGroupAPIRequest(groupId)
-      .then(res => {
-        dispatch(setSelectedGroupMembers(res.data));
-        resolve(res);
-      })
-      // failure
+    // check if user selects a new image to upload or not
+    (() => {
+      // if a new image is selects, the imageURI would not be empty
+      return !group.imageURI
+        ? Promise.resolve(group.coverPhoto)
+        : uploadImageToGCS(group.imageURI);
+    })()
+      .then(imageURL => {
+        // prepare data body using the imageURL prepared
+        const groupData = {
+          ...group,
+          coverPhoto: imageURL
+        };
+        // send edit API request to backend
+        editGroupAPIRequest(group._id, groupData)
+          .then(res => {
+            // reload user groups data
+            dispatch(getUserGroups(getState().auth.user.id));
+            resolve(res);
+          })
+          // failure
+          .catch(err => {
+            console.log("groupActions: " + err);
+            reject(err);
+          });
+      }) // failure for getting imageURL
       .catch(err => {
         console.log("groupActions: " + err);
         reject(err);
