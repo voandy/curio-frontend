@@ -343,6 +343,7 @@ class SelectedArtefact extends Component {
               <ImageView
                 images={artefactImage}
                 isVisible={this.state.isImageViewVisible}
+                onClose={()=> this.setState({isImageViewVisible:false})}
                 animationType={"fade"}
                 isSwipeCloseEnabled={true}
               />
