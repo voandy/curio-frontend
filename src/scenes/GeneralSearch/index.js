@@ -15,11 +15,19 @@ import SearchFeed from "../../component/SearchFeed";
 import HeaderSearch from "../../component/HeaderSearch";
 
 class Search extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     // clear redux state in case user force quits the app and reopen it
-    // this.props.clearSearchResults();
+    this.props.clearSearchResults();
+
+    this.state = {
+      searchInput: "",
+      //search type: 0: user search, 1: group search
+      searchType: 0,
+      // has first search been done?
+      searchPerformed: false
+    };
   }
 
   // Nav bar details
@@ -29,18 +37,98 @@ class Search extends Component {
 
   componentWillUpdate(nextProps) {
     // refresh search results
-    if (nextProps.props.userSearchResults !== this.props.userSearchResults) {
+    if (nextProps.search !== this.props.search) {
       this.setState({
-        userData: nextProps.userSearchResults
+        search: nextProps.search
       });
-      console.log(this.props.userSearchResults);
+      console.log(this.props.search);
     }
   }
 
-  doGeneralSearch = () => {
-    this.props.searchUsers({ searchTerms: "Doe" }).then(() => {
-      console.log(this.props.userSearchResults);
-      alert("I done search!");
+  showSearchResults = function(userSearchResults, groupSearchResults) {
+    if (this.state.searchType === 0) {
+      return showUserResults(userSearchResults);
+    } else if (this.state.searchType === 0) {
+      return showGroupResults(groupSearchResults);
+    } else {
+      return <Text>Invalid search type.</Text>
+    }
+  }
+
+  showUserResults = function(userSearchResults) {
+    if (userSearchResults.length === 0) {
+      return <Text>No users found</Text>;
+    } else {
+      var userResultsFeed = [];
+
+      // create a view for each user result
+      for (var i = 0; i < userSearchResults.length; i++) {
+        userResultsFeed.push(
+          <SearchFeed
+            key={i}
+            heading={userSearchResults[i].name}
+            subHeading={userSearchResults[i].username}
+            isGroup={false}
+            userProfilePic={userSearchResults[i].profilePic}
+          />
+        );
+      }
+
+      return userResultsFeed;
+    }
+  };
+
+  showGroupResults = function(groupSearchResults) {
+    if (userSearchResults.length === 0) {
+      return <Text>No users found</Text>;
+    } else {
+      var groupResultsFeed = [];
+
+      // create a view for each group result
+      for (var i = 0; i < groupSearchResults.length; i++) {
+        userResultsFeed.push(
+          <SearchFeed
+            key={i}
+            heading={groupSearchResults[i].name}
+            subHeading={groupSearchResults[i].username}
+            isGroup={false}
+            userProfilePic={groupSearchResults[i].profilePic}
+          />
+        );
+      }
+
+      return groupResultsFeed;
+    }
+  };
+
+  switchUserResults = () => {
+    console.log("here");
+    this.setState({
+      searchType: 0
+    });
+  };
+
+  switchGroupResults = () => {
+    console.log("here2");
+    this.setState({
+      searchType: 1
+    });
+  };
+
+  onChangeSearchInput = searchInput => {
+    this.setState({
+      searchInput
+    });
+  };
+
+  doGeneralSearch = async searchInput => {
+    await Promise.all([
+      this.props.searchUsers({ searchTerms: searchInput }),
+      this.props.searchGroups({ searchTerms: searchInput })
+    ]).then(() => {
+      this.setState({
+        searchPerformed: true
+      });
     });
   };
 
@@ -53,9 +141,13 @@ class Search extends Component {
         <HeaderSearch
           tab1="Users"
           tab2="Groups"
+          searchInput={this.state.searchInput}
+          onChangeSearchInput={this.onChangeSearchInput}
           onSubmitEditing={event => {
-            this.doGeneralSearch();
+            this.doGeneralSearch(event.nativeEvent.text);
           }}
+          switchUserResults={this.switchUserResults}
+          switchGroupResults={this.switchGroupResults}
         />
 
         {/* scrollable area for CONTENT */}
@@ -63,24 +155,11 @@ class Search extends Component {
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={16}
         >
-          <SearchFeed
-            heading="Bob"
-            subHeading="bob"
-            isGroup={false}
-            image={require("../../../assets/images/test-delete-this/boi1.jpg")}
-          />
-          <SearchFeed
-            heading="Sarah"
-            subHeading="sarahLeee"
-            isGroup={false}
-            image={require("../../../assets/images/test-delete-this/boi2.jpg")}
-          />
-          <SearchFeed
-            heading="MEME LEGEND"
-            subHeading="5"
-            isGroup={true}
-            image={require("../../../assets/images/test-delete-this/boi4.jpg")}
-          />
+          {this.state.searchPerformed === true
+            ? // user search results
+              this.showSearchResults(this.props.search.userSearchResults, this.props.search.groupSearchResults)
+            : // group search results
+              <Text>Please enter search query above.</Text>}
         </ScrollView>
       </View>
     );
@@ -101,7 +180,7 @@ Search.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  search: state.reducers
+  search: state.search
 });
 
 export default connect(

@@ -75,6 +75,8 @@ class HeaderSearch extends Component {
             placeholder="Search"
             placeholderTextColor="#707070"
             style={[styles.searchText, styles.font]}
+            value={this.props.searchInput}
+            onChangeText={value => this.props.onChangeSearchInput(value)}
           />
           <Image
             style={styles.searchIcon}
@@ -85,7 +87,10 @@ class HeaderSearch extends Component {
         {/* header tab */}
         <View style={{ flexDirection: "row", justifyContent: "center" }}>
           <TouchableOpacity
-            onPress={() => this.clickTab(this.state.tab1)}
+            onPress={() => {
+              this.clickTab(this.state.tab1);
+              this.props.switchGroupResults;
+            }}
             style={styles.headerButton}
             activeOpacity={0.5}
           >
@@ -101,7 +106,12 @@ class HeaderSearch extends Component {
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={() => this.clickTab(this.state.tab2)}
+            onPress={() => {
+              {
+                this.clickTab(this.state.tab2);
+                this.props.switchUserResults;
+              }
+            }}
             style={styles.headerButton}
             activeOpacity={0.5}
           >
