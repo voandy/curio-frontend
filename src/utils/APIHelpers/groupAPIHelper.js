@@ -68,10 +68,10 @@ export const getGroupAllMembersAPIRequest = groupId => {
 };
 
 // edit group data api call
-export const editGroupAPIRequest = groupId => {
+export const editGroupAPIRequest = (groupId, groupData) => {
   return new Promise((resolve, reject) => {
     axios
-      .put("http://curioapp.herokuapp.com/api/group/id/" + groupId)
+      .put("http://curioapp.herokuapp.com/api/group/id/" + groupId, groupData)
       .then(res => resolve(res))
       .catch(err => reject(err));
   });

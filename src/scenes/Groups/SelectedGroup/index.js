@@ -117,9 +117,14 @@ class SelectedGroup extends Component {
       });
   };
 
-  // toggle the modal for artefact update input
-  toggleUpdateModal = () => {
-    this.setState({ isUpdateModalVisible: !this.state.isUpdateModalVisible });
+  // when user presses "edit group"
+  onEditGroup = () => {
+    const { navigate } = this.props.navigation;
+    // navigate to ArtefactsForm while passing the editedSelectedArtefact
+    navigate("GroupsForm", {
+      isEditingGroup: true,
+      selectedGroup: this.props.groups.selectedGroup
+    });
   };
 
   // toggle the modal for artefact deletion
@@ -270,7 +275,7 @@ class SelectedGroup extends Component {
               <OptionButton
                 firstOption={"Edit Group"}
                 secondOption={"Delete Group"}
-                toggleFirstOption={this.toggleUpdateModal}
+                toggleFirstOption={this.onEditGroup}
                 toggleSecondOption={this.toggleDeleteModal}
               />
             </View>
