@@ -44,7 +44,13 @@ export const searchGroups = searchTerms => dispatch => {
         reject(err);
       });
   });
- };
+};
+
+// clear selectedArtefact 
+export const clearSearchResults = () => dispatch => {
+  dispatch(userSearchResults([]));
+  dispatch(groupSearchResults([]));
+}
 
 // Redux actions //
 

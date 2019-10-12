@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
 
 import {
   StyleSheet,
@@ -7,16 +9,45 @@ import {
   StatusBar
 } from "react-native";
 
+import {
+  searchUsers,
+  searchGroups,
+  clearSearchResults
+} from "../../actions/searchActions";
+
 // Custom component
 import SearchFeed from "../../component/SearchFeed";
 import HeaderSearch from "../../component/HeaderSearch";
 
-export default class Search extends Component {
+class Search extends Component {
+  constructor() {
+    super();
+
+    // clear redux state in case user force quits the app and reopen it
+    // this.props.clearSearchResults();
+  }
 
   // Nav bar details
   static navigationOptions = {
     header: null
   };
+
+  componentWillUpdate(nextProps) {
+    // refresh search results
+    if (nextProps.props.userSearchResults !== this.props.userSearchResults) {
+      this.setState({
+        userData: nextProps.userSearchResults
+      });
+      console.log(this.props.userSearchResults);
+    }
+  }
+
+  doGeneralSearch = () => {
+    this.props.searchUsers({ "searchTerms": "Doe" }).then(() => {
+      console.log(this.props.userSearchResults);
+      alert("I done search!");
+    });
+  }
 
   render() {
 
@@ -25,8 +56,7 @@ export default class Search extends Component {
 
     return (
       <View style={styles.container}>
-        {/* TODO add onSubmit here */}
-        <HeaderSearch tab1="Users" tab2="Groups"/>
+        <HeaderSearch tab1="Users" tab2="Groups" onSubmitEditing={event => {this.doGeneralSearch()}}/>
 
         {/* scrollable area for CONTENT */}
         <ScrollView
@@ -53,3 +83,18 @@ const styles = StyleSheet.create({
     marginTop: StatusBar.currentHeight
   },
 });
+
+Search.propTypes = {
+  searchUsers: PropTypes.func.isRequired,
+  searchGroups: PropTypes.func.isRequired,
+  clearSearchResults: PropTypes.func.isRequired
+};
+
+const mapStateToProps = state => ({
+  search: state.reducers
+});
+
+export default connect(
+  mapStateToProps,
+  { searchUsers, searchGroups, clearSearchResults }
+)(Search);
