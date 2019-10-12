@@ -10,7 +10,7 @@ import {
   View,
   Text,
   Image,
-  Alert,
+  Alert
 } from "react-native";
 
 // import redux actions for groups
@@ -21,6 +21,7 @@ import {
   getSelectedGroupAllArtefacts,
   getSelectedGroupAllMembers,
   getSelectedGroupArtefactComments,
+  deleteSelectedGroup
 } from "../../../actions/groupsActions";
 
 // custom component
@@ -141,48 +142,6 @@ class SelectedGroup extends Component {
     navigate("SelectedArtefact", { artefactId });
   };
 
-  // toggle the modal for group deletion
-  toggleDeleteModal = async () => {
-    const { navigate } = this.props.navigation;
-
-    Alert.alert(
-      "Delete Group",
-      "Are you sure you want to delete this group?",
-      [
-        {
-          text: "No",
-          onPress: () => console.log("Cancel Pressed"),
-          style: "cancel"
-        },
-        {
-          text: "Yes",
-          onPress: async () => {
-            // show user the loading modal
-            // this.setLoading(true);
-
-            // // remove selected artefact from redux states
-            // await this.props
-            //   .removeSelectedArtefact(this.props.artefacts.selectedArtefact._id)
-            //   .then(() => {
-            //     // stop showing user the loading modal
-            //     this.setLoading(false);
-
-            //     // navigate to artefacts
-            //     navigate("Artefacts");
-            //   })
-            //   .catch(err => {
-            //     // stop showing user the loading modal
-            //     this.setLoading(false);
-            //     // show error
-            //     console.log(err.response.data);
-            //   });
-          }
-        }
-      ],
-      { cancelable: false }
-    );
-  };
-
   // post new artefact to the backend
   onSubmit = async () => {
     // show user the loading modal
@@ -222,14 +181,12 @@ class SelectedGroup extends Component {
           onPress: async () => {
             // show user the loading modal
             this.setLoading(true);
-            console.log("deleting group");
             // remove selected artefact from redux states
-            await this.props
-              .deleteSelectedGroup(this.props.groups.selectedGroup._id)
+            //prettier-ignore
+            await this.props.deleteSelectedGroup(this.props.groups.selectedGroup._id)
               .then(() => {
                 // stop showing user the loading modal
                 this.setLoading(false);
-
                 // navigate to groups
                 navigate("Groups");
               })
@@ -315,17 +272,6 @@ class SelectedGroup extends Component {
           </View>
           {/* container for all artefacts */}
           <View>
-            {/* {this.props.groups.userGroups.length !== 0 ? (
-              <View>{"ADD CONTENT HERE"}</View>
-            ) : (
-                <View style={styles.emptyFeed}>
-                  <Text
-                    style={{ textAlign: "center", marginTop: hp(0.05), marginBottom:hp(0.1), fontSize: 16, fontFamily: "HindSiliguri-Regular" }}
-                  >
-                    Get started by adding new memeber to the group {"\n"} and start post items here !
-                  </Text>
-                </View>
-              )} */}
             {/* Show all artefacts in group */}
             {this.showGroupArtefacts(selectedGroupArtefacts)}
           </View>
