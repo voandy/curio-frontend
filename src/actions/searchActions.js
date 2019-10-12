@@ -48,8 +48,8 @@ export const searchGroups = searchTerms => dispatch => {
 
 // clear selectedArtefact 
 export const clearSearchResults = () => dispatch => {
-  dispatch(userSearchResults([]));
-  dispatch(groupSearchResults([]));
+  dispatch(setUserSearchResults([]));
+  dispatch(setGroupSearchResults([]));
 }
 
 // Redux actions //

@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
-import { StyleSheet, ScrollView, View, StatusBar } from "react-native";
+import { StyleSheet, ScrollView, View, Text, StatusBar } from "react-native";
 
 import {
   searchUsers,
@@ -13,6 +13,9 @@ import {
 // Custom component
 import SearchFeed from "../../component/SearchFeed";
 import HeaderSearch from "../../component/HeaderSearch";
+
+// custom responsive design component
+import { deviceWidthDimension as wd } from "../../utils/responsiveDesign";
 
 class Search extends Component {
   constructor(props) {
@@ -41,23 +44,22 @@ class Search extends Component {
       this.setState({
         search: nextProps.search
       });
-      console.log(this.props.search);
     }
   }
 
-  showSearchResults = function(userSearchResults, groupSearchResults) {
+  showSearchResults = function (userSearchResults, groupSearchResults) {
     if (this.state.searchType === 0) {
-      return showUserResults(userSearchResults);
+      return this.showUserResults(userSearchResults);
     } else if (this.state.searchType === 0) {
-      return showGroupResults(groupSearchResults);
+      return this.showGroupResults(groupSearchResults);
     } else {
-      return <Text>Invalid search type.</Text>
+      return <Text style={styles.emptySearch}>Invalid search type.</Text>
     }
   }
 
-  showUserResults = function(userSearchResults) {
+  showUserResults = function (userSearchResults) {
     if (userSearchResults.length === 0) {
-      return <Text>No users found</Text>;
+      return <Text style={styles.emptySearch}>No users found</Text>;
     } else {
       var userResultsFeed = [];
 
@@ -78,9 +80,9 @@ class Search extends Component {
     }
   };
 
-  showGroupResults = function(groupSearchResults) {
+  showGroupResults = function (groupSearchResults) {
     if (userSearchResults.length === 0) {
-      return <Text>No users found</Text>;
+      return <Text style={styles.emptySearch}>No users found</Text>;
     } else {
       var groupResultsFeed = [];
 
@@ -157,9 +159,9 @@ class Search extends Component {
         >
           {this.state.searchPerformed === true
             ? // user search results
-              this.showSearchResults(this.props.search.userSearchResults, this.props.search.groupSearchResults)
+            this.showSearchResults(this.props.search.userSearchResults, this.props.search.groupSearchResults)
             : // group search results
-              <Text>Please enter search query above.</Text>}
+            <Text style={styles.emptySearch}>Please enter search query above.</Text>}
         </ScrollView>
       </View>
     );
@@ -170,6 +172,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: StatusBar.currentHeight
+  },
+
+  font: {
+    fontFamily: "HindSiliguri-Bold"
+  },
+
+  emptySearch: {
+    alignItems: "center",
+    marginVertical: wd(0.2)
   }
 });
 
