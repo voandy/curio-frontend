@@ -13,7 +13,7 @@ import {
 } from "react-native";
 
 // redux actions
-import { createNewArtefacts } from "../../../actions/artefactsActions";
+import { createNewArtefacts, editSelectedArtefact } from "../../../actions/artefactsActions";
 import DatePicker from "react-native-datepicker";
 
 // expo image modules
@@ -56,7 +56,23 @@ class ArtefactsForm extends Component {
         userId: this.props.auth.user.id
       },
       loading: false,
-    };  
+    };
+
+    // add image to ArtefactsForm if it is for editing
+    if (this.props.navigation.getParam("isEditingArtefact") === true) {
+      this.state = {
+        newArtefact: {
+          ...newArtefact,
+          imageURI: this.props.artefacts.selectedArtefact.images[0].URL,          
+
+          // get newArtefact information
+          ...this.props.navigation.getParam("newArtefact", "NO-NEW-ARTEFACT"),
+  
+          userId: this.props.auth.user.id
+        },
+        loading: false,
+      };
+    }
   }
 
   // nav details
@@ -134,6 +150,7 @@ class ArtefactsForm extends Component {
           navigate("Artefacts");
       })
       .catch(err => {
+          console.log(err);
           // stop showing user the loading modal
           this.setLoading(false);
           // show error
@@ -143,6 +160,7 @@ class ArtefactsForm extends Component {
 
   // post edited artefact to the backend
   onEditArtefactSubmit = async () => {
+    const { navigate } = this.props.navigation;
     // show user the loading modal
     this.setLoading(true);
     // send and create artefact to the backend
@@ -463,5 +481,5 @@ const mapStateToProps = state => ({
 // map required redux state and actions to local props
 export default connect(
   mapStateToProps,
-  { createNewArtefacts }
+  { createNewArtefacts, editSelectedArtefact }
 )(ArtefactsForm);
