@@ -42,15 +42,8 @@ class Scenes extends Component {
   // or there's no user logged in on app launch
   async componentDidMount() {
     if (this.props.auth.isAuthenticated) {
-      // get user authentication data
-      const { user } = this.props.auth;
-      // get user data and artefacts
-      this.props.getUserData(user.id);
-      this.props.getUserArtefacts(user.id);
-      this.props.getUserGroups(user.id);
-      this.props.getUserNotifications(user.id);
-      // post user's expo-push-token to backend if haven't already
-      registerForPushNotificationsAsync(user.id);
+      // retrieve and setup data
+      this.setupUserAppData();
     }
   }
 
@@ -64,17 +57,23 @@ class Scenes extends Component {
       Object.keys(previousUser).length === 0 &&
       Object.keys(user).length > 0
     ) {
-      // get user authentication data
-      const { user } = this.props.auth;
-      // get user data and artefacts
-      this.props.getUserData(user.id);
-      this.props.getUserArtefacts(user.id);
-      this.props.getUserGroups(user.id);
-      this.props.getUserNotifications(user.id);
-      // post user's expo-push-token to backend if haven't already
-      registerForPushNotificationsAsync(user.id);
+      // retrieve and setup data
+      this.setupUserAppData();
     }
   }
+
+  // retrieve and setup initial required data upon app launch after user logs in
+  setupUserAppData = () => {
+    // get user authentication data
+    const { user } = this.props.auth;
+    // get user data and artefacts
+    this.props.getUserData(user.id);
+    this.props.getUserArtefacts(user.id);
+    this.props.getUserGroups(user.id);
+    this.props.getUserNotifications(user.id);
+    // post user's expo-push-token to backend if haven't already
+    registerForPushNotificationsAsync(user.id);
+  };
 
   render() {
     return <AppContainer />;
