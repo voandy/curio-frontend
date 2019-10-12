@@ -11,7 +11,8 @@ import {
   Image,
   Text,
   Alert,
-  StatusBar
+  StatusBar,
+  RefreshControl
 } from "react-native";
 
 // date converter
@@ -45,27 +46,29 @@ import {
 } from "../../../actions/artefactsActions";
 
 // custom responsive design component
-import { deviceWidthDimension as wd } from "../../../utils/responsiveDesign";
+import {
+  deviceWidthDimension as wd,
+  deviceHeigthDimension as hp
+} from "../../../utils/responsiveDesign";
 
 class SelectedArtefact extends Component {
   constructor(props) {
     super(props);
-
     // clear redux state in case user force quits the app and reopen it
     this.props.clearSelectedArtefact();
-
+    // setup initial local state values
     this.state = {
+      // local page settings state
       isImageViewVisible: false,
       isUpdateModalVisible: false,
       loading: false,
-
+      refreshing: false,
+      // artefact state
       newComment: "",
-      // whether the user has liked this artefact
       liked: 0,
       likesCount: 0,
       commentsCount: 0,
       likingEnabled: true
-      // statusBarHidden: false,
     };
   }
 
@@ -111,7 +114,6 @@ class SelectedArtefact extends Component {
     // extract prev & selected artefact comments details
     const prevComments = prevProps.artefacts.artefactComments;
     const currentComments = this.props.artefacts.artefactComments;
-
     // assign selectedArtefact along with likes when selectedArtefact data
     // has been retrieved from api call for the first time
     if (prevComments.length !== currentComments.length) {
@@ -139,16 +141,34 @@ class SelectedArtefact extends Component {
     });
   };
 
+  // setter function for handling new changes in local comment state
   onChangeNewComment = newComment => {
     this.setState({
       newComment
     });
   };
 
-  // toggle the modal for artefact update input
-  toggleUpdateModal = () => {
-    const { navigate } = this.props.navigation;
+  // refresh page
+  refreshSelectedArtefactPage = async () => {
+    this.setState({ refreshing: true });
+    // get data from backend
+    artefactId = this.props.navigation.getParam("artefactId", "NO-ARTEFACT-ID");
+    // reload everything at once, only refresh once everything is done loading
+    Promise.all([
+      this.props.getSelectedArtefact(artefactId),
+      this.props.getArtefactComments(artefactId)
+    ])
+      // resets refreshing state
+      .then(() => this.setState({ refreshing: false }))
+      .catch(() => {
+        this.setState({ refreshing: false });
+        alert("Please try again later");
+      });
+  };
 
+  // when user presses "edit artefact"
+  onEditArtefact = () => {
+    const { navigate } = this.props.navigation;
     // navigate to ArtefactsForm while passing the editedSelectedArtefact
     navigate("ArtefactsForm", {
       isEditingArtefact: true,
@@ -176,6 +196,7 @@ class SelectedArtefact extends Component {
     );
   };
 
+  // when user presses "delete artefact"
   onDeleteSelectedArtefact = async () => {
     const { navigate } = this.props.navigation;
     // show user the loading modal
@@ -286,21 +307,22 @@ class SelectedArtefact extends Component {
   };
 
   render() {
-    // does not render when selectedArtefact is empty
-    if (Object.keys(this.props.artefacts.selectedArtefact).length === 0) {
-      return null;
-    }
-
     // date format
     Moment.locale("en");
-
+    // extract selectedArtefact from redux state
+    const { selectedArtefact } = this.props.artefacts;
+    // does not render when selectedArtefact is empty
+    if (Object.keys(selectedArtefact).length === 0) {
+      return null;
+    }
+    // prepare artefact image
     const artefactImage = [
       {
         source: {
-          uri: this.props.artefacts.selectedArtefact.images[0].URL
+          uri: selectedArtefact.images[0].URL
         },
-        width: Dimensions.get("window").width,
-        height: Dimensions.get("window").width
+        width: wd(1),
+        height: wd(1)
       }
     ];
 
@@ -316,12 +338,10 @@ class SelectedArtefact extends Component {
               ref={scrollView => {
                 this.scrollView = scrollView;
               }}
-              maxHeight={Dimensions.get("window").height * 0.5}
-              minHeight={Dimensions.get("window").height * 0.2}
+              maxHeight={hp(0.5)}
+              minHeight={hp(0)}
               // use this to dynamically get image data
-              headerImage={{
-                uri: this.props.artefacts.selectedArtefact.images[0].URL
-              }}
+              headerImage={{ uri: selectedArtefact.images[0].URL }}
               renderForeground={() => (
                 // change this to open the image in full screen
                 <TouchableOpacity
@@ -334,6 +354,12 @@ class SelectedArtefact extends Component {
                   }
                 />
               )}
+              refreshControl={
+                <RefreshControl
+                  refreshing={this.state.refreshing}
+                  onRefresh={this.refreshSelectedArtefactPage}
+                />
+              }
             >
               {/* open image in full screen */}
               <ImageView
@@ -354,18 +380,10 @@ class SelectedArtefact extends Component {
                   <OptionButton
                     firstOption={"Edit Artefact"}
                     secondOption={"Delete Artefact"}
-                    toggleFirstOption={this.toggleUpdateModal}
+                    toggleFirstOption={this.onEditArtefact}
                     toggleSecondOption={this.toggleDeleteModal}
                   />
                 </View>
-
-                {/* <ArtefactModal
-                  isModalVisible={this.state.isUpdateModalVisible}
-                  toggleModal={this.toggleUpdateModal}
-                  newArtefact={this.state.selectedArtefact}
-                  onSubmit={this.onSubmit.bind(this)}
-                  setNewArtefact={this.setSelectedArtefact.bind(this)}
-                /> */}
 
                 {/* description */}
                 <Text style={styles.description}>
