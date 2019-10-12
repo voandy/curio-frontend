@@ -90,39 +90,41 @@ class SelectedArtefact extends Component {
   };
 
   async componentDidUpdate(prevProps) {
-    // assign selectedArtefact along with likes when selectedArtefact data has been retrieved from api call for the first time
+    // extract prev & selected artefact details
+    const prevArtefact = prevProps.artefacts.selectedArtefact;
+    const currentArtefact = this.props.artefacts.selectedArtefact;
+
+    // assign selectedArtefact along with likes when selectedArtefact data
+    // has been retrieved from api call for the first time
     if (
-      Object.keys(prevProps.artefacts.selectedArtefact).length === 0 &&
-      Object.keys(this.props.artefacts.selectedArtefact).length !== 0
+      Object.keys(prevArtefact).length === 0 &&
+      Object.keys(currentArtefact).length !== 0
     ) {
       this.setState({
         selectedArtefact: {
-          ...this.props.artefacts.selectedArtefact,
-          imageURI: this.props.artefacts.selectedArtefact.images[0].URL
+          ...currentArtefact,
+          imageURI: currentArtefact.images[0].URL
         },
-        liked: this.props.artefacts.selectedArtefact.likes.includes(
-          this.props.user.userData._id
-        ),
-        likesCount: this.props.artefacts.selectedArtefact.likes.length
+        liked: currentArtefact.likes.includes(this.props.user.userData._id),
+        likesCount: currentArtefact.likes.length
       });
     }
 
-    // assign selectedArtefact along with likes when selectedArtefact data has been retrieved from api call for the first time
-    if (
-      prevProps.artefacts.artefactComments.length !==
-      this.props.artefacts.artefactComments.length
-    ) {
+    // extract prev & selected artefact comments details
+    const prevComments = prevProps.artefacts.artefactComments;
+    const currentComments = this.props.artefacts.artefactComments;
+
+    // assign selectedArtefact along with likes when selectedArtefact data
+    // has been retrieved from api call for the first time
+    if (prevComments.length !== currentComments.length) {
       this.setState({
-        commentsCount: this.props.artefacts.artefactComments.length
+        commentsCount: currentComments.length
       });
     }
 
-    // re-generate comments when a new artefact comment has been  made
-    if (
-      prevProps.artefacts.artefactComments.length + 1 ===
-      this.props.artefacts.artefactComments.length
-    ) {
-      const artefactId = this.props.artefacts.selectedArtefact._id;
+    // re-generate comments when a new artefact comment has been made
+    if (prevComments.length + 1 === currentComments.length) {
+      const artefactId = currentArtefact._id;
       await this.props.getArtefactComments(artefactId);
     }
   }
@@ -231,11 +233,10 @@ class SelectedArtefact extends Component {
     const { navigate } = this.props.navigation;
 
     // navigate to ArtefactsForm while passing the editedSelectedArtefact
-    navigate("ArtefactsForm", 
-      { 
-        isEditingArtefact: true,
-        newArtefact: this.props.artefacts.selectedArtefact
-      });
+    navigate("ArtefactsForm", {
+      isEditingArtefact: true,
+      newArtefact: this.props.artefacts.selectedArtefact
+    });
   };
 
   // toggle the modal for artefact deletion
@@ -263,7 +264,7 @@ class SelectedArtefact extends Component {
               .then(() => {
                 // stop showing user the loading modal
                 this.setLoading(false);
-                
+
                 // navigate to artefacts
                 navigate("Artefacts");
               })
@@ -287,7 +288,7 @@ class SelectedArtefact extends Component {
       loading
     });
   };
-  
+
   render() {
     // does not render when selectedArtefact is empty
     if (Object.keys(this.props.artefacts.selectedArtefact).length === 0) {
