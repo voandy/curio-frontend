@@ -142,13 +142,6 @@ class SelectedGroup extends Component {
     );
   };
 
-  // click a specific artefact and navigate to it
-  clickArtefact = artefactId => {
-    const { navigate } = this.props.navigation;
-    // navigate to selected artefact
-    navigate("SelectedArtefact", { artefactId });
-  };
-
   // delete the current selected group
   onDeleteSelectedGroup = async () => {
     const { navigate } = this.props.navigation;
@@ -169,6 +162,13 @@ class SelectedGroup extends Component {
         // show error
         console.log(err.response.data);
       });
+  };
+
+  // click a specific artefact and navigate to it
+  clickArtefact = artefactId => {
+    const { navigate } = this.props.navigation;
+    // navigate to selected artefact
+    navigate("SelectedArtefact", { artefactId });
   };
 
   // post new artefact to the backend
@@ -247,7 +247,7 @@ class SelectedGroup extends Component {
           refreshControl={
             <RefreshControl
               refreshing={this.state.refreshing}
-              onRefresh={this.refreshGroupPage}
+              onRefresh={this.refreshSelectedGroupPage}
             />
           }
         >
