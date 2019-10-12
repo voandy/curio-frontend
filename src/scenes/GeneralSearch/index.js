@@ -2,12 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
-import {
-  StyleSheet,
-  ScrollView,
-  View,
-  StatusBar
-} from "react-native";
+import { StyleSheet, ScrollView, View, StatusBar } from "react-native";
 
 import {
   searchUsers,
@@ -43,34 +38,49 @@ class Search extends Component {
   }
 
   doGeneralSearch = () => {
-    this.props.searchUsers({ "searchTerms": "Doe" }).then(() => {
+    this.props.searchUsers({ searchTerms: "Doe" }).then(() => {
       console.log(this.props.userSearchResults);
       alert("I done search!");
     });
-  }
+  };
 
   render() {
-
     // navigation in app
     const { navigate } = this.props.navigation;
 
     return (
       <View style={styles.container}>
-        <HeaderSearch tab1="Users" tab2="Groups" onSubmitEditing={event => {this.doGeneralSearch()}}/>
+        <HeaderSearch
+          tab1="Users"
+          tab2="Groups"
+          onSubmitEditing={event => {
+            this.doGeneralSearch();
+          }}
+        />
 
         {/* scrollable area for CONTENT */}
         <ScrollView
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={16}
         >
-
-            <SearchFeed heading="Bob" subHeading="bob" isGroup={false}
-                image={require("../../../assets/images/test-delete-this/boi1.jpg")}/>
-            <SearchFeed heading="Sarah" subHeading="sarahLeee" isGroup={false}
-                image={require("../../../assets/images/test-delete-this/boi2.jpg")}/>
-            <SearchFeed heading="MEME LEGEND" subHeading="5" isGroup={true}
-                image={require("../../../assets/images/test-delete-this/boi4.jpg")}/>
-
+          <SearchFeed
+            heading="Bob"
+            subHeading="bob"
+            isGroup={false}
+            image={require("../../../assets/images/test-delete-this/boi1.jpg")}
+          />
+          <SearchFeed
+            heading="Sarah"
+            subHeading="sarahLeee"
+            isGroup={false}
+            image={require("../../../assets/images/test-delete-this/boi2.jpg")}
+          />
+          <SearchFeed
+            heading="MEME LEGEND"
+            subHeading="5"
+            isGroup={true}
+            image={require("../../../assets/images/test-delete-this/boi4.jpg")}
+          />
         </ScrollView>
       </View>
     );
@@ -81,7 +91,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: StatusBar.currentHeight
-  },
+  }
 });
 
 Search.propTypes = {
