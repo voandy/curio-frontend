@@ -8,7 +8,10 @@ const { store, persistor } = configureStore();
 
 export default function withProvider() {
   return (
+    // redux provider
     <Provider store={store}>
+
+      {/* to persist and rehydrate a redux store */}
       <PersistGate loading={null} persistor={persistor}>
         <Scenes />
       </PersistGate>
