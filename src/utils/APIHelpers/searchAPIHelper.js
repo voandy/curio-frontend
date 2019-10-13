@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // group search
-export const searchGroupsAPIRequest = newArtefact => {
+export const searchGroupsAPIRequest = searchTerms => {
   return new Promise((resolve, reject) => {
     axios
       .put("http://curioapp.herokuapp.com/api/group/search", searchTerms)
@@ -11,7 +11,7 @@ export const searchGroupsAPIRequest = newArtefact => {
 };
 
 // user search
-export const searchUsersAPIRequest = newArtefact => {
+export const searchUsersAPIRequest = searchTerms => {
   return new Promise((resolve, reject) => {
     axios
       .put("http://curioapp.herokuapp.com/api/user/search", searchTerms)
