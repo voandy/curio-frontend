@@ -45,6 +45,8 @@ import {
   clearSelectedArtefact
 } from "../../../actions/artefactsActions";
 
+import { getSelectedGroupAllArtefacts } from "../../../actions/groupsActions";
+
 // custom responsive design component
 import {
   deviceWidthDimension as wd,
@@ -204,6 +206,7 @@ class SelectedArtefact extends Component {
   // when user presses "delete artefact"
   onDeleteSelectedArtefact = async () => {
     const { navigate } = this.props.navigation;
+    const origin = this.props.navigation.getParam("origin");
     // show user the loading modal
     this.setLoading(true);
     // remove selected artefact from redux states
@@ -212,8 +215,18 @@ class SelectedArtefact extends Component {
       .then(() => {
         // stop showing user the loading modal
         this.setLoading(false);
-        // navigate to artefacts
-        navigate("Artefacts");
+        // navigate to origin
+        switch (origin) {
+          case "SelectedGroup":
+            // extract group id
+            groupId = this.props.navigation.getParam("groupId");
+            // reload group's artefacts info
+            this.props.getSelectedGroupAllArtefacts(groupId);
+            return navigate("SelectedGroup");
+
+          default:
+            return navigate("Artefacts");
+        }
       })
       .catch(err => {
         // stop showing user the loading modal
@@ -533,6 +546,7 @@ export default connect(
     unlikeArtefact,
     getArtefactComments,
     commentOnArtefact,
-    clearSelectedArtefact
+    clearSelectedArtefact,
+    getSelectedGroupAllArtefacts
   }
 )(SelectedArtefact);

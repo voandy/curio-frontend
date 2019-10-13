@@ -17,6 +17,9 @@ import {
   createNewArtefacts,
   editSelectedArtefact
 } from "../../../actions/artefactsActions";
+
+import { addArtefactToGroup } from "../../../actions/groupsActions";
+
 import DatePicker from "react-native-datepicker";
 
 // expo image modules
@@ -121,17 +124,26 @@ class ArtefactsForm extends Component {
     this.setArtefact("privacy", privacy);
   };
 
-
+  //prettier-ignore
   onSubmit = async () => {
     const { navigate } = this.props.navigation;
     const isEditMode = this.props.navigation.getParam("isEditMode");
+    // for adding artefact to group
+    // extract required parameters
+    const addToGroup = this.props.navigation.getParam("addToGroup");
+    const groupId = this.props.navigation.getParam("groupId");
     // show user the loading modal
     this.setLoading(true);
     // use appropriate action based on current page mode (either editing or creating)
     (() => {
       return isEditMode
         ? this.props.editSelectedArtefact(this.state.artefact)
-        : this.props.createNewArtefacts(this.state.artefact);
+        : this.props.createNewArtefacts(this.state.artefact).then(res => {
+            // check if it should add the artefact to group
+            return addToGroup
+              ? this.props.addArtefactToGroup(groupId, res.data._id)
+              : Promise.resolve();
+          });
     })()
       .then(() => {
         // stop showing user the loading modal
@@ -143,8 +155,8 @@ class ArtefactsForm extends Component {
         // therefore, no need to pass in artefact id
         isEditMode
           ? navigate("SelectedArtefact")
-          : // if in create mode, navigate to artefacts page
-            navigate("Artefacts");
+          : // if in create mode, check if it should return to selected group or artefacts
+          addToGroup ? navigate("SelectedGroup") : navigate("Artefacts");
       })
       .catch(err => {
         // stop showing user the loading modal
@@ -336,8 +348,8 @@ class ArtefactsForm extends Component {
                     selectedValue={this.state.artefact.privacy}
                     onValueChange={this.setPrivacy.bind(this)}
                   >
-                    <Picker.Item label="Private" value= {1} />
-                    <Picker.Item label="Public" value= {0} />
+                    <Picker.Item label="Private" value={1} />
+                    <Picker.Item label="Public" value={0} />
                   </Picker>
                 </View>
               </View>
@@ -452,5 +464,5 @@ const mapStateToProps = state => ({
 // map required redux state and actions to local props
 export default connect(
   mapStateToProps,
-  { createNewArtefacts, editSelectedArtefact }
+  { createNewArtefacts, editSelectedArtefact, addArtefactToGroup }
 )(ArtefactsForm);
