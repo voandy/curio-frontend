@@ -14,8 +14,6 @@ import {
 
 // custom components
 import SimpleHeader from "../../component/SimpleHeader";
-import ArtefactFeed from "../../component/ArtefactFeed";
-import ArtefactModal from "../../component/ArtefactModal";
 import AddButton from "../../component/AddButton";
 
 // redux actions
