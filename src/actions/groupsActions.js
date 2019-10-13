@@ -58,19 +58,10 @@ export const createNewGroup = groupData => dispatch => {
           putGroupAdminAPIRequest(res.data._id, adminId)
             .then(() => {
               // get all user's groups to re-add them to redux store
-              getUserGroupsAPIRequest(adminId)
-                .then(res => {
-                  resolve(res);
-                  dispatch(setUserGroups(res.data));
-                })
-                // failure
-                .catch(err => {
-                  console.log("groupActions: " + err);
-                  reject(err);
-                });
-              // failed to set group admin
+              dispatch(getUserGroups(adminId));
+              resolve(res);
             })
-            // failure
+            // failed to set group admin
             .catch(err => {
               console.log("groupActions: " + err);
               reject(err);
