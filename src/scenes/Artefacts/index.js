@@ -54,25 +54,19 @@ class Artefacts extends Component {
         ...newArtefact,
         userId: this.props.auth.user.id
       },
+      isPublicTab: true,
       isModalVisible: false,
       loading: false,
       refreshing: false
     }
+
+    this.onChangePrivacyTab = this.onChangePrivacyTab.bind(this);
   }
 
   // Nav bar details
   static navigationOptions = {
     header: null
   };
-
-  componentDidUpdate(prevProps) {
-
-    // update selectedArtefacts when an artefact has been deleted
-    if (prevProps.artefacts.userArtefacts.length !== this.props.artefacts.userArtefacts.length + 1) {
-      // reload userArtefacts to update userArtefacts in redux state
-      this.props.getUserArtefacts(this.props.auth.user.id);
-    }
-  }
 
   // toggle the modal for new artefact creation
   toggleModal = () => {
@@ -105,6 +99,12 @@ class Artefacts extends Component {
     this.setState({
       ...this.state,
       loading
+    });
+  };
+
+  onChangePrivacyTab = () => {
+    this.setState({
+      isPublicTab: !this.state.isPublicTab
     });
   };
 
@@ -211,8 +211,10 @@ class Artefacts extends Component {
         <SimpleHeader
           title="My Artefacts"
           showTab={true}
-          tab1="Private"
-          tab2="Public"
+          onChangePrivacyTab={this.onChangePrivacyTab}
+          isPublicTab={this.state.isPublicTab}
+          tab1="Public"
+          tab2="Private"
           onSubmit={() => navigate("GeneralSearch")} />
         {/* scrollable area for CONTENT */}
         <ScrollView
