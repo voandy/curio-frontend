@@ -4,6 +4,7 @@ import {
   updateNotificationToReadAPIRequest
 } from "../utils/APIHelpers/notificationAPIHelpers";
 
+// get notifications from user of userId
 export const getUserNotifications = userId => dispatch => {
   return new Promise((resolve, reject) => {
     getUserNotificationsAPIRequest(userId)
@@ -18,6 +19,7 @@ export const getUserNotifications = userId => dispatch => {
   });
 };
 
+// set status of notification of notifId
 export const setSeenStatusToTrue = notifId => dispatch => {
   return new Promise((resolve, reject) => {
     updateNotificationToReadAPIRequest(notifId)
