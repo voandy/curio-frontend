@@ -39,7 +39,7 @@ const newArtefact = {
   category: "Art",
   dateObtained: "",
   imageURI: "",
-  privacy: "Private"
+  privacy: 0
 };
 
 class ArtefactsForm extends Component {
@@ -358,8 +358,8 @@ class ArtefactsForm extends Component {
                     selectedValue={this.state.newArtefact.privacy}
                     onValueChange={this.setPrivacy.bind(this)}
                   >
-                    <Picker.Item label="Private" value="Private" />
-                    <Picker.Item label="Public" value="Public" />
+                    <Picker.Item label="Private" value= {1} />
+                    <Picker.Item label="Public" value= {0} />
                   </Picker>
                 </View>
               </View>

@@ -151,11 +151,12 @@ class Artefacts extends Component {
       return new Date(b.datePosted) - new Date(a.datePosted);
     });
 
+    console.log(artefacts[0]);
+
     // create ArtefactFeed object out of artefact and push it into artefactFeeds array
     for (var i = 0; i < artefacts.length; i++) {
       const artefactId = artefacts[i]._id;
 
-      console.log(artefacts[0]);
       artefactFeeds.push(
         // DOES NOT WORK FOR NOW!!!!!!!!
         // <ArtefactFeed
