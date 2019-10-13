@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
   },
 
   header: {
-    height: 120
+    height: 80
   },
 
   search: {

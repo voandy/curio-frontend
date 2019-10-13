@@ -54,6 +54,23 @@ class Search extends Component {
     }
   }
 
+  // navigate to user's profile
+  gotoUserProfile = userId => {
+    console.log("herfe");
+    const { navigate } = this.props.navigation;
+    // navigate to selected user profile
+    navigate("PublicProfile", { userId });
+  };
+
+  // navigate to group page
+  gotoGroupPage = groupId => {
+    console.log("herfefff");
+    const { navigate } = this.props.navigation;
+    // navigate to selected group
+    navigate("SelectedGroup", { groupId });
+  };
+
+  // generate both user and group search feeds
   showSearchResults = function(userSearchResults, groupSearchResults) {
     if (this.state.searchType === 0) {
       return this.showUserResults(userSearchResults);
@@ -64,22 +81,16 @@ class Search extends Component {
     }
   };
 
-  // navigate to user's profile
-  gotoUserProfile = (userId) => {
-    const { navigate } = this.props.navigation;
-    // navigate to selected artefact
-    navigate("PublicProfile", { userId });
-  };
-
+  // generate feed for user search results
   showUserResults = function(userSearchResults) {
     if (userSearchResults.length === 0) {
       return <Text style={styles.emptySearch}>No users found</Text>;
     } else {
       var userResultsFeed = [];
-      const { navigate } = this.props.navigation;
 
       // create a view for each user result
       for (var i = 0; i < userSearchResults.length; i++) {
+        const userId = userSearchResults[i]._id;
         userResultsFeed.push(
           <SearchFeed
             key={i}
@@ -87,7 +98,7 @@ class Search extends Component {
             subHeading={userSearchResults[i].username}
             isGroup={false}
             searchImage={userSearchResults[i].profilePic}
-            pressSearchResult={this.gotoUserProfile(userSearchResults[i]._id)}
+            onPress={() => this.gotoUserProfile(userId)}
           />
         );
       }
@@ -96,6 +107,7 @@ class Search extends Component {
     }
   };
 
+  // generate feed for group search results
   showGroupResults = function(groupSearchResults) {
     if (groupSearchResults.length === 0) {
       return <Text style={styles.emptySearch}>No groups found</Text>;
@@ -104,6 +116,7 @@ class Search extends Component {
 
       // create a view for each group result
       for (var i = 0; i < groupSearchResults.length; i++) {
+        const groupId = groupSearchResults[i]._id;
         groupResultsFeed.push(
           <SearchFeed
             key={i}
@@ -111,6 +124,7 @@ class Search extends Component {
             subHeading={groupSearchResults[i].artefacts.length}
             isGroup={true}
             searchImage={groupSearchResults[i].coverPhoto}
+            onPress={() => this.gotoGroupPage(groupId)}
           />
         );
       }
@@ -225,7 +239,7 @@ class Search extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: StatusBar.currentHeight
+    marginTop: StatusBar.currentHeight,
   },
 
   font: {
@@ -234,14 +248,14 @@ const styles = StyleSheet.create({
 
   emptySearch: {
     alignItems: "center",
-    marginVertical: wd(0.2),
+    marginVertical: wd(0.1),
     textAlign: "center",
     color: "#707070"
   },
 
   headerButton: {
     alignContent: "center",
-    // marginTop: 10,
+    marginTop: 10,
     marginHorizontal: 15
   },
 
@@ -252,7 +266,10 @@ const styles = StyleSheet.create({
 
   highlightButtonText: {
     fontSize: 18,
-    color: "#FF6E6E"
+    color: "black",
+    borderColor: "#FF6E6E",
+    borderWidth: 0,
+    borderBottomWidth: 3
   }
 });
 

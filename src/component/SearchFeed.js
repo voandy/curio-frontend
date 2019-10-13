@@ -40,7 +40,7 @@ class SearchFeed extends Component {
       <View style={styles.card}>
         <TouchableOpacity
           activeOpacity={0.5}
-          onPress={this.props.pressSearchResult}
+          onPress={this.props.onPress}
         >
           <View style={styles.card}>
             {/* Image  */}
