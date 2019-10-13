@@ -13,9 +13,8 @@ import {
 } from "react-native";
 
 // custom components
-import SimpleHeader from "../../component/SimpleHeader";
 import ArtefactFeed from "../../component/ArtefactFeed";
-import ArtefactModal from "../../component/ArtefactModal";
+import SimpleHeader from "../../component/SimpleHeader";
 import AddButton from "../../component/AddButton";
 
 // redux actions
@@ -35,29 +34,17 @@ import {
 // import the loader modal to help show loading process
 import ActivityLoaderModal from "../../component/ActivityLoaderModal";
 
-// temp state to store object with attributes required to create a new artefact
-const newArtefact = {
-  userId: "",
-  title: "",
-  description: "",
-  category: "",
-  dateObtained: "",
-  imageURI: ""
-};
-
 class Artefacts extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      newArtefact: {
-        ...newArtefact,
-        userId: this.props.auth.user.id
-      },
       isModalVisible: false,
       loading: false,
-      refreshing: false
-    }
+      refreshing: false,
+      isPublicTab: true
+    };
+    this.onChangePrivacyTab = this.onChangePrivacyTab.bind(this);
   }
 
   // Nav bar details
@@ -65,39 +52,9 @@ class Artefacts extends Component {
     header: null
   };
 
-  componentDidUpdate(prevProps) {
-
-    // update selectedArtefacts when an artefact has been deleted
-    if (prevProps.artefacts.userArtefacts.length !== this.props.artefacts.userArtefacts.length + 1) {
-      // reload userArtefacts to update userArtefacts in redux state
-      this.props.getUserArtefacts(this.props.auth.user.id);
-    }
-  }
-
   // toggle the modal for new artefact creation
   toggleModal = () => {
     this.setState({ isModalVisible: !this.state.isModalVisible });
-  };
-
-  // new artefact's attribute change
-  setNewArtefact = (key, value) => {
-    this.setState({
-      newArtefact: {
-        ...this.state.newArtefact,
-        [key]: value
-      }
-    });
-  };
-
-  // revert newArtefact to initial state
-  resetNewArtefact = () => {
-    this.setState({
-      ...this.state,
-      newArtefact: {
-        ...newArtefact,
-        userId: this.props.auth.user.id
-      }
-    });
   };
 
   // setter function for "loading" to show user that something is loading
@@ -108,74 +65,65 @@ class Artefacts extends Component {
     });
   };
 
-  // post new artefact to the backend
-  onSubmit = async () => {
-    // show user the loading modal
-    this.setLoading(true);
-    // send and create artefact to the backend
-    //prettier-ignore
-    this.props.createNewArtefacts(this.state.newArtefact)
-      .then(() => {
-        // stop showing user the loading modal
-        this.setLoading(false);
-        // close loading modal
-        this.toggleModal();
-        this.resetNewArtefact();
-        
-      })
-      .catch(err => {
-        // stop showing user the loading modal
-        this.setLoading(false);
-        // show error
-        console.log(err.response.data);
-      });
+  // change privacy tab
+  onChangePrivacyTab = () => {
+    this.setState({
+      isPublicTab: !this.state.isPublicTab
+    });
   };
 
   // click a specific artefact and navigate to it
   clickArtefact = async artefactId => {
     const { navigate } = this.props.navigation;
-
     // navigate to selected artefact
-    navigate("SelectedArtefact", { artefactId });
+    navigate("SelectedArtefact", { origin: "Artefacts", artefactId });
+  };
+
+  onNewArtefactCreate = () => {
+    const { navigate } = this.props.navigation;
+    navigate("ArtefactsForm", { origin: "Artefacts" });
   };
 
   // return ArtefactFeedRows containing ArtefactFeed in different rows
-  showArtefacts = artefacts => {
+  showArtefacts = (artefacts, privacy) => {
     let artefactFeedRows = [];
     let artefactFeeds = [];
     let rowKey = 0;
     let artefactKey = 0;
 
     // sort array based on date obtained (from earliest to oldest)
-    artefacts.sort(function (a, b) {
+    artefacts.sort(function(a, b) {
       return new Date(b.datePosted) - new Date(a.datePosted);
     });
+
     // create ArtefactFeed object out of artefact and push it into artefactFeeds array
     for (var i = 0; i < artefacts.length; i++) {
       const artefactId = artefacts[i]._id;
 
-      artefactFeeds.push(
-        // DOES NOT WORK FOR NOW!!!!!!!!
-        // <ArtefactFeed
-        //   onPress={() => this.clickArtefact.bind(this)}
-        //   artefactId = {artefacts[i]._id}
-        //   key={artefactKey}
-        //   image={{ uri: artefacts[i].images[0].URL }}
-        // />
+      if (artefacts[i].privacy === privacy) {
+        artefactFeeds.push(
+          // DOES NOT WORK FOR NOW!!!!!!!!
+          // <ArtefactFeed
+          //   onPress={() => this.clickArtefact}
+          //   artefactId = {artefacts[i]._id}
+          //   key={artefactKey}
+          //   image={{ uri: artefacts[i].images[0].URL }}
+          // />
 
-        <View style={styles.card} key={artefactKey}>
-          <TouchableOpacity
-            onPress={() => this.clickArtefact(artefactId)}
-            activeOpacity={0.5}
-          >
-            <Image
-              style={styles.photo}
-              source={{ uri: artefacts[i].images[0].URL }}
-            />
-          </TouchableOpacity>
-        </View>
-      );
-      artefactKey++;
+          <View style={styles.card} key={artefactKey}>
+            <TouchableOpacity
+              onPress={() => this.clickArtefact(artefactId)}
+              activeOpacity={0.5}
+            >
+              <Image
+                style={styles.photo}
+                source={{ uri: artefacts[i].images[0].URL }}
+              />
+            </TouchableOpacity>
+          </View>
+        );
+        artefactKey++;
+      }
       // create a new row after the previous row has been filled with 3 artefacts and fill the previous row into artefactFeedRows
       if (artefactFeeds.length === 3 || i === artefacts.length - 1) {
         artefactFeedRows.push(
@@ -201,6 +149,7 @@ class Artefacts extends Component {
     this.setState({ refreshing: false });
   };
 
+  //prettier-ignore
   render() {
     const { navigate } = this.props.navigation;
     return (
@@ -211,9 +160,12 @@ class Artefacts extends Component {
         <SimpleHeader
           title="My Artefacts"
           showTab={true}
-          tab1="Private"
-          tab2="Public"
-          onSubmit={() => navigate("GeneralSearch")} />
+          onChangePrivacyTab={this.onChangePrivacyTab}
+          isPublicTab={this.state.isPublicTab}
+          tab1="Public"
+          tab2="Private"
+          onSubmit={() => navigate("GeneralSearch")}
+        />
         {/* scrollable area for CONTENT */}
         <ScrollView
           showsVerticalScrollIndicator={false}
@@ -225,35 +177,26 @@ class Artefacts extends Component {
             />
           }
         >
-          {/* all artefacts posted by the user */}
+          {/* all artefacts posted by the user based on the their privacy settings */}
           {Object.keys(this.props.artefacts.userArtefacts).length !== 0 ? (
             <View>
-              {this.showArtefacts(this.props.artefacts.userArtefacts)}
+              {this.state.isPublicTab === true && this.showArtefacts(this.props.artefacts.userArtefacts, 0)}
+              {this.state.isPublicTab === false && this.showArtefacts(this.props.artefacts.userArtefacts, 1)}
             </View>
           ) : (
-              <View style={styles.emptyFeed}>
-                <Text
-                  style={{ fontSize: 16, fontFamily: "HindSiliguri-Regular" }}
-                >
-                  Looks like you haven't posted any artefacts
+            <View style={styles.emptyFeed}>
+              <Text style={{ fontSize: 16, fontFamily: "HindSiliguri-Regular" }}>
+                Looks like you haven't posted any artefacts
               </Text>
-                <Text
-                  style={{ fontSize: 16, fontFamily: "HindSiliguri-Regular" }}
-                >
-                  Click the "+" button to add some
+              <Text style={{ fontSize: 16, fontFamily: "HindSiliguri-Regular" }}>
+                Click the "+" button to add some
               </Text>
-              </View>
-            )}
+            </View>
+          )}
         </ScrollView>
 
         {/* create new Group */}
-        <AddButton onPress={
-          () => navigate("ArtefactsForm", 
-          { 
-            isEditingArtefact: false,
-            newArtefact: {}
-          })
-        } />
+        <AddButton onPress={this.onNewArtefactCreate.bind(this)} />
       </View>
     );
   }

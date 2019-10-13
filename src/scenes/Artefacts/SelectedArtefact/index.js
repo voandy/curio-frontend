@@ -11,7 +11,8 @@ import {
   Image,
   Text,
   Alert,
-  StatusBar
+  StatusBar,
+  RefreshControl
 } from "react-native";
 
 // date converter
@@ -44,41 +45,50 @@ import {
   clearSelectedArtefact
 } from "../../../actions/artefactsActions";
 
+import { getSelectedGroupAllArtefacts } from "../../../actions/groupsActions";
+
 // custom responsive design component
-import { deviceWidthDimension as wd } from "../../../utils/responsiveDesign";
+import {
+  deviceWidthDimension as wd,
+  deviceHeigthDimension as hp
+} from "../../../utils/responsiveDesign";
 
 class SelectedArtefact extends Component {
   constructor(props) {
     super(props);
-
     // clear redux state in case user force quits the app and reopen it
     this.props.clearSelectedArtefact();
-
+    // setup initial local state values
     this.state = {
+      // local page settings state
       isImageViewVisible: false,
       isUpdateModalVisible: false,
       loading: false,
-
+      refreshing: false,
+      // artefact state
       newComment: "",
-      // whether the user has liked this artefact
       liked: 0,
       likesCount: 0,
       commentsCount: 0,
       likingEnabled: true
-      // statusBarHidden: false,
     };
+    // get artefact id passed in from the navigation parameter
+    artefactId = this.props.navigation.getParam("artefactId");
+    // make sure it exists
+    artefactId
+      ? this.getSelectedArtefactData(artefactId)
+      : alert("Error loading artefact data");
   }
 
   // asynchronously make api calls to get selectedArtefact data into redux state
   async getSelectedArtefactData(artefactId) {
-    this.props.getSelectedArtefact(artefactId);
-    this.props.getArtefactComments(artefactId);
-  }
-
-  componentDidMount() {
-    // get all information required for the selectedGroup page
-    artefactId = this.props.navigation.getParam("artefactId", "NO-ARTEFACT-ID");
-    this.getSelectedArtefactData(artefactId);
+    Promise.all([
+      this.props.getSelectedArtefact(artefactId),
+      this.props.getArtefactComments(artefactId)
+    ]).catch(err => {
+      console.log(err);
+      alert("Error loading artefact data");
+    });
   }
 
   // nav details
@@ -90,39 +100,37 @@ class SelectedArtefact extends Component {
   };
 
   async componentDidUpdate(prevProps) {
-    // assign selectedArtefact along with likes when selectedArtefact data has been retrieved from api call for the first time
+    // extract prev & selected artefact details
+    const prevArtefact = prevProps.artefacts.selectedArtefact;
+    const currentArtefact = this.props.artefacts.selectedArtefact;
+    // assign selectedArtefact along with likes when selectedArtefact data
+    // has been retrieved from api call for the first time
     if (
-      Object.keys(prevProps.artefacts.selectedArtefact).length === 0 &&
-      Object.keys(this.props.artefacts.selectedArtefact).length !== 0
+      Object.keys(prevArtefact).length === 0 &&
+      Object.keys(currentArtefact).length !== 0
     ) {
       this.setState({
         selectedArtefact: {
-          ...this.props.artefacts.selectedArtefact,
-          imageURI: this.props.artefacts.selectedArtefact.images[0].URL
+          ...currentArtefact,
+          imageURI: currentArtefact.images[0].URL
         },
-        liked: this.props.artefacts.selectedArtefact.likes.includes(
-          this.props.user.userData._id
-        ),
-        likesCount: this.props.artefacts.selectedArtefact.likes.length
+        liked: currentArtefact.likes.includes(this.props.user.userData._id),
+        likesCount: currentArtefact.likes.length
       });
     }
-
-    // assign selectedArtefact along with likes when selectedArtefact data has been retrieved from api call for the first time
-    if (
-      prevProps.artefacts.artefactComments.length !==
-      this.props.artefacts.artefactComments.length
-    ) {
+    // extract prev & selected artefact comments details
+    const prevComments = prevProps.artefacts.artefactComments;
+    const currentComments = this.props.artefacts.artefactComments;
+    // assign selectedArtefact along with likes when selectedArtefact data
+    // has been retrieved from api call for the first time
+    if (prevComments.length !== currentComments.length) {
       this.setState({
-        commentsCount: this.props.artefacts.artefactComments.length
+        commentsCount: currentComments.length
       });
     }
-
-    // re-generate comments when a new artefact comment has been  made
-    if (
-      prevProps.artefacts.artefactComments.length + 1 ===
-      this.props.artefacts.artefactComments.length
-    ) {
-      const artefactId = this.props.artefacts.selectedArtefact._id;
+    // re-generate comments when a new artefact comment has been made
+    if (prevComments.length + 1 === currentComments.length) {
+      const artefactId = currentArtefact._id;
       await this.props.getArtefactComments(artefactId);
     }
   }
@@ -132,12 +140,98 @@ class SelectedArtefact extends Component {
     this.props.clearSelectedArtefact();
   }
 
+  // setter function for "loading" to show user that something is loading
+  setLoading = loading => {
+    this.setState({
+      ...this.state,
+      loading
+    });
+  };
+
+  // setter function for handling new changes in local comment state
   onChangeNewComment = newComment => {
     this.setState({
       newComment
     });
   };
 
+  // refresh page
+  refreshSelectedArtefactPage = async () => {
+    this.setState({ refreshing: true });
+    // get data from backend
+    artefactId = this.props.navigation.getParam("artefactId");
+    // reload everything at once, only refresh once everything is done loading
+    Promise.all([
+      this.props.getSelectedArtefact(artefactId),
+      this.props.getArtefactComments(artefactId)
+    ])
+      // resets refreshing state
+      .then(() => this.setState({ refreshing: false }))
+      .catch(() => {
+        this.setState({ refreshing: false });
+        alert("Please try again later");
+      });
+  };
+
+  // when user presses "edit artefact"
+  onEditArtefact = () => {
+    const { navigate } = this.props.navigation;
+    // navigate to ArtefactsForm while passing the editedSelectedArtefact
+    navigate("ArtefactsForm", {
+      origin: "SelectedArtefact",
+      isEditMode: true,
+      selectedArtefact: this.props.artefacts.selectedArtefact
+    });
+  };
+
+  // toggle the modal for artefact deletion
+  toggleDeleteModal = async () => {
+    Alert.alert(
+      "Delete Artefact",
+      "Are you sure you want to delete your artefact?",
+      [
+        {
+          text: "No",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel"
+        },
+        {
+          text: "Yes",
+          onPress: () => this.onDeleteSelectedArtefact()
+        }
+      ],
+      { cancelable: false }
+    );
+  };
+
+  // when user presses "delete artefact"
+  onDeleteSelectedArtefact = async () => {
+    const { navigate } = this.props.navigation;
+    const { origin, groupId } = this.props.navigation.state.params;
+    // show user the loading modal
+    this.setLoading(true);
+    // remove selected artefact from redux states
+    //prettier-ignore
+    await this.props.removeSelectedArtefact(this.props.artefacts.selectedArtefact)
+      .then(() => {
+        // stop showing user the loading modal
+        this.setLoading(false);
+        // reload group data here
+        if (origin === 'SelectedGroup' && groupId) {
+          this.props.getSelectedGroupAllArtefacts(groupId);
+        }
+        // redirect back
+        navigate(origin);
+      })
+      .catch(err => {
+        // stop showing user the loading modal
+        this.setLoading(false);
+        // show error
+        console.log(err.response.data);
+      });
+  };
+
+  // like an artefact
   like = function() {
     if (this.state.likingEnabled) {
       this.setState({
@@ -145,6 +239,8 @@ class SelectedArtefact extends Component {
         likesCount: this.state.likesCount + 1,
         likingEnabled: false
       });
+
+      // make an api call to the backend to like artefact
       this.props
         .likeArtefact(
           this.props.artefacts.selectedArtefact._id,
@@ -164,6 +260,7 @@ class SelectedArtefact extends Component {
     }
   };
 
+  // unlike an artefact
   unlike = function() {
     if (this.state.likingEnabled) {
       this.setState({
@@ -171,6 +268,8 @@ class SelectedArtefact extends Component {
         likesCount: this.state.likesCount - 1,
         likingEnabled: false
       });
+
+      // make an api call to the backend to unlike artefact
       this.props
         .unlikeArtefact(
           this.props.artefacts.selectedArtefact._id,
@@ -190,6 +289,12 @@ class SelectedArtefact extends Component {
     }
   };
 
+  // scroll to the bottom of the comments
+  scrollToEnd = function() {
+    this.scrollView.scrollToEnd();
+  };
+
+  // post new comment
   postComment = function(commentContent) {
     this.props.commentOnArtefact(
       this.props.artefacts.selectedArtefact._id,
@@ -198,10 +303,7 @@ class SelectedArtefact extends Component {
     );
   };
 
-  scrollToEnd = function() {
-    this.scrollView.scrollToEnd();
-  };
-
+  // show all comments
   showComments = function(comments) {
     var commentViews = [];
 
@@ -226,84 +328,23 @@ class SelectedArtefact extends Component {
     return commentViews;
   };
 
-  // toggle the modal for artefact update input
-  toggleUpdateModal = () => {
-    const { navigate } = this.props.navigation;
-
-    // navigate to ArtefactsForm while passing the editedSelectedArtefact
-    navigate("ArtefactsForm", 
-      { 
-        isEditingArtefact: true,
-        newArtefact: this.props.artefacts.selectedArtefact
-      });
-  };
-
-  // toggle the modal for artefact deletion
-  toggleDeleteModal = async () => {
-    const { navigate } = this.props.navigation;
-
-    Alert.alert(
-      "Delete Artefact",
-      "Are you sure you want to delete your artefact?",
-      [
-        {
-          text: "No",
-          onPress: () => console.log("Cancel Pressed"),
-          style: "cancel"
-        },
-        {
-          text: "Yes",
-          onPress: async () => {
-            // show user the loading modal
-            this.setLoading(true);
-
-            // remove selected artefact from redux states
-            await this.props
-              .removeSelectedArtefact(this.props.artefacts.selectedArtefact._id)
-              .then(() => {
-                // stop showing user the loading modal
-                this.setLoading(false);
-                
-                // navigate to artefacts
-                navigate("Artefacts");
-              })
-              .catch(err => {
-                // stop showing user the loading modal
-                this.setLoading(false);
-                // show error
-                console.log(err.response.data);
-              });
-          }
-        }
-      ],
-      { cancelable: false }
-    );
-  };
-
-  // setter function for "loading" to show user that something is loading
-  setLoading = loading => {
-    this.setState({
-      ...this.state,
-      loading
-    });
-  };
-  
   render() {
-    // does not render when selectedArtefact is empty
-    if (Object.keys(this.props.artefacts.selectedArtefact).length === 0) {
-      return null;
-    }
-
     // date format
     Moment.locale("en");
-
+    // extract selectedArtefact from redux state
+    const { selectedArtefact } = this.props.artefacts;
+    // does not render when selectedArtefact is empty
+    if (Object.keys(selectedArtefact).length === 0) {
+      return null;
+    }
+    // prepare artefact image
     const artefactImage = [
       {
         source: {
-          uri: this.props.artefacts.selectedArtefact.images[0].URL
+          uri: selectedArtefact.images[0].URL
         },
-        width: Dimensions.get("window").width,
-        height: Dimensions.get("window").width
+        width: wd(1),
+        height: wd(1)
       }
     ];
 
@@ -319,12 +360,10 @@ class SelectedArtefact extends Component {
               ref={scrollView => {
                 this.scrollView = scrollView;
               }}
-              maxHeight={Dimensions.get("window").height * 0.5}
-              minHeight={Dimensions.get("window").height * 0.2}
+              maxHeight={hp(0.5)}
+              minHeight={hp(0)}
               // use this to dynamically get image data
-              headerImage={{
-                uri: this.props.artefacts.selectedArtefact.images[0].URL
-              }}
+              headerImage={{ uri: selectedArtefact.images[0].URL }}
               renderForeground={() => (
                 // change this to open the image in full screen
                 <TouchableOpacity
@@ -337,11 +376,18 @@ class SelectedArtefact extends Component {
                   }
                 />
               )}
+              refreshControl={
+                <RefreshControl
+                  refreshing={this.state.refreshing}
+                  onRefresh={this.refreshSelectedArtefactPage}
+                />
+              }
             >
               {/* open image in full screen */}
               <ImageView
                 images={artefactImage}
                 isVisible={this.state.isImageViewVisible}
+                onClose={() => this.setState({ isImageViewVisible: false })}
                 animationType={"fade"}
                 isSwipeCloseEnabled={true}
               />
@@ -356,18 +402,10 @@ class SelectedArtefact extends Component {
                   <OptionButton
                     firstOption={"Edit Artefact"}
                     secondOption={"Delete Artefact"}
-                    toggleFirstOption={this.toggleUpdateModal}
+                    toggleFirstOption={this.onEditArtefact}
                     toggleSecondOption={this.toggleDeleteModal}
                   />
                 </View>
-
-                {/* <ArtefactModal
-                  isModalVisible={this.state.isUpdateModalVisible}
-                  toggleModal={this.toggleUpdateModal}
-                  newArtefact={this.state.selectedArtefact}
-                  onSubmit={this.onSubmit.bind(this)}
-                  setNewArtefact={this.setSelectedArtefact.bind(this)}
-                /> */}
 
                 {/* description */}
                 <Text style={styles.description}>
@@ -503,6 +541,7 @@ export default connect(
     unlikeArtefact,
     getArtefactComments,
     commentOnArtefact,
-    clearSelectedArtefact
+    clearSelectedArtefact,
+    getSelectedGroupAllArtefacts
   }
 )(SelectedArtefact);

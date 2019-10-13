@@ -1,5 +1,12 @@
 import React, { Component } from "react";
-import { RefreshControl } from "react-native";
+import { 
+  RefreshControl, 
+  StatusBar, 
+  StyleSheet, 
+  ScrollView, 
+  View, 
+  Text 
+} from "react-native";
 
 // redux actions
 import { connect } from "react-redux";
@@ -17,16 +24,18 @@ import {
   getArtefactComments
 } from "../../actions/artefactsActions";
 
-import { StatusBar, StyleSheet, ScrollView, View, Text } from "react-native";
-
 // Custom component
 import SimpleHeader from "../../component/SimpleHeader";
 import NotificationFeed from "../../component/NotificationFeed";
 
 class Notification extends Component {
-  state = {
-    refreshing: false
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      refreshing: false
+    };
+  }
+  
   // Nav bar details
   static navigationOptions = {
     header: null

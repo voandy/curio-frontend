@@ -22,7 +22,7 @@ export const searchUsers = searchTerms => dispatch => {
       })
       // failure
       .catch(err => {
-        console.log("search users: " + err);
+        console.log("Failed to search users: " + err);
         reject(err);
       });
   });
@@ -40,7 +40,7 @@ export const searchGroups = searchTerms => dispatch => {
       })
       // failure
       .catch(err => {
-        console.log("search groups: " + err);
+        console.log("Failed to search groups: " + err);
         reject(err);
       });
   });

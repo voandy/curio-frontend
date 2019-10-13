@@ -23,8 +23,8 @@ class SimpleHeader extends Component {
   // TODO add more logic
   // highlight the active tab when pressed
   clickTab = (tab) => {
-
-    if (tab == this.state.tab1) {
+    
+    if (tab === this.state.tab1) {
       this.setState(prevState => ({
         tab1: {
           ...prevState,
@@ -34,7 +34,12 @@ class SimpleHeader extends Component {
           ...prevState,
           visible: false
         }
-      }))
+      }));
+
+      // change privacy settings to public in the parent component
+      if (this.props.isPublicTab === false) {
+        this.props.onChangePrivacyTab();
+      }
     }
     else {
       this.setState(prevState => ({
@@ -46,7 +51,12 @@ class SimpleHeader extends Component {
           ...prevState,
           visible: true
         }
-      }))
+      }));
+
+      // change privacy settings to public in the parent component
+      if (this.props.isPublicTab === true) {
+        this.props.onChangePrivacyTab();
+      }
     }
   }
 
@@ -69,7 +79,7 @@ class SimpleHeader extends Component {
 
   // allows search 
   showSearch = () => {
-    if (this.props.showSearch == false) {
+    if (this.props.showSearch === false) {
       return null
     }
     else {

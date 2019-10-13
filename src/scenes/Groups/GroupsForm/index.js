@@ -13,10 +13,12 @@ import {
 } from "react-native";
 
 // redux actions and expo modules
-import DatePicker from "react-native-datepicker";
 import * as ImagePicker from "expo-image-picker";
 import * as ImageManipulator from "expo-image-manipulator";
-import { createNewGroup } from "../../../actions/groupsActions";
+import {
+  createNewGroup,
+  editSelectedGroup
+} from "../../../actions/groupsActions";
 
 // Custom respondsive design component
 import {
@@ -36,18 +38,24 @@ const newGroup = {
   title: "",
   description: "",
   privacy: true,
+  coverPhoto: "",
   imageURI: ""
 };
 
 class GroupsForm extends Component {
-  // local state
-  state = {
-    newGroup: {
-      ...newGroup,
-      adminId: this.props.auth.user.id
-    },
-    loading: false
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      group: {
+        ...newGroup,
+        // add & replace group details if selectedGroup is passed in
+        // otherwise, it will not replace anything
+        ...this.props.navigation.getParam("selectedGroup"),
+        adminId: this.props.auth.user.id
+      },
+      loading: false
+    };
+  }
 
   // nav details
   static navigationOptions = {
@@ -58,20 +66,20 @@ class GroupsForm extends Component {
   };
 
   // newGroup's attribute change
-  setNewGroup = (key, value) => {
+  setGroup = (key, value) => {
     this.setState({
-      newGroup: {
-        ...this.state.newGroup,
+      group: {
+        ...this.state.group,
         [key]: value
       }
     });
   };
 
   // revert newGroup to initial state
-  resetNewGroup = () => {
+  resetGroup = () => {
     this.setState({
       ...this.state,
-      newGroup: {
+      group: {
         ...newGroup,
         adminId: this.props.auth.user.id
       }
@@ -100,43 +108,49 @@ class GroupsForm extends Component {
   // setter function for "loading" to show user that something is loading
   setLoading = loading => {
     this.setState({
-      ...this.state,
       loading
     });
   };
 
-  // Setters for all the local state for newArtefacts
+  // Setters for all the local state for creating/editing Group
   setTitle = title => {
-    this.setNewGroup("title", title);
+    this.setGroup("title", title);
   };
-
   setDescription = description => {
-    this.setNewGroup("description", description);
+    this.setGroup("description", description);
   };
-
   setPrivacy = privacy => {
-    this.setNewGroup("privacy", privacy);
+    this.setGroup("privacy", privacy);
+  };
+  setImageURI = ImageURI => {
+    this.setGroup("imageURI", ImageURI);
+    // set this value to show it in the image component in the form
+    // because in edit mode, selected group only has coverPhoto, not imageURL
+    this.setGroup("coverPhoto", ImageURI);
   };
 
-  setImageURI = imageURI => {
-    this.setNewGroup("imageURI", imageURI);
-  };
-
-  // creates a new group and
+  // create/edit group on "post" button press
   onSubmit = async () => {
     const { navigate } = this.props.navigation;
-    await this.setNewGroup("adminId", this.props.auth.user.id);
+    // get required parameters
+    const { origin, isEditMode } = this.props.navigation.state.params;
+    // set adminId as a reference
+    await this.setGroup("adminId", this.props.auth.user.id);
     // show user the loading modal
     this.setLoading(true);
-    // send and create group to the backend
-    this.props
-      .createNewGroup(this.state.newGroup)
+    // use appropriate action based on current page mode (either editing or creating)
+    (() => {
+      return isEditMode
+        ? this.props.editSelectedGroup(this.state.group)
+        : this.props.createNewGroup(this.state.group);
+    })()
       .then(() => {
         // stop showing user the loading modal
         this.setLoading(false);
         // reset new group details
-        this.resetNewGroup();
-        navigate("Groups");
+        this.resetGroup();
+        // navigate back
+        navigate(origin);
       })
       .catch(err => {
         // stop showing user the loading modal
@@ -167,16 +181,15 @@ class GroupsForm extends Component {
                     activeOpacity={0.5}
                     onPress={this.pickImage}
                   >
-                    {this.state.newGroup.imageURI !== undefined &&
-                    this.state.newGroup.imageURI !== "" ? (
+                    {!this.state.group.coverPhoto ? (
                       <Image
                         style={styles.imageSelected}
-                        source={{ uri: this.state.newGroup.imageURI }}
+                        source={require("../../../../assets/images/icons/addPicture.png")}
                       />
                     ) : (
                       <Image
                         style={styles.imageSelected}
-                        source={require("../../../../assets/images/icons/addPicture.png")}
+                        source={{ uri: this.state.group.coverPhoto }}
                       />
                     )}
                   </TouchableOpacity>
@@ -200,7 +213,7 @@ class GroupsForm extends Component {
                       placeholderTextColor="#868686"
                       style={styles.inputFont}
                       onChangeText={value => this.setTitle(value)}
-                      value={this.state.newGroup.title}
+                      value={this.state.group.title}
                     />
                   </View>
                 </View>
@@ -219,7 +232,7 @@ class GroupsForm extends Component {
                       placeholderTextColor="#868686"
                       style={styles.inputFont}
                       onChangeText={value => this.setDescription(value)}
-                      value={this.state.newGroup.description}
+                      value={this.state.group.description}
                     />
                   </View>
                 </View>
@@ -235,7 +248,7 @@ class GroupsForm extends Component {
 
                     <Picker
                       style={styles.pickerLong}
-                      selectedValue={this.state.newGroup.privacy}
+                      selectedValue={this.state.group.privacy}
                       onValueChange={(itemValue, itemIndex) =>
                         this.setPrivacy(itemValue)
                       }
@@ -357,5 +370,5 @@ const mapStateToProps = state => ({
 // map required redux state and actions to local props
 export default connect(
   mapStateToProps,
-  { createNewGroup }
+  { createNewGroup, editSelectedGroup }
 )(GroupsForm);

@@ -7,19 +7,18 @@ import {
   ScrollView,
   Dimensions,
   Text,
-  StatusBar
+  StatusBar,
+  RefreshControl
 } from "react-native";
 
 // import redux actions for groups
-import { createNewGroup } from "../../actions/groupsActions";
+import { createNewGroup, getUserGroups } from "../../actions/groupsActions";
 
 // custom components
 import CardCarousel from "../../component/CardCarousel";
 import CardGroup from "../../component/CardGroup";
-import HeaderSearch from "../../component/HeaderSearch";
 import SimpleHeader from "../../component/SimpleHeader";
 import AddButton from "../../component/AddButton";
-import GroupModal from "../../component/GroupModal";
 import KeyboardShift from "../../component/componentHelpers/KeyboardShift";
 
 // Custom respondsive design component
@@ -31,28 +30,27 @@ import {
 // default gray colour
 const gray = "#F7F7F7";
 
-const newGroup = {
-  adminId: "",
-  title: "",
-  description: "",
-  private: true,
-  imageURI: ""
-};
-
 class Groups extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      isModalVisible: false,
+      refreshing: false
+    };
+  }
   // Nav bar details
   static navigationOptions = {
     header: null
   };
 
-  state = {
-    isModalVisible: false,
-    newGroup
-  };
-
-  // CHANGE THIS LATER
-  toggleModal = () => {
-    this.setState({ isModalVisible: !this.state.isModalVisible });
+  // refresh page
+  refreshGroupPage = async () => {
+    this.setState({ refreshing: true });
+    // get data from backend
+    await this.props.getUserGroups(this.props.auth.user.id);
+    // resets refreshing state
+    this.setState({ refreshing: false });
   };
 
   // revert newGroup to initial state
@@ -72,23 +70,16 @@ class Groups extends Component {
     });
   };
 
-  // post new group into the backend
-  postNewGroup = async () => {
-    await this.onNewGroupChange("adminId", this.props.auth.user.id);
-    // redux action to create new group at the backend
-    //prettier-ignore
-    this.props.createNewGroup(this.state.newGroup)
-      .then(() => {
-        this.toggleModal();
-        this.resetNewGroup();
-      })
-      .catch(err => console.log(err));
-  };
-
   // click a specific group on the Groups scene
   clickGroup = async groupId => {
     const { navigate } = this.props.navigation;
-    navigate("SelectedGroup", { groupId });
+    navigate("SelectedGroup", { origin: "Groups", groupId });
+  };
+
+  onCreateNewGroup = () => {
+    const { navigate } = this.props.navigation;
+    // navigate to group form
+    navigate("GroupsForm", { origin: "Groups" });
   };
 
   // show and renders groups components row-by-row
@@ -140,7 +131,13 @@ class Groups extends Component {
         onPress={this.clickGroup.bind(this)}
       />
     ));
-    return pinnedGroupComponent;
+    // if no groups are pinned
+    //prettier-ignore
+    return (!pinnedGroupComponent || !pinnedGroupComponent.length) 
+      ? (<View style={{justifyContent:"center", alignItems:"center", width:wd(1)}}>
+          <Text style={styles.warning}>Press and hold on a group to pin them</Text>
+         </View>) 
+      : pinnedGroupComponent;
   };
 
   render() {
@@ -150,12 +147,8 @@ class Groups extends Component {
       <KeyboardShift>
         {() => (
           <View style={styles.container}>
-            {/* <Header tab1="Public" tab2="Private" onPress={()=> navigate("GeneralSearch")}/> */}
             <SimpleHeader
-              title="My Groups"
-              showTab={true}
-              tab1="Private"
-              tab2="Public"
+              title="Groups"
               onSubmit={() => navigate("GeneralSearch")}
             />
 
@@ -164,6 +157,12 @@ class Groups extends Component {
               showsVerticalScrollIndicator={false}
               scrollEventThrottle={16}
               style={{ backgroundColor: gray }}
+              refreshControl={
+                <RefreshControl
+                  refreshing={this.state.refreshing}
+                  onRefresh={this.refreshGroupPage}
+                />
+              }
             >
               {/* carousel pinned groups */}
               <View style={{ height: wd(0.52), backgroundColor: "white" }}>
@@ -183,13 +182,7 @@ class Groups extends Component {
                 <View style={{ marginBottom: 10 }}>{this.showGroups()}</View>
               ) : (
                 <View style={styles.emptyFeed}>
-                  <Text
-                    style={{
-                      textAlign: "center",
-                      fontSize: 16,
-                      fontFamily: "HindSiliguri-Regular"
-                    }}
-                  >
+                  <Text style={styles.warning}>
                     Looks like you're not part of any groups yet {"\n"}Click the
                     "+" button to create a group
                   </Text>
@@ -198,7 +191,7 @@ class Groups extends Component {
             </ScrollView>
 
             {/* create new Group */}
-            <AddButton onPress={() => navigate("GroupsForm")} />
+            <AddButton onPress={this.onCreateNewGroup.bind(this)} />
           </View>
         )}
       </KeyboardShift>
@@ -223,67 +216,11 @@ const styles = StyleSheet.create({
     justifyContent: "center"
   },
 
-  // TEMPORARY
-  // STYLES FOR CARD GROUP (START)
-  card: {
-    width: Dimensions.get("window").width * 0.44,
-    marginTop: 10,
-    marginLeft: Dimensions.get("window").width * 0.04,
-    height: wd(0.5),
-    borderRadius: 15,
-    borderWidth: 0.05,
-    elevation: 1,
-    borderColor: "#E2E2E2",
-    alignContent: "center",
-    alignItems: "center"
-  },
-
-  font: {
+  warning: {
+    textAlign: "center",
+    fontSize: 16,
     fontFamily: "HindSiliguri-Regular"
-  },
-
-  picPlaceholder: {
-    flex: 0.7,
-    alignItems: "center",
-    justifyContent: "center"
-  },
-
-  photo: {
-    width: Dimensions.get("window").width * 0.435,
-    height: wd(0.35),
-    marginTop: 10,
-    borderTopLeftRadius: 15,
-    borderTopRightRadius: 15
-  },
-
-  textPlaceholder: {
-    flex: 0.3,
-    margin: 5
-  },
-
-  title: {
-    flex: 0.4,
-    marginHorizontal: 5,
-    marginTop: 3
-  },
-
-  userProfile: {
-    flex: 0.6,
-    flexDirection: "row",
-    alignItems: "center"
-  },
-
-  userProfilePic: {
-    width: wd(0.07),
-    height: wd(0.07),
-    marginHorizontal: 5
-  },
-
-  userName: {
-    color: "#939090"
   }
-
-  // STYLES FOR CARD GROUP (END)
 });
 
 Groups.propTypes = {
@@ -301,5 +238,5 @@ const mapStateToProps = state => ({
 //  connect to redux and export
 export default connect(
   mapStateToProps,
-  { createNewGroup }
+  { createNewGroup, getUserGroups }
 )(Groups);

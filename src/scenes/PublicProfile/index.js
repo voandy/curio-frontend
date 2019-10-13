@@ -1,9 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { getUserData } from "../../actions/userActions";
-import { getSelectedArtefact, getUserArtefacts } from "../../actions/artefactsActions";
-
 import {
   StyleSheet,
   ScrollView,
@@ -13,8 +10,14 @@ import {
   TouchableOpacity
 } from "react-native";
 
+// redux actions
+import { getUserData } from "../../actions/userActions";
+import { getUserArtefacts } from "../../actions/artefactsActions";
+
 // date converter
 import Moment from "moment";
+
+// components
 import ArtefactFeed from "../../component/ArtefactFeed";
 
 // responsive design component
@@ -24,8 +27,8 @@ import {
 } from "../../utils/responsiveDesign";
 
 class PublicProfile extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
   }
 
   // nav details
@@ -34,15 +37,6 @@ class PublicProfile extends Component {
       elevation: 0 // remove shadow on Android
     }
   };
-
-  componentWillUpdate(nextProps) {
-    // sets user data
-    if (nextProps.user.userData !== this.props.user.userData) {
-      this.setState({
-        userData: nextProps.user.userData
-      });
-    }
-  }
 
   render() {
     // date format

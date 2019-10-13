@@ -11,6 +11,7 @@ import {
   Text,
   Image,
   Alert,
+  RefreshControl
 } from "react-native";
 
 // import redux actions for groups
@@ -21,7 +22,7 @@ import {
   getSelectedGroupAllArtefacts,
   getSelectedGroupAllMembers,
   getSelectedGroupArtefactComments,
-  deleteSelectedGroup,
+  deleteSelectedGroup
 } from "../../../actions/groupsActions";
 
 // custom component
@@ -45,23 +46,29 @@ class SelectedGroup extends Component {
     this.props.clearSelectedGroup();
     // Setup initial state
     this.state = {
-      selectedGroup: {
-        ...this.props.groups.selectedGroup
-      },
       isUpdateModalVisible: false,
-      loading: false
+      loading: false,
+      refreshing: false
     };
-    // get all information required for the selectedGroup page
-    // get group id from the parameter passed in, get "NO-GROUP-ID" if not found
-    groupId = this.props.navigation.getParam("groupId", "NO-GROUP-ID");
-    this.getSelectedGroupData(groupId);
+    // get group id passed in from the navigation parameter
+    groupId = this.props.navigation.getParam("groupId");
+    console.log(groupId);
+    // make sure it exists
+    groupId
+      ? this.getSelectedGroupData(groupId)
+      : alert("Error loading group data");
   }
 
   // get selected group data asynchronously
   getSelectedGroupData = async groupId => {
-    this.props.getSelectedGroup(groupId);
-    this.props.getSelectedGroupAllArtefacts(groupId);
-    this.props.getSelectedGroupAllMembers(groupId);
+    Promise.all([
+      this.props.getSelectedGroup(groupId),
+      this.props.getSelectedGroupAllArtefacts(groupId),
+      this.props.getSelectedGroupAllMembers(groupId)
+    ]).catch(err => {
+      console.log(err);
+      alert("Error loading group data");
+    });
   };
 
   // nav details
@@ -79,16 +86,6 @@ class SelectedGroup extends Component {
     this.props.clearSelectedGroup();
   }
 
-  // selected artefact's attribute change
-  setSelectedGroup = (key, value) => {
-    this.setState({
-      selectedGroup: {
-        ...this.state.selectedGroup,
-        [key]: value
-      }
-    });
-  };
-
   // setter function for "loading" to show user that something is loading
   setLoading = loading => {
     this.setState({
@@ -96,9 +93,100 @@ class SelectedGroup extends Component {
     });
   };
 
-  // toggle the modal for artefact update input
-  toggleUpdateModal = () => {
-    this.setState({ isUpdateModalVisible: !this.state.isUpdateModalVisible });
+  // refresh page
+  refreshSelectedGroupPage = async () => {
+    this.setState({ refreshing: true });
+    // get data from backend
+    groupId = this.props.navigation.getParam("groupId");
+    // reload everything at once, only refresh once everything is done loading
+    Promise.all([
+      this.props.getSelectedGroup(groupId),
+      this.props.getSelectedGroupAllArtefacts(groupId),
+      this.props.getSelectedGroupAllMembers(groupId)
+    ])
+      // resets refreshing state
+      .then(() => this.setState({ refreshing: false }))
+      .catch(() => {
+        this.setState({ refreshing: false });
+        alert("Please try again later");
+      });
+  };
+
+  // when user presses "edit group"
+  onEditGroup = () => {
+    const { navigate } = this.props.navigation;
+    // navigate to GroupsForm and pass in required parameters
+    navigate("GroupsForm", {
+      origin: "SelectedGroup",
+      isEditMode: true,
+      selectedGroup: this.props.groups.selectedGroup
+    });
+  };
+
+  // toggle the modal for artefact deletion
+  toggleDeleteModal = async () => {
+    Alert.alert(
+      "Delete Artefact",
+      "Are you sure you want to delete your artefact?",
+      [
+        {
+          text: "No",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel"
+        },
+        {
+          text: "Yes",
+          onPress: () => this.onDeleteSelectedGroup()
+        }
+      ],
+      { cancelable: false }
+    );
+  };
+
+  // delete the current selected group
+  onDeleteSelectedGroup = async () => {
+    const { navigate } = this.props.navigation;
+    const { origin } = this.props.navigation.state.params;
+    // show user the loading modal
+    this.setLoading(true);
+    // remove selected artefact from redux states
+    //prettier-ignore
+    await this.props.deleteSelectedGroup(this.props.groups.selectedGroup._id)
+      .then(() => {
+        // stop showing user the loading modal
+        this.setLoading(false);
+        // navigate to groups
+        navigate(origin);
+      })
+      .catch(err => {
+        // stop showing user the loading modal
+        this.setLoading(false);
+        // show error
+        console.log(err.response.data);
+      });
+  };
+
+  // click a specific artefact and navigate to it
+  clickArtefact = artefactId => {
+    const { navigate } = this.props.navigation;
+    groupId = this.props.navigation.getParam("groupId");
+    // navigate to selected artefact
+    navigate("SelectedArtefact", {
+      origin: "SelectedGroup",
+      artefactId,
+      groupId
+    });
+  };
+
+  onAddNewArtefact = () => {
+    const { navigate } = this.props.navigation;
+    const groupId = this.props.navigation.getParam("groupId");
+    // navigate to selected artefact
+    navigate("ArtefactsForm", {
+      origin: "SelectedGroup",
+      addToGroup: true,
+      groupId
+    });
   };
 
   // return a row of group members
@@ -135,118 +223,6 @@ class SelectedGroup extends Component {
     return groupArtefactsComponent;
   };
 
-  // click a specific artefact and navigate to it
-  clickArtefact = artefactId => {
-    const { navigate } = this.props.navigation;
-    // navigate to selected artefact
-    navigate("SelectedArtefact", { artefactId });
-  };
-
-  // toggle the modal for group deletion
-  toggleDeleteModal = async () => {
-    const { navigate } = this.props.navigation;
-
-    Alert.alert(
-      "Delete Group",
-      "Are you sure you want to delete this group?",
-      [
-        {
-          text: "No",
-          onPress: () => console.log("Cancel Pressed"),
-          style: "cancel"
-        },
-        {
-          text: "Yes",
-          onPress: async () => {
-            // show user the loading modal
-            // this.setLoading(true);
-
-            // // remove selected artefact from redux states
-            // await this.props
-            //   .removeSelectedArtefact(this.props.artefacts.selectedArtefact._id)
-            //   .then(() => {
-            //     // stop showing user the loading modal
-            //     this.setLoading(false);
-
-            //     // navigate to artefacts
-            //     navigate("Artefacts");
-            //   })
-            //   .catch(err => {
-            //     // stop showing user the loading modal
-            //     this.setLoading(false);
-            //     // show error
-            //     console.log(err.response.data);
-            //   });
-          }
-        }
-      ],
-      { cancelable: false }
-    );
-  };
-
-  // post new artefact to the backend
-  onSubmit = async () => {
-    // show user the loading modal
-    this.setLoading(true);
-    // send and create artefact to the backend
-    this.props
-      .editSelectedGroup(this.state.selectedGroup)
-      .then(() => {
-        // stop showing user the loading modal
-        this.setLoading(false);
-        // close loading modal
-        this.toggleUpdateModal();
-      })
-      .catch(err => {
-        // stop showing user the loading modal
-        this.setLoading(false);
-        // show error
-        console.log(err.response.data);
-      });
-  };
-
-  // toggle the modal for artefact deletion
-  toggleDeleteModal = async () => {
-    const { navigate } = this.props.navigation;
-
-    Alert.alert(
-      "Delete Artefact",
-      "Are you sure you want to delete your artefact?",
-      [
-        {
-          text: "No",
-          onPress: () => console.log("Cancel Pressed"),
-          style: "cancel"
-        },
-        {
-          text: "Yes",
-          onPress: async () => {
-            // show user the loading modal
-            this.setLoading(true);
-            console.log("deleting group");
-            // remove selected artefact from redux states
-            await this.props
-              .deleteSelectedGroup(this.props.groups.selectedGroup._id)
-              .then(() => {
-                // stop showing user the loading modal
-                this.setLoading(false);
-
-                // navigate to groups
-                navigate("Groups");
-              })
-              .catch(err => {
-                // stop showing user the loading modal
-                this.setLoading(false);
-                // show error
-                console.log(err.response.data);
-              });
-          }
-        }
-      ],
-      { cancelable: false }
-    );
-  };
-
   render() {
     // extract selected group information
     const {
@@ -263,7 +239,15 @@ class SelectedGroup extends Component {
     return (
       <View style={styles.container}>
         {/* container to let user scroll within main component */}
-        <ScrollView showsVerticalScrollIndicator={false}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.refreshing}
+              onRefresh={this.refreshSelectedGroupPage}
+            />
+          }
+        >
           {/* group cover photo */}
           <View style={styles.coverPhoto}>
             <Image style={styles.cover} source={{ uri: coverPhoto }} />
@@ -283,7 +267,7 @@ class SelectedGroup extends Component {
               <OptionButton
                 firstOption={"Edit Group"}
                 secondOption={"Delete Group"}
-                toggleFirstOption={this.toggleUpdateModal}
+                toggleFirstOption={this.onEditGroup}
                 toggleSecondOption={this.toggleDeleteModal}
               />
             </View>
@@ -316,32 +300,12 @@ class SelectedGroup extends Component {
           </View>
           {/* container for all artefacts */}
           <View>
-            {/* {this.props.groups.userGroups.length !== 0 ? (
-              <View>{"ADD CONTENT HERE"}</View>
-            ) : (
-                <View style={styles.emptyFeed}>
-                  <Text
-                    style={{ textAlign: "center", marginTop: hp(0.05), marginBottom:hp(0.1), fontSize: 16, fontFamily: "HindSiliguri-Regular" }}
-                  >
-                    Get started by adding new memeber to the group {"\n"} and start post items here !
-                  </Text>
-                </View>
-              )} */}
             {/* Show all artefacts in group */}
             {this.showGroupArtefacts(selectedGroupArtefacts)}
           </View>
         </ScrollView>
         {/* toggle modal to add artefacts into groups */}
-        <AddButton />
-
-        {/* REMOVE THIS LATER ON */}
-        <GroupModal
-          isModalVisible={this.state.isUpdateModalVisible}
-          toggleModal={this.toggleUpdateModal}
-          newGroup={this.state.selectedGroup}
-          onSubmit={this.onSubmit.bind(this)}
-          onNewGroupChange={this.setSelectedGroup.bind(this)}
-        />
+        <AddButton onPress={this.onAddNewArtefact.bind(this)} />
       </View>
     );
   }

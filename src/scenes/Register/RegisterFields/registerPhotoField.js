@@ -1,11 +1,12 @@
 import React, { Component } from "react";
 import { View, Image, Text, TouchableOpacity } from "react-native";
 import { connect } from "react-redux";
-import styles from "../style";
-import { C } from "../../../types/registerTypes";
 import * as ImagePicker from "expo-image-picker";
 import * as ImageManipulator from "expo-image-manipulator";
+import styles from "../style";
 
+// redux types
+import { C } from "../../../types/registerTypes";
 // redux state
 import {
   setPhotoURI,

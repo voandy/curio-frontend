@@ -9,10 +9,14 @@ import MyButton from "../../../component/MyButton";
 import { setToBottom } from "../../../utils/responsiveDesign";
 
 export class RegisterNameField extends Component {
-  // local state to fix textInput flickering issue with redux
-  state = {
-    name: ""
-  };
+  constructor(props) {
+    super(props);
+
+    // local state to fix textInput flickering issue with redux
+    this.state = {
+      name: ""
+    };
+  }
 
   componentDidMount() {
     // fill in the inputField's value if user has already input their name
