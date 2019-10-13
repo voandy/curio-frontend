@@ -165,27 +165,6 @@ class SelectedGroup extends Component {
     navigate("SelectedArtefact", { artefactId });
   };
 
-  // post new artefact to the backend
-  onSubmit = async () => {
-    // show user the loading modal
-    this.setLoading(true);
-    // send and create artefact to the backend
-    //prettier-ignore
-    this.props.editSelectedGroup(this.state.selectedGroup)
-      .then(() => {
-        // stop showing user the loading modal
-        this.setLoading(false);
-        // close loading modal
-        this.toggleUpdateModal();
-      })
-      .catch(err => {
-        // stop showing user the loading modal
-        this.setLoading(false);
-        // show error
-        console.log(err.response.data);
-      });
-  };
-
   // return a row of group members
   showGroupMembers = groupMembers => {
     // transform each member to an UserIcon component
