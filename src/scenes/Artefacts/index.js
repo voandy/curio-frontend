@@ -33,25 +33,11 @@ import {
 // import the loader modal to help show loading process
 import ActivityLoaderModal from "../../component/ActivityLoaderModal";
 
-// temp state to store object with attributes required to create a new artefact
-const newArtefact = {
-  userId: "",
-  title: "",
-  description: "",
-  category: "",
-  dateObtained: "",
-  imageURI: ""
-};
-
 class Artefacts extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      newArtefact: {
-        ...newArtefact,
-        userId: this.props.auth.user.id
-      },
       isModalVisible: false,
       loading: false,
       refreshing: false
@@ -77,56 +63,12 @@ class Artefacts extends Component {
     this.setState({ isModalVisible: !this.state.isModalVisible });
   };
 
-  // new artefact's attribute change
-  setNewArtefact = (key, value) => {
-    this.setState({
-      newArtefact: {
-        ...this.state.newArtefact,
-        [key]: value
-      }
-    });
-  };
-
-  // revert newArtefact to initial state
-  resetNewArtefact = () => {
-    this.setState({
-      ...this.state,
-      newArtefact: {
-        ...newArtefact,
-        userId: this.props.auth.user.id
-      }
-    });
-  };
-
   // setter function for "loading" to show user that something is loading
   setLoading = loading => {
     this.setState({
       ...this.state,
       loading
     });
-  };
-
-  // post new artefact to the backend
-  onSubmit = async () => {
-    // show user the loading modal
-    this.setLoading(true);
-    // send and create artefact to the backend
-    //prettier-ignore
-    this.props.createNewArtefacts(this.state.newArtefact)
-      .then(() => {
-        // stop showing user the loading modal
-        this.setLoading(false);
-        // close loading modal
-        this.toggleModal();
-        this.resetNewArtefact();
-        
-      })
-      .catch(err => {
-        // stop showing user the loading modal
-        this.setLoading(false);
-        // show error
-        console.log(err.response.data);
-      });
   };
 
   // click a specific artefact and navigate to it
