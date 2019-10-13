@@ -170,8 +170,8 @@ class SelectedGroup extends Component {
     groupId = this.props.navigation.getParam("groupId");
     // navigate to selected artefact
     navigate("SelectedArtefact", {
-      artefactId,
       origin: "SelectedGroup",
+      artefactId,
       groupId
     });
   };

@@ -127,11 +127,9 @@ class ArtefactsForm extends Component {
   //prettier-ignore
   onSubmit = async () => {
     const { navigate } = this.props.navigation;
-    const isEditMode = this.props.navigation.getParam("isEditMode");
-    // for adding artefact to group
+     // for adding artefact to group
     // extract required parameters
-    const addToGroup = this.props.navigation.getParam("addToGroup");
-    const groupId = this.props.navigation.getParam("groupId");
+    const {origin, isEditMode, addToGroup, groupId} = this.props.navigation.state.params;
     // show user the loading modal
     this.setLoading(true);
     // use appropriate action based on current page mode (either editing or creating)
@@ -150,13 +148,9 @@ class ArtefactsForm extends Component {
         this.setLoading(false);
         // reset new artefacts details
         this.resetArtefact();
-        // if in edit mode, this pops this page from the stack,
-        // instead of adding a new SelectedArtefact page on top of it
-        // therefore, no need to pass in artefact id
-        isEditMode
-          ? navigate("SelectedArtefact")
-          : // if in create mode, check if it should return to selected group or artefacts
-          addToGroup ? navigate("SelectedGroup") : navigate("Artefacts");
+        // navigate back to origin
+        navigate(origin);
+
       })
       .catch(err => {
         // stop showing user the loading modal
