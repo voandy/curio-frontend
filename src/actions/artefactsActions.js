@@ -31,7 +31,7 @@ export const getUserArtefacts = userId => dispatch => {
       })
       // failure
       .catch(err => {
-        console.log("artefactActions: " + err);
+        console.log("Failed to get user artefacts : " + err);
         reject(err);
       });
   });
@@ -49,7 +49,7 @@ export const likeArtefact = (artefactId, userId) => dispatch => {
       })
       // failure
       .catch(err => {
-        console.log("artefactActions: " + err);
+        console.log("Failed to like an artefact: " + err);
         reject(err);
       });
   });
@@ -67,7 +67,7 @@ export const unlikeArtefact = (artefactId, userId) => dispatch => {
       })
       // failure
       .catch(err => {
-        console.log("artefactActions: " + err);
+        console.log("Failed to unlike an artefact: " + err);
         reject(err);
       });
   });
@@ -90,16 +90,16 @@ export const createNewArtefacts = artefact => dispatch => {
           .then(res => {
               // get all artefacts posted by user
               getUserArtefactsAPIRequest(newArtefact.userId)
-              // success
-              .then(res => {
-                dispatch(setUserArtefacts(res.data));
-                resolve(res);
-              })
-              // failure
-              .catch(err => {
-                console.log("artefactActions: " + err);
-                reject(err);
-              });
+                // success
+                .then(res => {
+                  dispatch(setUserArtefacts(res.data));
+                  resolve(res);
+                })
+                // failure
+                .catch(err => {
+                  console.log("Failed to get user artefacts: " + err);
+                  reject(err);
+                });
           })
           .catch(err => {
             console.log("Failed to create new artefact: " + err);
@@ -198,7 +198,7 @@ export const getArtefactComments = artefactId => dispatch => {
       })
       // failure
       .catch(err => {
-        console.log("artefactActions: " + err);
+        console.log("Failed to get artefact comments: " + err);
         reject(err);
       });
   });
