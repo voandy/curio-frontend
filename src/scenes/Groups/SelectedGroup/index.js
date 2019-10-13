@@ -60,9 +60,14 @@ class SelectedGroup extends Component {
 
   // get selected group data asynchronously
   getSelectedGroupData = async groupId => {
-    this.props.getSelectedGroup(groupId);
-    this.props.getSelectedGroupAllArtefacts(groupId);
-    this.props.getSelectedGroupAllMembers(groupId);
+    Promise.all([
+      this.props.getSelectedGroup(groupId),
+      this.props.getSelectedGroupAllArtefacts(groupId),
+      this.props.getSelectedGroupAllMembers(groupId)
+    ]).catch(err => {
+      console.log(err);
+      alert("Error loading group data");
+    });
   };
 
   // nav details

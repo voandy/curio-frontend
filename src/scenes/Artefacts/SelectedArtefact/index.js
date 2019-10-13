@@ -80,8 +80,13 @@ class SelectedArtefact extends Component {
 
   // asynchronously make api calls to get selectedArtefact data into redux state
   async getSelectedArtefactData(artefactId) {
-    this.props.getSelectedArtefact(artefactId);
-    this.props.getArtefactComments(artefactId);
+    Promise.all([
+      this.props.getSelectedArtefact(artefactId),
+      this.props.getArtefactComments(artefactId)
+    ]).catch(err => {
+      console.log(err);
+      alert("Error loading artefact data");
+    });
   }
 
   // nav details
