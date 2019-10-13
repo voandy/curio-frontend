@@ -148,14 +148,27 @@ export const editSelectedArtefact = artefact => dispatch => {
       // update artefact in the backend
       updateSelectedArtefactAPIRequest(selectedArtefact._id, selectedArtefact)
         .then(res => {
-          // update selected artefact to redux state
-          dispatch(setSelectedArtefact(res.data));
-          resolve(res);
+
+          // get artefact based on artefactId
+          getSelectedArtefactAPIRequest(selectedArtefact._id)
+            .then(res => {
+              // set updated selected artefact to redux state
+              dispatch(setSelectedArtefact(res.data));
+              resolve(res);
+            })
+            .catch(err => {
+              console.log("Failed to select artefact" + err);
+              reject(err);
+            });
         })
         .catch(err => {
           console.log("Failed to update artefact" + err);
           reject(err);
         });
+    })
+    .catch(err => {
+      console.log("Failed to update artefact" + err);
+      reject(err);
     });
   });
 };

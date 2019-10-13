@@ -90,8 +90,8 @@ export const getSelectedGroup = groupId => dispatch => {
   return new Promise((resolve, reject) => {
     getGroupDetailsAPIRequest(groupId)
       .then(res => {
-        resolve(res);
         dispatch(setSelectedGroup(res.data));
+        resolve(res);
       })
       // failure
       .catch(err => {
@@ -106,8 +106,8 @@ export const getSelectedGroupAllArtefacts = groupId => dispatch => {
   return new Promise((resolve, reject) => {
     getGroupAllArtefactsAPIRequest(groupId)
       .then(res => {
-        resolve(res);
         dispatch(setSelectedGroupArtefacts(res.data));
+        resolve(res);
       })
       // failure
       .catch(err => {
@@ -122,8 +122,8 @@ export const getSelectedGroupAllMembers = groupId => dispatch => {
   return new Promise((resolve, reject) => {
     getGroupAllMembersAPIRequest(groupId)
       .then(res => {
-        resolve(res);
         dispatch(setSelectedGroupMembers(res.data));
+        resolve(res);
       })
       // failure
       .catch(err => {
@@ -134,14 +134,38 @@ export const getSelectedGroupAllMembers = groupId => dispatch => {
 };
 
 // edit group details
-export const editSelectedGroup = groupId => dispatch => {
+export const editSelectedGroup = group => (dispatch, getState) => {
   return new Promise((resolve, reject) => {
-    editGroupAPIRequest(groupId)
-      .then(res => {
-        resolve(res);
-        dispatch(setSelectedGroupMembers(res.data));
-      })
-      // failure
+    // check if user selects a new image to upload or not
+    (() => {
+      // if a new image is selects, the imageURI would not be empty
+      return !group.imageURI
+        ? Promise.resolve(group.coverPhoto)
+        : uploadImageToGCS(group.imageURI);
+    })()
+      .then(imageURL => {
+        // prepare data body using the imageURL prepared
+        const groupData = {
+          ...group,
+          coverPhoto: imageURL
+        };
+        // send edit API request to backend
+        editGroupAPIRequest(group._id, groupData)
+          .then(res => {
+            // reload the selected group
+            dispatch(getSelectedGroup(group._id));
+            dispatch(getSelectedGroupAllMembers(group._id));
+            dispatch(getSelectedGroupAllArtefacts(group._id));
+            // reload all user groups data
+            dispatch(getUserGroups(getState().auth.user.id));
+            resolve(res);
+          })
+          // failure
+          .catch(err => {
+            console.log("groupActions: " + err);
+            reject(err);
+          });
+      }) // failure for getting imageURL
       .catch(err => {
         console.log("groupActions: " + err);
         reject(err);
@@ -154,8 +178,8 @@ export const getSelectedGroupArtefactComments = artefactId => dispatch => {
   return new Promise((resolve, reject) => {
     getArtefactCommentsAPIRequest(artefactId)
       .then(res => {
-        resolve(res);
         dispatch(addSelectedGroupArtefactComments(res.data));
+        resolve(res);
       })
       // failure
       .catch(err => {
@@ -166,11 +190,11 @@ export const getSelectedGroupArtefactComments = artefactId => dispatch => {
 };
 
 // delete selected artefact
-export const deleteSelectedGroup = groupId => dispatch => {
+export const deleteSelectedGroup = groupId => (dispatch, getState) => {
   return new Promise((resolve, reject) => {
     deleteGroupAPIRequest(groupId)
       .then(res => {
-        // dispatch(getUserGroups(userId));
+        dispatch(getUserGroups(getState().user.userData._id));
         resolve(res);
       })
       .catch(err => {

@@ -168,7 +168,7 @@ class ArtefactsForm extends Component {
         this.setLoading(false);
         // reset new artefacts details
         this.resetNewArtefact();
-        navigate("Artefacts");
+        navigate("SelectedArtefact");
       })
       .catch(err => {
         // stop showing user the loading modal

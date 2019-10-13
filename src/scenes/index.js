@@ -20,6 +20,7 @@ import ProfileScreen from "./Profile";
 import NotificationScreen from "./Notification";
 import ArtefactsScreen from "./Artefacts";
 import PublicProfileScreen from "./PublicProfile";
+import InvitationScreen from "./Invitation";
 import SelectedArtefactScreen from "./Artefacts/SelectedArtefact";
 import SelectedGroupScreen from "./Groups/SelectedGroup";
 import ArtefactsFormScreen from "./Artefacts/ArtefactsForm";
@@ -37,22 +38,42 @@ import { getUserNotifications } from "../actions/notificationActions";
 const { registerForPushNotificationsAsync } = require("../services/notification/registerForPushNotificationsAsync");
 
 class Scenes extends Component {
+  // for scenarios: there's an user stayed logged in on app launch
+  // or there's no user logged in on app launch
   async componentDidMount() {
     if (this.props.auth.isAuthenticated) {
-
-      // get user authentication data
-      const { user } = this.props.auth;
-
-      // get user data and artefacts
-      this.props.getUserData(user.id);
-      this.props.getUserArtefacts(user.id);
-      this.props.getUserGroups(user.id);
-      this.props.getUserNotifications(user.id);
-
-      // post user's expo-push-token to backend if haven't already
-      registerForPushNotificationsAsync(user.id);
+      // retrieve and setup data
+      this.setupUserAppData();
     }
   }
+
+  // for scenario: an user logs out on the app and tries to log back in
+  async componentDidUpdate(prevProps) {
+    // extract users details from redux states
+    const user = this.props.auth.user;
+    const previousUser = prevProps.auth.user;
+    // a user logs in and there's no previous user data in redux store
+    if (
+      Object.keys(previousUser).length === 0 &&
+      Object.keys(user).length > 0
+    ) {
+      // retrieve and setup data
+      this.setupUserAppData();
+    }
+  }
+
+  // retrieve and setup initial required data upon app launch after user logs in
+  setupUserAppData = () => {
+    // get user authentication data
+    const { user } = this.props.auth;
+    // get user data and artefacts
+    this.props.getUserData(user.id);
+    this.props.getUserArtefacts(user.id);
+    this.props.getUserGroups(user.id);
+    this.props.getUserNotifications(user.id);
+    // post user's expo-push-token to backend if haven't already
+    registerForPushNotificationsAsync(user.id);
+  };
 
   render() {
     return <AppContainer />;
@@ -73,7 +94,7 @@ const ArtefactStack = createStackNavigator({
   Artefacts: { screen: ArtefactsScreen },
   ArtefactsForm: { screen: ArtefactsFormScreen },
   SelectedArtefact: { screen: SelectedArtefactScreen },
-  GeneralSearch: { screen: GeneralSearchScreen },
+  GeneralSearch: { screen: GeneralSearchScreen }
 });
 
 const NotificationStack = createStackNavigator({
@@ -81,6 +102,7 @@ const NotificationStack = createStackNavigator({
   SelectedArtefact: { screen: SelectedArtefactScreen },
   SelectedGroup: { screen: SelectedGroupScreen },
   GeneralSearch: { screen: GeneralSearchScreen },
+  Invitation: { screen: InvitationScreen }
 });
 
 const ProfileStack = createStackNavigator({
