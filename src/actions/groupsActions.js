@@ -16,7 +16,8 @@ import {
   editGroupAPIRequest,
   pinGroupAPIRequest,
   unpinGroupAPIRequest,
-  deleteGroupAPIRequest
+  deleteGroupAPIRequest,
+  addMemberToGroupAPIRequest
 } from "../utils/APIHelpers/groupAPIHelper";
 
 import { getArtefactCommentsAPIRequest } from "../utils/APIHelpers/artefactAPIHelpers";
@@ -234,6 +235,34 @@ export const unpinGroup = (userId, groupId) => dispatch => {
       })
       .catch(err => {
         console.log(err);
+        reject(err);
+      });
+  });
+};
+
+export const addMemberToGroup = (groupId, userId) => dispatch => {
+  return new Promise((resolve, reject) => {
+    addMemberToGroupAPIRequest(groupId, userId)
+      .then(res => {
+        dispatch(getSelectedGroupAllMembers(groupId));
+        resolve(res);
+      })
+      .catch(err => {
+        console.log("Failed to add member: " + err);
+        reject(err);
+      });
+  });
+};
+
+export const deleteMemberFromGroup = (groupId, userId) => dispatch => {
+  return new Promise((resolve, reject) => {
+    deleteMemberFromGroupAPIRequest(groupId, userId)
+      .then(res => {
+        dispatch(getSelectedGroupAllMembers(groupId));
+        resolve(res);
+      })
+      .catch(err => {
+        console.log("Failed to remove member: " + err);
         reject(err);
       });
   });
