@@ -50,10 +50,6 @@ class ArtefactsForm extends Component {
     super(props);
     // extract artefact details if selectedArtefact is passed in
     const selectedArtefact = this.props.navigation.getParam("selectedArtefact");
-    // prepare image URL depending on current mode (create or edit)
-    const imageURI = this.props.navigation.getParam("isEditMode")
-      ? selectedArtefact.images[0].URL
-      : null;
     // setup initial state
     this.state = {
       artefact: {
@@ -61,8 +57,7 @@ class ArtefactsForm extends Component {
         // add & replace artefact details if selectedArtefact is passed in
         // otherwise, it will not replace anything
         ...selectedArtefact,
-        userId: this.props.auth.user.id,
-        imageURI
+        userId: this.props.auth.user.id
       },
       loading: false
     };
@@ -177,6 +172,20 @@ class ArtefactsForm extends Component {
   };
 
   render() {
+    // extract selected artefact detail from parameter passed in
+    const selectedArtefact = this.props.navigation.getParam("selectedArtefact");
+    // decide which image source to use
+    // if there no imageURI in state (no new changes or null)
+    var imageSource = !this.state.artefact.imageURI
+      ? // then check if there's a URL to selected Artefact image
+        !selectedArtefact || !selectedArtefact.images[0].URL
+        ? // if no, then use default pic
+          require("../../../../assets/images/icons/addPicture.png")
+        : // there's URL to image, so use it
+          { uri: selectedArtefact.images[0].URL }
+      : // User picks a new image to be uploaded
+        { uri: this.state.artefact.imageURI };
+
     return (
       <View style={styles.container}>
         {/* loading modal window */}
@@ -192,17 +201,7 @@ class ArtefactsForm extends Component {
               </Text>
               {/* show current selected artefact image if exists  */}
               <TouchableOpacity activeOpacity={0.5} onPress={this._pickImage}>
-                {!this.state.artefact.imageURI ? (
-                  <Image
-                    style={styles.imageSelected}
-                    source={require("../../../../assets/images/icons/addPicture.png")}
-                  />
-                ) : (
-                  <Image
-                    style={styles.imageSelected}
-                    source={{ uri: this.state.artefact.imageURI }}
-                  />
-                )}
+                <Image style={styles.imageSelected} source={imageSource} />
               </TouchableOpacity>
 
               <Text style={[styles.subFont, styles.imageText]}>
