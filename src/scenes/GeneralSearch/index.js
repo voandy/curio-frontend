@@ -56,7 +56,6 @@ class Search extends Component {
 
   // navigate to user's profile
   gotoUserProfile = userId => {
-    console.log("herfe");
     const { navigate } = this.props.navigation;
     // navigate to selected user profile
     navigate("PublicProfile", { userId });
@@ -64,7 +63,6 @@ class Search extends Component {
 
   // navigate to group page
   gotoGroupPage = groupId => {
-    console.log("herfefff");
     const { navigate } = this.props.navigation;
     // navigate to selected group
     navigate("SelectedGroup", { groupId });
@@ -151,6 +149,7 @@ class Search extends Component {
     });
   };
 
+  // search for both users and groups on backend
   doGeneralSearch = async searchInput => {
     if (searchInput == "") {
       alert("Please enter some search terms.");
@@ -173,8 +172,6 @@ class Search extends Component {
     return (
       <View style={styles.container}>
         <HeaderSearch
-          tab1="Users"
-          tab2="Groups"
           searchInput={this.state.searchInput}
           onChangeSearchInput={this.onChangeSearchInput}
           onSubmitEditing={event => {

@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
 
 import {
   StyleSheet,
@@ -10,76 +12,115 @@ import {
   Text
 } from "react-native";
 
+import {
+  searchUsers,
+  clearSearchResults
+} from "../../../actions/searchActions";
+
 // Custom component
 import SearchFeed from "../../../component/SearchFeed";
+import HeaderSearch from "../../../component/HeaderSearch";
 
 // responsive design component
-import {
-  deviceWidthDimension as wd
-} from "../../../utils/responsiveDesign";
+import { deviceWidthDimension as wd } from "../../../utils/responsiveDesign";
 
+class UserSearch extends Component {
+  constructor(props) {
+    super(props);
 
-export default class UserSearch extends Component {
+    // clear redux state in case user force quits the app and reopen it
+    this.props.clearSearchResults();
+
+    this.state = {
+      searchInput: "",
+      // has first search been done?
+      searchPerformed: false
+    };
+  }
 
   // TODO change this when results fill in after search
   state = {
     searchResults: 0
-  }
+  };
 
   // Nav bar details
   static navigationOptions = {
     header: null
   };
 
-  render() {
+  onChangeSearchInput = searchInput => {
+    this.setState({
+      searchInput
+    });
+  };
 
+  doUserSearch = async searchInput => {
+    if (searchInput == "") {
+      alert("Please enter some search terms.");
+    } else {
+      await this.props.searchUsers({ searchTerms: searchInput }).then(() => {
+        this.setState({
+          searchPerformed: true
+        });
+      });
+    }
+  };
+
+  // generate feed for user search results
+  showUserResults = function(userSearchResults) {
+    if (userSearchResults.length === 0) {
+      return <Text style={styles.emptySearch}>No users found</Text>;
+    } else {
+      var userResultsFeed = [];
+
+      // create a view for each user result
+      for (var i = 0; i < userSearchResults.length; i++) {
+        const userId = userSearchResults[i]._id;
+        userResultsFeed.push(
+          <SearchFeed
+            key={i}
+            heading={userSearchResults[i].name}
+            subHeading={userSearchResults[i].username}
+            isGroup={false}
+            searchImage={userSearchResults[i].profilePic}
+            onPress={() => this.gotoUserProfile(userId)}
+          />
+        );
+      }
+
+      return userResultsFeed;
+    }
+  };
+
+  render() {
     // navigation in app
     const { navigate } = this.props.navigation;
 
     return (
       <View style={styles.container}>
-
         {/* search header */}
-        <View style={styles.search}>
-          <TextInput
-
-            // TODO add onsubmit func
-            onSubmitEditing={this.props.onSubmit}
-            underlineColorAndroid="transparent"
-            pointerEvents="none"
-            placeholder="Search"
-            placeholderTextColor="#707070"
-            style={[styles.searchText, styles.font]}
-          />
-          <Image
-            style={styles.searchIcon}
-            source={require("../../../../assets/images/icons/search.png")}
-          />
-        </View>
+        <HeaderSearch
+          searchInput={this.state.searchInput}
+          onChangeSearchInput={this.onChangeSearchInput}
+          onSubmitEditing={event => {
+            this.doUserSearch(event.nativeEvent.text);
+          }}
+        />
 
         {/* scrollable area for CONTENT */}
         <ScrollView
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={16}
         >
-
-          {this.state.searchResults === 0 ? (
-            <View style={styles.emptySearch}>
-              <Text style={styles.font}>Search for users to add into the group</Text>
-            </View>
+          {this.state.searchPerformed === true ? (
+            // user search results
+            this.showUserResults(this.props.search.userSearchResults)
           ) : (
-              <View>
-                <SearchFeed heading="Bob" subHeading="bob" isGroup={false}
-                  image={require("../../../../assets/images/test-delete-this/boi1.jpg")} />
-                <SearchFeed heading="Sarah" subHeading="sarahLeee" isGroup={false}
-                  image={require("../../../../assets/images/test-delete-this/boi2.jpg")} />
-                <SearchFeed heading="MEME LEGEND" subHeading="5" isGroup={true}
-                  image={require("../../../../assets/images/test-delete-this/boi4.jpg")} />
-              </View>
-            )}
-
-
-
+            // group search results
+            <Text style={styles.emptySearch}>
+              Please enter search query above.
+            </Text>
+          )}
         </ScrollView>
       </View>
     );
@@ -109,7 +150,7 @@ const styles = StyleSheet.create({
   searchText: {
     flex: 1,
     marginLeft: 20,
-    alignSelf: "center",
+    alignSelf: "center"
   },
 
   searchIcon: {
@@ -122,6 +163,22 @@ const styles = StyleSheet.create({
 
   emptySearch: {
     alignItems: "center",
-    marginVertical: wd(0.2)
+    marginVertical: wd(0.1),
+    textAlign: "center",
+    color: "#707070"
   }
 });
+
+UserSearch.propTypes = {
+  searchUsers: PropTypes.func.isRequired,
+  clearSearchResults: PropTypes.func.isRequired
+};
+
+const mapStateToProps = state => ({
+  search: state.search
+});
+
+export default connect(
+  mapStateToProps,
+  { searchUsers, clearSearchResults }
+)(UserSearch);
