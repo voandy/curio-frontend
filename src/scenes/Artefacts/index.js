@@ -102,10 +102,10 @@ class Artefacts extends Component {
 
       if (artefacts[i].privacy === privacy) {
         artefactFeeds.push(
-          // DOES NOT WORK FOR NOW!!!!!!!!
+          // TODO, WORKS BUT CONTAINS "Key is not a prop, trying to access it will return undefined" WARNING
           // <ArtefactFeed
-          //   onPress={() => this.clickArtefact}
-          //   artefactId = {artefacts[i]._id}
+          //   onPress={() => this.clickArtefact(artefactId)}
+          //   artefactId = {artefactId}
           //   key={artefactKey}
           //   image={{ uri: artefacts[i].images[0].URL }}
           // />

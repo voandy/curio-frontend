@@ -19,9 +19,7 @@ class ArtefactFeed extends Component {
         return (
             <View style={styles.card}>
                 {/* artefact image preview */}
-                {/* TODO ADD BELOW ===>   onPress={ () => this.props.func() } */}
-                {/* <TouchableOpacity onPress={this.props.onPress(this.props.artefactId)} activeOpacity={0.5} >      */}
-                <TouchableOpacity activeOpacity={0.5} >     
+                <TouchableOpacity onPress={this.props.onPress} activeOpacity={0.5} key={this.props.key} >     
                     <Image style={styles.photo} source={this.props.image} />
                 </TouchableOpacity>
             </View>
