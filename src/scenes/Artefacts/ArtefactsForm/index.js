@@ -13,7 +13,10 @@ import {
 } from "react-native";
 
 // redux actions
-import { createNewArtefacts, editSelectedArtefact } from "../../../actions/artefactsActions";
+import {
+  createNewArtefacts,
+  editSelectedArtefact
+} from "../../../actions/artefactsActions";
 import DatePicker from "react-native-datepicker";
 
 // expo image modules
@@ -39,37 +42,25 @@ const newArtefact = {
   category: "Art",
   dateObtained: "",
   imageURI: "",
-  privacy: "Private"
+  privacy: 1
 };
 
 class ArtefactsForm extends Component {
   constructor(props) {
     super(props);
-
+    // extract artefact details if selectedArtefact is passed in
+    const selectedArtefact = this.props.navigation.getParam("selectedArtefact");
+    // setup initial state
     this.state = {
-
-      // new artefact to be submitted
-      newArtefact: {
+      artefact: {
         ...newArtefact,
-      
-        // get newArtefact information
-        ...this.props.navigation.getParam("newArtefact", "NO-NEW-ARTEFACT"),
-
+        // add & replace artefact details if selectedArtefact is passed in
+        // otherwise, it will not replace anything
+        ...selectedArtefact,
         userId: this.props.auth.user.id
       },
-      loading: false,
+      loading: false
     };
-
-    // add image to ArtefactsForm if it is for editing
-    if (this.props.navigation.getParam("isEditingArtefact") === true) {
-      this.state = {
-        ...this.state,
-        newArtefact: {
-          ...this.state.newArtefact,
-          imageURI: this.props.artefacts.selectedArtefact.images[0].URL,          
-        }
-      };
-    }
   }
 
   // nav details
@@ -81,93 +72,79 @@ class ArtefactsForm extends Component {
   };
 
   // new artefact's attribute change
-  setNewArtefact = (key, value) => {
+  setArtefact = (key, value) => {
     this.setState({
-      newArtefact: {
-        ...this.state.newArtefact,
+      artefact: {
+        ...this.state.artefact,
         [key]: value
       }
     });
   };
 
   // revert newArtefact to initial state
-  resetNewArtefact = () => {
+  resetArtefact = () => {
     this.setState({
-      ...this.state,
-      newArtefact: {
+      artefact: {
         ...newArtefact,
         userId: this.props.auth.user.id
       }
     });
   };
 
-  // Setters for all the local state for newArtefacts
-  setDateObtained = dateObtained => {
-    this.setNewArtefact("dateObtained", dateObtained);
-  };
-  setTitle = title => {
-    this.setNewArtefact("title", title);
-  };
-  setCategory = category => {
-    this.setNewArtefact("category", category);
-  };
-  setDescription = description => {
-    this.setNewArtefact("description", description);
-  };
-  setDate = date => {
-    this.setNewArtefact("date", date);
-  };
-  setImageURI = imageURI => {
-    this.setNewArtefact("imageURI", imageURI);
-  };
-  setPrivacy = privacy => {
-    this.setNewArtefact("privacy", privacy);
-  };
-
   // setter function for "loading" to show user that something is loading
   setLoading = loading => {
     this.setState({
-      ...this.state,
       loading
     });
   };
 
-  // post new artefact to the backend
-  onNewArtefactSubmit = () => {
-    const { navigate } = this.props.navigation;
-    // show user the loading modal
-    this.setLoading(true);
-    // send and create artefact to the backend
-    this.props.createNewArtefacts(this.state.newArtefact)
-      .then(() => {
-          // stop showing user the loading modal
-          this.setLoading(false);
-          // reset new artefacts details
-          this.resetNewArtefact();
-          navigate("Artefacts");
-      })
-      .catch(err => {
-          console.log(err);
-          // stop showing user the loading modal
-          this.setLoading(false);
-          // show error
-          console.log(err.response.data);
-      });
+  // Setters for all the local state for newArtefacts
+  setDateObtained = dateObtained => {
+    this.setArtefact("dateObtained", dateObtained);
+  };
+  setTitle = title => {
+    this.setArtefact("title", title);
+  };
+  setCategory = category => {
+    this.setArtefact("category", category);
+  };
+  setDescription = description => {
+    this.setArtefact("description", description);
+  };
+  setDate = date => {
+    this.setArtefact("date", date);
+  };
+  setImageURI = imageURI => {
+    this.setArtefact("imageURI", imageURI);
+  };
+  setPrivacy = privacy => {
+    this.setArtefact("privacy", privacy);
   };
 
-  // post edited artefact to the backend
-  onEditArtefactSubmit = async () => {
+
+  onSubmit = async () => {
     const { navigate } = this.props.navigation;
+    const isEditMode = this.props.navigation.getParam("isEditMode");
     // show user the loading modal
     this.setLoading(true);
-    // send and create artefact to the backend
-    this.props.editSelectedArtefact(this.state.newArtefact)
+    // use appropriate action based on current page mode (either editing or creating)
+    (() => {
+      return isEditMode
+        ? this.props.editSelectedArtefact(this.state.artefact)
+        : this.props.createNewArtefacts(this.state.artefact);
+    })()
       .then(() => {
         // stop showing user the loading modal
         this.setLoading(false);
         // reset new artefacts details
-        this.resetNewArtefact();
-        navigate("SelectedArtefact");
+        this.resetArtefact();
+        // if in edit mode, this pops this page from the stack,
+        // instead of adding a new SelectedArtefact page on top of it
+        // therefore, no need to pass in artefact id
+        isEditMode
+          ? navigate("SelectedArtefact")
+          : // if in create mode, navigate to artefacts page
+            navigate("Artefacts");
       })
       .catch(err => {
         // stop showing user the loading modal
@@ -196,6 +173,20 @@ class ArtefactsForm extends Component {
   };
 
   render() {
+    // extract selected artefact detail from parameter passed in
+    const selectedArtefact = this.props.navigation.getParam("selectedArtefact");
+    // decide which image source to use
+    // if there no imageURI in state (no new changes or null)
+    var imageSource = !this.state.artefact.imageURI
+      ? // then check if there's a URL to selected Artefact image
+        !selectedArtefact || !selectedArtefact.images[0].URL
+        ? // if no, then use default pic
+          require("../../../../assets/images/icons/addPicture.png")
+        : // there's URL to image, so use it
+          { uri: selectedArtefact.images[0].URL }
+      : // User picks a new image to be uploaded
+        { uri: this.state.artefact.imageURI };
+
     return (
       <View style={styles.container}>
         {/* loading modal window */}
@@ -209,21 +200,9 @@ class ArtefactsForm extends Component {
               <Text style={[styles.font, styles.imageText]}>
                 Share your artefacts for others to view
               </Text>
-
-              {/* shows image of newArtefact accordingly */}
+              {/* show current selected artefact image if exists  */}
               <TouchableOpacity activeOpacity={0.5} onPress={this._pickImage}>
-                {this.state.newArtefact.imageURI !== undefined &&
-                this.state.newArtefact.imageURI !== "" ? (
-                  <Image
-                    style={styles.imageSelected}
-                    source={{ uri: this.state.newArtefact.imageURI }}
-                  />
-                ) : (
-                  <Image
-                    style={styles.imageSelected}
-                    source={require("../../../../assets/images/icons/addPicture.png")}
-                  />
-                )}
+                <Image style={styles.imageSelected} source={imageSource} />
               </TouchableOpacity>
 
               <Text style={[styles.subFont, styles.imageText]}>
@@ -247,7 +226,7 @@ class ArtefactsForm extends Component {
                   placeholderTextColor="#868686"
                   style={styles.inputFont}
                   onChangeText={value => this.setTitle(value)}
-                  value={this.state.newArtefact.title}
+                  value={this.state.artefact.title}
                 />
               </View>
             </View>
@@ -266,7 +245,7 @@ class ArtefactsForm extends Component {
                   placeholderTextColor="#868686"
                   style={styles.inputFont}
                   onChangeText={value => this.setDescription(value)}
-                  value={this.state.newArtefact.description}
+                  value={this.state.artefact.description}
                 />
               </View>
             </View>
@@ -281,7 +260,7 @@ class ArtefactsForm extends Component {
                 <Text style={styles.font}>category</Text>
                 <Picker
                   style={styles.pickerLong}
-                  selectedValue={this.state.newArtefact.category}
+                  selectedValue={this.state.artefact.category}
                   onValueChange={this.setCategory.bind(this)}
                 >
                   <Picker.Item label="Art" value="Art" />
@@ -324,7 +303,7 @@ class ArtefactsForm extends Component {
                   <Text style={styles.font}>Date</Text>
                   <DatePicker
                     mode="date"
-                    date={this.state.newArtefact.dateObtained}
+                    date={this.state.artefact.dateObtained}
                     style={styles.date}
                     placeholder="select date"
                     format="YYYY-MM-DD"
@@ -338,7 +317,7 @@ class ArtefactsForm extends Component {
                         alignItems: "flex-start"
                       }
                     }}
-                    selectedValue={this.state.newArtefact.dateObtained}
+                    selectedValue={this.state.artefact.dateObtained}
                     onDateChange={date => this.setDateObtained(date)}
                   />
                 </View>
@@ -354,11 +333,11 @@ class ArtefactsForm extends Component {
                   <Text style={styles.font}>Privacy</Text>
                   <Picker
                     style={styles.pickerShort}
-                    selectedValue={this.state.newArtefact.privacy}
+                    selectedValue={this.state.artefact.privacy}
                     onValueChange={this.setPrivacy.bind(this)}
                   >
-                    <Picker.Item label="Private" value="Private" />
-                    <Picker.Item label="Public" value="Public" />
+                    <Picker.Item label="Private" value= {1} />
+                    <Picker.Item label="Public" value= {0} />
                   </Picker>
                 </View>
               </View>
@@ -372,13 +351,8 @@ class ArtefactsForm extends Component {
                 width: wd(0.8)
               }}
             >
-
               {/* edit artefact or create new artefact */}
-              <MySmallerButton text="POST" onPress={() => 
-                {this.props.navigation.getParam("isEditingArtefact") === true ? this.onEditArtefactSubmit() 
-                : this.onNewArtefactSubmit()
-                }
-              } />
+              <MySmallerButton text="POST" onPress={() => this.onSubmit()} />
             </View>
           </View>
         </ScrollView>

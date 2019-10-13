@@ -70,6 +70,12 @@ class SelectedArtefact extends Component {
       commentsCount: 0,
       likingEnabled: true
     };
+    // get artefact id passed in from the navigation parameter
+    artefactId = this.props.navigation.getParam("artefactId");
+    // make sure it exists
+    artefactId
+      ? this.getSelectedArtefactData(artefactId)
+      : alert("Error loading artefact data");
   }
 
   // asynchronously make api calls to get selectedArtefact data into redux state
@@ -85,12 +91,6 @@ class SelectedArtefact extends Component {
       elevation: 0 // remove shadow on Android
     }
   };
-
-  componentDidMount() {
-    // get all information required for the selectedGroup page
-    artefactId = this.props.navigation.getParam("artefactId", "NO-ARTEFACT-ID");
-    this.getSelectedArtefactData(artefactId);
-  }
 
   async componentDidUpdate(prevProps) {
     // extract prev & selected artefact details
@@ -152,7 +152,7 @@ class SelectedArtefact extends Component {
   refreshSelectedArtefactPage = async () => {
     this.setState({ refreshing: true });
     // get data from backend
-    artefactId = this.props.navigation.getParam("artefactId", "NO-ARTEFACT-ID");
+    artefactId = this.props.navigation.getParam("artefactId");
     // reload everything at once, only refresh once everything is done loading
     Promise.all([
       this.props.getSelectedArtefact(artefactId),
@@ -171,8 +171,8 @@ class SelectedArtefact extends Component {
     const { navigate } = this.props.navigation;
     // navigate to ArtefactsForm while passing the editedSelectedArtefact
     navigate("ArtefactsForm", {
-      isEditingArtefact: true,
-      newArtefact: this.props.artefacts.selectedArtefact
+      isEditMode: true,
+      selectedArtefact: this.props.artefacts.selectedArtefact
     });
   };
 
@@ -203,7 +203,7 @@ class SelectedArtefact extends Component {
     this.setLoading(true);
     // remove selected artefact from redux states
     //prettier-ignore
-    await this.props.removeSelectedArtefact(this.props.artefacts.selectedArtefact._id)
+    await this.props.removeSelectedArtefact(this.props.artefacts.selectedArtefact)
       .then(() => {
         // stop showing user the loading modal
         this.setLoading(false);

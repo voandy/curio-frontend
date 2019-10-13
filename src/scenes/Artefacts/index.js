@@ -41,23 +41,16 @@ class Artefacts extends Component {
     this.state = {
       isModalVisible: false,
       loading: false,
-      refreshing: false
-    }
+      refreshing: false,
+      isPublicTab: true,
+    };
+    this.onChangePrivacyTab = this.onChangePrivacyTab.bind(this);
   }
 
   // Nav bar details
   static navigationOptions = {
     header: null
   };
-
-  componentDidUpdate(prevProps) {
-
-    // update selectedArtefacts when an artefact has been deleted
-    if (prevProps.artefacts.userArtefacts.length !== this.props.artefacts.userArtefacts.length + 1) {
-      // reload userArtefacts to update userArtefacts in redux state
-      this.props.getUserArtefacts(this.props.auth.user.id);
-    }
-  }
 
   // toggle the modal for new artefact creation
   toggleModal = () => {
@@ -72,6 +65,13 @@ class Artefacts extends Component {
     });
   };
 
+  // change privacy tab
+  onChangePrivacyTab = () => {
+    this.setState({
+      isPublicTab: !this.state.isPublicTab
+    })
+  }
+
   // click a specific artefact and navigate to it
   clickArtefact = async artefactId => {
     const { navigate } = this.props.navigation;
@@ -81,41 +81,45 @@ class Artefacts extends Component {
   };
 
   // return ArtefactFeedRows containing ArtefactFeed in different rows
-  showArtefacts = artefacts => {
+  showArtefacts = (artefacts, privacy) => {
     let artefactFeedRows = [];
     let artefactFeeds = [];
     let rowKey = 0;
     let artefactKey = 0;
 
     // sort array based on date obtained (from earliest to oldest)
-    artefacts.sort(function (a, b) {
+    artefacts.sort(function(a, b) {
       return new Date(b.datePosted) - new Date(a.datePosted);
     });
+
     // create ArtefactFeed object out of artefact and push it into artefactFeeds array
     for (var i = 0; i < artefacts.length; i++) {
-
-      artefactFeeds.push(
-        <ArtefactFeed
-          onPress={() => this.clickArtefact.bind(this)}
-          artefactId = {artefacts[i]._id}
-          key={artefactKey}
-          image={{ uri: artefacts[i].images[0].URL }}
-        />
-
-        // <View style={styles.card} key={artefactKey}>
-        //   <TouchableOpacity
-        //     onPress={() => this.clickArtefact(artefactId)}
-        //     activeOpacity={0.5}
-        //   >
-        //     <Image
-        //       style={styles.photo}
-        //       source={{ uri: artefacts[i].images[0].URL }}
-        //     />
-        //   </TouchableOpacity>
-        // </View>
-      );
-      artefactKey++;
+      const artefactId = artefacts[i]._id;
       
+      if (artefacts[i].privacy === privacy) {
+        artefactFeeds.push(
+          // DOES NOT WORK FOR NOW!!!!!!!!
+          // <ArtefactFeed
+          //   onPress={() => this.clickArtefact}
+          //   artefactId = {artefacts[i]._id}
+          //   key={artefactKey}
+          //   image={{ uri: artefacts[i].images[0].URL }}
+          // />
+  
+          <View style={styles.card} key={artefactKey}>
+            <TouchableOpacity
+              onPress={() => this.clickArtefact(artefactId)}
+              activeOpacity={0.5}
+            >
+              <Image
+                style={styles.photo}
+                source={{ uri: artefacts[i].images[0].URL }}
+              />
+            </TouchableOpacity>
+          </View>
+        );
+        artefactKey++;
+      }
       // create a new row after the previous row has been filled with 3 artefacts and fill the previous row into artefactFeedRows
       if (artefactFeeds.length === 3 || i === artefacts.length - 1) {
         artefactFeedRows.push(
@@ -151,8 +155,10 @@ class Artefacts extends Component {
         <SimpleHeader
           title="My Artefacts"
           showTab={true}
-          tab1="Private"
-          tab2="Public"
+          onChangePrivacyTab={this.onChangePrivacyTab}
+          isPublicTab={this.state.isPublicTab}
+          tab1="Public"
+          tab2="Private"
           onSubmit={() => navigate("GeneralSearch")} />
         {/* scrollable area for CONTENT */}
         <ScrollView
@@ -165,10 +171,11 @@ class Artefacts extends Component {
             />
           }
         >
-          {/* all artefacts posted by the user */}
+          {/* all artefacts posted by the user based on the their privacy settings */}
           {Object.keys(this.props.artefacts.userArtefacts).length !== 0 ? (
             <View>
-              {this.showArtefacts(this.props.artefacts.userArtefacts)}
+              {this.state.isPublicTab === true && this.showArtefacts(this.props.artefacts.userArtefacts, 0)}
+              {this.state.isPublicTab === false && this.showArtefacts(this.props.artefacts.userArtefacts, 1)}
             </View>
           ) : (
               <View style={styles.emptyFeed}>
@@ -183,13 +190,7 @@ class Artefacts extends Component {
         </ScrollView>
 
         {/* create new Group */}
-        <AddButton onPress={
-          () => navigate("ArtefactsForm", 
-          { 
-            isEditingArtefact: false,
-            newArtefact: {}
-          })
-        } />
+        <AddButton onPress={() => navigate("ArtefactsForm")} />
       </View>
     );
   }
