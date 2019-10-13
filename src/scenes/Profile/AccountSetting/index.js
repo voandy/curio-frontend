@@ -2,8 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import Dialog from "react-native-dialog";
-import { getUserData } from "../../../actions/userActions";
-
+import { TouchableOpacity } from "react-native-gesture-handler";
 import {
     StyleSheet,
     ScrollView,
@@ -11,6 +10,9 @@ import {
     Image,
     Text
 } from "react-native";
+
+// redux actions
+import { getUserData } from "../../../actions/userActions";
 
 // custom component
 import MyButton from "../../../component/MyButton";
@@ -22,12 +24,13 @@ import {
     deviceHeigthDimension as hp,
     deviceWidthDimension as wd
 } from "../../../utils/responsiveDesign";
-import { TouchableOpacity } from "react-native-gesture-handler";
 
 class AccountSetting extends Component {
-
-    state = {
-        dialogVisible: false
+    constructor(props) {
+        super(props);
+        this.state = {
+            dialogVisible: false
+        }
     }
 
     // Nav bar details
@@ -43,42 +46,33 @@ class AccountSetting extends Component {
         this.setState({ dialogVisible: true });
     };
 
+    // cancel setting a ccount
     handleCancel = () => {
         this.setState({ dialogVisible: false });
     };
 
-    // DELETE
+    // delete account
     handleDelete = () => {
         // TODO add logic
         this.setState({ dialogVisible: false });
     };
 
-    componentWillUpdate(nextProps) {
-        // sets user data
-        if (nextProps.user.userData !== this.props.user.userData) {
-            this.setState({
-                userData: nextProps.user.userData
-            });
-        }
-    }
-
     render() {
-
         return (
             <View style={styles.container}>
                 {/* user profile pic */}
                 <View style={{ height: hp(0.3), width: wd(1), alignItems: "center" }}>
-                    {this.props.user.userData.profilePic != null ? (
-                        <Image
+                    {this.props.user.userData.profilePic != null ? 
+                        (<Image
                             style={styles.profilePic}
                             source={{ uri: this.props.user.userData.profilePic }}
-                        />
-                    ) : (
-                            <Image
-                                style={styles.profilePic}
-                                source={require("../../../../assets/images/default-profile-pic.png")}
-                            />
-                        )}
+                        />) 
+                        : 
+                        (<Image
+                            style={styles.profilePic}
+                            source={require("../../../../assets/images/default-profile-pic.png")}
+                        />)
+                    }
 
                     <Text style={styles.userName}>
                         @{this.props.user.userData.username}</Text>
