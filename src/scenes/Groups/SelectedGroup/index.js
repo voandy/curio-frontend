@@ -145,6 +145,7 @@ class SelectedGroup extends Component {
   // delete the current selected group
   onDeleteSelectedGroup = async () => {
     const { navigate } = this.props.navigation;
+    const { origin } = this.props.navigation.state.params;
     // show user the loading modal
     this.setLoading(true);
     // remove selected artefact from redux states
@@ -154,7 +155,7 @@ class SelectedGroup extends Component {
         // stop showing user the loading modal
         this.setLoading(false);
         // navigate to groups
-        navigate("Groups");
+        navigate(origin);
       })
       .catch(err => {
         // stop showing user the loading modal
