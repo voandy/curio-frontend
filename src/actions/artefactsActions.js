@@ -85,21 +85,12 @@ export const createNewArtefacts = artefact => dispatch => {
           imageURL,
           privacy: artefact.privacy === "Private" ? 0 : 1
         };
-        // send a post API request to backend to register user
+        // send a post API request to backend to create new artefact
         createArtefactAPIRequest(newArtefact)
           .then(res => {
-              // get all artefacts posted by user
-              getUserArtefactsAPIRequest(newArtefact.userId)
-              // success
-              .then(res => {
-                dispatch(setUserArtefacts(res.data));
-                resolve(res);
-              })
-              // failure
-              .catch(err => {
-                console.log("artefactActions: " + err);
-                reject(err);
-              });
+            // reload user artefacts data
+            dispatch(getUserArtefacts(newArtefact.userId));
+            resolve(res);
           })
           .catch(err => {
             console.log("Failed to create new artefact: " + err);
@@ -131,60 +122,39 @@ export const getSelectedArtefact = artefactId => dispatch => {
 };
 
 // update selected artefact
-export const editSelectedArtefact = artefact => dispatch => {
+export const editSelectedArtefact = artefact => (dispatch, getState) => {
   return new Promise((resolve, reject) => {
-    // upload image
-    uploadImageToGCS(artefact.imageURI).then(imageURL => {
-      // prepare the data for new images
-      const newImages = artefact.images;
-      newImages[0].URL = imageURL;
-
-      // prepare the body data base on new user details
-      const selectedArtefact = {
-        ...artefact,
-        images: newImages
-      };
-
-      // update artefact in the backend
-      updateSelectedArtefactAPIRequest(selectedArtefact._id, selectedArtefact)
-        .then(res => {
-
-          // get artefact based on artefactId after the update
-          getSelectedArtefactAPIRequest(selectedArtefact._id)
-            .then(res => {
-
-              // set artefact with new details
-              dispatch(setSelectedArtefact(res.data));
-
-              // get all artefacts posted by user after the update
-              getUserArtefactsAPIRequest(selectedArtefact.userId)
-                // success
-                .then(res => {
-
-                  // set user with new artefacts' details
-                  dispatch(setUserArtefacts(res.data));
-                  resolve(res);
-                })
-                // failure
-                .catch(err => {
-                  console.log("artefactActions: " + err);
-                  reject(err);
-                });
-            })
-            .catch(err => {
-              console.log("Failed to select artefact" + err);
-              reject(err);
-            });
-        })
-        .catch(err => {
-          console.log("Failed to update artefact" + err);
-          reject(err);
-        });
-    })
-    .catch(err => {
-      console.log("Failed to update artefact" + err);
-      reject(err);
-    });
+    (() => {
+      // if a new image is selects, the imageURI would not be empty
+      return !artefact.imageURI
+        ? Promise.resolve(artefact.images[0].URL)
+        : uploadImageToGCS(artefact.imageURI);
+    })()
+      .then(imageURL => {
+        // prepare the body data base on new user details
+        const artefactData = {
+          ...artefact,
+          images: [{ URL: imageURL }]
+        };
+        // update artefact in the backend
+        updateSelectedArtefactAPIRequest(artefact._id, artefactData)
+          .then(res => {
+            // reload the selected artefact
+            dispatch(getSelectedArtefact(artefact._id));
+            dispatch(getArtefactComments(artefact._id));
+            // reload all user artefacts data
+            dispatch(getUserArtefacts(getState().auth.user.id));
+            resolve(res);
+          })
+          .catch(err => {
+            console.log("Failed to update artefact" + err);
+            reject(err);
+          });
+      })
+      .catch(err => {
+        console.log("Failed to update artefact" + err);
+        reject(err);
+      });
   });
 };
 
@@ -253,12 +223,11 @@ export const commentOnArtefact = (
   });
 };
 
-
-// clear selectedArtefact 
+// clear selectedArtefact
 export const clearSelectedArtefact = () => dispatch => {
   dispatch(setSelectedArtefact({}));
   dispatch(setArtefactComments([]));
-}
+};
 
 // Redux actions //
 // store all of the user's artefacts into redux state

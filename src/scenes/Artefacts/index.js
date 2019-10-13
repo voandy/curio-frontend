@@ -59,8 +59,7 @@ class Artefacts extends Component {
       isModalVisible: false,
       loading: false,
       refreshing: false
-    }
-
+    };
     this.onChangePrivacyTab = this.onChangePrivacyTab.bind(this);
   }
 
@@ -148,7 +147,7 @@ class Artefacts extends Component {
     let artefactKey = 0;
 
     // sort array based on date obtained (from earliest to oldest)
-    artefacts.sort(function (a, b) {
+    artefacts.sort(function(a, b) {
       return new Date(b.datePosted) - new Date(a.datePosted);
     });
 
@@ -238,29 +237,23 @@ class Artefacts extends Component {
               {this.state.isPublicTab === false && this.showArtefacts(this.props.artefacts.userArtefacts, 1)}
             </View>
           ) : (
-              <View style={styles.emptyFeed}>
-                <Text
-                  style={{ fontSize: 16, fontFamily: "HindSiliguri-Regular" }}
-                >
-                  Looks like you haven't posted any artefacts
+            <View style={styles.emptyFeed}>
+              <Text
+                style={{ fontSize: 16, fontFamily: "HindSiliguri-Regular" }}
+              >
+                Looks like you haven't posted any artefacts
               </Text>
-                <Text
-                  style={{ fontSize: 16, fontFamily: "HindSiliguri-Regular" }}
-                >
-                  Click the "+" button to add some
+              <Text
+                style={{ fontSize: 16, fontFamily: "HindSiliguri-Regular" }}
+              >
+                Click the "+" button to add some
               </Text>
-              </View>
-            )}
+            </View>
+          )}
         </ScrollView>
 
         {/* create new Group */}
-        <AddButton onPress={
-          () => navigate("ArtefactsForm", 
-          { 
-            isEditingArtefact: false,
-            newArtefact: {}
-          })
-        } />
+        <AddButton onPress={() => navigate("ArtefactsForm")} />
       </View>
     );
   }

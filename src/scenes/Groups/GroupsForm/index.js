@@ -48,11 +48,12 @@ class GroupsForm extends Component {
     this.state = {
       group: {
         ...newGroup,
-        // add & replace newGroup details if selectedGroup is passed in
-        ...this.props.navigation.getParam("selectedGroup")
+        // add & replace group details if selectedGroup is passed in
+        // otherwise, it will not replace anything
+        ...this.props.navigation.getParam("selectedGroup"),
+        adminId: this.props.auth.user.id
       },
-      loading: false,
-      adminId: this.props.auth.user.id
+      loading: false
     };
   }
 
@@ -123,21 +124,22 @@ class GroupsForm extends Component {
   };
   setImageURI = ImageURI => {
     this.setGroup("imageURI", ImageURI);
-    // set this value to show it in the image component
-    // because in edit mode, there is only coverPhoto, no imageURL
+    // set this value to show it in the image component in the form
+    // because in edit mode, selected group only has coverPhoto, not imageURL
     this.setGroup("coverPhoto", ImageURI);
   };
 
   // create/edit group on "post" button press
   onSubmit = async () => {
     const { navigate } = this.props.navigation;
+    const isEditMode = this.props.navigation.getParam("isEditMode");
     // set adminId as a reference
     await this.setGroup("adminId", this.props.auth.user.id);
     // show user the loading modal
     this.setLoading(true);
     // use appropriate action based on current page mode (either editing or creating)
     (() => {
-      return this.props.navigation.getParam("isEditingGroup")
+      return isEditMode
         ? this.props.editSelectedGroup(this.state.group)
         : this.props.createNewGroup(this.state.group);
     })()
@@ -146,7 +148,13 @@ class GroupsForm extends Component {
         this.setLoading(false);
         // reset new group details
         this.resetGroup();
-        navigate("SelectedGroup");
+        // if in edit mode, this pop this page from the stack,
+        // instead of adding a new SelectedGroup page on top of it
+        // therefore, no need to pass in group
+        isEditMode
+          ? navigate("SelectedGroup")
+          : // if in create mode, navigate to groups page
+            navigate("Groups");
       })
       .catch(err => {
         // stop showing user the loading modal
