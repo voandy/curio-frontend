@@ -13,7 +13,6 @@ import {
 } from "react-native";
 
 // redux actions and expo modules
-import DatePicker from "react-native-datepicker";
 import * as ImagePicker from "expo-image-picker";
 import * as ImageManipulator from "expo-image-manipulator";
 import {
@@ -32,7 +31,6 @@ import ActivityLoaderModal from "../../../component/ActivityLoaderModal";
 // custom components
 import MySmallerButton from "../../../component/MySmallerButton";
 import KeyboardShift from "../../../component/componentHelpers/KeyboardShift";
-import { timeSince } from "../../../component/componentHelpers/timeSince";
 
 // default states for newGroup
 const newGroup = {
@@ -148,7 +146,7 @@ class GroupsForm extends Component {
         this.setLoading(false);
         // reset new group details
         this.resetGroup();
-        navigate("Groups");
+        navigate("SelectedGroup");
       })
       .catch(err => {
         // stop showing user the loading modal
