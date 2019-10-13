@@ -125,7 +125,8 @@ export const getSelectedArtefact = artefactId => dispatch => {
 export const editSelectedArtefact = artefact => (dispatch, getState) => {
   return new Promise((resolve, reject) => {
     (() => {
-      // if a new image is selects, the imageURI would not be empty
+      // if a new image is selected, the imageURI would not be empty
+      // so upload to GCS is required, otherwise just retain the old URL link
       return !artefact.imageURI
         ? Promise.resolve(artefact.images[0].URL)
         : uploadImageToGCS(artefact.imageURI);
@@ -159,22 +160,12 @@ export const editSelectedArtefact = artefact => (dispatch, getState) => {
 };
 
 // delete selected artefact
-export const removeSelectedArtefact = artefact => dispatch => {
+export const removeSelectedArtefact = artefact => (dispatch, getState) => {
   return new Promise((resolve, reject) => {
     deleteSelectedArtefactAPIRequest(artefact._id)
       .then(res => {
-        // get all artefacts posted by user after deletion
-        getUserArtefactsAPIRequest(artefact.userId)
-        // success
-        .then(res => {
-          dispatch(setUserArtefacts(res.data));
-          resolve(res);
-        })
-        // failure
-        .catch(err => {
-          console.log("artefactActions: " + err);
-          reject(err);
-        });
+        dispatch(getUserArtefacts(getState().auth.user.id));
+        resolve(res);
       })
       .catch(err => {
         console.log("Failed to delete artefact" + err);
