@@ -13,7 +13,7 @@ export const getUserNotifications = userId => dispatch => {
         resolve(res);
       })
       .catch(err => {
-        console.log(err);
+        console.log("Failed to get user notifications: " + err);
         reject(err);
       });
   });
@@ -28,7 +28,7 @@ export const setSeenStatusToTrue = notifId => dispatch => {
         resolve(res);
       })
       .catch(err => {
-        console.log(err);
+        console.log("Failed to set status of notification: " + err);
         reject(err);
       });
   });
