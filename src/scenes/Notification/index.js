@@ -101,7 +101,7 @@ class Notification extends Component {
     
     return (
       <View style={styles.container}>
-        <SimpleHeader title="Notification" onSubmit={()=> navigate("GeneralSearch")}/>
+        <SimpleHeader title="Notifications" onSubmit={()=> navigate("GeneralSearch")}/>
 
         {/* scrollable area for CONTENT */}
         <ScrollView

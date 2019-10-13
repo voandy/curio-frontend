@@ -4,7 +4,8 @@ import {
   StyleSheet,
   Text,
   TextInput,
-  Image
+  Image,
+  TouchableOpacity
 } from "react-native";
 
 // responsive design component
@@ -27,10 +28,20 @@ class HeaderSearch extends Component {
             value={this.props.searchInput}
             onChangeText={value => this.props.onChangeSearchInput(value)}
           />
-          <Image
-            style={styles.searchIcon}
-            source={require("../../assets/images/icons/search.png")}
-          />
+          {this.props.searchInput.length > 0 && (
+            <TouchableOpacity style={styles.iconContainer} onPress={this.props.pressClear}>
+              <Image
+                style={styles.xIcon}
+                source={require("../../assets/images/icons/x_icon.png")}
+              />
+            </TouchableOpacity>
+          )}
+          <TouchableOpacity style={styles.iconContainer} onPress={this.props.pressSearch}>
+            <Image
+              style={styles.searchIcon}
+              source={require("../../assets/images/icons/search.png")}
+            />
+          </TouchableOpacity>
         </View>
       </View>
     );
@@ -68,6 +79,18 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     marginRight: 20,
     tintColor: "#707070"
+  },
+
+  xIcon: {
+    width: 20,
+    height: 20,
+    alignSelf: "center",
+    marginRight: 7,
+    tintColor: "#C0C0C0"
+  },
+
+  iconContainer: {
+    marginTop: 12
   },
 
   activeHighlight: {

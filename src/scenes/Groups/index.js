@@ -151,9 +151,11 @@ class Groups extends Component {
         {() => (
           <View style={styles.container}>
             {/* <Header tab1="Public" tab2="Private" onPress={()=> navigate("GeneralSearch")}/> */}
-            <HeaderSearch
-              tab1="Public"
-              tab2="Private"
+            <SimpleHeader
+              title="My Groups"
+              showTab={true}
+              tab1="Private"
+              tab2="Public"
               onSubmit={() => navigate("GeneralSearch")}
             />
 
