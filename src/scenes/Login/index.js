@@ -8,15 +8,17 @@ import {
   StyleSheet,
   Text
 } from "react-native";
-//redux
+
+// redux
 import { connect } from "react-redux";
 import { loginUser } from "../../actions/authActions";
+
+// utils
+import { setToBottom } from "../../utils/responsiveDesign";
+
 // reusable components
 import MyButton from "../../component/MyButton";
-import { setToBottom } from "../../utils/responsiveDesign";
-// import the loader modal to help show loading process
 import ActivityLoaderModal from "../../component/ActivityLoaderModal";
-// adjust keyboards to prevent sreen blockage
 import KeyboardShift from "../../component/componentHelpers/KeyboardShift";
 
 const initialState = {
