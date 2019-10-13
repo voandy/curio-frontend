@@ -19,7 +19,6 @@ import CardCarousel from "../../component/CardCarousel";
 import CardGroup from "../../component/CardGroup";
 import SimpleHeader from "../../component/SimpleHeader";
 import AddButton from "../../component/AddButton";
-import GroupModal from "../../component/GroupModal";
 import KeyboardShift from "../../component/componentHelpers/KeyboardShift";
 
 // Custom respondsive design component
@@ -31,29 +30,18 @@ import {
 // default gray colour
 const gray = "#F7F7F7";
 
-const newGroup = {
-  adminId: "",
-  title: "",
-  description: "",
-  private: true,
-  imageURI: ""
-};
-
 class Groups extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      isModalVisible: false,
+      refreshing: false
+    };
+  }
   // Nav bar details
   static navigationOptions = {
     header: null
-  };
-
-  state = {
-    isModalVisible: false,
-    newGroup,
-    refreshing: false
-  };
-
-  // CHANGE THIS LATER
-  toggleModal = () => {
-    this.setState({ isModalVisible: !this.state.isModalVisible });
   };
 
   // refresh page
@@ -80,19 +68,6 @@ class Groups extends Component {
         [key]: value
       }
     });
-  };
-
-  // post new group into the backend
-  postNewGroup = async () => {
-    await this.onNewGroupChange("adminId", this.props.auth.user.id);
-    // redux action to create new group at the backend
-    //prettier-ignore
-    this.props.createNewGroup(this.state.newGroup)
-      .then(() => {
-        this.toggleModal();
-        this.resetNewGroup();
-      })
-      .catch(err => console.log(err));
   };
 
   // click a specific group on the Groups scene

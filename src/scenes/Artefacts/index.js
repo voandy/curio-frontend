@@ -13,9 +13,8 @@ import {
 } from "react-native";
 
 // custom components
-import SimpleHeader from "../../component/SimpleHeader";
 import ArtefactFeed from "../../component/ArtefactFeed";
-import ArtefactModal from "../../component/ArtefactModal";
+import SimpleHeader from "../../component/SimpleHeader";
 import AddButton from "../../component/AddButton";
 
 // redux actions
@@ -35,30 +34,15 @@ import {
 // import the loader modal to help show loading process
 import ActivityLoaderModal from "../../component/ActivityLoaderModal";
 
-// temp state to store object with attributes required to create a new artefact
-const newArtefact = {
-  userId: "",
-  title: "",
-  description: "",
-  category: "",
-  dateObtained: "",
-  imageURI: "",
-  privacy: 1,
-};
-
 class Artefacts extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      newArtefact: {
-        ...newArtefact,
-        userId: this.props.auth.user.id
-      },
-      isPublicTab: true,
       isModalVisible: false,
       loading: false,
-      refreshing: false
+      refreshing: false,
+      isPublicTab: true,
     };
     this.onChangePrivacyTab = this.onChangePrivacyTab.bind(this);
   }
@@ -73,27 +57,6 @@ class Artefacts extends Component {
     this.setState({ isModalVisible: !this.state.isModalVisible });
   };
 
-  // new artefact's attribute change
-  setNewArtefact = (key, value) => {
-    this.setState({
-      newArtefact: {
-        ...this.state.newArtefact,
-        [key]: value
-      }
-    });
-  };
-
-  // revert newArtefact to initial state
-  resetNewArtefact = () => {
-    this.setState({
-      ...this.state,
-      newArtefact: {
-        ...newArtefact,
-        userId: this.props.auth.user.id
-      }
-    });
-  };
-
   // setter function for "loading" to show user that something is loading
   setLoading = loading => {
     this.setState({
@@ -102,34 +65,12 @@ class Artefacts extends Component {
     });
   };
 
+  // change privacy tab
   onChangePrivacyTab = () => {
     this.setState({
       isPublicTab: !this.state.isPublicTab
-    });
-  };
-
-  // post new artefact to the backend
-  onSubmit = async () => {
-    // show user the loading modal
-    this.setLoading(true);
-    // send and create artefact to the backend
-    //prettier-ignore
-    this.props.createNewArtefacts(this.state.newArtefact)
-      .then(() => {
-        // stop showing user the loading modal
-        this.setLoading(false);
-        // close loading modal
-        this.toggleModal();
-        this.resetNewArtefact();
-        
-      })
-      .catch(err => {
-        // stop showing user the loading modal
-        this.setLoading(false);
-        // show error
-        console.log(err.response.data);
-      });
-  };
+    })
+  }
 
   // click a specific artefact and navigate to it
   clickArtefact = async artefactId => {
@@ -159,7 +100,7 @@ class Artefacts extends Component {
         artefactFeeds.push(
           // DOES NOT WORK FOR NOW!!!!!!!!
           // <ArtefactFeed
-          //   onPress={() => this.clickArtefact.bind(this)}
+          //   onPress={() => this.clickArtefact}
           //   artefactId = {artefacts[i]._id}
           //   key={artefactKey}
           //   image={{ uri: artefacts[i].images[0].URL }}
@@ -237,19 +178,15 @@ class Artefacts extends Component {
               {this.state.isPublicTab === false && this.showArtefacts(this.props.artefacts.userArtefacts, 1)}
             </View>
           ) : (
-            <View style={styles.emptyFeed}>
-              <Text
-                style={{ fontSize: 16, fontFamily: "HindSiliguri-Regular" }}
-              >
-                Looks like you haven't posted any artefacts
-              </Text>
-              <Text
-                style={{ fontSize: 16, fontFamily: "HindSiliguri-Regular" }}
-              >
-                Click the "+" button to add some
-              </Text>
-            </View>
-          )}
+              <View style={styles.emptyFeed}>
+                <Text style={{ fontSize: 16, fontFamily: "HindSiliguri-Regular" }}> 
+                  Looks like you haven't posted any artefacts
+                </Text>
+                <Text style={{ fontSize: 16, fontFamily: "HindSiliguri-Regular" }}>
+                  Click the "+" button to add some
+                </Text>
+              </View>
+            )}
         </ScrollView>
 
         {/* create new Group */}

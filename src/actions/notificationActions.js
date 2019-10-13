@@ -4,6 +4,7 @@ import {
   updateNotificationToReadAPIRequest
 } from "../utils/APIHelpers/notificationAPIHelpers";
 
+// get notifications from user of userId
 export const getUserNotifications = userId => dispatch => {
   return new Promise((resolve, reject) => {
     getUserNotificationsAPIRequest(userId)
@@ -12,12 +13,13 @@ export const getUserNotifications = userId => dispatch => {
         resolve(res);
       })
       .catch(err => {
-        console.log(err);
+        console.log("Failed to get user notifications: " + err);
         reject(err);
       });
   });
 };
 
+// set status of notification of notifId
 export const setSeenStatusToTrue = notifId => dispatch => {
   return new Promise((resolve, reject) => {
     updateNotificationToReadAPIRequest(notifId)
@@ -26,7 +28,7 @@ export const setSeenStatusToTrue = notifId => dispatch => {
         resolve(res);
       })
       .catch(err => {
-        console.log(err);
+        console.log("Failed to set status of notification: " + err);
         reject(err);
       });
   });
