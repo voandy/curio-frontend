@@ -1,9 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { logoutUser } from "../../actions/authActions";
-import { getUserData } from "../../actions/userActions";
-
 import {
   Dimensions,
   StyleSheet,
@@ -17,18 +14,20 @@ import {
 // date converter
 import Moment from "moment";
 
+// redux actions
+import { logoutUser } from "../../actions/authActions";
+import { getUserData } from "../../actions/userActions";
+
 // custom component
 import SimpleHeader from "../../component/SimpleHeader";
 import MyButton from "../../component/MyButton";
 import ProfileSetting from "../../component/ProfileSetting";
 import Line from "../../component/Line";
-
-//prettier-ignore
-const { setUserPushTokenAPIRequest } = require('../../utils/APIHelpers/userAPIHelpers');
+import { setUserPushTokenAPIRequest } from '../../utils/APIHelpers/userAPIHelpers';
 
 class Profile extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
   }
 
   // Nav bar details
@@ -36,17 +35,7 @@ class Profile extends Component {
     header: null
   };
 
-  componentWillUpdate(nextProps) {
-    // sets user data
-    if (nextProps.user.userData !== this.props.user.userData) {
-      this.setState({
-        userData: nextProps.user.userData
-      });
-    }
-  }
-
-  // logout button
-  //prettier-ignore
+  // logs user out and navigate to authentication page
   onLogoutClick = () => {
     const { navigate } = this.props.navigation;
     const userId = this.props.user.userData._id;

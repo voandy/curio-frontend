@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { View, Text } from "react-native";
 import * as Permissions from "expo-permissions";
 
-// redux
+// redux 
 import { C } from "../../types/registerTypes";
 import {
   setRegisterStage,
@@ -21,12 +21,16 @@ import RegisterPhotoField from "./RegisterFields/registerPhotoField";
 
 // manage and render the correct sign-up page accordingly
 class RegisterManager extends Component {
-  state = {
-    nameErrorMessage: "",
-    emailErrorMessage: "",
-    passwordErrorMessage: "",
-    usernameErrorMessage: ""
-  };
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      nameErrorMessage: "",
+      emailErrorMessage: "",
+      passwordErrorMessage: "",
+      usernameErrorMessage: ""
+    };
+  }
 
   componentDidMount() {
     // get the permission from user to access their storage
