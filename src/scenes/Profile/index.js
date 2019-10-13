@@ -59,7 +59,7 @@ class Profile extends Component {
 
     return (
       <View style={styles.container}>
-        <SimpleHeader title="Profile" showSearch={false}/>
+        <SimpleHeader title="My Profile" showSearch={false}/>
 
         {/* scrollable area for CONTENT */}
         <ScrollView
@@ -85,7 +85,7 @@ class Profile extends Component {
             @{this.props.user.userData.username}
           </Text>
           <Text style={[styles.userDetails, { marginBottom: 25 }]}>
-            joined since {Moment(dt).format("Do MMMM YYYY")}
+            member since {Moment(dt).format("Do MMMM YYYY")}
           </Text>
 
           {/* line separator */}

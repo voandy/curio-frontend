@@ -175,8 +175,11 @@ class Search extends Component {
           searchInput={this.state.searchInput}
           onChangeSearchInput={this.onChangeSearchInput}
           onSubmitEditing={event => {
-            this.doGeneralSearch(event.nativeEvent.text);
+            this.doGeneralSearch(event.nativeEvent.text)
           }}
+          pressClear={() => this.onChangeSearchInput("")}
+          pressSearch={() => {
+            this.doGeneralSearch(this.state.searchInput) }}
         />
 
         {/* header tab */}
