@@ -42,7 +42,7 @@ class Artefacts extends Component {
       isModalVisible: false,
       loading: false,
       refreshing: false,
-      isPublicTab: true,
+      isPublicTab: true
     };
     this.onChangePrivacyTab = this.onChangePrivacyTab.bind(this);
   }
@@ -69,15 +69,19 @@ class Artefacts extends Component {
   onChangePrivacyTab = () => {
     this.setState({
       isPublicTab: !this.state.isPublicTab
-    })
-  }
+    });
+  };
 
   // click a specific artefact and navigate to it
   clickArtefact = async artefactId => {
     const { navigate } = this.props.navigation;
-
     // navigate to selected artefact
-    navigate("SelectedArtefact", { artefactId });
+    navigate("SelectedArtefact", { origin: "Artefacts", artefactId });
+  };
+
+  onNewArtefactCreate = () => {
+    const { navigate } = this.props.navigation;
+    navigate("ArtefactsForm", { origin: "Artefacts" });
   };
 
   // return ArtefactFeedRows containing ArtefactFeed in different rows
@@ -95,7 +99,7 @@ class Artefacts extends Component {
     // create ArtefactFeed object out of artefact and push it into artefactFeeds array
     for (var i = 0; i < artefacts.length; i++) {
       const artefactId = artefacts[i]._id;
-      
+
       if (artefacts[i].privacy === privacy) {
         artefactFeeds.push(
           // DOES NOT WORK FOR NOW!!!!!!!!
@@ -105,7 +109,7 @@ class Artefacts extends Component {
           //   key={artefactKey}
           //   image={{ uri: artefacts[i].images[0].URL }}
           // />
-  
+
           <View style={styles.card} key={artefactKey}>
             <TouchableOpacity
               onPress={() => this.clickArtefact(artefactId)}
@@ -145,6 +149,7 @@ class Artefacts extends Component {
     this.setState({ refreshing: false });
   };
 
+  //prettier-ignore
   render() {
     const { navigate } = this.props.navigation;
     return (
@@ -159,7 +164,8 @@ class Artefacts extends Component {
           isPublicTab={this.state.isPublicTab}
           tab1="Public"
           tab2="Private"
-          onSubmit={() => navigate("GeneralSearch")} />
+          onSubmit={() => navigate("GeneralSearch")}
+        />
         {/* scrollable area for CONTENT */}
         <ScrollView
           showsVerticalScrollIndicator={false}
@@ -178,19 +184,19 @@ class Artefacts extends Component {
               {this.state.isPublicTab === false && this.showArtefacts(this.props.artefacts.userArtefacts, 1)}
             </View>
           ) : (
-              <View style={styles.emptyFeed}>
-                <Text style={{ fontSize: 16, fontFamily: "HindSiliguri-Regular" }}> 
-                  Looks like you haven't posted any artefacts
-                </Text>
-                <Text style={{ fontSize: 16, fontFamily: "HindSiliguri-Regular" }}>
-                  Click the "+" button to add some
-                </Text>
-              </View>
-            )}
+            <View style={styles.emptyFeed}>
+              <Text style={{ fontSize: 16, fontFamily: "HindSiliguri-Regular" }}>
+                Looks like you haven't posted any artefacts
+              </Text>
+              <Text style={{ fontSize: 16, fontFamily: "HindSiliguri-Regular" }}>
+                Click the "+" button to add some
+              </Text>
+            </View>
+          )}
         </ScrollView>
 
         {/* create new Group */}
-        <AddButton onPress={() => navigate("ArtefactsForm")} />
+        <AddButton onPress={this.onNewArtefactCreate.bind(this)} />
       </View>
     );
   }

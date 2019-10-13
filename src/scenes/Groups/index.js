@@ -73,7 +73,13 @@ class Groups extends Component {
   // click a specific group on the Groups scene
   clickGroup = async groupId => {
     const { navigate } = this.props.navigation;
-    navigate("SelectedGroup", { groupId });
+    navigate("SelectedGroup", { origin: "Groups", groupId });
+  };
+
+  onCreateNewGroup = () => {
+    const { navigate } = this.props.navigation;
+    // navigate to group form
+    navigate("GroupsForm", { origin: "Groups" });
   };
 
   // show and renders groups components row-by-row
@@ -185,7 +191,7 @@ class Groups extends Component {
             </ScrollView>
 
             {/* create new Group */}
-            <AddButton onPress={() => navigate("GroupsForm")} />
+            <AddButton onPress={this.onCreateNewGroup.bind(this)} />
           </View>
         )}
       </KeyboardShift>

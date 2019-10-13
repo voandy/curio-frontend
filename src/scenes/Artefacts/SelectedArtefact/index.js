@@ -178,6 +178,7 @@ class SelectedArtefact extends Component {
     const { navigate } = this.props.navigation;
     // navigate to ArtefactsForm while passing the editedSelectedArtefact
     navigate("ArtefactsForm", {
+      origin: "SelectedArtefact",
       isEditMode: true,
       selectedArtefact: this.props.artefacts.selectedArtefact
     });
@@ -206,7 +207,7 @@ class SelectedArtefact extends Component {
   // when user presses "delete artefact"
   onDeleteSelectedArtefact = async () => {
     const { navigate } = this.props.navigation;
-    const origin = this.props.navigation.getParam("origin");
+    const { origin, groupId } = this.props.navigation.state.params;
     // show user the loading modal
     this.setLoading(true);
     // remove selected artefact from redux states
@@ -215,18 +216,12 @@ class SelectedArtefact extends Component {
       .then(() => {
         // stop showing user the loading modal
         this.setLoading(false);
-        // navigate to origin
-        switch (origin) {
-          case "SelectedGroup":
-            // extract group id
-            groupId = this.props.navigation.getParam("groupId");
-            // reload group's artefacts info
-            this.props.getSelectedGroupAllArtefacts(groupId);
-            return navigate("SelectedGroup");
-
-          default:
-            return navigate("Artefacts");
+        // reload group data here
+        if (origin === 'SelectedGroup' && groupId) {
+          this.props.getSelectedGroupAllArtefacts(groupId);
         }
+        // redirect back
+        navigate(origin);
       })
       .catch(err => {
         // stop showing user the loading modal
