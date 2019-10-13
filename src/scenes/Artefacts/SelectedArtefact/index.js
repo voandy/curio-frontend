@@ -203,7 +203,7 @@ class SelectedArtefact extends Component {
     this.setLoading(true);
     // remove selected artefact from redux states
     //prettier-ignore
-    await this.props.removeSelectedArtefact(this.props.artefacts.selectedArtefact._id)
+    await this.props.removeSelectedArtefact(this.props.artefacts.selectedArtefact)
       .then(() => {
         // stop showing user the loading modal
         this.setLoading(false);

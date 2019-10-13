@@ -39,6 +39,7 @@ const newArtefact = {
   category: "Art",
   dateObtained: "",
   imageURI: "",
+  privacy: 1
 };
 
 class ArtefactsForm extends Component {
