@@ -152,7 +152,11 @@ export const editSelectedGroup = group => (dispatch, getState) => {
         // send edit API request to backend
         editGroupAPIRequest(group._id, groupData)
           .then(res => {
-            // reload user groups data
+            // reload the selected group
+            dispatch(getSelectedGroup(group._id));
+            dispatch(getSelectedGroupAllMembers(group._id));
+            dispatch(getSelectedGroupAllArtefacts(group._id));
+            // reload all user groups data
             dispatch(getUserGroups(getState().auth.user.id));
             resolve(res);
           })
