@@ -1,8 +1,10 @@
 import React, { Component } from "react";
 import { View, StyleSheet, Text } from "react-native";
-// redux action
 import { connect } from "react-redux";
+
+// redux action
 import { registerUser, loginUser } from "../../actions/authActions";
+
 // import width/height responsive functions
 import {
   deviceHeigthDimension as hp,
@@ -11,16 +13,20 @@ import {
 
 // import manager to manage register stage
 import RegisterManager from "./registerManager";
-// import the loader modal to help show loading process
+
+// custom components
 import ActivityLoaderModal from "../../component/ActivityLoaderModal";
-// adjust keyboards to prevent sreen blockage
 import KeyboardShift from "../../component/componentHelpers/KeyboardShift";
 
 class Register extends Component {
-  state = {
-    loading: false
-  };
+  constructor(props) {
+    super(props);
 
+    this.state = {
+      loading: false
+    };
+  }
+  
   // nav details
   static navigationOptions = {
     headerStyle: {
