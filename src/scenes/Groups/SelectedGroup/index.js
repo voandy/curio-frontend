@@ -115,8 +115,9 @@ class SelectedGroup extends Component {
   // when user presses "edit group"
   onEditGroup = () => {
     const { navigate } = this.props.navigation;
-    // navigate to ArtefactsForm while passing the editedSelectedArtefact
+    // navigate to GroupsForm and pass in required parameters
     navigate("GroupsForm", {
+      origin: "SelectedGroup",
       isEditMode: true,
       selectedGroup: this.props.groups.selectedGroup
     });

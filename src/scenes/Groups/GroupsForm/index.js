@@ -132,7 +132,8 @@ class GroupsForm extends Component {
   // create/edit group on "post" button press
   onSubmit = async () => {
     const { navigate } = this.props.navigation;
-    const isEditMode = this.props.navigation.getParam("isEditMode");
+    // get required parameters
+    const { origin, isEditMode } = this.props.navigation.state.params;
     // set adminId as a reference
     await this.setGroup("adminId", this.props.auth.user.id);
     // show user the loading modal
@@ -148,13 +149,8 @@ class GroupsForm extends Component {
         this.setLoading(false);
         // reset new group details
         this.resetGroup();
-        // if in edit mode, this pop this page from the stack,
-        // instead of adding a new SelectedGroup page on top of it
-        // therefore, no need to pass in group
-        isEditMode
-          ? navigate("SelectedGroup")
-          : // if in create mode, navigate to groups page
-            navigate("Groups");
+        // navigate back
+        navigate(origin);
       })
       .catch(err => {
         // stop showing user the loading modal
