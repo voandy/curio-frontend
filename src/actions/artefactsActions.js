@@ -159,11 +159,22 @@ export const editSelectedArtefact = artefact => (dispatch, getState) => {
 };
 
 // delete selected artefact
-export const removeSelectedArtefact = artefactId => dispatch => {
+export const removeSelectedArtefact = artefact => dispatch => {
   return new Promise((resolve, reject) => {
-    deleteSelectedArtefactAPIRequest(artefactId)
+    deleteSelectedArtefactAPIRequest(artefact._id)
       .then(res => {
-        resolve(res);
+        // get all artefacts posted by user after deletion
+        getUserArtefactsAPIRequest(artefact.userId)
+        // success
+        .then(res => {
+          dispatch(setUserArtefacts(res.data));
+          resolve(res);
+        })
+        // failure
+        .catch(err => {
+          console.log("artefactActions: " + err);
+          reject(err);
+        });
       })
       .catch(err => {
         console.log("Failed to delete artefact" + err);

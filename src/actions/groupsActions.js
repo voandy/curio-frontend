@@ -173,6 +173,7 @@ export const editSelectedGroup = group => (dispatch, getState) => {
   });
 };
 
+// get SelectedGroupArtefactComments of artefact based on artefactId
 export const getSelectedGroupArtefactComments = artefactId => dispatch => {
   return new Promise((resolve, reject) => {
     getArtefactCommentsAPIRequest(artefactId)
