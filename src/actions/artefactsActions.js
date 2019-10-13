@@ -149,12 +149,27 @@ export const editSelectedArtefact = artefact => dispatch => {
       updateSelectedArtefactAPIRequest(selectedArtefact._id, selectedArtefact)
         .then(res => {
 
-          // get artefact based on artefactId
+          // get artefact based on artefactId after the update
           getSelectedArtefactAPIRequest(selectedArtefact._id)
             .then(res => {
-              // set updated selected artefact to redux state
+
+              // set artefact with new details
               dispatch(setSelectedArtefact(res.data));
-              resolve(res);
+
+              // get all artefacts posted by user after the update
+              getUserArtefactsAPIRequest(selectedArtefact.userId)
+                // success
+                .then(res => {
+
+                  // set user with new artefacts' details
+                  dispatch(setUserArtefacts(res.data));
+                  resolve(res);
+                })
+                // failure
+                .catch(err => {
+                  console.log("artefactActions: " + err);
+                  reject(err);
+                });
             })
             .catch(err => {
               console.log("Failed to select artefact" + err);
