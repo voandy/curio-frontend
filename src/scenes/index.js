@@ -84,6 +84,7 @@ class Scenes extends Component {
 const GroupStack = createStackNavigator({
   Groups: { screen: GroupsScreen },
   GroupsForm: { screen: GroupsFormScreen },
+  ArtefactsForm: { screen: ArtefactsFormScreen },
   SelectedGroup: { screen: SelectedGroupScreen },
   SelectedArtefact: { screen: SelectedArtefactScreen },
   GeneralSearch: { screen: GeneralSearchScreen },

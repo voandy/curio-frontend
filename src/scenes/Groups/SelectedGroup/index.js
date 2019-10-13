@@ -52,6 +52,7 @@ class SelectedGroup extends Component {
     };
     // get group id passed in from the navigation parameter
     groupId = this.props.navigation.getParam("groupId");
+    console.log(groupId);
     // make sure it exists
     groupId
       ? this.getSelectedGroupData(groupId)
@@ -60,9 +61,14 @@ class SelectedGroup extends Component {
 
   // get selected group data asynchronously
   getSelectedGroupData = async groupId => {
-    this.props.getSelectedGroup(groupId);
-    this.props.getSelectedGroupAllArtefacts(groupId);
-    this.props.getSelectedGroupAllMembers(groupId);
+    Promise.all([
+      this.props.getSelectedGroup(groupId),
+      this.props.getSelectedGroupAllArtefacts(groupId),
+      this.props.getSelectedGroupAllMembers(groupId)
+    ]).catch(err => {
+      console.log(err);
+      alert("Error loading group data");
+    });
   };
 
   // nav details
@@ -161,8 +167,24 @@ class SelectedGroup extends Component {
   // click a specific artefact and navigate to it
   clickArtefact = artefactId => {
     const { navigate } = this.props.navigation;
+    groupId = this.props.navigation.getParam("groupId");
     // navigate to selected artefact
-    navigate("SelectedArtefact", { artefactId });
+    navigate("SelectedArtefact", {
+      artefactId,
+      origin: "SelectedGroup",
+      groupId
+    });
+  };
+
+  onAddNewArtefact = () => {
+    const { navigate } = this.props.navigation;
+    const groupId = this.props.navigation.getParam("groupId");
+    // navigate to selected artefact
+    navigate("ArtefactsForm", {
+      origin: "SelectedGroup",
+      addToGroup: true,
+      groupId
+    });
   };
 
   // return a row of group members
@@ -281,7 +303,7 @@ class SelectedGroup extends Component {
           </View>
         </ScrollView>
         {/* toggle modal to add artefacts into groups */}
-        <AddButton />
+        <AddButton onPress={this.onAddNewArtefact.bind(this)} />
       </View>
     );
   }

@@ -16,7 +16,10 @@ import {
   editGroupAPIRequest,
   pinGroupAPIRequest,
   unpinGroupAPIRequest,
-  deleteGroupAPIRequest
+  deleteGroupAPIRequest,
+  addMemberToGroupAPIRequest,
+  addArtefactToGroupAPIRequest,
+  deleteArtefactFromGroupAPIRequest
 } from "../utils/APIHelpers/groupAPIHelper";
 
 import { getArtefactCommentsAPIRequest } from "../utils/APIHelpers/artefactAPIHelpers";
@@ -207,9 +210,9 @@ export const clearSelectedGroup = () => dispatch => {
 export const pinGroup = (userId, groupId) => dispatch => {
   return new Promise((resolve, reject) => {
     pinGroupAPIRequest(userId, groupId)
-      .then(() => {
+      .then(res => {
         dispatch(getUserGroups(userId));
-        resolve();
+        resolve(res);
       })
       .catch(err => {
         console.log("Failed to pin group: " + err);
@@ -222,12 +225,68 @@ export const pinGroup = (userId, groupId) => dispatch => {
 export const unpinGroup = (userId, groupId) => dispatch => {
   return new Promise((resolve, reject) => {
     unpinGroupAPIRequest(userId, groupId)
-      .then(() => {
+      .then(res => {
         dispatch(getUserGroups(userId));
-        resolve();
+        resolve(res);
       })
       .catch(err => {
         console.log("Failed to unpin group: " + err);
+        reject(err);
+      });
+  });
+};
+
+export const addMemberToGroup = (groupId, userId) => dispatch => {
+  return new Promise((resolve, reject) => {
+    addMemberToGroupAPIRequest(groupId, userId)
+      .then(res => {
+        dispatch(getSelectedGroupAllMembers(groupId));
+        resolve(res);
+      })
+      .catch(err => {
+        console.log("Failed to add member: " + err);
+        reject(err);
+      });
+  });
+};
+
+export const deleteMemberFromGroup = (groupId, userId) => dispatch => {
+  return new Promise((resolve, reject) => {
+    deleteMemberFromGroupAPIRequest(groupId, userId)
+      .then(res => {
+        dispatch(getSelectedGroupAllMembers(groupId));
+        resolve(res);
+      })
+      .catch(err => {
+        console.log("Failed to remove member: " + err);
+        reject(err);
+      });
+  });
+};
+
+export const addArtefactToGroup = (groupId, artefactId) => dispatch => {
+  return new Promise((resolve, reject) => {
+    addArtefactToGroupAPIRequest(groupId, artefactId)
+      .then(res => {
+        dispatch(getSelectedGroupAllArtefacts(groupId));
+        resolve(res);
+      })
+      .catch(err => {
+        console.log("Failed to add artefact: " + err);
+        reject(err);
+      });
+  });
+};
+
+export const deleteArtefactFromGroup = (groupId, artefactId) => dispatch => {
+  return new Promise((resolve, reject) => {
+    deleteArtefactFromGroupAPIRequest(groupId, artefactId)
+      .then(res => {
+        dispatch(getSelectedGroupAllArtefacts(groupId));
+        resolve(res);
+      })
+      .catch(err => {
+        console.log("Failed to delete artefact: " + err);
         reject(err);
       });
   });

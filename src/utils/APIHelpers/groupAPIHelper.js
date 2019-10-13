@@ -114,3 +114,59 @@ export const deleteGroupAPIRequest = groupId => {
       .catch(err => reject(err));
   });
 };
+
+export const addMemberToGroupAPIRequest = (groupId, userId) => {
+  return new Promise((resolve, reject) => {
+    axios
+      .put(
+        "http://curioapp.herokuapp.com/api/group/id/" +
+          groupId +
+          "/add/userId/" +
+          userId
+      )
+      .then(res => resolve(res))
+      .catch(err => reject(err));
+  });
+};
+
+export const deleteMemberFromGroupAPIRequest = (groupId, userId) => {
+  return new Promise((resolve, reject) => {
+    axios
+      .put(
+        "http://curioapp.herokuapp.com/api/group/id/" +
+          groupId +
+          "/remove/userId/" +
+          userId
+      )
+      .then(res => resolve(res))
+      .catch(err => reject(err));
+  });
+};
+
+export const addArtefactToGroupAPIRequest = (groupId, artefactId) => {
+  return new Promise((resolve, reject) => {
+    axios
+      .put(
+        "http://curioapp.herokuapp.com/api/group/id/" +
+          groupId +
+          "/add/artefactId/" +
+          artefactId
+      )
+      .then(res => resolve(res))
+      .catch(err => reject(err));
+  });
+};
+
+export const deleteArtefactFromGroupAPIRequest = (groupId, artefactId) => {
+  return new Promise((resolve, reject) => {
+    axios
+      .put(
+        "http://curioapp.herokuapp.com/api/group/id/" +
+          groupId +
+          "/remove/artefactId/" +
+          artefactId
+      )
+      .then(res => resolve(res))
+      .catch(err => reject(err));
+  });
+};
