@@ -46,17 +46,16 @@ class SelectedGroup extends Component {
     this.props.clearSelectedGroup();
     // Setup initial state
     this.state = {
-      selectedGroup: {
-        ...this.props.groups.selectedGroup
-      },
       isUpdateModalVisible: false,
       loading: false,
       refreshing: false
     };
-    // get all information required for the selectedGroup page
-    // get group id from the parameter passed in, get "NO-GROUP-ID" if not found
-    groupId = this.props.navigation.getParam("groupId", "NO-GROUP-ID");
-    this.getSelectedGroupData(groupId);
+    // get group id passed in from the navigation parameter
+    groupId = this.props.navigation.getParam("groupId");
+    // make sure it exists
+    groupId
+      ? this.getSelectedGroupData(groupId)
+      : alert("Error loading group data");
   }
 
   // get selected group data asynchronously
@@ -81,16 +80,6 @@ class SelectedGroup extends Component {
     this.props.clearSelectedGroup();
   }
 
-  // selected artefact's attribute change
-  setSelectedGroup = (key, value) => {
-    this.setState({
-      selectedGroup: {
-        ...this.state.selectedGroup,
-        [key]: value
-      }
-    });
-  };
-
   // setter function for "loading" to show user that something is loading
   setLoading = loading => {
     this.setState({
@@ -102,7 +91,7 @@ class SelectedGroup extends Component {
   refreshSelectedGroupPage = async () => {
     this.setState({ refreshing: true });
     // get data from backend
-    groupId = this.props.navigation.getParam("groupId", "NO-GROUP-ID");
+    groupId = this.props.navigation.getParam("groupId");
     // reload everything at once, only refresh once everything is done loading
     Promise.all([
       this.props.getSelectedGroup(groupId),
@@ -122,7 +111,7 @@ class SelectedGroup extends Component {
     const { navigate } = this.props.navigation;
     // navigate to ArtefactsForm while passing the editedSelectedArtefact
     navigate("GroupsForm", {
-      isEditingGroup: true,
+      isEditMode: true,
       selectedGroup: this.props.groups.selectedGroup
     });
   };
@@ -314,15 +303,6 @@ class SelectedGroup extends Component {
         </ScrollView>
         {/* toggle modal to add artefacts into groups */}
         <AddButton />
-
-        {/* REMOVE THIS LATER ON */}
-        <GroupModal
-          isModalVisible={this.state.isUpdateModalVisible}
-          toggleModal={this.toggleUpdateModal}
-          newGroup={this.state.selectedGroup}
-          onSubmit={this.onSubmit.bind(this)}
-          onNewGroupChange={this.setSelectedGroup.bind(this)}
-        />
       </View>
     );
   }

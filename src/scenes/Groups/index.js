@@ -105,7 +105,7 @@ class Groups extends Component {
   showGroups = () => {
     var groups = this.props.groups.userGroups;
     // sort array based on date obtained (from earliest to oldest)
-    groups.sort(function (a, b) {
+    groups.sort(function(a, b) {
       return new Date(b.dateCreated) - new Date(a.dateCreated);
     });
     // tranform each group element into a component
@@ -138,7 +138,7 @@ class Groups extends Component {
     // retain only pinned groups
     groups = groups.filter(group => group.pinned);
     // sort array based on date obtained (from earliest to oldest)
-    groups.sort(function (a, b) {
+    groups.sort(function(a, b) {
       return new Date(b.dateCreated) - new Date(a.dateCreated);
     });
     const pinnedGroupComponent = groups.map(group => (
@@ -150,21 +150,14 @@ class Groups extends Component {
         onPress={this.clickGroup.bind(this)}
       />
     ));
-
-    // no groups pinned
-    if (pinnedGroupComponent.length === 0) {
-      return (
-        <View style={{justifyContent:"center", alignItems:"center", width:wd(1)}}>
+    // if no groups are pinned
+    //prettier-ignore
+    return (!pinnedGroupComponent || !pinnedGroupComponent.length) 
+      ? (<View style={{justifyContent:"center", alignItems:"center", width:wd(1)}}>
           <Text style={styles.warning}>Press and hold on a group to pin them</Text>
-        </View>
-      )
-    }
-    else {
-      return pinnedGroupComponent;
-    }
+         </View>) 
+      : pinnedGroupComponent;
   };
-
-
 
   render() {
     const { navigate } = this.props.navigation;
@@ -173,7 +166,10 @@ class Groups extends Component {
       <KeyboardShift>
         {() => (
           <View style={styles.container}>
-            <SimpleHeader title="Groups" onSubmit={() => navigate("GeneralSearch")} />
+            <SimpleHeader
+              title="Groups"
+              onSubmit={() => navigate("GeneralSearch")}
+            />
 
             {/* scrollable area for CONTENT */}
             <ScrollView
@@ -204,15 +200,13 @@ class Groups extends Component {
               {this.props.groups.userGroups.length !== 0 ? (
                 <View style={{ marginBottom: 10 }}>{this.showGroups()}</View>
               ) : (
-                  <View style={styles.emptyFeed}>
-                    <Text
-                      style={styles.warning}
-                    >
-                      Looks like you're not part of any groups yet {"\n"}Click the
-                      "+" button to create a group
+                <View style={styles.emptyFeed}>
+                  <Text style={styles.warning}>
+                    Looks like you're not part of any groups yet {"\n"}Click the
+                    "+" button to create a group
                   </Text>
-                  </View>
-                )}
+                </View>
+              )}
             </ScrollView>
 
             {/* create new Group */}
@@ -245,7 +239,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 16,
     fontFamily: "HindSiliguri-Regular"
-  },
+  }
 });
 
 Groups.propTypes = {
