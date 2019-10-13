@@ -157,9 +157,6 @@ class Artefacts extends Component {
       const artefactId = artefacts[i]._id;
       
       if (artefacts[i].privacy === privacy) {
-        if (privacy === 1) {
-          console.log(artefacts[i]);
-        }
         artefactFeeds.push(
           // DOES NOT WORK FOR NOW!!!!!!!!
           // <ArtefactFeed
@@ -210,7 +207,6 @@ class Artefacts extends Component {
 
   render() {
     const { navigate } = this.props.navigation;
-    console.log(this.state.isPublicTab)
     return (
       <View style={styles.container}>
         {/* loading modal window */}
