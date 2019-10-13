@@ -32,9 +32,6 @@ class ProfileSetting extends Component {
           <Text style={styles.buttonText}>{this.props.text}</Text>
 
         </View>
-
-
-        {/* <Text style={styles.buttonText}>{this.props.text}</Text> */}
       </TouchableOpacity>
 
 

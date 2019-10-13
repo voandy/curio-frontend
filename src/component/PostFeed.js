@@ -35,7 +35,7 @@ class PostFeed extends Component {
       <View style={styles.container}>
           
         {/* artefact post description */}
-        <View style={styles.description}>
+        <View>
           {/* show user details */}
           <UserDetail
             userName={this.props.userName}
@@ -82,10 +82,6 @@ const styles = StyleSheet.create({
 
   font: {
     fontFamily: "HindSiliguri-Regular"
-  },
-
-  description: {
-    // backgroundColor:"red",
   },
 
   title: {

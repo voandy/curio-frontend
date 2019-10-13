@@ -16,10 +16,8 @@ import {
 
 /**searching feed that searches for either users or groups
  * used in SearchPage */
-// props->
-// heading : name or groupname
-// subHeading: username or number of members
 class SearchFeed extends Component {
+
   // checks for search type (either user or groups)
   // returns the right subHeading
   searchType = () => {

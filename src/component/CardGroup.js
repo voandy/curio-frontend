@@ -17,6 +17,7 @@ import { deviceWidthDimension as wd } from "../utils/responsiveDesign";
 
 /**groups shown in a card form in groups page */
 class CardGroup extends Component {
+  
   // alert prompt to pin or unpin groups
   showAlert = () => {
     const userId = this.props.userId;

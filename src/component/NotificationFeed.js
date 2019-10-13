@@ -15,6 +15,7 @@ import Moment from "moment";
  * pressable and should link to the screen that invoked the notification
  */
 class NotificationFeed extends Component {
+  
   // unbolds text after notification has been read
   boldText(seenStatus) {
     // render text based on seenStatus

@@ -22,7 +22,9 @@ import {
     setToBottom
 } from "../utils/responsiveDesign"
  
-// DESTROYYYYY
+// TO BE DESTROYYYYYEDDDD
+
+
 class GroupModal extends Component {
 
     // access camera roll
