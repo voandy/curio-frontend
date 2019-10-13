@@ -50,10 +50,6 @@ class ArtefactsForm extends Component {
     super(props);
     // extract artefact details if selectedArtefact is passed in
     const selectedArtefact = this.props.navigation.getParam("selectedArtefact");
-    // prepare image URL depending on current mode (create or edit)
-    const imageURI = this.props.navigation.getParam("isEditMode")
-      ? selectedArtefact.images[0].URL
-      : null;
     // setup initial state
     this.state = {
       artefact: {
@@ -61,8 +57,7 @@ class ArtefactsForm extends Component {
         // add & replace artefact details if selectedArtefact is passed in
         // otherwise, it will not replace anything
         ...selectedArtefact,
-        userId: this.props.auth.user.id,
-        imageURI
+        userId: this.props.auth.user.id
       },
       loading: false
     };
@@ -177,6 +172,13 @@ class ArtefactsForm extends Component {
   };
 
   render() {
+    const selectedArtefact = this.props.navigation.getParam("selectedArtefact");
+    var imageSource = !this.state.artefact.imageURI
+      ? !selectedArtefact || !selectedArtefact.images[0].URL
+        ? require("../../../../assets/images/icons/addPicture.png")
+        : { uri: selectedArtefact.images[0].URL }
+      : { uri: this.state.artefact.imageURI };
+
     return (
       <View style={styles.container}>
         {/* loading modal window */}
@@ -192,17 +194,7 @@ class ArtefactsForm extends Component {
               </Text>
               {/* show current selected artefact image if exists  */}
               <TouchableOpacity activeOpacity={0.5} onPress={this._pickImage}>
-                {!this.state.artefact.imageURI ? (
-                  <Image
-                    style={styles.imageSelected}
-                    source={require("../../../../assets/images/icons/addPicture.png")}
-                  />
-                ) : (
-                  <Image
-                    style={styles.imageSelected}
-                    source={{ uri: this.state.artefact.imageURI }}
-                  />
-                )}
+                <Image style={styles.imageSelected} source={imageSource} />
               </TouchableOpacity>
 
               <Text style={[styles.subFont, styles.imageText]}>
