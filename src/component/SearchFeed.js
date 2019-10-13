@@ -38,13 +38,16 @@ class SearchFeed extends Component {
   render() {
     return (
       <View style={styles.card}>
-        <TouchableOpacity activeOpacity={0.5}>
+        <TouchableOpacity
+          activeOpacity={0.5}
+          onPress={this.props.pressSearchResult}
+        >
           <View style={styles.card}>
             {/* Image  */}
             <View style={styles.picPlaceholder}>
               <Image
                 style={styles.image}
-                source={{ uri: this.props.userProfilePic }}
+                source={{ uri: this.props.searchImage }}
               />
             </View>
 

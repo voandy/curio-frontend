@@ -2,7 +2,14 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
-import { StyleSheet, ScrollView, View, Text, StatusBar } from "react-native";
+import {
+  StyleSheet,
+  ScrollView,
+  View,
+  Text,
+  StatusBar,
+  TouchableOpacity
+} from "react-native";
 
 import {
   searchUsers,
@@ -47,21 +54,29 @@ class Search extends Component {
     }
   }
 
-  showSearchResults = function (userSearchResults, groupSearchResults) {
+  showSearchResults = function(userSearchResults, groupSearchResults) {
     if (this.state.searchType === 0) {
       return this.showUserResults(userSearchResults);
-    } else if (this.state.searchType === 0) {
+    } else if (this.state.searchType === 1) {
       return this.showGroupResults(groupSearchResults);
     } else {
-      return <Text style={styles.emptySearch}>Invalid search type.</Text>
+      return <Text style={styles.emptySearch}>Invalid search type.</Text>;
     }
-  }
+  };
 
-  showUserResults = function (userSearchResults) {
+  // navigate to user's profile
+  gotoUserProfile = (userId) => {
+    const { navigate } = this.props.navigation;
+    // navigate to selected artefact
+    navigate("PublicProfile", { userId });
+  };
+
+  showUserResults = function(userSearchResults) {
     if (userSearchResults.length === 0) {
       return <Text style={styles.emptySearch}>No users found</Text>;
     } else {
       var userResultsFeed = [];
+      const { navigate } = this.props.navigation;
 
       // create a view for each user result
       for (var i = 0; i < userSearchResults.length; i++) {
@@ -71,7 +86,8 @@ class Search extends Component {
             heading={userSearchResults[i].name}
             subHeading={userSearchResults[i].username}
             isGroup={false}
-            userProfilePic={userSearchResults[i].profilePic}
+            searchImage={userSearchResults[i].profilePic}
+            pressSearchResult={this.gotoUserProfile(userSearchResults[i]._id)}
           />
         );
       }
@@ -80,21 +96,21 @@ class Search extends Component {
     }
   };
 
-  showGroupResults = function (groupSearchResults) {
-    if (userSearchResults.length === 0) {
-      return <Text style={styles.emptySearch}>No users found</Text>;
+  showGroupResults = function(groupSearchResults) {
+    if (groupSearchResults.length === 0) {
+      return <Text style={styles.emptySearch}>No groups found</Text>;
     } else {
       var groupResultsFeed = [];
 
       // create a view for each group result
       for (var i = 0; i < groupSearchResults.length; i++) {
-        userResultsFeed.push(
+        groupResultsFeed.push(
           <SearchFeed
             key={i}
-            heading={groupSearchResults[i].name}
-            subHeading={groupSearchResults[i].username}
-            isGroup={false}
-            userProfilePic={groupSearchResults[i].profilePic}
+            heading={groupSearchResults[i].title}
+            subHeading={groupSearchResults[i].artefacts.length}
+            isGroup={true}
+            searchImage={groupSearchResults[i].coverPhoto}
           />
         );
       }
@@ -104,14 +120,12 @@ class Search extends Component {
   };
 
   switchUserResults = () => {
-    console.log("here");
     this.setState({
       searchType: 0
     });
   };
 
   switchGroupResults = () => {
-    console.log("here2");
     this.setState({
       searchType: 1
     });
@@ -124,14 +138,18 @@ class Search extends Component {
   };
 
   doGeneralSearch = async searchInput => {
-    await Promise.all([
-      this.props.searchUsers({ searchTerms: searchInput }),
-      this.props.searchGroups({ searchTerms: searchInput })
-    ]).then(() => {
-      this.setState({
-        searchPerformed: true
+    if (searchInput == "") {
+      alert("Please enter some search terms.");
+    } else {
+      await Promise.all([
+        this.props.searchUsers({ searchTerms: searchInput }),
+        this.props.searchGroups({ searchTerms: searchInput })
+      ]).then(() => {
+        this.setState({
+          searchPerformed: true
+        });
       });
-    });
+    }
   };
 
   render() {
@@ -148,20 +166,56 @@ class Search extends Component {
           onSubmitEditing={event => {
             this.doGeneralSearch(event.nativeEvent.text);
           }}
-          switchUserResults={this.switchUserResults}
-          switchGroupResults={this.switchGroupResults}
         />
+
+        {/* header tab */}
+        <View style={{ flexDirection: "row", justifyContent: "center" }}>
+          <TouchableOpacity
+            onPress={this.switchUserResults}
+            style={styles.headerButton}
+            activeOpacity={0.5}
+          >
+            {this.state.searchType === 0 ? (
+              <Text style={[styles.highlightButtonText, styles.font]}>
+                Users
+              </Text>
+            ) : (
+              <Text style={[styles.headerButtonText, styles.font]}>Users</Text>
+            )}
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={this.switchGroupResults}
+            style={styles.headerButton}
+            activeOpacity={0.5}
+          >
+            {this.state.searchType === 1 ? (
+              <Text style={[styles.highlightButtonText, styles.font]}>
+                Groups
+              </Text>
+            ) : (
+              <Text style={[styles.headerButtonText, styles.font]}>Groups</Text>
+            )}
+          </TouchableOpacity>
+        </View>
 
         {/* scrollable area for CONTENT */}
         <ScrollView
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={16}
         >
-          {this.state.searchPerformed === true
-            ? // user search results
-            this.showSearchResults(this.props.search.userSearchResults, this.props.search.groupSearchResults)
-            : // group search results
-            <Text style={styles.emptySearch}>Please enter search query above.</Text>}
+          {this.state.searchPerformed === true ? (
+            // user search results
+            this.showSearchResults(
+              this.props.search.userSearchResults,
+              this.props.search.groupSearchResults
+            )
+          ) : (
+            // group search results
+            <Text style={styles.emptySearch}>
+              Please enter search query above.
+            </Text>
+          )}
         </ScrollView>
       </View>
     );
@@ -180,7 +234,25 @@ const styles = StyleSheet.create({
 
   emptySearch: {
     alignItems: "center",
-    marginVertical: wd(0.2)
+    marginVertical: wd(0.2),
+    textAlign: "center",
+    color: "#707070"
+  },
+
+  headerButton: {
+    alignContent: "center",
+    // marginTop: 10,
+    marginHorizontal: 15
+  },
+
+  headerButtonText: {
+    fontSize: 18,
+    color: "black"
+  },
+
+  highlightButtonText: {
+    fontSize: 18,
+    color: "#FF6E6E"
   }
 });
 
