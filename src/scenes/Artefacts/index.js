@@ -13,6 +13,7 @@ import {
 } from "react-native";
 
 // custom components
+import ArtefactFeed from "../../component/ArtefactFeed";
 import SimpleHeader from "../../component/SimpleHeader";
 import AddButton from "../../component/AddButton";
 
@@ -92,30 +93,29 @@ class Artefacts extends Component {
     });
     // create ArtefactFeed object out of artefact and push it into artefactFeeds array
     for (var i = 0; i < artefacts.length; i++) {
-      const artefactId = artefacts[i]._id;
 
       artefactFeeds.push(
-        // DOES NOT WORK FOR NOW!!!!!!!!
-        // <ArtefactFeed
-        //   onPress={() => this.clickArtefact.bind(this)}
-        //   artefactId = {artefacts[i]._id}
-        //   key={artefactKey}
-        //   image={{ uri: artefacts[i].images[0].URL }}
-        // />
+        <ArtefactFeed
+          onPress={() => this.clickArtefact.bind(this)}
+          artefactId = {artefacts[i]._id}
+          key={artefactKey}
+          image={{ uri: artefacts[i].images[0].URL }}
+        />
 
-        <View style={styles.card} key={artefactKey}>
-          <TouchableOpacity
-            onPress={() => this.clickArtefact(artefactId)}
-            activeOpacity={0.5}
-          >
-            <Image
-              style={styles.photo}
-              source={{ uri: artefacts[i].images[0].URL }}
-            />
-          </TouchableOpacity>
-        </View>
+        // <View style={styles.card} key={artefactKey}>
+        //   <TouchableOpacity
+        //     onPress={() => this.clickArtefact(artefactId)}
+        //     activeOpacity={0.5}
+        //   >
+        //     <Image
+        //       style={styles.photo}
+        //       source={{ uri: artefacts[i].images[0].URL }}
+        //     />
+        //   </TouchableOpacity>
+        // </View>
       );
       artefactKey++;
+      
       // create a new row after the previous row has been filled with 3 artefacts and fill the previous row into artefactFeedRows
       if (artefactFeeds.length === 3 || i === artefacts.length - 1) {
         artefactFeedRows.push(
@@ -172,16 +172,12 @@ class Artefacts extends Component {
             </View>
           ) : (
               <View style={styles.emptyFeed}>
-                <Text
-                  style={{ fontSize: 16, fontFamily: "HindSiliguri-Regular" }}
-                >
+                <Text style={{ fontSize: 16, fontFamily: "HindSiliguri-Regular" }}> 
                   Looks like you haven't posted any artefacts
-              </Text>
-                <Text
-                  style={{ fontSize: 16, fontFamily: "HindSiliguri-Regular" }}
-                >
+                </Text>
+                <Text style={{ fontSize: 16, fontFamily: "HindSiliguri-Regular" }}>
                   Click the "+" button to add some
-              </Text>
+                </Text>
               </View>
             )}
         </ScrollView>
