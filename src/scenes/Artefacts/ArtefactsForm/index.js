@@ -47,9 +47,11 @@ class ArtefactsForm extends Component {
     super(props);
 
     this.state = {
+
+      // new artefact to be submitted
       newArtefact: {
         ...newArtefact,
-        
+      
         // get newArtefact information
         ...this.props.navigation.getParam("newArtefact", "NO-NEW-ARTEFACT"),
 
@@ -61,16 +63,11 @@ class ArtefactsForm extends Component {
     // add image to ArtefactsForm if it is for editing
     if (this.props.navigation.getParam("isEditingArtefact") === true) {
       this.state = {
+        ...this.state,
         newArtefact: {
-          ...newArtefact,
+          ...this.state.newArtefact,
           imageURI: this.props.artefacts.selectedArtefact.images[0].URL,          
-
-          // get newArtefact information
-          ...this.props.navigation.getParam("newArtefact", "NO-NEW-ARTEFACT"),
-  
-          userId: this.props.auth.user.id
-        },
-        loading: false,
+        }
       };
     }
   }
@@ -213,6 +210,7 @@ class ArtefactsForm extends Component {
                 Share your artefacts for others to view
               </Text>
 
+              {/* shows image of newArtefact accordingly */}
               <TouchableOpacity activeOpacity={0.5} onPress={this._pickImage}>
                 {this.state.newArtefact.imageURI !== undefined &&
                 this.state.newArtefact.imageURI !== "" ? (
@@ -374,7 +372,6 @@ class ArtefactsForm extends Component {
                 width: wd(0.8)
               }}
             >
-              {/* TODO add onPress={() => onSubmit} */}
 
               {/* edit artefact or create new artefact */}
               <MySmallerButton text="POST" onPress={() => 
