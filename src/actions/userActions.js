@@ -10,7 +10,7 @@ export const getUserData = userId => dispatch => {
     // success
     .then(res => dispatch(setCurrentUserData(res.data)))
     // failure
-    .catch(err => console.log("userActions error: " + err));
+    .catch(err => console.log("Failed to get user data : " + err));
 };
 
 // Redux actions //

@@ -31,7 +31,7 @@ export const getUserArtefacts = userId => dispatch => {
       })
       // failure
       .catch(err => {
-        console.log("artefactActions: " + err);
+        console.log("Failed to get user artefacts : " + err);
         reject(err);
       });
   });
@@ -49,7 +49,7 @@ export const likeArtefact = (artefactId, userId) => dispatch => {
       })
       // failure
       .catch(err => {
-        console.log("artefactActions: " + err);
+        console.log("Failed to like an artefact: " + err);
         reject(err);
       });
   });
@@ -67,7 +67,7 @@ export const unlikeArtefact = (artefactId, userId) => dispatch => {
       })
       // failure
       .catch(err => {
-        console.log("artefactActions: " + err);
+        console.log("Failed to unlike an artefact: " + err);
         reject(err);
       });
   });
@@ -125,7 +125,8 @@ export const getSelectedArtefact = artefactId => dispatch => {
 export const editSelectedArtefact = artefact => (dispatch, getState) => {
   return new Promise((resolve, reject) => {
     (() => {
-      // if a new image is selects, the imageURI would not be empty
+      // if a new image is selected, the imageURI would not be empty
+      // so upload to GCS is required, otherwise just retain the old URL link
       return !artefact.imageURI
         ? Promise.resolve(artefact.images[0].URL)
         : uploadImageToGCS(artefact.imageURI);
@@ -159,10 +160,11 @@ export const editSelectedArtefact = artefact => (dispatch, getState) => {
 };
 
 // delete selected artefact
-export const removeSelectedArtefact = artefactId => dispatch => {
+export const removeSelectedArtefact = artefact => (dispatch, getState) => {
   return new Promise((resolve, reject) => {
-    deleteSelectedArtefactAPIRequest(artefactId)
+    deleteSelectedArtefactAPIRequest(artefact._id)
       .then(res => {
+        dispatch(getUserArtefacts(getState().auth.user.id));
         resolve(res);
       })
       .catch(err => {
@@ -183,7 +185,7 @@ export const getArtefactComments = artefactId => dispatch => {
       })
       // failure
       .catch(err => {
-        console.log("artefactActions: " + err);
+        console.log("Failed to get artefact comments: " + err);
         reject(err);
       });
   });

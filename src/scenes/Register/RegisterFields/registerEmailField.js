@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { View, TextInput, Text, TouchableOpacity } from "react-native";
 import { connect } from "react-redux";
 import styles from "../style";
+// redux types
 import { C } from "../../../types/registerTypes";
 // redux actions
 import { setEmail, setRegisterStage } from "../../../actions/registerActions";
@@ -10,10 +11,14 @@ import MyButton from "../../../component/MyButton";
 import { setToBottom } from "../../../utils/responsiveDesign";
 
 export class RegisterEmailField extends Component {
-  // local state to fix textInput flickering issue with redux
-  state = {
-    email: ""
-  };
+  constructor(props) {
+    super(props);
+    
+    // local state to fix textInput flickering issue with redux
+    this.state = {
+      email: ""
+    };
+  }
 
   componentDidMount() {
     // fill in the inputField's value if user has already input their email

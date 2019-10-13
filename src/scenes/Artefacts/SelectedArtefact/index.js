@@ -208,7 +208,7 @@ class SelectedArtefact extends Component {
     this.setLoading(true);
     // remove selected artefact from redux states
     //prettier-ignore
-    await this.props.removeSelectedArtefact(this.props.artefacts.selectedArtefact._id)
+    await this.props.removeSelectedArtefact(this.props.artefacts.selectedArtefact)
       .then(() => {
         // stop showing user the loading modal
         this.setLoading(false);
@@ -223,6 +223,7 @@ class SelectedArtefact extends Component {
       });
   };
 
+  // like an artefact
   like = function() {
     if (this.state.likingEnabled) {
       this.setState({
@@ -230,6 +231,8 @@ class SelectedArtefact extends Component {
         likesCount: this.state.likesCount + 1,
         likingEnabled: false
       });
+
+      // make an api call to the backend to like artefact
       this.props
         .likeArtefact(
           this.props.artefacts.selectedArtefact._id,
@@ -249,6 +252,7 @@ class SelectedArtefact extends Component {
     }
   };
 
+  // unlike an artefact
   unlike = function() {
     if (this.state.likingEnabled) {
       this.setState({
@@ -256,6 +260,8 @@ class SelectedArtefact extends Component {
         likesCount: this.state.likesCount - 1,
         likingEnabled: false
       });
+
+      // make an api call to the backend to unlike artefact
       this.props
         .unlikeArtefact(
           this.props.artefacts.selectedArtefact._id,
@@ -275,10 +281,12 @@ class SelectedArtefact extends Component {
     }
   };
 
+  // scroll to the bottom of the comments
   scrollToEnd = function() {
     this.scrollView.scrollToEnd();
   };
 
+  // post new comment
   postComment = function(commentContent) {
     this.props.commentOnArtefact(
       this.props.artefacts.selectedArtefact._id,
@@ -287,6 +295,7 @@ class SelectedArtefact extends Component {
     );
   };
 
+  // show all comments
   showComments = function(comments) {
     var commentViews = [];
 

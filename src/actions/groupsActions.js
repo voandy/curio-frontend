@@ -36,7 +36,7 @@ export const getUserGroups = userId => dispatch => {
       })
       // failure
       .catch(err => {
-        console.log("groupActions: " + err);
+        console.log("Failed to get user groups: " + err);
         reject(err);
       });
   });
@@ -61,27 +61,18 @@ export const createNewGroup = groupData => dispatch => {
           putGroupAdminAPIRequest(res.data._id, adminId)
             .then(() => {
               // get all user's groups to re-add them to redux store
-              getUserGroupsAPIRequest(adminId)
-                .then(res => {
-                  resolve(res);
-                  dispatch(setUserGroups(res.data));
-                })
-                // failure
-                .catch(err => {
-                  console.log("groupActions: " + err);
-                  reject(err);
-                });
-              // failed to set group admin
+              dispatch(getUserGroups(adminId));
+              resolve(res);
             })
-            // failure
+            // failed to set group admin
             .catch(err => {
-              console.log("groupActions: " + err);
+              console.log("Failed to set group admin: " + err);
               reject(err);
             });
         })
         // failure
         .catch(err => {
-          console.log("groupActions: " + err);
+          console.log("Failed to create group: " + err);
           reject(err);
         });
     });
@@ -98,7 +89,7 @@ export const getSelectedGroup = groupId => dispatch => {
       })
       // failure
       .catch(err => {
-        console.log("groupActions: " + err);
+        console.log("Failed to get selected group: " + err);
         reject(err);
       });
   });
@@ -114,7 +105,7 @@ export const getSelectedGroupAllArtefacts = groupId => dispatch => {
       })
       // failure
       .catch(err => {
-        console.log("groupActions: " + err);
+        console.log("Failed to get all artefacts of a selected group: " + err);
         reject(err);
       });
   });
@@ -130,7 +121,7 @@ export const getSelectedGroupAllMembers = groupId => dispatch => {
       })
       // failure
       .catch(err => {
-        console.log("groupActions: " + err);
+        console.log("Failed to get all members of a selected group: " + err);
         reject(err);
       });
   });
@@ -165,33 +156,34 @@ export const editSelectedGroup = group => (dispatch, getState) => {
           })
           // failure
           .catch(err => {
-            console.log("groupActions: " + err);
+            console.log("Failed to edit group: " + err);
             reject(err);
           });
       }) // failure for getting imageURL
       .catch(err => {
-        console.log("groupActions: " + err);
+        console.log("Failed to upload image: " + err);
         reject(err);
       });
   });
 };
 
-export const getSelectedGroupArtefactComments = artefactId => dispatch => {
+// get artefact comments of selected group based on groupId
+export const getSelectedGroupArtefactComments = groupId => dispatch => {
   return new Promise((resolve, reject) => {
-    getArtefactCommentsAPIRequest(artefactId)
+    getArtefactCommentsAPIRequest(groupId)
       .then(res => {
         dispatch(addSelectedGroupArtefactComments(res.data));
         resolve(res);
       })
       // failure
       .catch(err => {
-        console.log("groupActions: " + err);
+        console.log("Failed to get selected group's artefact comments: " + err);
         reject(err);
       });
   });
 };
 
-// delete selected artefact
+// delete selected group based on groupId
 export const deleteSelectedGroup = groupId => (dispatch, getState) => {
   return new Promise((resolve, reject) => {
     deleteGroupAPIRequest(groupId)
@@ -200,7 +192,7 @@ export const deleteSelectedGroup = groupId => (dispatch, getState) => {
         resolve(res);
       })
       .catch(err => {
-        console.log("Failed to delete group" + err);
+        console.log("Failed to delete group: " + err);
         reject(err);
       });
   });
@@ -214,6 +206,7 @@ export const clearSelectedGroup = () => dispatch => {
   dispatch(setSelectedGroupMembers([]));
 };
 
+// pin group of groupId in user of userId
 export const pinGroup = (userId, groupId) => dispatch => {
   return new Promise((resolve, reject) => {
     pinGroupAPIRequest(userId, groupId)
@@ -228,6 +221,7 @@ export const pinGroup = (userId, groupId) => dispatch => {
   });
 };
 
+// unpin group of group Id in user of userId
 export const unpinGroup = (userId, groupId) => dispatch => {
   return new Promise((resolve, reject) => {
     unpinGroupAPIRequest(userId, groupId)
