@@ -354,8 +354,6 @@ class SelectedArtefact extends Component {
         source: {
           uri: selectedArtefact.images[0].URL
         },
-        width: wd(1),
-        height: wd(1)
       }
     ];
     // extract owner details

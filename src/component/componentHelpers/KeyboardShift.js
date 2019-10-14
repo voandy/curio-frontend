@@ -13,6 +13,7 @@ import {
 } from "react-native";
 
 const { State: TextInputState } = TextInput;
+const EXTRA = Dimensions.get("window").height * 0.05    // add additional space between keyboard to screen
 
 export default class KeyboardShift extends Component {
   state = {
@@ -49,7 +50,7 @@ export default class KeyboardShift extends Component {
 
   handleKeyboardDidShow = event => {
     const { height: windowHeight } = Dimensions.get("window");
-    const keyboardHeight = event.endCoordinates.height;
+    const keyboardHeight = event.endCoordinates.height + EXTRA;
     const currentlyFocusedField = TextInputState.currentlyFocusedField();
     UIManager.measure(
       currentlyFocusedField,

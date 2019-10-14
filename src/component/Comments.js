@@ -16,6 +16,9 @@ import {
 
 import { timeSince } from './componentHelpers/timeSince';
 
+/**user who posted the artefact
+ * used in Selected Artefact and Groups
+ */
 class UserDetail extends Component {
   constructor(props) {
     super(props);
@@ -56,26 +59,26 @@ const styles = StyleSheet.create({
   container: {
     marginVertical: wd(0.03),
     flexDirection: "row",
-    width: Dimensions.get("window").width
+    width: wd(1),
   },
 
   userProfilePic: {
-    borderRadius: (Dimensions.get("window").width * 0.1) / 2,
-    width: Dimensions.get("window").width * 0.1,
-    height: Dimensions.get("window").width * 0.1,
+    borderRadius: wd(0.1) / 2,
+    width: wd(0.1),
+    height: wd(0.1),
     marginLeft: wd(0.06),
     marginRight: wd(0.03)
   },
 
   bubble: {
-    width: Dimensions.get("window").width * 0.77,
+    width: wd(0.77),
     backgroundColor: "#E0E0E0",
     borderRadius: 10,
     alignContent: "center"
   },
 
   user: {
-    width: Dimensions.get("window").width * 0.77,
+    width: wd(0.77),
     flexDirection: "row",
     marginVertical: wd(0.01),
     marginHorizontal: wd(0.03)

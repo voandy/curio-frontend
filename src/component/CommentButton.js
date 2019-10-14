@@ -13,6 +13,9 @@ import {
   deviceWidthDimension as wd
 } from "../utils/responsiveDesign";
 
+/**Comment button to prompt comment input field
+ * used in selectedArtefacts and selectedGroups
+ */
 class CommentButton extends Component {
   constructor(props) {
     super(props);

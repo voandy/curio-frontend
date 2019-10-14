@@ -10,10 +10,12 @@ import {
 } from "react-native";
 
 import {
-  deviceHeigthDimension as hp,
   deviceWidthDimension as wd
 } from "../utils/responsiveDesign";
 
+/**text input for comments
+ * used in selectedArtefacts
+ */
 class CommentForm extends Component {
   constructor(props) {
     super(props);
@@ -45,9 +47,9 @@ class CommentForm extends Component {
 
 const styles = StyleSheet.create({
   userProfilePic: {
-    borderRadius: Dimensions.get('window').width * 0.1 / 2,
-    width: Dimensions.get("window").width * 0.1,
-    height: Dimensions.get("window").width * 0.1,
+    borderRadius: wd(0.1)/ 2,
+    width: wd(0.1),
+    height: wd(0.1),
     marginLeft: wd(0.06),
     marginRight: wd(0.03)
   },
@@ -61,7 +63,7 @@ const styles = StyleSheet.create({
 
   textInput: {
     fontFamily: "HindSiliguri-Regular",
-    width: Dimensions.get("window").width * 0.7
+    width: wd(0.7)
   }
 });
 

@@ -12,6 +12,7 @@ import {
 
 /** carousel for saved groups in groups page */
 class CardCarousel extends Component {
+
   // alert prompt to pin or unpin groups
   showAlert = () => {
     //prettier-ignore
@@ -36,9 +37,12 @@ class CardCarousel extends Component {
   render() {
     return (
       <View style={styles.card}>
+        {/* favouraite icon */}
         <View style={{ position: "absolute", top: 5, right: 5, elevation: 2 }}>
           <Image source={require("../../assets/images/icons/favourite.png")} />
         </View>
+        
+        {/* group card */}
         <TouchableOpacity
           onLongPress={() => this.showAlert()}
           onPress={() => this.props.onPress(this.props.groupId)}

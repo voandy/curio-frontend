@@ -259,6 +259,7 @@ class SelectedGroup extends Component {
               <OptionButton
                 firstOption={"Edit Group"}
                 secondOption={"Delete Group"}
+                thirdOption={"Leave Group"}
                 toggleFirstOption={this.onEditGroup}
                 toggleSecondOption={this.toggleDeleteModal}
               />
@@ -328,7 +329,7 @@ const styles = StyleSheet.create({
 
   groupInfo: {
     alignItems: "center",
-    paddingHorizontal: wd(0.1),
+    paddingHorizontal: wd(0.05),
     backgroundColor: "white"
   },
 
@@ -337,6 +338,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     alignSelf: "center",
     marginTop: hp(0.01),
+    marginLeft: wd(0.05),
     marginBottom: hp(0.01)
   },
 

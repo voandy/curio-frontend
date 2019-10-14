@@ -48,7 +48,6 @@ class SettingField extends Component {
                 </View>
 
                 <View style={{ flex: 0.65 }}>
-                    {/* <Text style={[styles.fieldInput, this.editableColour()]}>{this.props.input}</Text> */}
                     <TextInput
                         placeholder={this.props.input}
                         editable={this.props.editable}

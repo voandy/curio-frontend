@@ -104,7 +104,8 @@ class Artefacts extends Component {
           isPublicTab={this.state.isPublicTab}
           tab1="Public"
           tab2="Private"
-          onSubmit={() => navigate("GeneralSearch")}
+          showSearch = {true}
+          onSubmitEditing={() => navigate("GeneralSearch")}
         />
 
         {/* scrollable area for artefact feeds */}

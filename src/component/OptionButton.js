@@ -24,8 +24,8 @@ class OptionButton extends Component {
             button={require("../../assets/images/icons/option.png")}
             buttonStyle = {styles.icon}
             destructiveIndex={1}            // only on ios (red indicator)
-            options={[this.props.firstOption, this.props.secondOption]}
-            actions={[this.props.toggleFirstOption, this.props.toggleSecondOption]}
+            options={[this.props.firstOption, this.props.secondOption, this.props.thirdOption]}
+            actions={[this.props.toggleFirstOption, this.props.toggleSecondOption, this.props.toggleThirdOption]}
         />
         );
     }
@@ -37,6 +37,7 @@ const styles = StyleSheet.create({
         width: wd(0.04),
         height: wd(0.04),
         marginVertical: wd(0.05),
+        marginHorizontal: wd(0.02),
         resizeMode: "contain",
     }
 });

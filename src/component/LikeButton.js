@@ -14,7 +14,7 @@ import {
 
 
 /**like button with 2 states (liked or unliked)
- * used in comments, selected groups page and selected artefacts page
+ * used in comments, selectedGroups page and selectedArtefacts page
  */
 class LikeButton extends Component {
   constructor(props) {

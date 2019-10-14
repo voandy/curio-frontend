@@ -9,6 +9,9 @@ import {
     deviceWidthDimension as wd
   } from "../utils/responsiveDesign";
 
+/**Line separator
+ * used throughout the app
+*/
 class Line extends Component {
 
     render() {
