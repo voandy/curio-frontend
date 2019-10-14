@@ -11,8 +11,10 @@ import {
 } from "react-native";
 
 // redux actions
-import { getUserData } from "../../actions/userActions";
-import { getUserArtefacts } from "../../actions/artefactsActions";
+import {
+  getSelectedUser,
+  getSelectedUserArtefacts
+} from "../../actions/userActions";
 
 // date converter
 import Moment from "moment";
@@ -29,6 +31,35 @@ import {
 class PublicProfile extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      user: {},
+      artefacts: []
+    };
+    // get group id passed in from the navigation parameter
+    userId = this.props.navigation.getParam("userId");
+    // make sure it exists
+    userId
+      ? Promise.all([
+          (() => {
+            // get selected user data and store in local state
+            this.props
+              .getSelectedUser(userId)
+              .then(user => {
+                this.setState({ user }, () => Promise.resolve());
+              })
+              .catch(err => Promise.reject(err));
+          })(),
+          (() => {
+            // get selected user data and store in local state
+            this.props
+              .getSelectedUserArtefacts(userId)
+              .then(artefacts => {
+                this.setState({ artefacts }, () => Promise.resolve());
+              })
+              .catch(err => Promise.reject(err));
+          })()
+        ]).catch(() => alert("Please try again later."))
+      : alert("Error loading user data");
   }
 
   // nav details
@@ -36,6 +67,23 @@ class PublicProfile extends Component {
     headerStyle: {
       elevation: 0 // remove shadow on Android
     }
+  };
+
+  // show artefacts by privacy settings
+  showArtefacts = artefacts => {
+    // extract required data
+    artefacts = this.props.artefacts.userArtefacts;
+    // show only public artefacts
+    privacy = 0;
+    // filter artefacts by their privacy settings
+    artefacts = artefacts.filter(x => x.privacy == privacy);
+    // return modularized feed component
+    return (
+      <ArtefactFeed
+        artefacts={artefacts}
+        onPress={this.onArtefactClick.bind(this)}
+      />
+    );
   };
 
   render() {
@@ -189,8 +237,8 @@ const styles = StyleSheet.create({
 });
 
 PublicProfile.propTypes = {
-  getUserData: PropTypes.func.isRequired,
-  getUserArtefacts: PropTypes.func.isRequired,
+  getSelectedUser: PropTypes.func.isRequired,
+  getSelectedUserArtefacts: PropTypes.func.isRequired,
   user: PropTypes.object.isRequired
 };
 
@@ -202,5 +250,5 @@ const mapStateToProps = state => ({
 // export
 export default connect(
   mapStateToProps,
-  { getUserData, getUserArtefacts }
+  { getSelectedUser, getSelectedUserArtefacts }
 )(PublicProfile);
