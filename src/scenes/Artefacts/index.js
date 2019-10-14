@@ -102,24 +102,13 @@ class Artefacts extends Component {
 
       if (artefacts[i].privacy === privacy) {
         artefactFeeds.push(
-          // TODO, WORKS BUT CONTAINS "Key is not a prop, trying to access it will return undefined" WARNING
+          
+          // click-able artefact images which will navigate to selectedArtefact
           <ArtefactFeed
             onPress={() => this.clickArtefact(artefactId)}
             key= {artefactKey}
             image={{ uri: artefacts[i].images[0].URL }}
           />
-
-          // <View style={styles.card} key={artefactKey}>
-          //   <TouchableOpacity
-          //     onPress={() => this.clickArtefact(artefactId)}
-          //     activeOpacity={0.5}
-          //   >
-          //     <Image
-          //       style={styles.photo}
-          //       source={{ uri: artefacts[i].images[0].URL }}
-          //     />
-          //   </TouchableOpacity>
-          // </View>
         );
         artefactKey++;
       }
