@@ -49,23 +49,26 @@ class SelectedGroup extends Component {
     };
     // get group id passed in from the navigation parameter
     groupId = this.props.navigation.getParam("groupId");
-    console.log(groupId);
     // make sure it exists
     groupId
       ? this.getSelectedGroupData(groupId)
-      : alert("Error loading group data");
+      : alert("Error loading group data.");
   }
 
   // get selected group data asynchronously
   getSelectedGroupData = async groupId => {
-    Promise.all([
+    // reload everything at once
+    return Promise.all([
       this.props.getSelectedGroup(groupId),
-      this.props.getSelectedGroupAllArtefacts(groupId),
-      this.props.getSelectedGroupAllMembers(groupId)
-    ]).catch(err => {
-      console.log(err);
-      alert("Error loading group data");
-    });
+      this.props.getSelectedGroupAllMembers(groupId),
+      this.props.getSelectedGroupAllArtefacts(groupId)
+    ])
+      .then(() => Promise.resolve())
+      .catch(err => {
+        console.log(err);
+        alert("Please try again later.");
+        Promise.reject(err);
+      });
   };
 
   // nav details
@@ -96,17 +99,9 @@ class SelectedGroup extends Component {
     // get data from backend
     groupId = this.props.navigation.getParam("groupId");
     // reload everything at once, only refresh once everything is done loading
-    Promise.all([
-      this.props.getSelectedGroup(groupId),
-      this.props.getSelectedGroupAllArtefacts(groupId),
-      this.props.getSelectedGroupAllMembers(groupId)
-    ])
-      // resets refreshing state
-      .then(() => this.setState({ refreshing: false }))
-      .catch(() => {
-        this.setState({ refreshing: false });
-        alert("Please try again later");
-      });
+    await this.getSelectedGroupData(groupId);
+    // resets refreshing state
+    this.setState({ refreshing: false });
   };
 
   // when user presses "edit group"
