@@ -105,8 +105,7 @@ class Artefacts extends Component {
           // TODO, WORKS BUT CONTAINS "Key is not a prop, trying to access it will return undefined" WARNING
           <ArtefactFeed
             onPress={() => this.clickArtefact(artefactId)}
-            artefactId = {artefactId}
-            artefactKey={artefactKey}
+            key= {artefactKey}
             image={{ uri: artefacts[i].images[0].URL }}
           />
 

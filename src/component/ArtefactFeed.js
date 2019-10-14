@@ -22,8 +22,7 @@ class ArtefactFeed extends Component {
                 <TouchableOpacity 
                     onPress={this.props.onPress} 
                     activeOpacity={0.5} 
-                    artefactId = {this.props.artefactId}
-                    artefactKey={this.props.artefactKey} >     
+                >
                     <Image style={styles.photo} source={this.props.image} />
                 </TouchableOpacity>
             </View>
