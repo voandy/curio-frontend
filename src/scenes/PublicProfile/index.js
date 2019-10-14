@@ -7,6 +7,7 @@ import {
   View,
   Image,
   Text,
+  RefreshControl,
   TouchableOpacity
 } from "react-native";
 
@@ -33,13 +34,15 @@ class PublicProfile extends Component {
     super(props);
     this.state = {
       user: {},
-      artefacts: []
+      artefacts: [],
+      refreshing: false,
+      // get group id passed in from the navigation parameter
+      userId: this.props.navigation.getParam("userId")
     };
   }
 
   componentDidMount() {
-    // get group id passed in from the navigation parameter
-    userId = this.props.navigation.getParam("userId");
+    const { userId } = this.state;
     // make sure it exists
     userId
       ? this.getSelectedUserData(userId)
@@ -63,7 +66,7 @@ class PublicProfile extends Component {
         return this.props.getSelectedUser(userId)
           .then(user => {
             // set local state and callback to return promise
-            // in case load sequence is required
+            // in case load sequence is required (like in refreshPage function)
             this.setState({ user }, () => Promise.resolve());
           })
           .catch(err => Promise.reject(err));
@@ -83,6 +86,16 @@ class PublicProfile extends Component {
     ]).catch(() => alert("Please try again later."));
   };
 
+  // refresh page
+  refreshPage = async () => {
+    this.setState({ refreshing: true });
+    // get data from backend
+    await this.getSelectedUserData(this.state.userId);
+    // resets refreshing state
+    this.setState({ refreshing: false });
+  };
+
+  // retains only artefacts with privacy = public
   extractPublicArtefacts = artefacts => {
     // show only public artefacts
     const privacy = 0;
@@ -128,6 +141,12 @@ class PublicProfile extends Component {
         <ScrollView
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={16}
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.refreshing}
+              onRefresh={this.refreshPage}
+            />
+          }
         >
           {/* user details */}
           <View style={styles.userDetailsContainer}>
@@ -160,29 +179,25 @@ class PublicProfile extends Component {
               }}
             >
               {/* artefacts numbers */}
-              <TouchableOpacity>
-                <View style={{ alignItems: "center" }}>
-                  <Text style={styles.font}>{artefacts.length}</Text>
-                  <Text style={(styles.subFont, { color: "#939090" })}>
-                    Artefacts
-                  </Text>
-                </View>
-              </TouchableOpacity>
+              <View style={{ alignItems: "center" }}>
+                <Text style={styles.font}>{artefacts.length}</Text>
+                <Text style={(styles.subFont, { color: "#939090" })}>
+                  Artefacts
+                </Text>
+              </View>
 
               {/* groups number */}
-              <TouchableOpacity>
-                <View style={{ alignItems: "center" }}>
-                  <Text style={styles.font}>{groups.length}</Text>
-                  <Text style={(styles.subFont, { color: "#939090" })}>
-                    Groups
-                  </Text>
-                </View>
-              </TouchableOpacity>
+              <View style={{ alignItems: "center" }}>
+                <Text style={styles.font}>{groups.length}</Text>
+                <Text style={(styles.subFont, { color: "#939090" })}>
+                  Groups
+                </Text>
+              </View>
             </View>
           </View>
 
           {/* user artefacts posts */}
-          <View style={{ marginTop: wd(0.006) }}>{this.showArtefacts()}</View>
+          <View style={{ marginTop: wd(0.01) }}>{this.showArtefacts()}</View>
         </ScrollView>
       </View>
     );
