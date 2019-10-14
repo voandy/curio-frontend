@@ -6,9 +6,7 @@ import {
   Dimensions,
   StyleSheet,
   TouchableOpacity,
-  TextInput,
   View,
-  Image,
   Text,
   Alert,
   StatusBar,
@@ -23,13 +21,10 @@ import { LikeButton, UnlikeButton } from "../../../component/LikeButton";
 import CommentButton from "../../../component/CommentButton";
 import CommentForm from "../../../component/CommentForm";
 import UserDetail from "../../../component/UserDetail";
-import Line from "../../../component/Line";
 import Comments from "../../../component/Comments";
 import OptionButton from "../../../component/OptionButton";
 import HeaderImageScrollView from "react-native-image-header-scroll-view";
 import ImageView from "react-native-image-view";
-import ArtefactModal from "../../../component/ArtefactModal";
-import ActivityLoaderModal from "../../../component/ActivityLoaderModal";
 import KeyboardShift from "../../../component/componentHelpers/KeyboardShift";
 
 // redux actions

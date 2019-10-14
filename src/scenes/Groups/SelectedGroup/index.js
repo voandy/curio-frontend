@@ -36,9 +36,6 @@ import {
   deviceWidthDimension as wd
 } from "../../../utils/responsiveDesign";
 
-// custom components
-import GroupModal from "../../../component/GroupModal";
-
 class SelectedGroup extends Component {
   constructor(props) {
     super(props);
