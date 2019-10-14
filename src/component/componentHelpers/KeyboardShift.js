@@ -13,7 +13,7 @@ import {
 } from "react-native";
 
 const { State: TextInputState } = TextInput;
-const EXTRA = Dimensions.get("window").height * 0.05    // add additional space between keyboard to screen
+const EXTRA = Dimensions.get("window").height * 0.05; // add additional space between keyboard to screen
 
 export default class KeyboardShift extends Component {
   state = {
