@@ -2,28 +2,24 @@ import React, { Component } from "react";
 import { View, StyleSheet, Text, Image, TouchableOpacity } from "react-native";
 
 // Custom respondsive design component
-import {
-  deviceWidthDimension as wd
-} from "../utils/responsiveDesign";
+import { deviceWidthDimension as wd } from "../utils/responsiveDesign";
 
 /**Simpler header design from Header
  * used in Notifications, Artefacts, profile page
  */
 class SimpleHeader extends Component {
-
   state = {
     tab1: {
-      visible: true,
+      visible: true
     },
     tab2: {
-      visible: false,
+      visible: false
     }
-  }
+  };
 
   // TODO add more logic
   // highlight the active tab when pressed
-  clickTab = (tab) => {
-    
+  clickTab = tab => {
     if (tab === this.state.tab1) {
       this.setState(prevState => ({
         tab1: {
@@ -40,8 +36,7 @@ class SimpleHeader extends Component {
       if (this.props.isPublicTab === false) {
         this.props.onChangePrivacyTab();
       }
-    }
-    else {
+    } else {
       this.setState(prevState => ({
         tab1: {
           ...prevState,
@@ -58,54 +53,55 @@ class SimpleHeader extends Component {
         this.props.onChangePrivacyTab();
       }
     }
-  }
-
+  };
 
   // change style properties for the tabs
-  activeTab = (tab) => {
-
+  activeTab = tab => {
     if (tab.visible === true) {
       return {
         borderBottomWidth: 3
-      }
-    }
-    else {
+      };
+    } else {
       return {
         borderBottomWidth: 0
-      }
+      };
     }
-  }
+  };
 
-
-  // allows search 
+  // allows search
   showSearch = () => {
     if (this.props.showSearch === false) {
-      return null
-    }
-    else {
+      return null;
+    } else {
       return (
-        <TouchableOpacity style={styles.iconPlaceholder} onPress={this.props.onSubmit}>
-          <Image style={styles.icon} source={require("../../assets/images/icons/search.png")} />
+        <TouchableOpacity
+          style={styles.iconPlaceholder}
+          onPress={this.props.onSubmit}
+        >
+          <Image
+            style={styles.icon}
+            source={require("../../assets/images/icons/search.png")}
+          />
         </TouchableOpacity>
-      )
+      );
     }
-  }
+  };
 
   // show tabs for filtering search options
   showTab = () => {
     if (this.props.showTab != true) {
-
-      return null
-    }
-    else {
-      return(
+      return null;
+    } else {
+      return (
         <View style={{ flexDirection: "row", justifyContent: "center" }}>
           <TouchableOpacity
             onPress={() => this.clickTab(this.state.tab1)}
             style={styles.headerButton}
             activeOpacity={0.5}
           >
-            <Text style={[styles.headerButtonText, this.activeTab(this.state.tab1)]}>
+            <Text
+              style={[styles.headerButtonText, this.activeTab(this.state.tab1)]}
+            >
               {this.props.tab1}
             </Text>
           </TouchableOpacity>
@@ -115,20 +111,22 @@ class SimpleHeader extends Component {
             style={styles.headerButton}
             activeOpacity={0.5}
           >
-            <Text style={[styles.headerButtonText, this.activeTab(this.state.tab2)]}>
+            <Text
+              style={[styles.headerButtonText, this.activeTab(this.state.tab2)]}
+            >
               {this.props.tab2}
             </Text>
           </TouchableOpacity>
         </View>
-      )
+      );
     }
-  }
+  };
 
   render() {
     return (
       <View style={styles.header}>
         {/* header text */}
-        <View style={{ flexDirection: "row"}}>
+        <View style={{ flexDirection: "row" }}>
           <Text style={styles.headerText}>{this.props.title}</Text>
           {this.showSearch()}
         </View>
@@ -142,7 +140,7 @@ const styles = StyleSheet.create({
   header: {
     borderBottomColor: "black",
     borderRadius: 1,
-    marginBottom:10
+    marginBottom: 10
   },
 
   headerText: {
@@ -171,21 +169,21 @@ const styles = StyleSheet.create({
   headerButton: {
     alignContent: "center",
     marginTop: 10,
-    marginHorizontal: 15,
+    marginHorizontal: 15
   },
 
   headerButtonText: {
     fontFamily: "HindSiliguri-Bold",
     fontSize: 18,
     borderColor: "#FF6E6E",
-    borderWidth: 0,
+    borderWidth: 0
   },
 
   activeHighlight: {
     borderColor: "#FF6E6E",
     borderWidth: 0,
     borderBottomWidth: 3
-  },
+  }
 });
 
 export default SimpleHeader;
