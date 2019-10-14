@@ -32,8 +32,7 @@ export const getSelectedUser = userId => dispatch => {
       // success
       .then(res => {
         console.log(res.data);
-        // return user data instead of request response
-        resolve(res.data);
+        resolve(res);
       })
       // failure
       .catch(err => {
@@ -51,8 +50,7 @@ export const getSelectedUserArtefacts = userId => dispatch => {
       // success
       .then(res => {
         console.log(res.data);
-        // return user data instead of request response
-        resolve(res.data);
+        resolve(res);
       })
       // failure
       .catch(err => {
