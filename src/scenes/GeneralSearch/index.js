@@ -8,6 +8,7 @@ import {
   View,
   Text,
   StatusBar,
+  RefreshControl,
   TouchableOpacity
 } from "react-native";
 
@@ -36,7 +37,8 @@ class Search extends Component {
       //search type: 0: user search, 1: group search
       searchType: 0,
       // has first search been done?
-      searchPerformed: false
+      searchPerformed: false,
+      refreshing: false
     };
   }
 
@@ -45,11 +47,11 @@ class Search extends Component {
     header: null
   };
 
-  componentWillUpdate(nextProps) {
+  componentDidUpdate(prevProps) {
     // refresh search results
-    if (nextProps.search !== this.props.search) {
+    if (prevProps.search !== this.props.search) {
       this.setState({
-        search: nextProps.search
+        search: prevProps.search
       });
     }
   }
@@ -58,24 +60,25 @@ class Search extends Component {
   gotoUserProfile = userId => {
     const { navigate } = this.props.navigation;
     // navigate to selected user profile
-    navigate("PublicProfile", { userId });
+    navigate("PublicProfile", { origin: "GeneralSearch", userId });
   };
 
   // navigate to group page
   gotoGroupPage = groupId => {
     const { navigate } = this.props.navigation;
     // navigate to selected group
-    navigate("SelectedGroup", { groupId });
+    navigate("SelectedGroup", { origin: "GeneralSearch", groupId });
   };
 
   // generate both user and group search feeds
   showSearchResults = function(userSearchResults, groupSearchResults) {
-    if (this.state.searchType === 0) {
-      return this.showUserResults(userSearchResults);
-    } else if (this.state.searchType === 1) {
-      return this.showGroupResults(groupSearchResults);
-    } else {
-      return <Text style={styles.emptySearch}>Invalid search type.</Text>;
+    switch (this.state.searchType) {
+      case 0:
+        return this.showUserResults(userSearchResults);
+      case 1:
+        return this.showGroupResults(groupSearchResults);
+      default:
+        return <Text style={styles.emptySearch}>Invalid search type.</Text>;
     }
   };
 
@@ -149,6 +152,21 @@ class Search extends Component {
     });
   };
 
+  // refresh page
+  refreshSearchPage = async () => {
+    this.setState({ refreshing: true });
+    const searchInput = this.state.searchInput;
+    // get data from backend
+    await Promise.all([
+      this.props.searchUsers({ searchTerms: searchInput }),
+      this.props.searchGroups({ searchTerms: searchInput })
+    ]).then(() => {
+      this.setState({ refreshing: false });
+    });
+    // resets refreshing state
+    this.setState({ refreshing: false });
+  };
+
   // search for both users and groups on backend
   doGeneralSearch = async searchInput => {
     if (searchInput == "") {
@@ -158,28 +176,24 @@ class Search extends Component {
         this.props.searchUsers({ searchTerms: searchInput }),
         this.props.searchGroups({ searchTerms: searchInput })
       ]).then(() => {
-        this.setState({
-          searchPerformed: true
-        });
+        this.setState({ searchPerformed: true });
       });
     }
   };
 
   render() {
-    // navigation in app
-    const { navigate } = this.props.navigation;
-
     return (
       <View style={styles.container}>
         <HeaderSearch
           searchInput={this.state.searchInput}
           onChangeSearchInput={this.onChangeSearchInput}
           onSubmitEditing={event => {
-            this.doGeneralSearch(event.nativeEvent.text)
+            this.doGeneralSearch(event.nativeEvent.text);
           }}
           pressClear={() => this.onChangeSearchInput("")}
           pressSearch={() => {
-            this.doGeneralSearch(this.state.searchInput) }}
+            this.doGeneralSearch(this.state.searchInput);
+          }}
         />
 
         {/* header tab */}
@@ -217,6 +231,12 @@ class Search extends Component {
         <ScrollView
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={16}
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.refreshing}
+              onRefresh={this.refreshSearchPage}
+            />
+          }
         >
           {this.state.searchPerformed === true ? (
             // user search results
@@ -239,7 +259,7 @@ class Search extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: StatusBar.currentHeight,
+    marginTop: StatusBar.currentHeight
   },
 
   font: {

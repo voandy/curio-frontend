@@ -6,9 +6,7 @@ import {
   Dimensions,
   StyleSheet,
   TouchableOpacity,
-  TextInput,
   View,
-  Image,
   Text,
   Alert,
   StatusBar,
@@ -27,7 +25,6 @@ import Comments from "../../../component/Comments";
 import OptionButton from "../../../component/OptionButton";
 import HeaderImageScrollView from "react-native-image-header-scroll-view";
 import ImageView from "react-native-image-view";
-import ActivityLoaderModal from "../../../component/ActivityLoaderModal";
 import KeyboardShift from "../../../component/componentHelpers/KeyboardShift";
 
 // redux actions
@@ -44,6 +41,8 @@ import {
 } from "../../../actions/artefactsActions";
 
 import { getSelectedGroupAllArtefacts } from "../../../actions/groupsActions";
+
+import { getSelectedUser } from "../../../actions/userActions";
 
 // custom responsive design component
 import {
@@ -68,7 +67,9 @@ class SelectedArtefact extends Component {
       liked: 0,
       likesCount: 0,
       commentsCount: 0,
-      likingEnabled: true
+      likingEnabled: true,
+      // artefact owner
+      owner: {}
     };
     // get artefact id passed in from the navigation parameter
     artefactId = this.props.navigation.getParam("artefactId");
@@ -79,14 +80,26 @@ class SelectedArtefact extends Component {
   }
 
   // asynchronously make api calls to get selectedArtefact data into redux state
+  //prettier-ignore
   async getSelectedArtefactData(artefactId) {
     Promise.all([
       this.props.getSelectedArtefact(artefactId),
       this.props.getArtefactComments(artefactId)
-    ]).catch(err => {
-      console.log(err);
-      alert("Error loading artefact data");
-    });
+    ])
+      .then(() => {
+        (() => {
+          // extract owner id
+          const { userId } = this.props.artefacts.selectedArtefact;
+          // get owner data and store in local state
+          return this.props.getSelectedUser(userId)
+            .then(owner => this.setState({ owner }))
+            .catch(err => Promise.reject(err));
+        })();
+      })
+      .catch(err => {
+        console.log(err);
+        alert("Error loading artefact data");
+      });
   }
 
   // nav details
@@ -343,6 +356,8 @@ class SelectedArtefact extends Component {
         },
       }
     ];
+    // extract owner details
+    const { owner } = this.state;
 
     return (
       <KeyboardShift>
@@ -392,9 +407,7 @@ class SelectedArtefact extends Component {
               <View style={styles.descriptionPlaceholder}>
                 <View style={{ flexDirection: "row" }}>
                   {/* title */}
-                  <Text style={styles.title}>
-                    {this.props.artefacts.selectedArtefact.title}
-                  </Text>
+                  <Text style={styles.title}>{selectedArtefact.title}</Text>
                   <OptionButton
                     firstOption={"Edit Artefact"}
                     secondOption={"Delete Artefact"}
@@ -405,15 +418,15 @@ class SelectedArtefact extends Component {
 
                 {/* description */}
                 <Text style={styles.description}>
-                  {this.props.artefacts.selectedArtefact.description}
+                  {selectedArtefact.description}
                 </Text>
               </View>
 
               {/* user detail */}
               <UserDetail
-                image={{ uri: this.props.user.userData.profilePic }}
-                userName={this.props.user.userData.name}
-                dateAdded={this.props.artefacts.selectedArtefact.datePosted}
+                image={{ uri: owner.profilePic }}
+                userName={owner.name}
+                dateAdded={selectedArtefact.datePosted}
               />
               {/* likes/comments counters */}
               <View style={styles.likesIndicatorPlaceholder}>
@@ -538,6 +551,7 @@ export default connect(
     getArtefactComments,
     commentOnArtefact,
     clearSelectedArtefact,
-    getSelectedGroupAllArtefacts
+    getSelectedGroupAllArtefacts,
+    getSelectedUser
   }
 )(SelectedArtefact);

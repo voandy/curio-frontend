@@ -80,30 +80,35 @@ class Scenes extends Component {
   }
 }
 
-// group stack
-const GroupStack = createStackNavigator({
-  Groups: { screen: GroupsScreen },
-  GroupsForm: { screen: GroupsFormScreen },
-  ArtefactsForm: { screen: ArtefactsFormScreen },
+// screens that every tab stack can get to
+const generalStack = {
+  // search screens
+  UserSearch: { screen: UserSearchScreen },
+  GeneralSearch: { screen: GeneralSearchScreen },
+  // user selected pages
+  PublicProfile: { screen: PublicProfileScreen },
   SelectedGroup: { screen: SelectedGroupScreen },
   SelectedArtefact: { screen: SelectedArtefactScreen },
-  GeneralSearch: { screen: GeneralSearchScreen },
-  UserSearch: { screen: UserSearchScreen }
+  // form pages
+  GroupsForm: { screen: GroupsFormScreen },
+  ArtefactsForm: { screen: ArtefactsFormScreen }
+};
+
+// tab stacks //
+const GroupStack = createStackNavigator({
+  Groups: { screen: GroupsScreen },
+  ...generalStack
 });
 
 const ArtefactStack = createStackNavigator({
   Artefacts: { screen: ArtefactsScreen },
-  ArtefactsForm: { screen: ArtefactsFormScreen },
-  SelectedArtefact: { screen: SelectedArtefactScreen },
-  GeneralSearch: { screen: GeneralSearchScreen }
+  ...generalStack
 });
 
 const NotificationStack = createStackNavigator({
   Notification: { screen: NotificationScreen },
-  SelectedArtefact: { screen: SelectedArtefactScreen },
-  SelectedGroup: { screen: SelectedGroupScreen },
-  GeneralSearch: { screen: GeneralSearchScreen },
-  Invitation: { screen: InvitationScreen }
+  Invitation: { screen: InvitationScreen },
+  ...generalStack
 });
 
 const ProfileStack = createStackNavigator({

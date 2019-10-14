@@ -135,6 +135,7 @@ class Login extends Component {
                 autoCapitalize="none"
                 placeholderTextColor="#454545"
                 onChangeText={val => this.onChangeText("password", val)}
+                onSubmitEditing={this.onSubmit}
               />
               {/* error messages, if any */}
               <Text style={styles.error}>

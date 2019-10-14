@@ -48,7 +48,12 @@ class PostFeed extends Component {
 
         {/* post image */}
         <TouchableOpacity onPress={() => this.props.onPress(this.props.artefactId)}>
-          <Image source={this.props.image} style={styles.image} />
+          <Image 
+            source={this.props.image} 
+            style={styles.image} 
+            resizeMethod="resize"      
+            resizeMode="cover" 
+          />
         </TouchableOpacity>
 
         {/* likes/comments counters */}
