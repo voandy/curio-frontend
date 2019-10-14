@@ -16,6 +16,8 @@ import {
   postArtefactCommentAPIRequest
 } from "../utils/APIHelpers/artefactAPIHelpers";
 
+import { getUserNotifications } from "../actions/notificationActions";
+
 import { uploadImageToGCS } from "../utils/imageUpload";
 
 // Async Redux actions //
@@ -44,6 +46,7 @@ export const likeArtefact = (artefactId, userId) => dispatch => {
     likeAPIRequest(artefactId, userId)
       // success
       .then(res => {
+        // reload data
         dispatch(setSelectedArtefact(res.data));
         resolve(res);
       })
@@ -164,7 +167,9 @@ export const removeSelectedArtefact = artefact => (dispatch, getState) => {
   return new Promise((resolve, reject) => {
     deleteSelectedArtefactAPIRequest(artefact._id)
       .then(res => {
+        // reload data
         dispatch(getUserArtefacts(getState().auth.user.id));
+        dispatch(getUserNotifications(userId));
         resolve(res);
       })
       .catch(err => {
