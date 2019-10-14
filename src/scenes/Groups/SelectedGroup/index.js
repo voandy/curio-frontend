@@ -49,7 +49,6 @@ class SelectedGroup extends Component {
     };
     // get group id passed in from the navigation parameter
     groupId = this.props.navigation.getParam("groupId");
-    console.log(groupId);
     // make sure it exists
     groupId
       ? this.getSelectedGroupData(groupId)
