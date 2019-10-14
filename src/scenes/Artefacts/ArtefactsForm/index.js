@@ -126,6 +126,26 @@ class ArtefactsForm extends Component {
     this.setArtefact("privacy", privacy);
   };
 
+  // error messages for unfilled fields
+  fieldValidator=()=>{
+    console.log("hue")
+    console.log(this.state.newArtefact)
+    if (this.state.newArtefact.imageURI == "" || this.state.newArtefact.imageURI == null) {
+      this.setState({error:{imageURI:"hellow"}})
+      console.log(this.state)
+    }
+    if (this.state.newArtefact.title == "" || this.state.newArtefact.title == null) {
+
+    }
+    if (this.state.newArtefact.description == "" || this.state.newArtefact.description == null) {
+
+    }
+    if (this.state.newArtefact.dateObtained == "" || this.state.newArtefact.dateObtained == null) {
+
+    }
+  }
+
+
   //prettier-ignore
   onSubmit = async () => {
     const { navigate } = this.props.navigation;
@@ -157,7 +177,7 @@ class ArtefactsForm extends Component {
       .catch(err => {
         // stop showing user the loading modal
         this.setLoading(false);
-        // show error
+        // show error response
         console.log(err.response.data);
       });
   };
@@ -195,6 +215,9 @@ class ArtefactsForm extends Component {
       : // User picks a new image to be uploaded
       { uri: this.state.artefact.imageURI };
 
+    // error messaged for fields
+    const { errors } = this.state;
+
     return (
       <KeyboardShift>
         {() => (
@@ -209,7 +232,7 @@ class ArtefactsForm extends Component {
                 <View style={styles.imagePlaceholder}>
                   <Text style={[styles.font, styles.imageText]}>
                     Share your artefacts for others to view
-              </Text>
+                  </Text>
                   {/* show current selected artefact image if exists  */}
                   <TouchableOpacity activeOpacity={0.5} onPress={this._pickImage}>
                     <Image style={styles.imageSelected} source={imageSource} />
@@ -217,7 +240,7 @@ class ArtefactsForm extends Component {
 
                   <Text style={[styles.subFont, styles.imageText]}>
                     Add images of your artefacts
-              </Text>
+                  </Text>
                 </View>
 
                 {/* input fields */}
@@ -445,6 +468,10 @@ const styles = StyleSheet.create({
     width: wd(0.705),
     fontSize: hp(0.015),
     color: "black"
+  },
+
+  error: {
+    color: "red"
   }
 });
 
