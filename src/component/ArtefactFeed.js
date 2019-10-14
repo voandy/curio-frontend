@@ -18,6 +18,8 @@ class ArtefactFeed extends Component {
 
   // generate a feed component based on artefacts props
   createArtefactsFeed = () => {
+    // guards against empty artefacts passed in
+    if (!this.props.artefacts) return <View></View>;
     // sort array based on date obtained (from earliest to oldest)
     this.props.artefacts.sort(function(a, b) {
       return new Date(b.datePosted) - new Date(a.datePosted);
