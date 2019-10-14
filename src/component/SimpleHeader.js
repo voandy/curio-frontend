@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, StyleSheet, Text, Image, TouchableOpacity } from "react-native";
+import { View, StyleSheet, Text, Image, TouchableOpacity, TextInput, ScrollView } from "react-native";
 
 // Custom respondsive design component
 import { deviceWidthDimension as wd } from "../utils/responsiveDesign";
@@ -68,32 +68,14 @@ class SimpleHeader extends Component {
     }
   };
 
-  // allows search
-  showSearch = () => {
-    if (this.props.showSearch === false) {
-      return null;
-    } else {
-      return (
-        <TouchableOpacity
-          style={styles.iconPlaceholder}
-          onPress={this.props.onSubmit}
-        >
-          <Image
-            style={styles.icon}
-            source={require("../../assets/images/icons/search.png")}
-          />
-        </TouchableOpacity>
-      );
-    }
-  };
-
   // show tabs for filtering search options
   showTab = () => {
     if (this.props.showTab != true) {
       return null;
     } else {
       return (
-        <View style={{ flexDirection: "row", justifyContent: "center" }}>
+        // <View style={{ flexDirection: "row", marginLeft:30 }}>
+        <View style={{ flexDirection: "row", justifyContent:"center" }}>
           <TouchableOpacity
             onPress={() => this.clickTab(this.state.tab1)}
             style={styles.headerButton}
@@ -122,14 +104,55 @@ class SimpleHeader extends Component {
     }
   };
 
+  // show search bar
+  showSearch = () => {
+
+    if (this.props.showSearch === false) {
+      return null
+    }
+    else {
+      return (
+        <View style={styles.search}>
+          <TextInput
+            onSubmitEditing={this.props.onSubmitEditing}
+            underlineColorAndroid="transparent"
+            pointerEvents="none"
+            placeholder="Search"
+            placeholderTextColor="#707070"
+            style={[styles.searchText, styles.font]}
+          // value={this.props.searchInput}
+          // onChangeText={value => this.props.onChangeSearchInput(value)}
+          />
+          {/* {this.props.searchInput.length > 0 && (
+          <TouchableOpacity style={styles.iconContainer} onPress={this.props.pressClear}>
+            <Image
+              style={styles.xIcon}
+              source={require("../../assets/images/icons/x_icon.png")}
+            />
+          </TouchableOpacity>
+        )} */}
+          <TouchableOpacity style={styles.iconContainer} onPress={this.props.pressSearch}>
+            <Image
+              style={styles.searchIcon}
+              source={require("../../assets/images/icons/search.png")}
+            />
+          </TouchableOpacity>
+        </View>
+      )
+    }
+  }
+
   render() {
     return (
       <View style={styles.header}>
+
+        {this.showSearch()}
+
         {/* header text */}
         <View style={{ flexDirection: "row" }}>
           <Text style={styles.headerText}>{this.props.title}</Text>
-          {this.showSearch()}
         </View>
+
         {this.showTab()}
       </View>
     );
@@ -143,10 +166,14 @@ const styles = StyleSheet.create({
     marginBottom: 10
   },
 
+  font: {
+    fontFamily: "HindSiliguri-Bold"
+  },
+
   headerText: {
     width: wd(0.7),
-    fontSize: 24,
-    marginTop: 20,
+    fontSize: 28,
+    marginTop: 15,
     marginLeft: 30,
     fontFamily: "HindSiliguri-Bold"
   },
@@ -168,22 +195,52 @@ const styles = StyleSheet.create({
 
   headerButton: {
     alignContent: "center",
-    marginTop: 10,
+    marginTop: 5,
     marginHorizontal: 15
   },
 
   headerButtonText: {
     fontFamily: "HindSiliguri-Bold",
-    fontSize: 18,
+    fontSize: 16,
     borderColor: "#FF6E6E",
     borderWidth: 0
   },
 
-  activeHighlight: {
-    borderColor: "#FF6E6E",
-    borderWidth: 0,
-    borderBottomWidth: 3
-  }
+  search: {
+    flexDirection: "row",
+    marginHorizontal: wd(0.07),
+    backgroundColor: "white",
+    elevation: 9,
+    marginTop: 25,
+    height: 45,
+    borderRadius: 10
+  },
+
+  searchText: {
+    flex: 1,
+    marginLeft: 20,
+    alignSelf: "center"
+  },
+
+  searchIcon: {
+    width: 20,
+    height: 20,
+    alignSelf: "center",
+    marginRight: 20,
+    tintColor: "#707070"
+  },
+
+  xIcon: {
+    width: 20,
+    height: 20,
+    alignSelf: "center",
+    marginRight: 7,
+    tintColor: "#C0C0C0"
+  },
+
+  iconContainer: {
+    marginTop: 12
+  },
 });
 
 export default SimpleHeader;

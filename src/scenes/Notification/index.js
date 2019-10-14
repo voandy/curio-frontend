@@ -1,11 +1,11 @@
 import React, { Component } from "react";
-import { 
-  RefreshControl, 
-  StatusBar, 
-  StyleSheet, 
-  ScrollView, 
-  View, 
-  Text 
+import {
+  RefreshControl,
+  StatusBar,
+  StyleSheet,
+  ScrollView,
+  View,
+  Text
 } from "react-native";
 
 // redux actions
@@ -35,7 +35,7 @@ class Notification extends Component {
       refreshing: false
     };
   }
-  
+
   // Nav bar details
   static navigationOptions = {
     header: null
@@ -89,7 +89,7 @@ class Notification extends Component {
   // create all the notifications components to be rendered
   renderAllNotifications = notifications => {
     // sort array based on date posted (from earliest to oldest)
-    notifications.sort(function(a, b) {
+    notifications.sort(function (a, b) {
       return new Date(b.datePosted) - new Date(a.datePosted);
     });
     // create an individual component for each notification
@@ -107,10 +107,14 @@ class Notification extends Component {
   render() {
 
     const { navigate } = this.props.navigation;
-    
+
     return (
       <View style={styles.container}>
-        <SimpleHeader title="Notifications" onSubmit={()=> navigate("GeneralSearch")}/>
+        <SimpleHeader
+          title="Notifications"
+          showSearch={true}
+          onSubmitEditing={() => navigate("GeneralSearch")}
+        />
 
         {/* scrollable area for CONTENT */}
         <ScrollView

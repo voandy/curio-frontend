@@ -149,7 +149,8 @@ class Groups extends Component {
           <View style={styles.container}>
             <SimpleHeader
               title="Groups"
-              onSubmit={() => navigate("GeneralSearch")}
+              showSearch = {true}
+              onSubmitEditing={() => navigate("GeneralSearch")}
             />
 
             {/* scrollable area for CONTENT */}
