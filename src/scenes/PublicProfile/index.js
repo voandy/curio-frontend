@@ -35,30 +35,14 @@ class PublicProfile extends Component {
       user: {},
       artefacts: []
     };
+  }
+
+  componentDidMount() {
     // get group id passed in from the navigation parameter
     userId = this.props.navigation.getParam("userId");
     // make sure it exists
     userId
-      ? Promise.all([
-          (() => {
-            // get selected user data and store in local state
-            this.props
-              .getSelectedUser(userId)
-              .then(user => {
-                this.setState({ user }, () => Promise.resolve());
-              })
-              .catch(err => Promise.reject(err));
-          })(),
-          (() => {
-            // get selected user data and store in local state
-            this.props
-              .getSelectedUserArtefacts(userId)
-              .then(artefacts => {
-                this.setState({ artefacts }, () => Promise.resolve());
-              })
-              .catch(err => Promise.reject(err));
-          })()
-        ]).catch(() => alert("Please try again later."))
+      ? this.getSelectedUserData(userId)
       : alert("Error loading user data");
   }
 
@@ -69,18 +53,57 @@ class PublicProfile extends Component {
     }
   };
 
-  // show artefacts by privacy settings
-  showArtefacts = artefacts => {
-    // extract required data
-    artefacts = this.props.artefacts.userArtefacts;
+  // get selected group data asynchronously
+  getSelectedUserData = async userId => {
+    // reload everything at once
+    //prettier-ignore
+    return Promise.all([
+      (() => {
+        // get selected user data and store in local state
+        return this.props.getSelectedUser(userId)
+          .then(user => {
+            // set local state and callback to return promise
+            // in case load sequence is required
+            this.setState({ user }, () => Promise.resolve());
+          })
+          .catch(err => Promise.reject(err));
+      })(),
+      (() => {
+        // get selected user data and store in local state
+        return this.props.getSelectedUserArtefacts(userId)
+          .then(artefacts => {
+            // retains only public artefacts
+            artefacts = this.extractPublicArtefacts(artefacts);
+            // set local state and callback to return promise
+            // in case load sequence is required
+            this.setState({ artefacts }, () => Promise.resolve());
+          })
+          .catch(err => Promise.reject(err));
+      })()
+    ]).catch(() => alert("Please try again later."));
+  };
+
+  extractPublicArtefacts = artefacts => {
     // show only public artefacts
-    privacy = 0;
+    const privacy = 0;
     // filter artefacts by their privacy settings
-    artefacts = artefacts.filter(x => x.privacy == privacy);
+    return artefacts.filter(x => x.privacy == privacy);
+  };
+
+  // artefact feed functions //
+  // for each individual artefact clicked by user
+  onArtefactClick = async artefactId => {
+    const { navigate } = this.props.navigation;
+    // redirect user
+    navigate("SelectedArtefact", { origin: "PublicProfile", artefactId });
+  };
+
+  // show artefacts by privacy settings
+  showArtefacts = () => {
     // return modularized feed component
     return (
       <ArtefactFeed
-        artefacts={artefacts}
+        artefacts={this.state.artefacts}
         onPress={this.onArtefactClick.bind(this)}
       />
     );
@@ -89,9 +112,15 @@ class PublicProfile extends Component {
   render() {
     // date format
     Moment.locale("en");
-    const dt = this.props.user.userData.dateJoined;
-    // navigate to other screens
-    const { navigate } = this.props.navigation;
+    // extract data from local states
+    const { user, artefacts } = this.state;
+    const { name, username, profilePic, dateJoined } = user;
+    // make sure groups is not undefined
+    const groups = !user.groups ? [] : user.groups;
+    // decide which image source to use
+    const imageSource = !this.state.user
+      ? require("../../../assets/images/default-profile-pic.png")
+      : { uri: profilePic };
 
     return (
       <View style={styles.container}>
@@ -101,31 +130,27 @@ class PublicProfile extends Component {
           scrollEventThrottle={16}
         >
           {/* user details */}
-          <View style={{ backgroundColor: "white" }}>
+          <View style={styles.userDetailsContainer}>
             {/* user profile picture */}
-            {this.props.user.userData.profilePic != null ? (
+            <View style={styles.profilePicContainer}>
               <Image
                 style={styles.profilePic}
-                source={{ uri: this.props.user.userData.profilePic }}
+                source={imageSource}
+                resizeMethod="resize"
+                resizeMode="cover"
               />
-            ) : (
-              <Image
-                style={styles.profilePic}
-                source={require("../../../assets/images/default-profile-pic.png")}
-              />
-            )}
+            </View>
 
             {/* user heading */}
             <Text style={[styles.userName, styles.font]}>
-              {this.props.user.userData.name}
+              {name ? name : " " /*ensure consistency before data is loaded*/}
             </Text>
             <Text style={[styles.userDetails, styles.subFont]}>
-              @{this.props.user.userData.username}
+              @{username}
             </Text>
             <Text style={styles.userDetails}>
-              joined since {Moment(dt).format("Do MMMM YYYY")}
+              joined since {Moment(dateJoined).format("Do MMMM YYYY")}
             </Text>
-
             {/* number of artefacts and groups of the user */}
             <View
               style={{
@@ -134,21 +159,20 @@ class PublicProfile extends Component {
                 marginVertical: 10
               }}
             >
+              {/* artefacts numbers */}
               <TouchableOpacity>
                 <View style={{ alignItems: "center" }}>
-                  {/* TODO USE THIS */}
-                  {/* <Text style={styles.font}>{this.props.numArtefacts}</Text> */}
-                  <Text style={styles.font}>10</Text>
+                  <Text style={styles.font}>{artefacts.length}</Text>
                   <Text style={(styles.subFont, { color: "#939090" })}>
                     Artefacts
                   </Text>
                 </View>
               </TouchableOpacity>
 
+              {/* groups number */}
               <TouchableOpacity>
                 <View style={{ alignItems: "center" }}>
-                  {/* <Text style={styles.font}>{this.props.numGroups}</Text> */}
-                  <Text style={styles.font}>2</Text>
+                  <Text style={styles.font}>{groups.length}</Text>
                   <Text style={(styles.subFont, { color: "#939090" })}>
                     Groups
                   </Text>
@@ -158,30 +182,7 @@ class PublicProfile extends Component {
           </View>
 
           {/* user artefacts posts */}
-          <View style={{ marginBottom: hp(0.1) }}>
-            {/* all artefacts posted by the user */}
-
-            {/* ADD LOGIC HERE */}
-            {/* and IF ELSE logic */}
-
-            <View style={styles.feed}>
-              <ArtefactFeed
-                image={require("../../../assets/images/test-delete-this/boi2.jpg")}
-              />
-              <ArtefactFeed
-                image={require("../../../assets/images/test-delete-this/boi3.jpg")}
-              />
-              <ArtefactFeed
-                image={require("../../../assets/images/test-delete-this/boi1.jpg")}
-              />
-            </View>
-
-            {/* <View style={styles.emptyFeed}>
-              <Text style={[styles.font, { fontSize: 16 }]}>
-                No Artefacts posted yet
-              </Text>
-            </View> */}
-          </View>
+          <View style={{ marginTop: wd(0.006) }}>{this.showArtefacts()}</View>
         </ScrollView>
       </View>
     );
@@ -202,6 +203,10 @@ const styles = StyleSheet.create({
     fontFamily: "HindSiliguri-Regular"
   },
 
+  userDetailsContainer: {
+    backgroundColor: "white"
+  },
+
   userName: {
     fontSize: hp(0.025),
     marginVertical: 5,
@@ -214,12 +219,18 @@ const styles = StyleSheet.create({
     color: "#939090"
   },
 
+  profilePicContainer: {
+    width: wd(0.35),
+    height: wd(0.35),
+    alignSelf: "center",
+    marginBottom: hp(0.01)
+  },
+
   profilePic: {
     marginTop: hp(0.015),
     width: wd(0.35),
     height: wd(0.35),
-    borderRadius: wd(0.35) / 2,
-    alignSelf: "center"
+    borderRadius: wd(0.35)
   },
 
   feed: {

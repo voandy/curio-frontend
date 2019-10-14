@@ -62,14 +62,18 @@ const styles = StyleSheet.create({
     width: wd(0.3),
     height: wd(0.3)
   },
+
   card: {
     width: wd(0.3),
     height: wd(0.3),
     margin: wd(0.006)
   },
+
   feed: {
+    width: wd(0.918),
     flexDirection: "row"
   },
+
   feedContainer: {
     alignSelf: "center"
   }

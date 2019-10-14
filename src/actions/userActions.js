@@ -31,8 +31,8 @@ export const getSelectedUser = userId => dispatch => {
     getUserAPIRequest(userId)
       // success
       .then(res => {
-        console.log(res.data);
-        resolve(res);
+        // return user data instead of request response
+        resolve(res.data);
       })
       // failure
       .catch(err => {
@@ -49,8 +49,8 @@ export const getSelectedUserArtefacts = userId => dispatch => {
     getUserArtefactsAPIRequest(userId)
       // success
       .then(res => {
-        console.log(res.data);
-        resolve(res);
+        // return user data instead of request response
+        resolve(res.data);
       })
       // failure
       .catch(err => {
