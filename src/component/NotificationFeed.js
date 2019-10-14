@@ -15,7 +15,6 @@ import Moment from "moment";
  * pressable and should link to the screen that invoked the notification
  */
 class NotificationFeed extends Component {
-  
   // unbolds text after notification has been read
   boldText(seenStatus) {
     // render text based on seenStatus
@@ -29,12 +28,15 @@ class NotificationFeed extends Component {
   }
 
   render() {
-    const { datePosted, thumbnailURL, seenStatus } = this.props.notification;
-
+    // extracts notification data passed in as props
+    const {
+      datePosted,
+      thumbnailURL,
+      seenStatus,
+      data
+    } = this.props.notification;
+    // convert datePosted to a human readable datettme
     const readableDatePosted = moment(new Date(datePosted)).fromNow();
-
-    // json-ify data body
-    const data = JSON.parse(this.props.notification.data);
 
     return (
       <View style={styles.card}>
