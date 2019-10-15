@@ -19,7 +19,9 @@ import {
   deleteGroupAPIRequest,
   addMemberToGroupAPIRequest,
   addArtefactToGroupAPIRequest,
-  deleteArtefactFromGroupAPIRequest
+  deleteArtefactFromGroupAPIRequest,
+  inviteUserToGroupAPIRequest,
+  removeInviteFromGroupAPIRequest
 } from "../utils/APIHelpers/groupAPIHelper";
 
 import { getArtefactCommentsAPIRequest } from "../utils/APIHelpers/artefactAPIHelpers";
@@ -287,6 +289,35 @@ export const deleteArtefactFromGroup = (groupId, artefactId) => dispatch => {
       })
       .catch(err => {
         console.log("Failed to delete artefact: " + err);
+        reject(err);
+      });
+  });
+};
+
+export const inviteUserToGroup = (groupId, userId) => dispatch => {
+  console.log("InviteButton pressed: " + groupId, userId);
+  return new Promise((resolve, reject) => {
+    inviteUserToGroupAPIRequest(groupId, userId)
+      .then(res => {
+        dispatch(getSelectedGroup(groupId));
+        resolve(res);
+      })
+      .catch(err => {
+        console.log("Failed to invite user: " + err);
+        reject(err);
+      });
+  });
+};
+
+export const removeInviteFromGroup = (groupId, userId) => dispatch => {
+  return new Promise((resolve, reject) => {
+    removeInviteFromGroupAPIRequest(groupId, userId)
+      .then(res => {
+        dispatch(getSelectedGroup(groupId));
+        resolve(res);
+      })
+      .catch(err => {
+        console.log("Failed to invite user: " + err);
         reject(err);
       });
   });
