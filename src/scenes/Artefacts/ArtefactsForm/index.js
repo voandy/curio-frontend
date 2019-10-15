@@ -154,34 +154,31 @@ class ArtefactsForm extends Component {
     const { title, imageURI, category, description, dateObtained } = this.state.artefact;
     // validates against all field at the same time
     Promise.all([
-      this.validateField("titleError", {title}),
-      this.validateField("imageError", {imageURI}),
-      this.validateField("categoryError", {category}),
-      this.validateField("descriptionError", {description}),
-      this.validateField("dateObtainedError", {dateObtained})
+      this.validateField("titleError", { title }),
+      this.validateField("imageError", { imageURI }),
+      this.validateField("categoryError", { category }),
+      this.validateField("descriptionError", { description }),
+      this.validateField("dateObtainedError", { dateObtained })
     ]).then(() => {
       // done, can check the state now
       console.log("error is->", this.state.errors);
 
-      // -- complete the logic here -- //
-      // checkForAllErrors, return true if every thing is good, if any error araises, return false
-
-      // valid inputs
-    //   if (
-    //     this.state.imageError != "" ||
-    //     this.state.titleError != "" ||
-    //     this.state.descriptionError != "" ||
-    //     this.state.categoryError != "" ||
-    //     this.state.dateError != ""
-    //   ) {
-    //     return false;
-    //   }
-    //   // invalid inputs
-    //   else {
-    //     return true;
-    //   }
-      // dummy return logic now
-      return false;
+      //valid inputs
+      if (
+        this.state.errors.imageError === "" &&
+        this.state.errors.titleError === "" &&
+        this.state.errors.descriptionError === "" &&
+        this.state.errors.categoryError === "" &&
+        this.state.errors.dateObtainedError === ""
+      ) {
+        console.log("true boi")
+        return true;
+      }
+      // invalid inputs
+      else {
+        console.log("wrong boi")
+        return false;
+      }
     })
   };
 
@@ -191,8 +188,7 @@ class ArtefactsForm extends Component {
     // extract required parameters
     const { origin, isEditMode, addToGroup, groupId } = this.props.navigation.state.params;
     // validates all field field
-    // if it return false (gt errors)
-    if (!this.validateAllFields()) {
+    if (this.validateAllFields() === false) {
       console.log("input invalid")
       // early return
       return;
@@ -256,16 +252,16 @@ class ArtefactsForm extends Component {
     // if there no imageURI in state (no new changes or null)
     var imageSource = !this.state.artefact.imageURI
       ? // then check if there's a URL to selected Artefact image
-        !selectedArtefact || !selectedArtefact.images[0].URL
+      !selectedArtefact || !selectedArtefact.images[0].URL
         ? // if no, then use default pic
-          require("../../../../assets/images/icons/addPicture.png")
+        require("../../../../assets/images/icons/addPicture.png")
         : // there's URL to image, so use it
-          { uri: selectedArtefact.images[0].URL }
+        { uri: selectedArtefact.images[0].URL }
       : // User picks a new image to be uploaded
-        { uri: this.state.artefact.imageURI };
+      { uri: this.state.artefact.imageURI };
 
-    // error messaged for fields
-    const { errors } = this.state;
+    // error messages
+    const { errors } = this.state
 
     return (
       <KeyboardShift>
@@ -291,16 +287,15 @@ class ArtefactsForm extends Component {
                   </TouchableOpacity>
 
                   {/* error messages if there's any */}
-                  {this.state.titleError !== "" ? (
+                  {errors.imageError != "" ? (
                     <Text style={[styles.error, { alignSelf: "center" }]}>
-                      {" "}
-                      {this.state.imageError}{" "}
+                      {errors.imageError}
                     </Text>
                   ) : (
-                    <Text style={[styles.subFont, styles.imageText]}>
-                      Add images of your artefacts
+                      <Text style={[styles.subFont, styles.imageText]}>
+                        Add images of your artefacts
                     </Text>
-                  )}
+                    )}
                 </View>
 
                 {/* input fields */}
@@ -324,10 +319,9 @@ class ArtefactsForm extends Component {
                   </View>
                 </View>
                 {/* error messages if there's any */}
-                {this.state.titleError !== "" && (
+                {errors.titleError !== "" && (
                   <Text style={[styles.error, { marginLeft: wd(0.08) }]}>
-                    {" "}
-                    {this.state.titleError}{" "}
+                    {errors.titleError}
                   </Text>
                 )}
 
@@ -350,10 +344,10 @@ class ArtefactsForm extends Component {
                   </View>
                 </View>
                 {/* error messages if there's any */}
-                {this.state.descriptionError !== "" && (
+                {errors.descriptionError !== "" && (
                   <Text style={[styles.error, { marginLeft: wd(0.08) }]}>
                     {" "}
-                    {this.state.descriptionError}{" "}
+                    {errors.descriptionError}{" "}
                   </Text>
                 )}
 
@@ -398,10 +392,10 @@ class ArtefactsForm extends Component {
                   </View>
                 </View>
                 {/* error messages if there's any */}
-                {this.state.categoryError !== "" && (
+                {errors.categoryError !== "" && (
                   <Text style={[styles.error, { marginLeft: wd(0.08) }]}>
                     {" "}
-                    {this.state.categoryError}{" "}
+                    {errors.categoryError}{" "}
                   </Text>
                 )}
 
@@ -457,10 +451,10 @@ class ArtefactsForm extends Component {
                   </View>
                 </View>
                 {/* error messages for date */}
-                {this.state.dateError !== "" && (
+                {errors.dateObtainedError !== "" && (
                   <Text style={[styles.error, { marginLeft: wd(0.08) }]}>
                     {" "}
-                    {this.state.dateError}{" "}
+                    {errors.dateObtainedError}{" "}
                   </Text>
                 )}
 
