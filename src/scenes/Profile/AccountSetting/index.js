@@ -1,11 +1,10 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import Dialog from "react-native-dialog";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import {
     StyleSheet,
-    ScrollView,
+    Alert,
     View,
     Image,
     Text
@@ -15,8 +14,6 @@ import {
 import { getUserData } from "../../../actions/userActions";
 
 // custom component
-import MyButton from "../../../component/MyButton";
-import Line from "../../../component/Line";
 import SettingField from "../../../component/SettingField";
 
 // import reusable components
@@ -29,7 +26,6 @@ class AccountSetting extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            dialogVisible: false
         }
     }
 
@@ -42,19 +38,54 @@ class AccountSetting extends Component {
     };
 
     // deleting account handlers
-    showDialog = () => {
-        this.setState({ dialogVisible: true });
+    toggleDeleteModal = async () => {
+        Alert.alert(
+            "Delete Account",
+            "Are you sure you want to delete your account? This cannot be undone.",
+            [
+                {
+                    text: "No",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel"
+                },
+                {
+                    text: "Yes",
+                    // onPress: () => this.onDeleteSelectedArtefact()
+                }
+            ],
+            { cancelable: false }
+        );
+    };
+
+    // editing account handlers
+    toggleEditModal = async () => {
+        Alert.alert(
+            "Edit Account details",
+            "Are you sure you want to edit your account details?",
+            [
+                {
+                    text: "No",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel"
+                },
+                {
+                    text: "Yes",
+                    // onPress: () => this.onDeleteSelectedArtefact()
+                }
+            ],
+            { cancelable: false }
+        );
     };
 
     // cancel setting a ccount
     handleCancel = () => {
-        this.setState({ dialogVisible: false });
+        this.setState({ deleteModal: false });
     };
 
     // delete account
     handleDelete = () => {
         // TODO add logic
-        this.setState({ dialogVisible: false });
+        this.setState({ deleteModal: false });
     };
 
     render() {
@@ -62,18 +93,17 @@ class AccountSetting extends Component {
             <View style={styles.container}>
                 {/* user profile pic */}
                 <View style={{ height: hp(0.3), width: wd(1), alignItems: "center" }}>
-                    {this.props.user.userData.profilePic != null ? 
+                    {this.props.user.userData.profilePic != null ?
                         (<Image
                             style={styles.profilePic}
                             source={{ uri: this.props.user.userData.profilePic }}
-                        />) 
-                        : 
+                        />)
+                        :
                         (<Image
                             style={styles.profilePic}
                             source={require("../../../../assets/images/default-profile-pic.png")}
                         />)
                     }
-
                     <Text style={styles.userName}>
                         @{this.props.user.userData.username}</Text>
                 </View>
@@ -89,25 +119,14 @@ class AccountSetting extends Component {
 
                     {/* make edit changes */}
                     <TouchableOpacity style={{ marginVertical: wd(0.05), alignItems: "center" }}>
-                        {/* TODO ADD onPress() */}
-                        <Text style={styles.edit}>Edit changes</Text>
+                        <Text style={styles.edit} onPress={this.toggleEditModal}>Edit changes</Text>
                     </TouchableOpacity>
 
                     {/* delete account */}
                     <TouchableOpacity style={{ marginVertical: wd(0.05), alignItems: "center" }}>
-                        <Text style={styles.delete} onPress={this.showDialog}>Delete Account</Text>
+                        <Text style={styles.delete} onPress={this.toggleDeleteModal}>Delete Account</Text>
                     </TouchableOpacity>
                 </View>
-
-                {/* deleting account dialog warning */}
-                <Dialog.Container visible={this.state.dialogVisible}>
-                    <Dialog.Title>Delete Account</Dialog.Title>
-                    <Dialog.Description>
-                        Do you want to delete this account? You cannot undo this action.
-                    </Dialog.Description>
-                    <Dialog.Button label="Cancel" onPress={this.handleCancel} />
-                    <Dialog.Button label="Delete" onPress={this.handleDelete} />
-                </Dialog.Container>
             </View>
         );
     }
