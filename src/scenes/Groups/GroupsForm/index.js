@@ -58,7 +58,7 @@ class GroupsForm extends Component {
       errors: {
         imageError: "",
         titleError: "",
-        descriptionError: "",
+        descriptionError: ""
       }
     };
   }
@@ -163,32 +163,21 @@ class GroupsForm extends Component {
       Promise.all([
         this.validateField("imageError", { title }),
         this.validateField("titleError", { imageURI }),
-        this.validateField("descriptionError", { description }),
+        this.validateField("descriptionError", { description })
       ]).then(() => {
         // done, can check the state now
-        console.log("state is ->", this.state.errors);
-        const {
-          imageError,
-          titleError,
-          descriptionError,
-        } = this.state.errors;
+        const { imageError, titleError, descriptionError } = this.state.errors;
         //valid inputs
         // if all inputs are not = "" or not null
-        if (
-          !imageError &&
-          !titleError &&
-          !descriptionError
-        ) {
-          console.log("true boi")
+        if (!imageError && !titleError && !descriptionError) {
           resolve(true);
         }
         // invalid inputs
         else {
-          console.log("wrong boi")
           resolve(false);
         }
-      })
-    })
+      });
+    });
   };
 
   // create/edit group on "post" button press
@@ -198,15 +187,12 @@ class GroupsForm extends Component {
     const { origin, isEditMode } = this.props.navigation.state.params;
     // set adminId as a reference
     await this.setGroup("adminId", this.props.auth.user.id);
-    console.log("hello world")
     // wait for it to complete validating all fields
     // if validateAllField return false (gt errors), return early
-    if (! await this.validateAllFields()) {
-      console.log("input invalid")
+    if (!(await this.validateAllFields())) {
       return;
     }
     // if no errors, proceed here
-    console.log("submit!")
     // show user the loading modal
     this.setLoading(true);
     // use appropriate action based on current page mode (either editing or creating)
@@ -232,7 +218,6 @@ class GroupsForm extends Component {
   };
 
   render() {
-
     // error messages
     const { errors } = this.state;
 
@@ -262,11 +247,11 @@ class GroupsForm extends Component {
                         source={require("../../../../assets/images/icons/addPicture.png")}
                       />
                     ) : (
-                        <Image
-                          style={styles.imageSelected}
-                          source={{ uri: this.state.group.coverPhoto }}
-                        />
-                      )}
+                      <Image
+                        style={styles.imageSelected}
+                        source={{ uri: this.state.group.coverPhoto }}
+                      />
+                    )}
                   </TouchableOpacity>
 
                   {/* error messages if there's any */}
@@ -276,10 +261,10 @@ class GroupsForm extends Component {
                       {errors.imageError}{" "}
                     </Text>
                   ) : (
-                      <Text style={[styles.subFont, styles.imageText]}>
-                        Add images of your artefacts
+                    <Text style={[styles.subFont, styles.imageText]}>
+                      Add images of your artefacts
                     </Text>
-                    )}
+                  )}
                 </View>
 
                 {/* Title */}
@@ -302,7 +287,12 @@ class GroupsForm extends Component {
                 </View>
                 {/* error messages if there's any */}
                 {errors.titleError !== "" && (
-                  <Text style={[styles.error, { alignSelf: "flex-start", marginLeft: wd(0.12) }]}>
+                  <Text
+                    style={[
+                      styles.error,
+                      { alignSelf: "flex-start", marginLeft: wd(0.12) }
+                    ]}
+                  >
                     {" "}
                     {errors.titleError}{" "}
                   </Text>
@@ -328,7 +318,12 @@ class GroupsForm extends Component {
                 </View>
                 {/* error messages if there's any */}
                 {errors.descriptionError !== "" && (
-                  <Text style={[styles.error, { alignSelf: "flex-start", marginLeft: wd(0.12) }]}>
+                  <Text
+                    style={[
+                      styles.error,
+                      { alignSelf: "flex-start", marginLeft: wd(0.12) }
+                    ]}
+                  >
                     {errors.descriptionError}
                   </Text>
                 )}

@@ -132,9 +132,10 @@ class Invitation extends Component {
   };
 
   render() {
+    // get required data
     const { notif } = this.props.navigation.state.params;
     const { thumbnailURL } = notif;
-    console.log(this.state);
+
     return (
       <Animated.View
         style={[styles.container, { opacity: this.fadeAnimation }]}

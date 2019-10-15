@@ -56,7 +56,6 @@ class Notification extends Component {
 
   // navigate to page accordingly
   clickNotification = async notif => {
-    console.log(notif);
     const { navigate } = this.props.navigation;
     // get notification details
     const { refId, category, seenStatus, data } = notif;
