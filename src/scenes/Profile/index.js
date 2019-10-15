@@ -30,7 +30,7 @@ class Profile extends Component {
     super(props);
     this.state = {
       searchInput: ""
-    }
+    };
   }
 
   // Nav bar details
@@ -53,7 +53,6 @@ class Profile extends Component {
       .then(() => {
         // set user's push token to null so that the backend won't set
         // a notification to an unlogged in device
-        console.log(userId);
         setUserPushTokenAPIRequest(userId, null).catch(err => console.log(err));
         navigate("Auth");
       })
@@ -91,7 +90,7 @@ class Profile extends Component {
               })
             }
           />
-          
+
           {/* user profile picture */}
           {this.props.user.userData.profilePic != null ? (
             <Image

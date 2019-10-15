@@ -9,13 +9,16 @@ import {
   StatusBar,
   TextInput,
   Image,
-  Text
+  Text,
+  RefreshControl
 } from "react-native";
 
 import {
   searchUsers,
   clearSearchResults
 } from "../../../actions/searchActions";
+
+import { getSelectedGroup } from "../../../actions/groupsActions";
 
 // Custom component
 import SearchFeed from "../../../component/SearchFeed";
@@ -24,17 +27,20 @@ import HeaderSearch from "../../../component/HeaderSearch";
 // responsive design component
 import { deviceWidthDimension as wd } from "../../../utils/responsiveDesign";
 
+// this class is only used by selectedGroup to search for user to invite
 class UserSearch extends Component {
   constructor(props) {
     super(props);
-
     // clear redux state in case user force quits the app and reopen it
     this.props.clearSearchResults();
-
+    // set up initial state
     this.state = {
       searchInput: "",
       // has first search been done?
-      searchPerformed: false
+      searchPerformed: false,
+      refreshing: false,
+      // set selected group on start up (for invite user search)
+      selectedGroup: this.props.navigation.getParam("selectedGroup")
     };
   }
 
@@ -46,6 +52,27 @@ class UserSearch extends Component {
   // Nav bar details
   static navigationOptions = {
     header: null
+  };
+
+  // refresh page
+  refreshPage = async () => {
+    this.setState({ refreshing: true });
+    // extract group id
+    groupId = this.props.navigation.getParam("groupId");
+
+    // reload group data first
+    // only reload if this is for invite user search
+    if (groupId) {
+      await this.props
+        .getSelectedGroup(groupId)
+        .then(res => this.setState({ selectedGroup: res.data }));
+    }
+    // clear results
+    await this.props.clearSearchResults();
+    // redo user search
+    await this.doUserSearch(this.state.searchInput);
+    // resets refreshing state
+    this.setState({ refreshing: false });
   };
 
   onChangeSearchInput = searchInput => {
@@ -68,34 +95,46 @@ class UserSearch extends Component {
 
   // generate feed for user search results
   showUserResults = function(userSearchResults) {
-    if (userSearchResults.length === 0) {
+    // extract all the required information
+    const { toInvite, onPress, groupId } = this.props.navigation.state.params;
+    const { selectedGroup } = this.state;
+    // preprocess data
+    const memberIds = selectedGroup.members.map(x => x.memberId);
+    const pendingInvites = selectedGroup.pendingInvitations;
+
+    // create result feed
+    if (userSearchResults.length === 0 && !this.state.refreshing) {
       return <Text style={styles.emptySearch}>No users found</Text>;
     } else {
       var userResultsFeed = [];
-
       // create a view for each user result
       for (var i = 0; i < userSearchResults.length; i++) {
+        // extract user id
         const userId = userSearchResults[i]._id;
+        // check for conditions
+        isGroupMember = memberIds.includes(userId);
+        hasInvited = pendingInvites.includes(userId);
+        // generate feed component based on conditions
         userResultsFeed.push(
           <SearchFeed
             key={i}
             heading={userSearchResults[i].name}
             subHeading={userSearchResults[i].username}
-            isGroup={false}
             searchImage={userSearchResults[i].profilePic}
-            onPress={() => this.gotoUserProfile(userId)}
+            toInvite={toInvite}
+            hasInvited={hasInvited}
+            isGroupMember={isGroupMember}
+            userId={userId}
+            groupId={groupId}
+            onPress={onPress}
           />
         );
       }
-
       return userResultsFeed;
     }
   };
 
   render() {
-    // navigation in app
-    const { navigate } = this.props.navigation;
-
     return (
       <View style={styles.container}>
         {/* search header */}
@@ -111,6 +150,12 @@ class UserSearch extends Component {
         <ScrollView
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={16}
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.refreshing}
+              onRefresh={this.refreshPage}
+            />
+          }
         >
           {this.state.searchPerformed === true ? (
             // user search results
@@ -180,5 +225,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { searchUsers, clearSearchResults }
+  { searchUsers, clearSearchResults, getSelectedGroup }
 )(UserSearch);

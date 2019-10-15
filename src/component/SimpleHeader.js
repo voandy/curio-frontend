@@ -1,5 +1,13 @@
 import React, { Component } from "react";
-import { View, StyleSheet, Text, Image, TouchableOpacity, TextInput, ScrollView } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Text,
+  Image,
+  TouchableOpacity,
+  TextInput,
+  ScrollView
+} from "react-native";
 
 // Custom respondsive design component
 import { deviceWidthDimension as wd } from "../utils/responsiveDesign";
@@ -75,7 +83,7 @@ class SimpleHeader extends Component {
     } else {
       return (
         // <View style={{ flexDirection: "row", marginLeft:30 }}>
-        <View style={{ flexDirection: "row", justifyContent:"center" }}>
+        <View style={{ flexDirection: "row", justifyContent: "center" }}>
           <TouchableOpacity
             onPress={() => this.clickTab(this.state.tab1)}
             style={styles.headerButton}
@@ -106,11 +114,9 @@ class SimpleHeader extends Component {
 
   // show search bar
   showSearch = () => {
-
     if (this.props.showSearch === false) {
-      return null
-    }
-    else {
+      return null;
+    } else {
       return (
         <View style={styles.search}>
           <TextInput
@@ -118,34 +124,39 @@ class SimpleHeader extends Component {
             underlineColorAndroid="transparent"
             pointerEvents="none"
             placeholder="Search"
-            placeholderTextColor="#707070"
+            placeholderTextColor="#adadad"
             style={[styles.searchText, styles.font]}
             value={this.props.searchInput}
             onChangeText={value => this.props.onChangeSearchInput(value)}
           />
           {this.props.searchInput.length > 0 && (
-            <TouchableOpacity style={styles.iconContainer} onPress={this.props.pressClear}>
+            <TouchableOpacity
+              style={styles.iconContainer}
+              onPress={this.props.pressClear}
+            >
               <Image
                 style={styles.xIcon}
                 source={require("../../assets/images/icons/x_icon.png")}
               />
             </TouchableOpacity>
           )}
-          <TouchableOpacity style={styles.iconContainer} onPress={this.props.pressSearch}>
+          <TouchableOpacity
+            style={styles.iconContainer}
+            onPress={this.props.pressSearch}
+          >
             <Image
               style={styles.searchIcon}
               source={require("../../assets/images/icons/search.png")}
             />
           </TouchableOpacity>
         </View>
-      )
+      );
     }
-  }
+  };
 
   render() {
     return (
       <View style={styles.header}>
-
         {this.showSearch()}
 
         {/* header text */}
@@ -240,7 +251,7 @@ const styles = StyleSheet.create({
 
   iconContainer: {
     marginTop: 9
-  },
+  }
 });
 
 export default SimpleHeader;

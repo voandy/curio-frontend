@@ -23,20 +23,26 @@ class HeaderSearch extends Component {
             underlineColorAndroid="transparent"
             pointerEvents="none"
             placeholder="Search"
-            placeholderTextColor="#707070"
+            placeholderTextColor="#adadad"
             style={[styles.searchText, styles.font]}
             value={this.props.searchInput}
             onChangeText={value => this.props.onChangeSearchInput(value)}
           />
           {this.props.searchInput.length > 0 && (
-            <TouchableOpacity style={styles.iconContainer} onPress={this.props.pressClear}>
+            <TouchableOpacity
+              style={styles.iconContainer}
+              onPress={this.props.pressClear}
+            >
               <Image
                 style={styles.xIcon}
                 source={require("../../assets/images/icons/x_icon.png")}
               />
             </TouchableOpacity>
           )}
-          <TouchableOpacity style={styles.iconContainer} onPress={this.props.pressSearch}>
+          <TouchableOpacity
+            style={styles.iconContainer}
+            onPress={this.props.pressSearch}
+          >
             <Image
               style={styles.searchIcon}
               source={require("../../assets/images/icons/search.png")}
