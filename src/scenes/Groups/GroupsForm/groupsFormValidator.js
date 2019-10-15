@@ -5,19 +5,13 @@ export const validator = (field, input) => {
   if (!Validator.isEmpty(input)) return "";
   switch (field) {
     case "imageURI":
-      error = "An Image of the artefact is required";
+      error = "A cover photo is required";
       break;
     case "title":
-      error = "Title field is required";
+      error = "Group name is required";
       break;
     case "description":
-      error = "Description field is required";
-      break;
-    case "category":
-      error = "Category field is required";
-      break;
-    case "dateObtained":
-      error = "DateObtained field is required";
+      error = "Description of the group is required";
       break;
     default:
       error = "Unknown data field is passed in validator";
