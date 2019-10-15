@@ -36,12 +36,19 @@ class Groups extends Component {
 
     this.state = {
       isModalVisible: false,
-      refreshing: false
+      refreshing: false,
+      searchInput: ""
     };
   }
   // Nav bar details
   static navigationOptions = {
     header: null
+  };
+
+  onChangeSearchInput = searchInput => {
+    this.setState({
+      searchInput
+    });
   };
 
   // refresh page
@@ -151,7 +158,7 @@ class Groups extends Component {
             <ScrollView
               showsVerticalScrollIndicator={false}
               scrollEventThrottle={16}
-              style={{ backgroundColor: gray }}
+              style={{ backgroundColor: "white" }}
               refreshControl={
                 <RefreshControl
                   refreshing={this.state.refreshing}
@@ -162,7 +169,19 @@ class Groups extends Component {
               <SimpleHeader
                 title="Groups"
                 showSearch={true}
-                onSubmitEditing={() => navigate("GeneralSearch")}
+                searchInput={this.state.searchInput}
+                onChangeSearchInput={this.onChangeSearchInput}
+                pressClear={() => this.onChangeSearchInput("")}
+                onSubmitEditing={() =>
+                  navigate("GeneralSearch", {
+                    searchTerms: this.state.searchInput
+                  })
+                }
+                pressSearch={() =>
+                  navigate("GeneralSearch", {
+                    searchTerms: this.state.searchInput
+                  })
+                }
               />
 
               {/* carousel pinned groups */}
