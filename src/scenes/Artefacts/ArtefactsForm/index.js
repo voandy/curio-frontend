@@ -192,12 +192,12 @@ class ArtefactsForm extends Component {
     const { origin, isEditMode, addToGroup, groupId } = this.props.navigation.state.params;
     // validates all field field
     // if it return false (gt errors)
-    // wait for it to complete first (await)
     if (!this.validateAllFields()) {
       console.log("input invalid")
       // early return
       return;
     }
+    // if no errors, proceed here
     console.log("submit!")
     // all fields are valid //
     // show user the loading modal
