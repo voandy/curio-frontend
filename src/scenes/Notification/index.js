@@ -32,13 +32,20 @@ class Notification extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      refreshing: false
+      refreshing: false,
+      searchInput: ""
     };
   }
 
   // Nav bar details
   static navigationOptions = {
     header: null
+  };
+
+  onChangeSearchInput = searchInput => {
+    this.setState({
+      searchInput
+    });
   };
 
   // navigate to page accordingly
@@ -123,7 +130,20 @@ class Notification extends Component {
           <SimpleHeader
             title="Notifications"
             showSearch={true}
-            onSubmitEditing={() => navigate("GeneralSearch")}
+
+            searchInput={this.state.searchInput}
+            onChangeSearchInput={this.onChangeSearchInput}
+            pressClear={() => this.onChangeSearchInput("")}
+            onSubmitEditing={() =>
+              navigate("GeneralSearch", {
+                searchTerms: this.state.searchInput
+              })
+            }
+            pressSearch={() =>
+              navigate("GeneralSearch", {
+                searchTerms: this.state.searchInput
+              })
+            }
           />
 
           {this.renderAllNotifications(this.props.notification.notifications)}

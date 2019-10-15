@@ -28,11 +28,20 @@ import { setUserPushTokenAPIRequest } from "../../utils/APIHelpers/userAPIHelper
 class Profile extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      searchInput: ""
+    }
   }
 
   // Nav bar details
   static navigationOptions = {
     header: null
+  };
+
+  onChangeSearchInput = searchInput => {
+    this.setState({
+      searchInput
+    });
   };
 
   // logs user out and navigate to authentication page
@@ -68,7 +77,19 @@ class Profile extends Component {
           <SimpleHeader
             title="My Profile"
             showSearch={true}
-            onSubmitEditing={() => navigate("GeneralSearch")}
+            searchInput={this.state.searchInput}
+            onChangeSearchInput={this.onChangeSearchInput}
+            pressClear={() => this.onChangeSearchInput("")}
+            onSubmitEditing={() =>
+              navigate("GeneralSearch", {
+                searchTerms: this.state.searchInput
+              })
+            }
+            pressSearch={() =>
+              navigate("GeneralSearch", {
+                searchTerms: this.state.searchInput
+              })
+            }
           />
           
           {/* user profile picture */}

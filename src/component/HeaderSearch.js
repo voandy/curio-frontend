@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
 
   search: {
     flexDirection: "row",
-    marginHorizontal: wd(0.07),
+    marginHorizontal: wd(0.055),
     backgroundColor: "white",
     elevation: 3,
     marginTop: 25,
@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
 
   searchText: {
     flex: 1,
-    marginLeft: 20,
+    marginLeft: 15,
     alignSelf: "center"
   },
 
