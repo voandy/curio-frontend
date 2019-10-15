@@ -78,9 +78,9 @@ class CardGroup extends Component {
 
 const styles = StyleSheet.create({
   card: {
-    width: wd(0.44),
+    width: wd(0.425),
     marginTop: 10,
-    marginLeft: wd(0.04),
+    marginLeft: wd(0.048),
     height: wd(0.5),
     borderRadius: 15,
     borderWidth: 1,
@@ -100,9 +100,9 @@ const styles = StyleSheet.create({
   },
 
   photo: {
-    width: wd(0.44),
+    width: wd(0.425),
     height: wd(0.37),
-    marginTop: 10,
+    marginTop: 5,
     borderTopLeftRadius: 15,
     borderTopRightRadius: 15
   },
@@ -114,8 +114,8 @@ const styles = StyleSheet.create({
 
   title: {
     // flex: 0.4,
-    marginHorizontal: 5,
-    marginTop: 3,
+    marginHorizontal: 12,
+    marginTop: 5,
     fontSize: wd(0.035)
   },
 

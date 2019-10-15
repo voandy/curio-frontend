@@ -172,9 +172,9 @@ const styles = StyleSheet.create({
 
   headerText: {
     width: wd(0.7),
-    fontSize: 28,
-    marginTop: 15,
-    marginLeft: 30,
+    fontSize: 22,
+    marginTop: 8,
+    marginLeft: 25,
     fontFamily: "HindSiliguri-Bold"
   },
 
@@ -195,7 +195,7 @@ const styles = StyleSheet.create({
 
   headerButton: {
     alignContent: "center",
-    marginTop: 5,
+    marginTop: 0,
     marginHorizontal: 15
   },
 
@@ -208,17 +208,17 @@ const styles = StyleSheet.create({
 
   search: {
     flexDirection: "row",
-    marginHorizontal: wd(0.07),
+    marginHorizontal: wd(0.055),
     backgroundColor: "white",
-    elevation: 9,
+    elevation: 3,
     marginTop: 25,
-    height: 45,
+    height: 38,
     borderRadius: 10
   },
 
   searchText: {
     flex: 1,
-    marginLeft: 20,
+    marginLeft: 15,
     alignSelf: "center"
   },
 
@@ -239,7 +239,7 @@ const styles = StyleSheet.create({
   },
 
   iconContainer: {
-    marginTop: 12
+    marginTop: 9
   },
 });
 
