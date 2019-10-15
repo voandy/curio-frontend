@@ -36,13 +36,20 @@ class Artefacts extends Component {
     this.state = {
       loading: false,
       refreshing: false,
-      isPublicTab: true
+      isPublicTab: true,
+      searchInput: ""
     };
   }
 
   // Nav bar details
   static navigationOptions = {
     header: null
+  };
+
+  onChangeSearchInput = searchInput => {
+    this.setState({
+      searchInput
+    });
   };
 
   // setter functions //
@@ -115,7 +122,20 @@ class Artefacts extends Component {
             tab1="Public"
             tab2="Private"
             showSearch={true}
-            onSubmitEditing={() => navigate("GeneralSearch")}
+
+            searchInput={this.state.searchInput}
+            onChangeSearchInput={this.onChangeSearchInput}
+            pressClear={() => this.onChangeSearchInput("")}
+            onSubmitEditing={() =>
+              navigate("GeneralSearch", {
+                searchTerms: this.state.searchInput
+              })
+            }
+            pressSearch={() =>
+              navigate("GeneralSearch", {
+                searchTerms: this.state.searchInput
+              })
+            }
           />
           {/* all artefacts posted by the user based on the their privacy settings */}
           {Object.keys(this.props.artefacts.userArtefacts).length !== 0 ? (

@@ -120,17 +120,17 @@ class SimpleHeader extends Component {
             placeholder="Search"
             placeholderTextColor="#707070"
             style={[styles.searchText, styles.font]}
-          // value={this.props.searchInput}
-          // onChangeText={value => this.props.onChangeSearchInput(value)}
+            value={this.props.searchInput}
+            onChangeText={value => this.props.onChangeSearchInput(value)}
           />
-          {/* {this.props.searchInput.length > 0 && (
-          <TouchableOpacity style={styles.iconContainer} onPress={this.props.pressClear}>
-            <Image
-              style={styles.xIcon}
-              source={require("../../assets/images/icons/x_icon.png")}
-            />
-          </TouchableOpacity>
-        )} */}
+          {this.props.searchInput.length > 0 && (
+            <TouchableOpacity style={styles.iconContainer} onPress={this.props.pressClear}>
+              <Image
+                style={styles.xIcon}
+                source={require("../../assets/images/icons/x_icon.png")}
+              />
+            </TouchableOpacity>
+          )}
           <TouchableOpacity style={styles.iconContainer} onPress={this.props.pressSearch}>
             <Image
               style={styles.searchIcon}

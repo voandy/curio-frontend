@@ -40,6 +40,12 @@ class Search extends Component {
       searchPerformed: false,
       refreshing: false
     };
+
+    // perform seach immedietly if search terms passed
+    if (this.props.navigation.state.params.searchTerms) {
+      this.state.searchInput = this.props.navigation.state.params.searchTerms;
+      this.doGeneralSearch(this.state.searchInput);
+    }
   }
 
   // Nav bar details
