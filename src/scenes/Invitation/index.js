@@ -1,8 +1,17 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
+
+import { StackActions, NavigationActions } from "react-navigation";
+
 import { getSpecificUser } from "../../actions/userActions";
-import { getSpecificGroup } from "../../actions/groupsActions";
+import {
+  getSpecificGroup,
+  addMemberToGroup,
+  removeInviteFromGroup,
+  getUserGroups
+} from "../../actions/groupsActions";
+import { getUserNotifications } from "../../actions/notificationActions";
 
 import {
   StyleSheet,
@@ -12,6 +21,9 @@ import {
   Animated,
   TouchableOpacity
 } from "react-native";
+
+// import the loader modal to help show loading process
+import ActivityLoaderModal from "../../component/ActivityLoaderModal";
 
 // custom component
 import MyButton from "../../component/MyButton";
@@ -79,15 +91,44 @@ class Invitation extends Component {
   // setter function for "loading" to show user that something is loading
   setLoading = loading => {
     this.setState({
-      ...this.state,
       loading
     });
   };
 
-  // TODO
-  onSubmit = async () => {
+  onAcceptInvite = async () => {
+    // extract all required data
+    const groupId = this.state.group._id;
+    const userId = this.props.user.userData._id;
+    const { replace } = this.props.navigation;
+
+    // // show user the loading modal
+    this.setLoading(true);
+    // do bunch of api requests and data loading
+    await this.props.addMemberToGroup(groupId, userId);
+    await this.props.removeInviteFromGroup(groupId, userId);
+    await this.props.getUserNotifications(userId);
+    this.props.getUserGroups(userId);
+    // close modal
+    this.setLoading(false);
+    // pop current screen and navigate to selectedGroup
+    // so user cannot "back" into this invitation screen
+    replace("SelectedGroup", { groupId });
+  };
+
+  onDeclineInvite = async () => {
+    // extract all required data
+    const groupId = this.state.group._id;
+    const userId = this.props.user.userData._id;
+    const { navigate } = this.props.navigation;
+
     // show user the loading modal
     this.setLoading(true);
+    // do bunch of api requests and data loading
+    await this.props.removeInviteFromGroup(groupId, userId);
+    await this.props.getUserNotifications(userId);
+    this.setLoading(false);
+    // navigate back
+    navigate("Notification");
   };
 
   render() {
@@ -98,6 +139,7 @@ class Invitation extends Component {
       <Animated.View
         style={[styles.container, { opacity: this.fadeAnimation }]}
       >
+        <ActivityLoaderModal loading={this.state.loading} />
         {/* invitator's profile pic */}
         <View
           style={{
@@ -115,7 +157,7 @@ class Invitation extends Component {
           />
 
           <Text style={styles.invite}>
-            @{this.state.admin.username} has invited you to join
+            @{this.state.admin.username} has invited you to join the group:
           </Text>
           <Text style={styles.group}>{this.state.group.title}</Text>
         </View>
@@ -125,6 +167,7 @@ class Invitation extends Component {
           {/* join group */}
           <TouchableOpacity
             style={{ marginVertical: wd(0.05), alignItems: "center" }}
+            onPress={() => this.onAcceptInvite()}
           >
             <Text style={styles.accept}>Accept</Text>
           </TouchableOpacity>
@@ -132,6 +175,7 @@ class Invitation extends Component {
           {/* delete account */}
           <TouchableOpacity
             style={{ marginVertical: wd(0.05), alignItems: "center" }}
+            onPress={() => this.onDeclineInvite()}
           >
             <Text style={styles.decline}>Decline</Text>
           </TouchableOpacity>
@@ -203,5 +247,12 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { getSpecificUser, getSpecificGroup }
+  {
+    getSpecificUser,
+    getSpecificGroup,
+    addMemberToGroup,
+    removeInviteFromGroup,
+    getUserNotifications,
+    getUserGroups
+  }
 )(Invitation);
