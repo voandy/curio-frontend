@@ -182,7 +182,7 @@ const AppStack = createBottomTabNavigator(
         backgroundColor: white,
         borderColor: "#939090",
         borderTopWidth: 0.5,
-        height: 60
+        height: 50
       }
     }
   }

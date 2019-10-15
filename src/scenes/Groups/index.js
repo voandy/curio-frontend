@@ -147,12 +147,6 @@ class Groups extends Component {
       <KeyboardShift>
         {() => (
           <View style={styles.container}>
-            <SimpleHeader
-              title="Groups"
-              showSearch = {true}
-              onSubmitEditing={() => navigate("GeneralSearch")}
-            />
-
             {/* scrollable area for CONTENT */}
             <ScrollView
               showsVerticalScrollIndicator={false}
@@ -165,6 +159,12 @@ class Groups extends Component {
                 />
               }
             >
+              <SimpleHeader
+                title="Groups"
+                showSearch={true}
+                onSubmitEditing={() => navigate("GeneralSearch")}
+              />
+
               {/* carousel pinned groups */}
               <View style={{ height: wd(0.52), backgroundColor: "white" }}>
                 <ScrollView

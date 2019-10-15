@@ -91,23 +91,10 @@ class Artefacts extends Component {
     );
   };
 
-  //prettier-ignore
   render() {
     const { navigate } = this.props.navigation;
     return (
       <View style={styles.container}>
-        {/* header */}
-        <SimpleHeader
-          title="My Artefacts"
-          showTab={true}
-          onChangePrivacyTab={this.onChangePrivacyTab}
-          isPublicTab={this.state.isPublicTab}
-          tab1="Public"
-          tab2="Private"
-          showSearch = {true}
-          onSubmitEditing={() => navigate("GeneralSearch")}
-        />
-
         {/* scrollable area for artefact feeds */}
         <ScrollView
           showsVerticalScrollIndicator={false}
@@ -119,20 +106,31 @@ class Artefacts extends Component {
             />
           }
         >
+          {/* header */}
+          <SimpleHeader
+            title="My Artefacts"
+            showTab={true}
+            onChangePrivacyTab={this.onChangePrivacyTab}
+            isPublicTab={this.state.isPublicTab}
+            tab1="Public"
+            tab2="Private"
+            showSearch={true}
+            onSubmitEditing={() => navigate("GeneralSearch")}
+          />
           {/* all artefacts posted by the user based on the their privacy settings */}
-          {Object.keys(this.props.artefacts.userArtefacts).length !== 0 
-            ? this.showArtefacts() 
-            : // if user has no artefacts 
-              (
-                <View style={styles.emptyFeed}>
-                  <Text style={styles.emptyfeedText}>
-                    Looks like you haven't posted any artefacts
-                  </Text>
-                  <Text style={styles.emptyfeedText}>
-                    Click the "+" button to add some
-                  </Text>
-                </View>
-              )}
+          {Object.keys(this.props.artefacts.userArtefacts).length !== 0 ? (
+            this.showArtefacts()
+          ) : (
+            // if user has no artefacts
+            <View style={styles.emptyFeed}>
+              <Text style={styles.emptyfeedText}>
+                Looks like you haven't posted any artefacts
+              </Text>
+              <Text style={styles.emptyfeedText}>
+                Click the "+" button to add some
+              </Text>
+            </View>
+          )}
         </ScrollView>
 
         {/* create new Group */}
