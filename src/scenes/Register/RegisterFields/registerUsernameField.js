@@ -16,13 +16,12 @@ import { setToBottom } from "../../../utils/responsiveDesign";
 export class RegisterUsernameField extends Component {
   constructor(props) {
     super(props);
-    
+
     // local state to fix textInput flickering issue with redux
-    state = {
+    this.state = {
       username: ""
     };
   }
-  
 
   componentDidMount() {
     // fill in the inputField's value if user has already input their username
