@@ -153,6 +153,9 @@ class ArtefactsForm extends Component {
   validateAllFields = () => {
     return new Promise((resolve,reject) => {
       const { title, imageURI, category, description, dateObtained } = this.state.artefact;
+
+      console.log(this.state)
+
       // validates against all field at the same time
       Promise.all([
         this.validateField("titleError", { title }),
@@ -204,6 +207,7 @@ class ArtefactsForm extends Component {
     }
     // if no errors, proceed here
     console.log("submit!")
+    console.log("ah ha->", this.state.artefact)
     // all fields are valid //
     // show user the loading modal
     this.setLoading(true);
@@ -451,7 +455,7 @@ class ArtefactsForm extends Component {
                       <Picker
                         style={styles.pickerShort}
                         selectedValue={this.state.artefact.privacy}
-                        onValueChange={this.setPrivacy.bind(this)}
+                        onValueChange={value => this.setPrivacy(value)}
                       >
                         <Picker.Item label="Private" value={1} />
                         <Picker.Item label="Public" value={0} />
