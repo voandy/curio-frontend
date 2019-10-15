@@ -24,6 +24,12 @@ import {
   getArtefactComments
 } from "../../actions/artefactsActions";
 
+// custom responsive design component
+import {
+  deviceHeigthDimension as hp,
+  deviceWidthDimension as wd
+} from "../../utils/responsiveDesign";
+
 // Custom component
 import SimpleHeader from "../../component/SimpleHeader";
 import NotificationFeed from "../../component/NotificationFeed";
@@ -50,38 +56,25 @@ class Notification extends Component {
 
   // navigate to page accordingly
   clickNotification = async notif => {
+    const { navigate } = this.props.navigation;
     // get notification details
-    const { refId, category } = notif;
-    // user has read notification
-    await this.props.setSeenStatusToTrue(notif._id);
+    const { refId, category, seenStatus } = notif;
+    // only send api request when user has not seen it
+    if (!seenStatus) await this.props.setSeenStatusToTrue(notif._id);
     // reload notification data on the page asynchronously
     this.props.getUserNotifications(this.props.auth.user.id);
     // navigate based on category
     switch (category) {
       case "artefact":
-        this.navigateToArtefactNotif(refId);
+        navigate("SelectedArtefact", { artefactId: refId });
         return;
       case "group":
-        this.navigateToGroupNotif(refId);
+        navigate("SelectedGroup", { groupId: refId });
         return;
       default:
         console.log("Oops, check your notification type.");
         return;
     }
-  };
-
-  // helper function to navigate to selected group page
-  navigateToGroupNotif = async groupId => {
-    const { navigate } = this.props.navigation;
-    // redirect user
-    navigate("SelectedGroup", { groupId });
-  };
-
-  // helper function to navigate to selected artefact page
-  navigateToArtefactNotif = async artefactId => {
-    const { navigate } = this.props.navigation;
-    // redirect user
-    navigate("SelectedArtefact", { artefactId });
   };
 
   // refresh page
@@ -94,7 +87,8 @@ class Notification extends Component {
   };
 
   // create all the notifications components to be rendered
-  renderAllNotifications = notifications => {
+  renderAllNotifications = () => {
+    const { notifications } = this.props.notification;
     // sort array based on date posted (from earliest to oldest)
     notifications.sort(function(a, b) {
       return new Date(b.datePosted) - new Date(a.datePosted);
@@ -113,6 +107,7 @@ class Notification extends Component {
 
   render() {
     const { navigate } = this.props.navigation;
+    const { notifications } = this.props.notification;
 
     return (
       <View style={styles.container}>
@@ -130,7 +125,6 @@ class Notification extends Component {
           <SimpleHeader
             title="Notifications"
             showSearch={true}
-
             searchInput={this.state.searchInput}
             onChangeSearchInput={this.onChangeSearchInput}
             pressClear={() => this.onChangeSearchInput("")}
@@ -170,6 +164,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: StatusBar.currentHeight
+  },
+
+  line: {
+    borderBottomColor: "#939090",
+    borderBottomWidth: 0.4,
+    width: wd(0.9),
+    alignSelf: "center"
   }
 });
 

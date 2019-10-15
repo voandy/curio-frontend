@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { View, StyleSheet, Image, TouchableOpacity, Text } from "react-native";
-import moment from "moment";
 
 // custom responsive design component
 import {
@@ -9,7 +8,7 @@ import {
 } from "../utils/responsiveDesign";
 
 // date converter
-import Moment from "moment";
+import moment from "moment";
 
 /**Notification rows in the notification screen
  * pressable and should link to the screen that invoked the notification
