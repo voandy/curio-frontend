@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
   },
 
   notificationPlaceholder: {
-    width: wd(0.8)
+    width: wd(0.75),
   },
 
   notification: {

@@ -31,6 +31,7 @@ import ActivityLoaderModal from "../../../component/ActivityLoaderModal";
 // custom components
 import MySmallerButton from "../../../component/MySmallerButton";
 import KeyboardShift from "../../../component/componentHelpers/KeyboardShift";
+import { validator } from "./groupsFormValidator";
 
 // default states for newGroup
 const newGroup = {
@@ -53,7 +54,12 @@ class GroupsForm extends Component {
         ...this.props.navigation.getParam("selectedGroup"),
         adminId: this.props.auth.user.id
       },
-      loading: false
+      loading: false,
+      errors: {
+        imageError: "",
+        titleError: "",
+        descriptionError: "",
+      }
     };
   }
 
@@ -129,6 +135,62 @@ class GroupsForm extends Component {
     this.setGroup("coverPhoto", ImageURI);
   };
 
+  // use Promise at setState callback to ensure load sequence
+  validateField(errorField, inputField) {
+    // extract field name and value
+    let field = Object.keys(inputField)[0];
+    let value = Object.values(inputField)[0];
+    // set local error states
+    return this.setState(
+      state => {
+        return {
+          errors: {
+            ...state.errors,
+            [errorField]: validator(field, value)
+          }
+        };
+      },
+      () => Promise.resolve(true)
+    );
+  }
+
+  // validate inputs make sure no fields are empty
+  validateAllFields = () => {
+    return new Promise((resolve, reject) => {
+      const { title, imageURI, description } = this.state.group;
+
+      // validates against all field at the same time
+      Promise.all([
+        this.validateField("imageError", { title }),
+        this.validateField("titleError", { imageURI }),
+        this.validateField("descriptionError", { description }),
+      ]).then(() => {
+        // done, can check the state now
+        console.log("state is ->", this.state.errors);
+        const {
+          imageError,
+          titleError,
+          descriptionError,
+        } = this.state.errors;
+        //valid inputs
+        // if all inputs are not = "" or not null
+        if (
+          !imageError &&
+          !titleError &&
+          !descriptionError
+        ) {
+          console.log("true boi")
+          resolve(true);
+        }
+        // invalid inputs
+        else {
+          console.log("wrong boi")
+          resolve(false);
+        }
+      })
+    })
+  };
+
   // create/edit group on "post" button press
   onSubmit = async () => {
     const { navigate } = this.props.navigation;
@@ -136,6 +198,15 @@ class GroupsForm extends Component {
     const { origin, isEditMode } = this.props.navigation.state.params;
     // set adminId as a reference
     await this.setGroup("adminId", this.props.auth.user.id);
+    console.log("hello world")
+    // wait for it to complete validating all fields
+    // if validateAllField return false (gt errors), return early
+    if (! await this.validateAllFields()) {
+      console.log("input invalid")
+      return;
+    }
+    // if no errors, proceed here
+    console.log("submit!")
     // show user the loading modal
     this.setLoading(true);
     // use appropriate action based on current page mode (either editing or creating)
@@ -161,6 +232,10 @@ class GroupsForm extends Component {
   };
 
   render() {
+
+    // error messages
+    const { errors } = this.state;
+
     return (
       <KeyboardShift>
         {() => (
@@ -187,16 +262,24 @@ class GroupsForm extends Component {
                         source={require("../../../../assets/images/icons/addPicture.png")}
                       />
                     ) : (
-                      <Image
-                        style={styles.imageSelected}
-                        source={{ uri: this.state.group.coverPhoto }}
-                      />
-                    )}
+                        <Image
+                          style={styles.imageSelected}
+                          source={{ uri: this.state.group.coverPhoto }}
+                        />
+                      )}
                   </TouchableOpacity>
 
-                  <Text style={[styles.subFont, styles.imageText]}>
-                    Add a cover photo
-                  </Text>
+                  {/* error messages if there's any */}
+                  {errors.imageError != "" ? (
+                    <Text style={[styles.error, { alignSelf: "center" }]}>
+                      {" "}
+                      {errors.imageError}{" "}
+                    </Text>
+                  ) : (
+                      <Text style={[styles.subFont, styles.imageText]}>
+                        Add images of your artefacts
+                    </Text>
+                    )}
                 </View>
 
                 {/* Title */}
@@ -217,6 +300,13 @@ class GroupsForm extends Component {
                     />
                   </View>
                 </View>
+                {/* error messages if there's any */}
+                {errors.titleError !== "" && (
+                  <Text style={[styles.error, { alignSelf: "flex-start", marginLeft: wd(0.12) }]}>
+                    {" "}
+                    {errors.titleError}{" "}
+                  </Text>
+                )}
 
                 {/* Description */}
                 <View style={styles.inputRow}>
@@ -236,6 +326,12 @@ class GroupsForm extends Component {
                     />
                   </View>
                 </View>
+                {/* error messages if there's any */}
+                {errors.descriptionError !== "" && (
+                  <Text style={[styles.error, { alignSelf: "flex-start", marginLeft: wd(0.12) }]}>
+                    {errors.descriptionError}
+                  </Text>
+                )}
 
                 {/* Privacy */}
                 <View style={styles.inputRow}>
@@ -353,6 +449,10 @@ const styles = StyleSheet.create({
     width: wd(0.705),
     fontSize: hp(0.015),
     color: "black"
+  },
+
+  error: {
+    color: "red"
   }
 });
 

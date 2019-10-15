@@ -162,7 +162,7 @@ class ArtefactsForm extends Component {
         this.validateField("dateObtainedError", { dateObtained })
       ]).then(() => {
         // done, can check the state now
-        console.log("error is->", this.state.errors);
+        console.log("state is->", this.state.errors);
         const { 
           imageError, 
           titleError, 
@@ -189,7 +189,6 @@ class ArtefactsForm extends Component {
         }
       })
     })
-    
   };
 
   //prettier-ignore
