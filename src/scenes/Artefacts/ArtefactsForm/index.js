@@ -19,12 +19,10 @@ import {
 } from "../../../actions/artefactsActions";
 
 import { addArtefactToGroup } from "../../../actions/groupsActions";
-
+import * as validator from "./artefactFormValidator";
 import DatePicker from "react-native-datepicker";
-
 import KeyboardShift from "../../../component/componentHelpers/KeyboardShift"
 
-import * as validator from "./artefactFormValidator"
 
 // expo image modules
 import * as ImagePicker from "expo-image-picker";
@@ -147,8 +145,9 @@ class ArtefactsForm extends Component {
       || this.state.categoryError != "" || this.state.dateError != "") {
       return false
     }
-    if (this.state.newArtefact.dateObtained == "" || this.state.newArtefact.dateObtained == null) {
-
+    // invalid inputs
+    else {
+      return true
     }
   }
 
@@ -254,9 +253,15 @@ class ArtefactsForm extends Component {
                     <Image style={styles.imageSelected} source={imageSource} />
                   </TouchableOpacity>
 
-                  <Text style={[styles.subFont, styles.imageText]}>
-                    Add images of your artefacts
+                  {/* error messages if there's any */}
+                  {this.state.titleError !== "" ? (
+                    <Text style={[styles.error, { alignSelf: "center" }]}> {this.state.imageError} </Text>
+                  ) : (
+                      <Text style={[styles.subFont, styles.imageText]}>
+                        Add images of your artefacts
                   </Text>
+                    )
+                  }
                 </View>
 
                 {/* input fields */}
@@ -279,6 +284,10 @@ class ArtefactsForm extends Component {
                     />
                   </View>
                 </View>
+                {/* error messages if there's any */}
+                {this.state.titleError !== "" && (
+                  <Text style={[styles.error, { marginLeft: wd(0.08) }]}> {this.state.titleError} </Text>
+                )}
 
                 {/* Description */}
                 <View style={styles.inputRow}>
@@ -298,6 +307,10 @@ class ArtefactsForm extends Component {
                     />
                   </View>
                 </View>
+                {/* error messages if there's any */}
+                {this.state.descriptionError !== "" && (
+                  <Text style={[styles.error, { marginLeft: wd(0.08) }]}> {this.state.descriptionError} </Text>
+                )}
 
                 {/* Category */}
                 <View style={styles.inputRow}>
@@ -339,6 +352,10 @@ class ArtefactsForm extends Component {
                     </Picker>
                   </View>
                 </View>
+                {/* error messages if there's any */}
+                {this.state.categoryError !== "" && (
+                  <Text style={[styles.error, { marginLeft: wd(0.08) }]}> {this.state.categoryError} </Text>
+                )}
 
                 {/* Dropdown selector fields */}
                 <View style={styles.inputRow}>
@@ -370,6 +387,10 @@ class ArtefactsForm extends Component {
                         onDateChange={date => this.setDateObtained(date)}
                       />
                     </View>
+                    {/* error messages if there's any */}
+                    {this.state.dateError !== "" && (
+                      <Text style={[styles.error, { marginLeft: wd(0.08) }]}> {this.state.dateError} </Text>
+                    )}
                   </View>
 
                   {/* Privacy */}

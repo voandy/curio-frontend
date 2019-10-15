@@ -61,9 +61,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     marginHorizontal: wd(0.07),
     backgroundColor: "white",
-    elevation: 9,
+    elevation: 3,
     marginTop: 25,
-    height: 45,
+    height: 38,
     borderRadius: 10
   },
 
@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
   },
 
   iconContainer: {
-    marginTop: 12
+    marginTop: 9
   },
 
   activeHighlight: {
