@@ -59,7 +59,8 @@ class Notification extends Component {
     console.log(notif);
     const { navigate } = this.props.navigation;
     // get notification details
-    const { refId, category, seenStatus } = notif;
+    const { refId, category, seenStatus, data } = notif;
+    const { type } = data;
     // only send api request when user has not seen it
     if (!seenStatus) this.props.setSeenStatusToTrue(notif._id);
     // navigate based on category
@@ -71,10 +72,20 @@ class Notification extends Component {
         navigate("SelectedGroup", { groupId: refId });
         return;
       case "invitation":
-        navigate("Invitation", { notif });
-        return;
+        // another layer of conditions
+        switch (type) {
+          case "invite":
+            navigate("Invitation", { notif });
+            return;
+          case "accept":
+            navigate("SelectedGroup", { groupId: refId });
+            return;
+          default:
+            console.log("Error: invalid notification invitation type");
+            return;
+        }
       default:
-        console.log("Oops, check your notification type.");
+        console.log("Error: invalid notification type");
         return;
     }
   };
