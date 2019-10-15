@@ -23,20 +23,26 @@ class HeaderSearch extends Component {
             underlineColorAndroid="transparent"
             pointerEvents="none"
             placeholder="Search"
-            placeholderTextColor="#707070"
+            placeholderTextColor="#adadad"
             style={[styles.searchText, styles.font]}
             value={this.props.searchInput}
             onChangeText={value => this.props.onChangeSearchInput(value)}
           />
           {this.props.searchInput.length > 0 && (
-            <TouchableOpacity style={styles.iconContainer} onPress={this.props.pressClear}>
+            <TouchableOpacity
+              style={styles.iconContainer}
+              onPress={this.props.pressClear}
+            >
               <Image
                 style={styles.xIcon}
                 source={require("../../assets/images/icons/x_icon.png")}
               />
             </TouchableOpacity>
           )}
-          <TouchableOpacity style={styles.iconContainer} onPress={this.props.pressSearch}>
+          <TouchableOpacity
+            style={styles.iconContainer}
+            onPress={this.props.pressSearch}
+          >
             <Image
               style={styles.searchIcon}
               source={require("../../assets/images/icons/search.png")}
@@ -59,17 +65,17 @@ const styles = StyleSheet.create({
 
   search: {
     flexDirection: "row",
-    marginHorizontal: wd(0.07),
+    marginHorizontal: wd(0.055),
     backgroundColor: "white",
-    elevation: 9,
+    elevation: 3,
     marginTop: 25,
-    height: 45,
+    height: 38,
     borderRadius: 10
   },
 
   searchText: {
     flex: 1,
-    marginLeft: 20,
+    marginLeft: 15,
     alignSelf: "center"
   },
 
@@ -90,7 +96,7 @@ const styles = StyleSheet.create({
   },
 
   iconContainer: {
-    marginTop: 12
+    marginTop: 9
   },
 
   activeHighlight: {

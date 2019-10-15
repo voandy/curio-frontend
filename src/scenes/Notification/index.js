@@ -38,13 +38,20 @@ class Notification extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      refreshing: false
+      refreshing: false,
+      searchInput: ""
     };
   }
 
   // Nav bar details
   static navigationOptions = {
     header: null
+  };
+
+  onChangeSearchInput = searchInput => {
+    this.setState({
+      searchInput
+    });
   };
 
   // navigate to page accordingly
@@ -104,12 +111,6 @@ class Notification extends Component {
 
     return (
       <View style={styles.container}>
-        <SimpleHeader
-          title="Notifications"
-          showSearch={true}
-          onSubmitEditing={() => navigate("GeneralSearch")}
-        />
-
         {/* scrollable area for CONTENT */}
         <ScrollView
           showsVerticalScrollIndicator={false}
@@ -121,24 +122,38 @@ class Notification extends Component {
             />
           }
         >
-          {this.renderAllNotifications()}
+          <SimpleHeader
+            title="Notifications"
+            showSearch={true}
+            searchInput={this.state.searchInput}
+            onChangeSearchInput={this.onChangeSearchInput}
+            pressClear={() => this.onChangeSearchInput("")}
+            onSubmitEditing={() =>
+              navigate("GeneralSearch", {
+                searchTerms: this.state.searchInput
+              })
+            }
+            pressSearch={() =>
+              navigate("GeneralSearch", {
+                searchTerms: this.state.searchInput
+              })
+            }
+          />
+
+          {this.renderAllNotifications(this.props.notification.notifications)}
 
           {/* no more notifications ! */}
-          {!notifications.length ? (
-            <Text
-              style={{
-                alignSelf: "center",
-                justifyContent: "center",
-                marginVertical: 40,
-                fontFamily: "HindSiliguri-Regular"
-              }}
-            >
-              {" "}
-              Hooray no more notifications{" "}
-            </Text>
-          ) : (
-            <View style={styles.line} />
-          )}
+          <Text
+            style={{
+              alignSelf: "center",
+              justifyContent: "center",
+              marginVertical: 40,
+              fontFamily: "HindSiliguri-Regular"
+            }}
+          >
+            {" "}
+            No more notifications.{" "}
+          </Text>
         </ScrollView>
       </View>
     );

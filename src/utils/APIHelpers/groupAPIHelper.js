@@ -170,3 +170,33 @@ export const deleteArtefactFromGroupAPIRequest = (groupId, artefactId) => {
       .catch(err => reject(err));
   });
 };
+
+export const inviteUserToGroupAPIRequest = (groupId, userId) => {
+  return new Promise((resolve, reject) => {
+    axios
+      .put(
+        "http://curioapp.herokuapp.com/api/group/id/" +
+          groupId +
+          "/userId/" +
+          userId +
+          "/invite"
+      )
+      .then(res => resolve(res))
+      .catch(err => reject(err));
+  });
+};
+
+export const removeInviteFromGroupAPIRequest = (groupId, userId) => {
+  return new Promise((resolve, reject) => {
+    axios
+      .put(
+        "http://curioapp.herokuapp.com/api/group/id/" +
+          groupId +
+          "/userId/" +
+          userId +
+          "/remove-invite"
+      )
+      .then(res => resolve(res))
+      .catch(err => reject(err));
+  });
+};

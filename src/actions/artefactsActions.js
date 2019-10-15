@@ -86,7 +86,7 @@ export const createNewArtefacts = artefact => dispatch => {
         const newArtefact = {
           ...artefact,
           imageURL,
-          privacy: artefact.privacy === "Private" ? 0 : 1
+          privacy: artefact.privacy === 0 ? 0 : 1
         };
         // send a post API request to backend to create new artefact
         createArtefactAPIRequest(newArtefact)

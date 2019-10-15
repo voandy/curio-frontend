@@ -19,10 +19,9 @@ import {
 } from "../../../actions/artefactsActions";
 
 import { addArtefactToGroup } from "../../../actions/groupsActions";
-
+import { validator } from "./artefactFormValidator";
 import DatePicker from "react-native-datepicker";
-
-import KeyboardShift from "../../../component/componentHelpers/KeyboardShift"
+import KeyboardShift from "../../../component/componentHelpers/KeyboardShift";
 
 // expo image modules
 import * as ImagePicker from "expo-image-picker";
@@ -64,7 +63,14 @@ class ArtefactsForm extends Component {
         ...selectedArtefact,
         userId: this.props.auth.user.id
       },
-      loading: false
+      loading: false,
+      errors: {
+        imageError: "",
+        titleError: "",
+        categoryError: "",
+        descriptionError: "",
+        dateObtainedError: ""
+      }
     };
   }
 
@@ -116,9 +122,6 @@ class ArtefactsForm extends Component {
   setDescription = description => {
     this.setArtefact("description", description);
   };
-  setDate = date => {
-    this.setArtefact("date", date);
-  };
   setImageURI = imageURI => {
     this.setArtefact("imageURI", imageURI);
   };
@@ -126,32 +129,86 @@ class ArtefactsForm extends Component {
     this.setArtefact("privacy", privacy);
   };
 
-  // error messages for unfilled fields
-  fieldValidator=()=>{
-    console.log("hue")
-    console.log(this.state.newArtefact)
-    if (this.state.newArtefact.imageURI == "" || this.state.newArtefact.imageURI == null) {
-      this.setState({error:{imageURI:"hellow"}})
-      console.log(this.state)
-    }
-    if (this.state.newArtefact.title == "" || this.state.newArtefact.title == null) {
-
-    }
-    if (this.state.newArtefact.description == "" || this.state.newArtefact.description == null) {
-
-    }
-    if (this.state.newArtefact.dateObtained == "" || this.state.newArtefact.dateObtained == null) {
-
-    }
+  // use Promise at setState callback to ensure load sequence
+  validateField(errorField, inputField) {
+    // extract field name and value
+    let field = Object.keys(inputField)[0];
+    let value = Object.values(inputField)[0];
+    // set local error states
+    return this.setState(
+      state => {
+        return {
+          errors: {
+            ...state.errors,
+            [errorField]: validator(field, value)
+          }
+        };
+      },
+      () => Promise.resolve(true)
+    );
   }
 
+  // validate inputs make sure no fields are empty
+  //prettier-ignore
+  validateAllFields = () => {
+    return new Promise((resolve,reject) => {
+      const { title, imageURI, category, description, dateObtained } = this.state.artefact;
+
+      console.log(this.state)
+
+      // validates against all field at the same time
+      Promise.all([
+        this.validateField("titleError", { title }),
+        this.validateField("imageError", { imageURI }),
+        this.validateField("categoryError", { category }),
+        this.validateField("descriptionError", { description }),
+        this.validateField("dateObtainedError", { dateObtained })
+      ]).then(() => {
+        // done, can check the state now
+        console.log("state is->", this.state.errors);
+        const { 
+          imageError, 
+          titleError, 
+          descriptionError, 
+          categoryError, 
+          dateObtainedError
+        } = this.state.errors;
+        //valid inputs
+        // if all inputs are not = "" or not null
+        if (
+          !imageError &&
+          !titleError &&
+          !descriptionError &&
+          !categoryError &&
+          !dateObtainedError
+        ) {
+          console.log("true boi")
+          resolve(true);
+        }
+        // invalid inputs
+        else {
+          console.log("wrong boi")
+          resolve(false);
+        }
+      })
+    })
+  };
 
   //prettier-ignore
   onSubmit = async () => {
     const { navigate } = this.props.navigation;
-    // for adding artefact to group
     // extract required parameters
     const { origin, isEditMode, addToGroup, groupId } = this.props.navigation.state.params;
+    // wait for it to complete validating all fields
+    // if validateAllField return false (gt errors), return early
+    if (! await this.validateAllFields()) {
+      console.log("input invalid")
+      return;
+    }
+    // if no errors, proceed here
+    console.log("submit!")
+    console.log("ah ha->", this.state.artefact)
+    // all fields are valid //
     // show user the loading modal
     this.setLoading(true);
     // use appropriate action based on current page mode (either editing or creating)
@@ -180,6 +237,7 @@ class ArtefactsForm extends Component {
         // show error response
         console.log(err.response.data);
       });
+
   };
 
   // access camera roll to pick an image
@@ -207,15 +265,15 @@ class ArtefactsForm extends Component {
     // if there no imageURI in state (no new changes or null)
     var imageSource = !this.state.artefact.imageURI
       ? // then check if there's a URL to selected Artefact image
-      !selectedArtefact || !selectedArtefact.images[0].URL
+        !selectedArtefact || !selectedArtefact.images[0].URL
         ? // if no, then use default pic
-        require("../../../../assets/images/icons/addPicture.png")
+          require("../../../../assets/images/icons/addPicture.png")
         : // there's URL to image, so use it
-        { uri: selectedArtefact.images[0].URL }
+          { uri: selectedArtefact.images[0].URL }
       : // User picks a new image to be uploaded
-      { uri: this.state.artefact.imageURI };
+        { uri: this.state.artefact.imageURI };
 
-    // error messaged for fields
+    // error messages
     const { errors } = this.state;
 
     return (
@@ -234,13 +292,23 @@ class ArtefactsForm extends Component {
                     Share your artefacts for others to view
                   </Text>
                   {/* show current selected artefact image if exists  */}
-                  <TouchableOpacity activeOpacity={0.5} onPress={this._pickImage}>
+                  <TouchableOpacity
+                    activeOpacity={0.5}
+                    onPress={this._pickImage}
+                  >
                     <Image style={styles.imageSelected} source={imageSource} />
                   </TouchableOpacity>
 
-                  <Text style={[styles.subFont, styles.imageText]}>
-                    Add images of your artefacts
-                  </Text>
+                  {/* error messages if there's any */}
+                  {errors.imageError != "" ? (
+                    <Text style={[styles.error, { alignSelf: "center" }]}>
+                      {errors.imageError}
+                    </Text>
+                  ) : (
+                    <Text style={[styles.subFont, styles.imageText]}>
+                      Add images of your artefacts
+                    </Text>
+                  )}
                 </View>
 
                 {/* input fields */}
@@ -263,6 +331,12 @@ class ArtefactsForm extends Component {
                     />
                   </View>
                 </View>
+                {/* error messages if there's any */}
+                {errors.titleError !== "" && (
+                  <Text style={[styles.error, { marginLeft: wd(0.08) }]}>
+                    {errors.titleError}
+                  </Text>
+                )}
 
                 {/* Description */}
                 <View style={styles.inputRow}>
@@ -282,6 +356,13 @@ class ArtefactsForm extends Component {
                     />
                   </View>
                 </View>
+                {/* error messages if there's any */}
+                {errors.descriptionError !== "" && (
+                  <Text style={[styles.error, { marginLeft: wd(0.08) }]}>
+                    {" "}
+                    {errors.descriptionError}{" "}
+                  </Text>
+                )}
 
                 {/* Category */}
                 <View style={styles.inputRow}>
@@ -323,6 +404,13 @@ class ArtefactsForm extends Component {
                     </Picker>
                   </View>
                 </View>
+                {/* error messages if there's any */}
+                {errors.categoryError !== "" && (
+                  <Text style={[styles.error, { marginLeft: wd(0.08) }]}>
+                    {" "}
+                    {errors.categoryError}{" "}
+                  </Text>
+                )}
 
                 {/* Dropdown selector fields */}
                 <View style={styles.inputRow}>
@@ -338,7 +426,7 @@ class ArtefactsForm extends Component {
                         mode="date"
                         date={this.state.artefact.dateObtained}
                         style={styles.date}
-                        placeholder="select date"
+                        placeholder="select date             ▾"
                         format="YYYY-MM-DD"
                         customStyles={{
                           dateIcon: {
@@ -367,7 +455,7 @@ class ArtefactsForm extends Component {
                       <Picker
                         style={styles.pickerShort}
                         selectedValue={this.state.artefact.privacy}
-                        onValueChange={this.setPrivacy.bind(this)}
+                        onValueChange={value => this.setPrivacy(value)}
                       >
                         <Picker.Item label="Private" value={1} />
                         <Picker.Item label="Public" value={0} />
@@ -375,6 +463,13 @@ class ArtefactsForm extends Component {
                     </View>
                   </View>
                 </View>
+                {/* error messages for date */}
+                {errors.dateObtainedError !== "" && (
+                  <Text style={[styles.error, { marginLeft: wd(0.08) }]}>
+                    {" "}
+                    {errors.dateObtainedError}{" "}
+                  </Text>
+                )}
 
                 {/* submit button */}
                 <View
@@ -385,7 +480,10 @@ class ArtefactsForm extends Component {
                   }}
                 >
                   {/* edit artefact or create new artefact */}
-                  <MySmallerButton text="POST" onPress={() => this.onSubmit()} />
+                  <MySmallerButton
+                    text="POST"
+                    onPress={() => this.onSubmit()}
+                  />
                 </View>
               </View>
             </ScrollView>

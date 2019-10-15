@@ -1,5 +1,13 @@
 import React, { Component } from "react";
-import { View, StyleSheet, Text, Image, TouchableOpacity, TextInput, ScrollView } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Text,
+  Image,
+  TouchableOpacity,
+  TextInput,
+  ScrollView
+} from "react-native";
 
 // Custom respondsive design component
 import { deviceWidthDimension as wd } from "../utils/responsiveDesign";
@@ -75,7 +83,7 @@ class SimpleHeader extends Component {
     } else {
       return (
         // <View style={{ flexDirection: "row", marginLeft:30 }}>
-        <View style={{ flexDirection: "row", justifyContent:"center" }}>
+        <View style={{ flexDirection: "row", justifyContent: "center" }}>
           <TouchableOpacity
             onPress={() => this.clickTab(this.state.tab1)}
             style={styles.headerButton}
@@ -106,11 +114,9 @@ class SimpleHeader extends Component {
 
   // show search bar
   showSearch = () => {
-
     if (this.props.showSearch === false) {
-      return null
-    }
-    else {
+      return null;
+    } else {
       return (
         <View style={styles.search}>
           <TextInput
@@ -118,34 +124,39 @@ class SimpleHeader extends Component {
             underlineColorAndroid="transparent"
             pointerEvents="none"
             placeholder="Search"
-            placeholderTextColor="#707070"
+            placeholderTextColor="#adadad"
             style={[styles.searchText, styles.font]}
-          // value={this.props.searchInput}
-          // onChangeText={value => this.props.onChangeSearchInput(value)}
+            value={this.props.searchInput}
+            onChangeText={value => this.props.onChangeSearchInput(value)}
           />
-          {/* {this.props.searchInput.length > 0 && (
-          <TouchableOpacity style={styles.iconContainer} onPress={this.props.pressClear}>
-            <Image
-              style={styles.xIcon}
-              source={require("../../assets/images/icons/x_icon.png")}
-            />
-          </TouchableOpacity>
-        )} */}
-          <TouchableOpacity style={styles.iconContainer} onPress={this.props.pressSearch}>
+          {this.props.searchInput.length > 0 && (
+            <TouchableOpacity
+              style={styles.iconContainer}
+              onPress={this.props.pressClear}
+            >
+              <Image
+                style={styles.xIcon}
+                source={require("../../assets/images/icons/x_icon.png")}
+              />
+            </TouchableOpacity>
+          )}
+          <TouchableOpacity
+            style={styles.iconContainer}
+            onPress={this.props.pressSearch}
+          >
             <Image
               style={styles.searchIcon}
               source={require("../../assets/images/icons/search.png")}
             />
           </TouchableOpacity>
         </View>
-      )
+      );
     }
-  }
+  };
 
   render() {
     return (
       <View style={styles.header}>
-
         {this.showSearch()}
 
         {/* header text */}
@@ -172,9 +183,9 @@ const styles = StyleSheet.create({
 
   headerText: {
     width: wd(0.7),
-    fontSize: 28,
-    marginTop: 15,
-    marginLeft: 30,
+    fontSize: 22,
+    marginTop: 8,
+    marginLeft: 25,
     fontFamily: "HindSiliguri-Bold"
   },
 
@@ -195,7 +206,7 @@ const styles = StyleSheet.create({
 
   headerButton: {
     alignContent: "center",
-    marginTop: 5,
+    marginTop: 0,
     marginHorizontal: 15
   },
 
@@ -208,17 +219,17 @@ const styles = StyleSheet.create({
 
   search: {
     flexDirection: "row",
-    marginHorizontal: wd(0.07),
+    marginHorizontal: wd(0.055),
     backgroundColor: "white",
-    elevation: 9,
+    elevation: 3,
     marginTop: 25,
-    height: 45,
+    height: 38,
     borderRadius: 10
   },
 
   searchText: {
     flex: 1,
-    marginLeft: 20,
+    marginLeft: 15,
     alignSelf: "center"
   },
 
@@ -239,8 +250,8 @@ const styles = StyleSheet.create({
   },
 
   iconContainer: {
-    marginTop: 12
-  },
+    marginTop: 9
+  }
 });
 
 export default SimpleHeader;

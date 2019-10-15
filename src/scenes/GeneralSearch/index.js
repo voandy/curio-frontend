@@ -23,7 +23,10 @@ import SearchFeed from "../../component/SearchFeed";
 import HeaderSearch from "../../component/HeaderSearch";
 
 // custom responsive design component
-import { deviceWidthDimension as wd } from "../../utils/responsiveDesign";
+import {
+  deviceWidthDimension as wd,
+  deviceHeigthDimension as hp
+} from "../../utils/responsiveDesign";
 
 class Search extends Component {
   constructor(props) {
@@ -40,6 +43,12 @@ class Search extends Component {
       searchPerformed: false,
       refreshing: false
     };
+
+    // perform seach immedietly if search terms passed
+    if (this.props.navigation.state.params.searchTerms) {
+      this.state.searchInput = this.props.navigation.state.params.searchTerms;
+      this.doGeneralSearch(this.state.searchInput);
+    }
   }
 
   // Nav bar details
@@ -197,7 +206,13 @@ class Search extends Component {
         />
 
         {/* header tab */}
-        <View style={{ flexDirection: "row", justifyContent: "center" }}>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "center",
+            marginBottom: hp(0.01)
+          }}
+        >
           <TouchableOpacity
             onPress={this.switchUserResults}
             style={styles.headerButton}
@@ -275,7 +290,6 @@ const styles = StyleSheet.create({
 
   headerButton: {
     alignContent: "center",
-    marginTop: 10,
     marginHorizontal: 15
   },
 

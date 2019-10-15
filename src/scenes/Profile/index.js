@@ -23,11 +23,14 @@ import SimpleHeader from "../../component/SimpleHeader";
 import MyButton from "../../component/MyButton";
 import ProfileSetting from "../../component/ProfileSetting";
 import Line from "../../component/Line";
-import { setUserPushTokenAPIRequest } from '../../utils/APIHelpers/userAPIHelpers';
+import { setUserPushTokenAPIRequest } from "../../utils/APIHelpers/userAPIHelpers";
 
 class Profile extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      searchInput: ""
+    };
   }
 
   // Nav bar details
@@ -35,15 +38,21 @@ class Profile extends Component {
     header: null
   };
 
+  onChangeSearchInput = searchInput => {
+    this.setState({
+      searchInput
+    });
+  };
+
   // logs user out and navigate to authentication page
   onLogoutClick = () => {
     const { navigate } = this.props.navigation;
     const userId = this.props.user.userData._id;
-    this.props.logoutUser()
+    this.props
+      .logoutUser()
       .then(() => {
-        // set user's push token to null so that the backend won't set 
+        // set user's push token to null so that the backend won't set
         // a notification to an unlogged in device
-        console.log(userId);
         setUserPushTokenAPIRequest(userId, null).catch(err => console.log(err));
         navigate("Auth");
       })
@@ -59,13 +68,29 @@ class Profile extends Component {
 
     return (
       <View style={styles.container}>
-        <SimpleHeader title="My Profile" showSearch={false}/>
-
         {/* scrollable area for CONTENT */}
         <ScrollView
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={16}
         >
+          <SimpleHeader
+            title="My Profile"
+            showSearch={true}
+            searchInput={this.state.searchInput}
+            onChangeSearchInput={this.onChangeSearchInput}
+            pressClear={() => this.onChangeSearchInput("")}
+            onSubmitEditing={() =>
+              navigate("GeneralSearch", {
+                searchTerms: this.state.searchInput
+              })
+            }
+            pressSearch={() =>
+              navigate("GeneralSearch", {
+                searchTerms: this.state.searchInput
+              })
+            }
+          />
+
           {/* user profile picture */}
           {this.props.user.userData.profilePic != null ? (
             <Image
@@ -91,10 +116,10 @@ class Profile extends Component {
           {/* line separator */}
           <Line />
 
-          <ProfileSetting text="Artefacts" />
-          <ProfileSetting text="Friends" />
+          <ProfileSetting text="Artefacts" iconType="artefact" />
           <ProfileSetting
             text="Account Settings"
+            iconType="gear"
             onPress={() => navigate("AccountSetting")}
           />
 
