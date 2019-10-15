@@ -22,7 +22,8 @@ import {
   getSelectedGroupAllArtefacts,
   getSelectedGroupAllMembers,
   getSelectedGroupArtefactComments,
-  deleteSelectedGroup
+  deleteSelectedGroup,
+  inviteUserToGroup
 } from "../../../actions/groupsActions";
 
 // custom component
@@ -148,20 +149,31 @@ class SelectedGroup extends Component {
   };
 
   // navigation functions //
-  // click a specific artefact and navigate to it
   onArtefactClick = artefactId => {
     this.navigateToPage("SelectedArtefact", { artefactId });
   };
   onAddNewArtefact = () => {
     this.navigateToPage("ArtefactsForm", { addToGroup: true });
   };
-  onMemberInvite = () => {
-    this.navigateToPage("UserSearch");
+  onInviteButtonClick = () => {
+    const { selectedGroup } = this.props.groups;
+    // selectedGroup is not ready yet, return early
+    if (!selectedGroup) return;
+    // it is ready
+    this.navigateToPage("UserSearch", {
+      selectedGroup,
+      toInvite: true,
+      onPress: this.props.inviteUserToGroup
+    });
   };
   onEditGroup = () => {
+    const { selectedGroup } = this.props.groups;
+    // selectedGroup is not ready yet, return early
+    if (!selectedGroup) return;
+    // it is ready
     this.navigateToPage("GroupsForm", {
       isEditMode: true,
-      selectedGroup: this.props.groups.selectedGroup
+      selectedGroup
     });
   };
   // main navigation function
@@ -277,7 +289,7 @@ class SelectedGroup extends Component {
               </ScrollView>
               {/* Add members button */}
               <TouchableOpacity
-                onPress={() => this.onMemberInvite()}
+                onPress={() => this.onInviteButtonClick()}
                 style={styles.memberButton}
               >
                 <Text style={styles.buttonText}>Invite</Text>
@@ -387,6 +399,7 @@ export default connect(
     getSelectedGroupAllArtefacts,
     getSelectedGroupAllMembers,
     getSelectedGroupArtefactComments,
-    deleteSelectedGroup
+    deleteSelectedGroup,
+    inviteUserToGroup
   }
 )(SelectedGroup);

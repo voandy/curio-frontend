@@ -24,13 +24,13 @@ import HeaderSearch from "../../../component/HeaderSearch";
 // responsive design component
 import { deviceWidthDimension as wd } from "../../../utils/responsiveDesign";
 
+// this class is only used by selectedGroup to search for user to invite
 class UserSearch extends Component {
   constructor(props) {
     super(props);
-
     // clear redux state in case user force quits the app and reopen it
     this.props.clearSearchResults();
-
+    // set up initial state
     this.state = {
       searchInput: "",
       // has first search been done?
@@ -68,34 +68,49 @@ class UserSearch extends Component {
 
   // generate feed for user search results
   showUserResults = function(userSearchResults) {
+    // extract all the required information
+    const {
+      toInvite,
+      selectedGroup,
+      onPress,
+      groupId
+    } = this.props.navigation.state.params;
+    // preprocess data
+    const memberIds = selectedGroup.members.map(x => x.memberId);
+    const pendingInvites = selectedGroup.pendingInvitations;
+    // create result feed
     if (userSearchResults.length === 0) {
       return <Text style={styles.emptySearch}>No users found</Text>;
     } else {
       var userResultsFeed = [];
-
       // create a view for each user result
       for (var i = 0; i < userSearchResults.length; i++) {
+        // extract user id
         const userId = userSearchResults[i]._id;
+        // check for conditions
+        isGroupMember = memberIds.includes(userId);
+        hasInvited = pendingInvites.includes(userId);
+        // generate feed component based on conditions
         userResultsFeed.push(
           <SearchFeed
             key={i}
             heading={userSearchResults[i].name}
             subHeading={userSearchResults[i].username}
-            isGroup={false}
             searchImage={userSearchResults[i].profilePic}
-            onPress={() => this.gotoUserProfile(userId)}
+            toInvite={toInvite}
+            hasInvited={hasInvited}
+            isGroupMember={isGroupMember}
+            userId={userId}
+            groupId={groupId}
+            onPress={onPress}
           />
         );
       }
-
       return userResultsFeed;
     }
   };
 
   render() {
-    // navigation in app
-    const { navigate } = this.props.navigation;
-
     return (
       <View style={styles.container}>
         {/* search header */}
