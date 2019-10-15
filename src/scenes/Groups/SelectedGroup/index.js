@@ -104,17 +104,6 @@ class SelectedGroup extends Component {
     this.setState({ refreshing: false });
   };
 
-  // when user presses "edit group"
-  onEditGroup = () => {
-    const { navigate } = this.props.navigation;
-    // navigate to GroupsForm and pass in required parameters
-    navigate("GroupsForm", {
-      origin: "SelectedGroup",
-      isEditMode: true,
-      selectedGroup: this.props.groups.selectedGroup
-    });
-  };
-
   // toggle the modal for artefact deletion
   toggleDeleteModal = async () => {
     Alert.alert(
@@ -158,29 +147,35 @@ class SelectedGroup extends Component {
       });
   };
 
+  // navigation functions //
   // click a specific artefact and navigate to it
-  clickArtefact = artefactId => {
-    const { navigate } = this.props.navigation;
-    groupId = this.props.navigation.getParam("groupId");
-    // navigate to selected artefact
-    navigate("SelectedArtefact", {
-      origin: "SelectedGroup",
-      artefactId,
-      groupId
+  onArtefactClick = artefactId => {
+    this.navigateToPage("SelectedArtefact", { artefactId });
+  };
+  onAddNewArtefact = () => {
+    this.navigateToPage("ArtefactsForm", { addToGroup: true });
+  };
+  onMemberInvite = () => {
+    this.navigateToPage("UserSearch");
+  };
+  onEditGroup = () => {
+    this.navigateToPage("GroupsForm", {
+      isEditMode: true,
+      selectedGroup: this.props.groups.selectedGroup
     });
   };
-
-  onAddNewArtefact = () => {
+  // main navigation function
+  navigateToPage = (page, options) => {
     const { navigate } = this.props.navigation;
     const groupId = this.props.navigation.getParam("groupId");
-    // navigate to selected artefact
-    navigate("ArtefactsForm", {
+    navigate(page, {
       origin: "SelectedGroup",
-      addToGroup: true,
-      groupId
+      groupId,
+      ...options
     });
   };
 
+  // components render functions //
   // return a row of group members
   showGroupMembers = groupMembers => {
     // transform each member to an UserIcon component
@@ -209,7 +204,7 @@ class SelectedGroup extends Component {
         likesCount={artefact.details.likes.length}
         dateAdded={artefact.dateAdded}
         commentsCount={artefact.commentCount ? artefact.commentCount : 0}
-        onPress={this.clickArtefact.bind(this)}
+        onPress={this.onArtefactClick.bind(this)}
       />
     ));
     return groupArtefactsComponent;
@@ -225,8 +220,6 @@ class SelectedGroup extends Component {
     } = this.props.groups.selectedGroup;
     // extract redux store information
     const { selectedGroupMembers, selectedGroupArtefacts } = this.props.groups;
-    // extract navigate function
-    const { navigate } = this.props.navigation;
 
     return (
       <View style={styles.container}>
@@ -284,7 +277,7 @@ class SelectedGroup extends Component {
               </ScrollView>
               {/* Add members button */}
               <TouchableOpacity
-                onPress={() => navigate("UserSearch")}
+                onPress={() => this.onMemberInvite()}
                 style={styles.memberButton}
               >
                 <Text style={styles.buttonText}>Invite</Text>
