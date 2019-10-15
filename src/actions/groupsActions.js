@@ -242,7 +242,6 @@ export const addMemberToGroup = (groupId, userId) => dispatch => {
   return new Promise((resolve, reject) => {
     addMemberToGroupAPIRequest(groupId, userId)
       .then(res => {
-        dispatch(getSelectedGroupAllMembers(groupId));
         resolve(res);
       })
       .catch(err => {
@@ -256,7 +255,6 @@ export const deleteMemberFromGroup = (groupId, userId) => dispatch => {
   return new Promise((resolve, reject) => {
     deleteMemberFromGroupAPIRequest(groupId, userId)
       .then(res => {
-        dispatch(getSelectedGroupAllMembers(groupId));
         resolve(res);
       })
       .catch(err => {
@@ -318,6 +316,22 @@ export const removeInviteFromGroup = (groupId, userId) => dispatch => {
       })
       .catch(err => {
         console.log("Failed to invite user: " + err);
+        reject(err);
+      });
+  });
+};
+
+// when user clicks on (selects) a specific group
+export const getSpecificGroup = groupId => dispatch => {
+  return new Promise((resolve, reject) => {
+    getGroupDetailsAPIRequest(groupId)
+      .then(res => {
+        // return user data instead of request response
+        resolve(res.data);
+      })
+      // failure
+      .catch(err => {
+        console.log("Failed to get specific group: " + err);
         reject(err);
       });
   });

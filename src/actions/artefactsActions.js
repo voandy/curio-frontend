@@ -169,7 +169,7 @@ export const removeSelectedArtefact = artefact => (dispatch, getState) => {
       .then(res => {
         // reload data
         dispatch(getUserArtefacts(getState().auth.user.id));
-        dispatch(getUserNotifications(userId));
+        dispatch(getUserNotifications(getState().auth.user.id));
         resolve(res);
       })
       .catch(err => {

@@ -56,13 +56,13 @@ class Notification extends Component {
 
   // navigate to page accordingly
   clickNotification = async notif => {
+    console.log(notif);
     const { navigate } = this.props.navigation;
     // get notification details
-    const { refId, category, seenStatus } = notif;
+    const { refId, category, seenStatus, data } = notif;
+    const { type } = data;
     // only send api request when user has not seen it
-    if (!seenStatus) await this.props.setSeenStatusToTrue(notif._id);
-    // reload notification data on the page asynchronously
-    this.props.getUserNotifications(this.props.auth.user.id);
+    if (!seenStatus) this.props.setSeenStatusToTrue(notif._id);
     // navigate based on category
     switch (category) {
       case "artefact":
@@ -71,14 +71,27 @@ class Notification extends Component {
       case "group":
         navigate("SelectedGroup", { groupId: refId });
         return;
+      case "invitation":
+        // another layer of conditions
+        switch (type) {
+          case "invite":
+            navigate("Invitation", { notif });
+            return;
+          case "accept":
+            navigate("SelectedGroup", { groupId: refId });
+            return;
+          default:
+            console.log("Error: invalid notification invitation type");
+            return;
+        }
       default:
-        console.log("Oops, check your notification type.");
+        console.log("Error: invalid notification type");
         return;
     }
   };
 
   // refresh page
-  refreshNotificationsPage = async () => {
+  refreshPage = async () => {
     this.setState({ refreshing: true });
     // get data from backend
     await this.props.getUserNotifications(this.props.auth.user.id);
@@ -118,7 +131,7 @@ class Notification extends Component {
           refreshControl={
             <RefreshControl
               refreshing={this.state.refreshing}
-              onRefresh={this.refreshNotificationsPage}
+              onRefresh={this.refreshPage}
             />
           }
         >
