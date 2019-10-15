@@ -56,6 +56,7 @@ class Notification extends Component {
 
   // navigate to page accordingly
   clickNotification = async notif => {
+    console.log(notif);
     const { navigate } = this.props.navigation;
     // get notification details
     const { refId, category, seenStatus } = notif;
@@ -71,6 +72,9 @@ class Notification extends Component {
       case "group":
         navigate("SelectedGroup", { groupId: refId });
         return;
+      case "invitation":
+        navigate("Invitation", { notif });
+        return;
       default:
         console.log("Oops, check your notification type.");
         return;
@@ -78,7 +82,7 @@ class Notification extends Component {
   };
 
   // refresh page
-  refreshNotificationsPage = async () => {
+  refreshPage = async () => {
     this.setState({ refreshing: true });
     // get data from backend
     await this.props.getUserNotifications(this.props.auth.user.id);
@@ -118,7 +122,7 @@ class Notification extends Component {
           refreshControl={
             <RefreshControl
               refreshing={this.state.refreshing}
-              onRefresh={this.refreshNotificationsPage}
+              onRefresh={this.refreshPage}
             />
           }
         >
