@@ -61,9 +61,7 @@ class Notification extends Component {
     // get notification details
     const { refId, category, seenStatus } = notif;
     // only send api request when user has not seen it
-    if (!seenStatus) await this.props.setSeenStatusToTrue(notif._id);
-    // reload notification data on the page asynchronously
-    this.props.getUserNotifications(this.props.auth.user.id);
+    if (!seenStatus) this.props.setSeenStatusToTrue(notif._id);
     // navigate based on category
     switch (category) {
       case "artefact":
