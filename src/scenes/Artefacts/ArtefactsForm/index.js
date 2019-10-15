@@ -69,7 +69,7 @@ class ArtefactsForm extends Component {
       titleError: "",
       descriptionError: "",
       categoryError: "",
-      dateError: "include date",
+      dateError: "",
     };
   }
 
@@ -371,7 +371,7 @@ class ArtefactsForm extends Component {
                         mode="date"
                         date={this.state.artefact.dateObtained}
                         style={styles.date}
-                        placeholder="select date"
+                        placeholder="select date             ▾"
                         format="YYYY-MM-DD"
                         customStyles={{
                           dateIcon: {
@@ -387,10 +387,6 @@ class ArtefactsForm extends Component {
                         onDateChange={date => this.setDateObtained(date)}
                       />
                     </View>
-                    {/* error messages if there's any */}
-                    {this.state.dateError !== "" && (
-                      <Text style={[styles.error, { marginLeft: wd(0.08) }]}> {this.state.dateError} </Text>
-                    )}
                   </View>
 
                   {/* Privacy */}
@@ -412,6 +408,10 @@ class ArtefactsForm extends Component {
                     </View>
                   </View>
                 </View>
+                {/* error messages for date */}
+                {this.state.dateError !== "" && (
+                  <Text style={[styles.error, { marginLeft: wd(0.08) }]}> {this.state.dateError} </Text>
+                )}
 
                 {/* submit button */}
                 <View
