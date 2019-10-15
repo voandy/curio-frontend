@@ -242,7 +242,6 @@ export const addMemberToGroup = (groupId, userId) => dispatch => {
   return new Promise((resolve, reject) => {
     addMemberToGroupAPIRequest(groupId, userId)
       .then(res => {
-        dispatch(getSelectedGroupAllMembers(groupId));
         resolve(res);
       })
       .catch(err => {
@@ -256,7 +255,6 @@ export const deleteMemberFromGroup = (groupId, userId) => dispatch => {
   return new Promise((resolve, reject) => {
     deleteMemberFromGroupAPIRequest(groupId, userId)
       .then(res => {
-        dispatch(getSelectedGroupAllMembers(groupId));
         resolve(res);
       })
       .catch(err => {

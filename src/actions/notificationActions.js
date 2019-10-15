@@ -20,11 +20,12 @@ export const getUserNotifications = userId => dispatch => {
 };
 
 // set status of notification of notifId
-export const setSeenStatusToTrue = notifId => dispatch => {
+export const setSeenStatusToTrue = notifId => (dispatch, getState) => {
   return new Promise((resolve, reject) => {
     updateNotificationToReadAPIRequest(notifId)
       .then(res => {
-        // console.log(res);
+        // reload notification again
+        dispatch(getUserNotifications(getState().auth.user.id));
         resolve(res);
       })
       .catch(err => {
@@ -33,11 +34,6 @@ export const setSeenStatusToTrue = notifId => dispatch => {
       });
   });
 };
-
-export const updateNotificationById = (notifId, body) => (
-  dispatch,
-  getState
-) => {};
 
 export const setNotifications = notifications => {
   return {
