@@ -25,7 +25,7 @@ export const getUserData = userId => dispatch => {
 };
 
 // get user data belonging to userId
-export const getSelectedUser = userId => dispatch => {
+export const getSpecificUser = userId => dispatch => {
   return new Promise((resolve, reject) => {
     //get user by id
     getUserAPIRequest(userId)
@@ -43,7 +43,7 @@ export const getSelectedUser = userId => dispatch => {
 };
 
 // get user data belonging to userId
-export const getSelectedUserArtefacts = userId => dispatch => {
+export const getSpecificUserArtefacts = userId => dispatch => {
   return new Promise((resolve, reject) => {
     // get all artefacts posted by user
     getUserArtefactsAPIRequest(userId)

@@ -151,11 +151,8 @@ class ArtefactsForm extends Component {
   // validate inputs make sure no fields are empty
   //prettier-ignore
   validateAllFields = () => {
-    return new Promise((resolve,reject) => {
+    return new Promise((resolve, reject) => {
       const { title, imageURI, category, description, dateObtained } = this.state.artefact;
-
-      console.log(this.state)
-
       // validates against all field at the same time
       Promise.all([
         this.validateField("titleError", { title }),
@@ -182,12 +179,10 @@ class ArtefactsForm extends Component {
           !categoryError &&
           !dateObtainedError
         ) {
-          console.log("true boi")
           resolve(true);
         }
         // invalid inputs
         else {
-          console.log("wrong boi")
           resolve(false);
         }
       })
@@ -202,12 +197,8 @@ class ArtefactsForm extends Component {
     // wait for it to complete validating all fields
     // if validateAllField return false (gt errors), return early
     if (! await this.validateAllFields()) {
-      console.log("input invalid")
       return;
     }
-    // if no errors, proceed here
-    console.log("submit!")
-    console.log("ah ha->", this.state.artefact)
     // all fields are valid //
     // show user the loading modal
     this.setLoading(true);

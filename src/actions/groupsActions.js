@@ -323,6 +323,22 @@ export const removeInviteFromGroup = (groupId, userId) => dispatch => {
   });
 };
 
+// when user clicks on (selects) a specific group
+export const getSpecificGroup = groupId => dispatch => {
+  return new Promise((resolve, reject) => {
+    getGroupDetailsAPIRequest(groupId)
+      .then(res => {
+        // return user data instead of request response
+        resolve(res.data);
+      })
+      // failure
+      .catch(err => {
+        console.log("Failed to get specific group: " + err);
+        reject(err);
+      });
+  });
+};
+
 export const setUserGroups = decoded => {
   return {
     type: SET_USER_GROUPS,

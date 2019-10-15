@@ -42,7 +42,7 @@ import {
 
 import { getSelectedGroupAllArtefacts } from "../../../actions/groupsActions";
 
-import { getSelectedUser } from "../../../actions/userActions";
+import { getSpecificUser } from "../../../actions/userActions";
 
 // custom responsive design component
 import {
@@ -91,7 +91,7 @@ class SelectedArtefact extends Component {
           // extract owner id
           const { userId } = this.props.artefacts.selectedArtefact;
           // get owner data and store in local state
-          return this.props.getSelectedUser(userId)
+          return this.props.getSpecificUser(userId)
             .then(owner => this.setState({ owner }))
             .catch(err => Promise.reject(err));
         })();
@@ -353,7 +353,7 @@ class SelectedArtefact extends Component {
       {
         source: {
           uri: selectedArtefact.images[0].URL
-        },
+        }
       }
     ];
     // extract owner details
@@ -552,6 +552,6 @@ export default connect(
     commentOnArtefact,
     clearSelectedArtefact,
     getSelectedGroupAllArtefacts,
-    getSelectedUser
+    getSpecificUser
   }
 )(SelectedArtefact);
