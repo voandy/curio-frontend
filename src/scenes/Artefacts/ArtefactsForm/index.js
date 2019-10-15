@@ -64,7 +64,16 @@ class ArtefactsForm extends Component {
         ...selectedArtefact,
         userId: this.props.auth.user.id
       },
+<<<<<<< Updated upstream
       loading: false
+=======
+      loading: false,
+      imageError: "",
+      titleError: "",
+      descriptionError: "",
+      categoryError: "",
+      dateError: "include date",
+>>>>>>> Stashed changes
     };
   }
 
@@ -126,6 +135,7 @@ class ArtefactsForm extends Component {
     this.setArtefact("privacy", privacy);
   };
 
+<<<<<<< Updated upstream
   // error messages for unfilled fields
   fieldValidator=()=>{
     console.log("hue")
@@ -139,6 +149,21 @@ class ArtefactsForm extends Component {
     }
     if (this.state.newArtefact.description == "" || this.state.newArtefact.description == null) {
 
+=======
+  // validate inputs make sure no fields are empty
+  invalidField = () => {
+
+    this.setState({
+      imageError: validator.validateImage(this.state.artefact.imageURI),
+    })
+
+    console.log("error is->", this.state)
+
+    // valid inputs
+    if (this.state.imageError != "" || this.state.titleError != "" || this.state.descriptionError != ""
+      || this.state.categoryError != "" || this.state.dateError != "") {
+      return false
+>>>>>>> Stashed changes
     }
     if (this.state.newArtefact.dateObtained == "" || this.state.newArtefact.dateObtained == null) {
 
@@ -154,6 +179,7 @@ class ArtefactsForm extends Component {
     const { origin, isEditMode, addToGroup, groupId } = this.props.navigation.state.params;
     // show user the loading modal
     this.setLoading(true);
+<<<<<<< Updated upstream
     // use appropriate action based on current page mode (either editing or creating)
     (() => {
       return isEditMode
@@ -163,6 +189,41 @@ class ArtefactsForm extends Component {
           return addToGroup
             ? this.props.addArtefactToGroup(groupId, res.data._id)
             : Promise.resolve();
+=======
+
+    // validates each field
+    if (this.invalidField() === true) {
+      console.log("input invalid")
+      this.setLoading(false)
+    }
+    // onSubmit
+    else {
+      // use appropriate action based on current page mode (either editing or creating)
+      (() => {
+        return isEditMode
+          ? this.props.editSelectedArtefact(this.state.artefact)
+          : this.props.createNewArtefacts(this.state.artefact).then(res => {
+            // check if it should add the artefact to group
+            return addToGroup
+              ? this.props.addArtefactToGroup(groupId, res.data._id)
+              : Promise.resolve();
+          });
+      })()
+        .then(() => {
+          // stop showing user the loading modal
+          this.setLoading(false);
+          // reset new artefacts details
+          this.resetArtefact();
+          // navigate back to origin
+          navigate(origin);
+
+        })
+        .catch(err => {
+          // stop showing user the loading modal
+          this.setLoading(false);
+          // show error response
+          console.log(err.response.data);
+>>>>>>> Stashed changes
         });
     })()
       .then(() => {
