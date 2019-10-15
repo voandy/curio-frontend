@@ -151,47 +151,57 @@ class ArtefactsForm extends Component {
   // validate inputs make sure no fields are empty
   //prettier-ignore
   validateAllFields = () => {
-    const { title, imageURI, category, description, dateObtained } = this.state.artefact;
-    // validates against all field at the same time
-    Promise.all([
-      this.validateField("titleError", { title }),
-      this.validateField("imageError", { imageURI }),
-      this.validateField("categoryError", { category }),
-      this.validateField("descriptionError", { description }),
-      this.validateField("dateObtainedError", { dateObtained })
-    ]).then(() => {
-      // done, can check the state now
-      console.log("error is->", this.state.errors);
-
-      //valid inputs
-      if (
-        this.state.errors.imageError === "" &&
-        this.state.errors.titleError === "" &&
-        this.state.errors.descriptionError === "" &&
-        this.state.errors.categoryError === "" &&
-        this.state.errors.dateObtainedError === ""
-      ) {
-        console.log("true boi")
-        return true;
-      }
-      // invalid inputs
-      else {
-        console.log("wrong boi")
-        return false;
-      }
+    return new Promise((resolve,reject) => {
+      const { title, imageURI, category, description, dateObtained } = this.state.artefact;
+      // validates against all field at the same time
+      Promise.all([
+        this.validateField("titleError", { title }),
+        this.validateField("imageError", { imageURI }),
+        this.validateField("categoryError", { category }),
+        this.validateField("descriptionError", { description }),
+        this.validateField("dateObtainedError", { dateObtained })
+      ]).then(() => {
+        // done, can check the state now
+        console.log("error is->", this.state.errors);
+        const { 
+          imageError, 
+          titleError, 
+          descriptionError, 
+          categoryError, 
+          dateObtainedError
+        } = this.state.errors;
+        //valid inputs
+        // if all inputs are not = "" or not null
+        if (
+          !imageError &&
+          !titleError &&
+          !descriptionError &&
+          !categoryError &&
+          !dateObtainedError
+        ) {
+          console.log("true boi")
+          resolve(true);
+        }
+        // invalid inputs
+        else {
+          console.log("wrong boi")
+          resolve(false);
+        }
+      })
     })
+    
   };
 
   //prettier-ignore
-  onSubmit = () => {
+  onSubmit = async () => {
     const { navigate } = this.props.navigation;
     // extract required parameters
     const { origin, isEditMode, addToGroup, groupId } = this.props.navigation.state.params;
-    // validates all field field
-    if (this.validateAllFields() === false) {
+    // wait for it to complete validating all fields
+    // if validateAllField return false (gt errors), return early
+    if (! await this.validateAllFields()) {
       console.log("input invalid")
-      // early return
-      return; 
+      return;
     }
     // if no errors, proceed here
     console.log("submit!")
@@ -252,16 +262,16 @@ class ArtefactsForm extends Component {
     // if there no imageURI in state (no new changes or null)
     var imageSource = !this.state.artefact.imageURI
       ? // then check if there's a URL to selected Artefact image
-      !selectedArtefact || !selectedArtefact.images[0].URL
+        !selectedArtefact || !selectedArtefact.images[0].URL
         ? // if no, then use default pic
-        require("../../../../assets/images/icons/addPicture.png")
+          require("../../../../assets/images/icons/addPicture.png")
         : // there's URL to image, so use it
-        { uri: selectedArtefact.images[0].URL }
+          { uri: selectedArtefact.images[0].URL }
       : // User picks a new image to be uploaded
-      { uri: this.state.artefact.imageURI };
+        { uri: this.state.artefact.imageURI };
 
     // error messages
-    const { errors } = this.state
+    const { errors } = this.state;
 
     return (
       <KeyboardShift>
@@ -292,10 +302,10 @@ class ArtefactsForm extends Component {
                       {errors.imageError}
                     </Text>
                   ) : (
-                      <Text style={[styles.subFont, styles.imageText]}>
-                        Add images of your artefacts
+                    <Text style={[styles.subFont, styles.imageText]}>
+                      Add images of your artefacts
                     </Text>
-                    )}
+                  )}
                 </View>
 
                 {/* input fields */}
