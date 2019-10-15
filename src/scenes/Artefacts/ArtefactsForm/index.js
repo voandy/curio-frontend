@@ -191,7 +191,7 @@ class ArtefactsForm extends Component {
     if (this.validateAllFields() === false) {
       console.log("input invalid")
       // early return
-      return;
+      return; 
     }
     // if no errors, proceed here
     console.log("submit!")
