@@ -2,9 +2,8 @@
 import { SET_CURRENT_USER_DATA } from "../types/userTypes";
 
 // API helper
-import { getUserAPIRequest } from "../utils/APIHelpers/userAPIHelpers";
+import { getUserAPIRequest, updateUserDataAPIRequest, deleteUserDataAPIRequest } from "../utils/APIHelpers/userAPIHelpers";
 import { getUserArtefactsAPIRequest } from "../utils/APIHelpers/artefactAPIHelpers";
-import { getSelectedArtefact } from "./artefactsActions";
 import { uploadImageToGCS } from "../utils/imageUpload";
 
 // Async Redux actions //
@@ -63,24 +62,30 @@ export const getSpecificUserArtefacts = userId => dispatch => {
 };
 
 // edit user details (imageURI, name, password)
-// export const editUserData = user = (dispatch) => {
+// export const editUserData = user => dispatch => {
 //   return new Promise((resolve, reject) => {
-//     // if new image is selected, imageURI will not be empty
-//     // will upload to GCS, otherwise retain old URL link
-//     return !user.imageURI
-//       ? Promise.resolve(user.images[0].URL)
-//       : uploadImageToGCS(user.imageURI)
-//   })()
-//     .then(imageURI => {
-//       const userData = {
-//         ...user,
-//         images: [{ URL: imageURI }]
-//       };
-
+//     (() => {
+//       // if new image is selected, imageURI will not be empty
+//       // will upload to GCS, otherwise retain old URL link
+//       return !user.imageURI
+//         ? Promise.resolve(user.profilePic)
+//         : uploadImageToGCS(user.imageURI)
+//     })()
+//       .then(imageURL => {
+//         const userData = {
+//           ...user,
+//           profilePic: imageURL
+//         };
+//         updateUserDataAPIRequest(user._id, userData)
+//           .then(res => {
+//             dispatch()
+//           })
+//       })
+//     uploadImageToGCS(user.imageURI).then(imageurl => {
+    
 //     })
+//   })
 // }
-
-
 
 // new image have been selected, imageURI not empty
 // .catch(err => {

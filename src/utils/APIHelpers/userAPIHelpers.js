@@ -27,7 +27,7 @@ export const getUserAPIRequest = userId => {
 };
 
 // update user data based on userId
-export const updateUserdataAPIRequest = (userId, user) => {
+export const updateUserDataAPIRequest = (userId, user) => {
   return new Promise((resolve, reject) => {
     axios
       .put(PUSH_ENDPOINT + userId, user)
@@ -37,7 +37,7 @@ export const updateUserdataAPIRequest = (userId, user) => {
 };
 
 // delete user by userId
-export const deleteSelectedArtefactAPIRequest = userId => {
+export const deleteUserDataAPIRequest = userId => {
   return new Promise((resolve, reject) => {
     axios
       .delete(PUSH_ENDPOINT + userId)
