@@ -2,8 +2,6 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
-import { StackActions, NavigationActions } from "react-navigation";
-
 import { getSpecificUser } from "../../actions/userActions";
 import {
   getSpecificGroup,
@@ -26,8 +24,7 @@ import {
 import ActivityLoaderModal from "../../component/ActivityLoaderModal";
 
 // custom component
-import MyButton from "../../component/MyButton";
-import Line from "../../component/Line";
+import MySmallerButton from "../../component/MySmallerButton";
 
 // import reusable components
 import {
@@ -35,7 +32,6 @@ import {
   deviceWidthDimension as wd
 } from "../../utils/responsiveDesign";
 
-import SimpleHeader from "../../component/SimpleHeader";
 
 class Invitation extends Component {
   constructor(props) {
@@ -167,15 +163,10 @@ class Invitation extends Component {
 
         {/* invitation fields */}
         <View style={styles.buttons}>
-          {/* join group */}
-          <TouchableOpacity
-            style={{ marginVertical: wd(0.05), alignItems: "center" }}
-            onPress={() => this.onAcceptInvite()}
-          >
-            <Text style={styles.accept}>Accept</Text>
-          </TouchableOpacity>
+          {/* accept */}
+          <MySmallerButton text="Accept" onPress={() => this.onAcceptInvite()} />
 
-          {/* delete account */}
+          {/* decline */}
           <TouchableOpacity
             style={{ marginVertical: wd(0.05), alignItems: "center" }}
             onPress={() => this.onDeclineInvite()}
@@ -223,8 +214,10 @@ const styles = StyleSheet.create({
 
   buttons: {
     height: hp(0.6),
+    paddingTop: hp(0.05),
     width: wd(0.8),
-    alignContent: "center"
+    alignContent: "center",
+    alignItems: "center",
   },
 
   accept: {
@@ -235,7 +228,8 @@ const styles = StyleSheet.create({
 
   decline: {
     fontFamily: "HindSiliguri-Bold",
-    color: "red",
+    color: "#939090",
+    textDecorationLine: "underline",
     fontSize: 16
   }
 });

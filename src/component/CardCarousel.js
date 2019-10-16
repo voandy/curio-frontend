@@ -41,7 +41,7 @@ class CardCarousel extends Component {
         <View style={{ position: "absolute", top: 5, right: 5, elevation: 2 }}>
           <Image source={require("../../assets/images/icons/favourite.png")} />
         </View>
-        
+
         {/* group card */}
         <TouchableOpacity
           onLongPress={() => this.showAlert()}

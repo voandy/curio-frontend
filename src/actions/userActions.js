@@ -62,36 +62,36 @@ export const getSpecificUserArtefacts = userId => dispatch => {
 };
 
 // edit user details (imageURI, name, password)
-// export const editUserData = user => dispatch => {
-//   return new Promise((resolve, reject) => {
-//     (() => {
-//       // if new image is selected, imageURI will not be empty
-//       // will upload to GCS, otherwise retain old URL link
-//       return !user.imageURI
-//         ? Promise.resolve(user.profilePic)
-//         : uploadImageToGCS(user.imageURI)
-//     })()
-//       .then(imageURL => {
-//         const userData = {
-//           ...user,
-//           profilePic: imageURL
-//         };
-//         updateUserDataAPIRequest(user._id, userData)
-//           .then(res => {
-//             dispatch()
-//           })
-//       })
-//     uploadImageToGCS(user.imageURI).then(imageurl => {
-    
-//     })
-//   })
-// }
-
-// new image have been selected, imageURI not empty
-// .catch(err => {
-//   console.log("Failed to edit user details", err);
-//   reject(err);
-// })
+export const editUserData = user => dispatch => {
+  return new Promise((resolve, reject) => {
+    (() => {
+      // if new image is selected, imageURI will not be empty
+      // will upload to GCS, otherwise retain old URL link
+      return !user.imageURI
+        ? Promise.resolve(user.profilePic)
+        : uploadImageToGCS(user.imageURI)
+    })()
+      .then(imageURL => {
+        const userData = {
+          ...user,
+          profilePic: imageURL
+        };
+        updateUserDataAPIRequest(user.id, userData)
+          .then(res => {
+            dispatch(getUserData(userData.id));
+            resolve(res);
+          })
+          .catch(err => {
+            console.log("Failed to update user data" + err);
+            reject(err);
+          });
+      })
+      .catch(err => {
+        console.log("Failed to update user data" + err);
+        reject(err);
+      });
+  });
+}
 
 // Redux actions //
 // Set logged in user

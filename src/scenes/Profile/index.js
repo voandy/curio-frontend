@@ -120,7 +120,7 @@ class Profile extends Component {
           <ProfileSetting
             text="Account Settings"
             iconType="gear"
-            onPress={() => navigate("AccountSetting")}
+            onPress={() => navigate("AccountSetting", {origin:"Profile"})}
           />
 
           {/* line separator */}
