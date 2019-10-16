@@ -20,7 +20,7 @@ export const setUserPushTokenAPIRequest = (userId, pushToken = null) => {
 export const getUserAPIRequest = userId => {
   return new Promise((resolve, reject) => {
     axios
-      .get("http://curioapp.herokuapp.com/api/user/id/" + userId)
+      .get(PUSH_ENDPOINT + userId)
       .then(res => resolve(res))
       .catch(err => reject(err));
   });
