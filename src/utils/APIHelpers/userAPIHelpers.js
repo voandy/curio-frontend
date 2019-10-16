@@ -25,3 +25,23 @@ export const getUserAPIRequest = userId => {
       .catch(err => reject(err));
   });
 };
+
+// update user data based on userId
+export const updateUserdataAPIRequest = (userId, user) => {
+  return new Promise((resolve, reject) => {
+    axios
+      .put(PUSH_ENDPOINT + userId, user)
+      .then(res => resolve(res))
+      .catch(err => reject(err));
+  });
+};
+
+// delete user by userId
+export const deleteSelectedArtefactAPIRequest = userId => {
+  return new Promise((resolve, reject) => {
+    axios
+      .delete(PUSH_ENDPOINT + userId)
+      .then(res => resolve(res))
+      .catch(err => reject(err));
+  });
+};
