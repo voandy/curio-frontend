@@ -163,9 +163,9 @@ export const editSelectedArtefact = artefact => (dispatch, getState) => {
 };
 
 // delete selected artefact
-export const removeSelectedArtefact = artefact => (dispatch, getState) => {
+export const removeSelectedArtefact = artefactId => (dispatch, getState) => {
   return new Promise((resolve, reject) => {
-    deleteSelectedArtefactAPIRequest(artefact._id)
+    deleteSelectedArtefactAPIRequest(artefactId)
       .then(res => {
         // reload data
         dispatch(getUserArtefacts(getState().auth.user.id));

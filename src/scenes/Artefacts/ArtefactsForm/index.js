@@ -130,7 +130,7 @@ class ArtefactsForm extends Component {
   };
 
   // use Promise at setState callback to ensure load sequence
-  validateField(errorField, inputField) {
+  validateField(errorField, inputField, guard = null) {
     // extract field name and value
     let field = Object.keys(inputField)[0];
     let value = Object.values(inputField)[0];
@@ -140,7 +140,7 @@ class ArtefactsForm extends Component {
         return {
           errors: {
             ...state.errors,
-            [errorField]: validator(field, value)
+            [errorField]: validator(field, value, guard)
           }
         };
       },
@@ -153,13 +153,14 @@ class ArtefactsForm extends Component {
   validateAllFields = () => {
     return new Promise((resolve, reject) => {
       const { title, imageURI, category, description, dateObtained } = this.state.artefact;
+      const artefactPhoto = this.state.artefact.images[0].URL;
       // validates against all field at the same time
       Promise.all([
         this.validateField("titleError", { title }),
-        this.validateField("imageError", { imageURI }),
         this.validateField("categoryError", { category }),
         this.validateField("descriptionError", { description }),
-        this.validateField("dateObtainedError", { dateObtained })
+        this.validateField("dateObtainedError", { dateObtained }),
+        this.validateField("imageError", { imageURI }, artefactPhoto),
       ]).then(() => {
         // done, can check the state now
         const { 
