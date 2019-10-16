@@ -44,6 +44,9 @@ import { getSelectedGroupAllArtefacts } from "../../../actions/groupsActions";
 
 import { getSpecificUser } from "../../../actions/userActions";
 
+// import the loader modal to help show loading process
+import ActivityLoaderModal from "../../../component/ActivityLoaderModal";
+
 // custom responsive design component
 import {
   deviceWidthDimension as wd,
@@ -193,17 +196,6 @@ class SelectedArtefact extends Component {
       });
   };
 
-  // when user presses "edit artefact"
-  onEditArtefact = () => {
-    const { navigate } = this.props.navigation;
-    // navigate to ArtefactsForm while passing the editedSelectedArtefact
-    navigate("ArtefactsForm", {
-      origin: "SelectedArtefact",
-      isEditMode: true,
-      selectedArtefact: this.props.artefacts.selectedArtefact
-    });
-  };
-
   // toggle the modal for artefact deletion
   toggleDeleteModal = async () => {
     Alert.alert(
@@ -224,15 +216,23 @@ class SelectedArtefact extends Component {
     );
   };
 
+  // navigation functions //
+  // when user presses "edit artefact"
+  onArtefactEdit = () => {
+    this.navigateToPage("ArtefactsForm", {
+      isEditMode: true,
+      selectedArtefact: this.props.artefacts.selectedArtefact
+    });
+  };
   // when user presses "delete artefact"
   onDeleteSelectedArtefact = async () => {
-    const { navigate } = this.props.navigation;
-    const { origin, groupId } = this.props.navigation.state.params;
+    const { origin, artefactId, groupId } = this.props.navigation.state.params;
+    console.log(origin, artefactId, groupId);
     // show user the loading modal
     this.setLoading(true);
     // remove selected artefact from redux states
     //prettier-ignore
-    await this.props.removeSelectedArtefact(this.props.artefacts.selectedArtefact)
+    await this.props.removeSelectedArtefact(artefactId)
       .then(() => {
         // stop showing user the loading modal
         this.setLoading(false);
@@ -240,15 +240,25 @@ class SelectedArtefact extends Component {
         if (origin === 'SelectedGroup' && groupId) {
           this.props.getSelectedGroupAllArtefacts(groupId);
         }
-        // redirect back
-        navigate(origin);
+        // redirect back to previous page
+        this.navigateToPage(origin);
       })
       .catch(err => {
         // stop showing user the loading modal
         this.setLoading(false);
         // show error
-        console.log(err.response.data);
+        console.log(JSON.stringify(err.response));
       });
+  };
+  // main navigation function
+  navigateToPage = (page, options) => {
+    const { navigate } = this.props.navigation;
+    const artefactId = this.props.navigation.getParam("artefactId");
+    navigate(page, {
+      origin: "SelectedArtefact",
+      artefactId,
+      ...options
+    });
   };
 
   // like an artefact
@@ -328,7 +338,7 @@ class SelectedArtefact extends Component {
       <OptionButton
         firstOption={"Edit Artefact"}
         secondOption={"Delete Artefact"}
-        toggleFirstOption={this.onEditArtefact}
+        toggleFirstOption={this.onArtefactEdit}
         toggleSecondOption={this.toggleDeleteModal}
       />
     ) : (
@@ -386,7 +396,7 @@ class SelectedArtefact extends Component {
         {() => (
           <View style={styles.container}>
             {/* loading modal window */}
-            {/* <ActivityLoaderModal loading={this.state.loading} /> */}
+            <ActivityLoaderModal loading={this.state.loading} />
 
             {/* header */}
             <HeaderImageScrollView
