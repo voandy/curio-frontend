@@ -15,14 +15,15 @@ import { getUserData, editUserData } from "../../../actions/userActions";
 
 // custom component
 import SettingField from "../../../component/SettingField";
-import ActivityLoaderModal from "../../../component/ActivityLoaderModal"
+import ActivityLoaderModal from "../../../component/ActivityLoaderModal";
+import * as ImagePicker from "expo-image-picker";
+import * as ImageManipulator from "expo-image-manipulator";
 
 // import reusable components
 import {
   deviceHeigthDimension as hp,
   deviceWidthDimension as wd
 } from "../../../utils/responsiveDesign";
-
 
 class AccountSetting extends Component {
   constructor(props) {
@@ -93,6 +94,25 @@ class AccountSetting extends Component {
     );
   };
 
+  // access camera roll to pick an image
+  _pickImage = async () => {
+    // wait for user to pick an image
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true
+    });
+    // set imageURI in local state
+    if (!result.cancelled) {
+      const manipResult = await ImageManipulator.manipulateAsync(
+        result.uri,
+        [{ resize: { width: 1024 } }],
+        { format: "jpeg", compress: 0.5 }
+      );
+      // set into state
+      this.setUserData("imageURI", manipResult.uri)
+    }
+  };
+
   // when user presses "edit" with newly added fields
   editUserdata = async () => {
     const { navigate } = this.props.navigation;
@@ -100,6 +120,11 @@ class AccountSetting extends Component {
 
     // show user the loading modal
     this.setLoading(true);
+
+    // fill in unchanged values (name)
+    if (this.state.userData.name === "") {
+      this.setUserData("name", this.props.user.userData.name)
+    }
 
     await this.props.editUserData(this.state.userData)
       .then(() => {
@@ -116,36 +141,56 @@ class AccountSetting extends Component {
       });
   }
 
+  // new artefact's attribute change
+  setUserData = (key, value) => {
+    this.setState({
+      userData: {
+        ...this.state.userData,
+        [key]: value
+      }
+    });
+  };
+
   // change text in each Field
-  onChangeText = () => {
-    console.log("TEXTTT")
+  setName = name => {
+    this.setUserData("name", name)
   }
 
   render() {
+
+    // image source for profile pic
+    var imageSource = !this.state.userData.imageURI
+      ? // check for any uploaded profilePic
+      !this.props.user.userData.profilePic
+        ? // No image uploaded, use default pic
+        require("../../../../assets/images/default-profile-pic.png")
+        : // use previously uploaded profilePic
+        { uri: this.props.user.userData.profilePic }
+      :
+      // use newly Uploaded profilePic
+      { uri: this.state.userData.imageURI }
+
     return (
       <View style={styles.container}>
         <ActivityLoaderModal loading={this.state.loading} />
 
         {/* user profile pic */}
         <View style={{ height: hp(0.3), width: wd(1), alignItems: "center" }}>
-          {this.props.user.userData.profilePic != null ?
-            (<Image
-              style={styles.profilePic}
-              source={{ uri: this.props.user.userData.profilePic }}
-            />)
-            :
-            (<Image
-              style={styles.profilePic}
-              source={require("../../../../assets/images/default-profile-pic.png")}
-            />)
-          }
-          <Text style={styles.userName}>
-            @{this.props.user.userData.username}</Text>
+          <TouchableOpacity activeOpacity={0.5} onPress={this._pickImage}>
+            <Image style={styles.profilePic} source={imageSource} />
+          </TouchableOpacity>
+
+          <Text style={styles.userName}>Press image to change your profile picture</Text>
         </View>
 
         {/* setting fields */}
         <View style={styles.settings} >
-          <SettingField editable={true} field="Name" isPassword={false} input={this.props.user.userData.name} onChangeText={this.onChangeText}/>
+          <SettingField
+            editable={true}
+            field="Name"
+            isPassword={false}
+            input={this.props.user.userData.name}
+            onChangeText={value => this.setName(value)} />
           <SettingField editable={false} field="Username" isPassword={false} input={this.props.user.userData.username} />
           <SettingField editable={false} field="Email" isPassword={false} input={this.props.user.userData.email} />
           <SettingField editable={true} field="Password" isPassword={true} input="********" />
@@ -187,17 +232,13 @@ const styles = StyleSheet.create({
   userName: {
     color: "#939090",
     fontFamily: "HindSiliguri-Regular",
-    fontSize: 16
+    fontSize: 12
   },
 
   settings: {
     height: hp(0.6),
     width: wd(0.8),
     alignContent: "center"
-  },
-
-  settingsField: {
-
   },
 
   warning: {

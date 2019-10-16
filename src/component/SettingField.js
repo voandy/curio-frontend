@@ -55,7 +55,7 @@ class SettingField extends Component {
             secureTextEntry={this.props.isPassword}
             placeholderTextColor={this.editableColour()}
             style={styles.fieldInput}
-            onChangeText={this.props.onChangeText}
+            onChangeText={value => this.props.onChangeText(value)}
             value={this.props.value}
           />
         </View>
