@@ -76,22 +76,22 @@ export const editUserData = user => dispatch => {
           ...user,
           profilePic: imageURL
         };
-        updateUserDataAPIRequest(user._id, userData)
+        updateUserDataAPIRequest(user.id, userData)
           .then(res => {
-            dispatch()
+            dispatch(getUserData(userData.id));
+            resolve(res);
           })
+          .catch(err => {
+            console.log("Failed to update user data" + err);
+            reject(err);
+          });
       })
-    uploadImageToGCS(user.imageURI).then(imageurl => {
-    
-    })
-  })
+      .catch(err => {
+        console.log("Failed to update user data" + err);
+        reject(err);
+      });
+  });
 }
-
-// new image have been selected, imageURI not empty
-// .catch(err => {
-//   console.log("Failed to edit user details", err);
-//   reject(err);
-// })
 
 // Redux actions //
 // Set logged in user
