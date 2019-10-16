@@ -67,8 +67,10 @@ class Invitation extends Component {
         this.setState({ admin, group }, () => this.startShowing());
       })
       .catch(err => {
-        console.log(err);
-        alert("Error loading invitation data");
+        console.log("Error loading invitation data: " + err.response.data);
+        err.response.data === "Not Found"
+          ? alert("Group has been deleted")
+          : alert("Error loading invitation data");
       });
   };
 

@@ -53,7 +53,7 @@ class SelectedGroup extends Component {
     // make sure it exists
     groupId
       ? this.getSelectedGroupData(groupId)
-      : alert("Error loading group data.");
+      : alert("Error loading group data");
   }
 
   // get selected group data asynchronously
@@ -66,8 +66,8 @@ class SelectedGroup extends Component {
     ])
       .then(() => Promise.resolve())
       .catch(err => {
-        console.log(err);
-        alert("Please try again later.");
+        console.log(JSON.stringify(err.response));
+        alert("Please try again later");
         Promise.reject(err);
       });
   };
@@ -187,6 +187,10 @@ class SelectedGroup extends Component {
     });
   };
 
+  showOptions = () => {
+    const { selectedGroup } = this.props.groups;
+  };
+
   // components render functions //
   // return a row of group members
   showGroupMembers = groupMembers => {
@@ -203,6 +207,10 @@ class SelectedGroup extends Component {
 
   // return all group artefacts components
   showGroupArtefacts = groupArtefacts => {
+    // sort array based on date obtained (from earliest to oldest)
+    groupArtefacts.sort(function(a, b) {
+      return new Date(b.dateAdded) - new Date(a.dateAdded);
+    });
     // transform each artefact to a PostFeed component
     // prettier-ignore
     const groupArtefactsComponent = groupArtefacts.map(artefact => (
