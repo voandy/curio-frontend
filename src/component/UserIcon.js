@@ -33,14 +33,14 @@ const styles = StyleSheet.create({
     marginHorizontal: wd(0.005),
     alignItems: "center",
     width: wd(0.1),
-    height: wd(0.1)
+    height: wd(0.1),
+    marginBottom: 0
   },
 
   photo: {
     borderRadius: wd(0.1),
     width: wd(0.1),
-    height: wd(0.1),
-    marginRight: wd(0.06)
+    height: wd(0.1)
   }
 });
 

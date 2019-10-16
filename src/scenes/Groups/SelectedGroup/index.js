@@ -23,13 +23,18 @@ import {
   getSelectedGroupAllMembers,
   getSelectedGroupArtefactComments,
   deleteSelectedGroup,
-  inviteUserToGroup
+  inviteUserToGroup,
+  deleteMemberFromGroup,
+  getUserGroups
 } from "../../../actions/groupsActions";
 
 // custom component
 import UserIcon from "../../../component/UserIcon";
 import AddButton from "../../../component/AddButton";
 import PostFeed from "../../../component/PostFeed";
+
+// import the loader modal to help show loading process
+import ActivityLoaderModal from "../../../component/ActivityLoaderModal";
 
 // Custom respondsive design component
 import {
@@ -92,6 +97,15 @@ class SelectedGroup extends Component {
     this.setState({
       loading
     });
+  };
+
+  // check if user is the admin of the group
+  isUserAdmin = () => {
+    // get required redux data
+    const { adminId } = this.props.groups.selectedGroup;
+    const userId = this.props.user.userData._id;
+    // return true if user is admin, otherwise false
+    return adminId === userId;
   };
 
   // refresh page
@@ -157,7 +171,7 @@ class SelectedGroup extends Component {
   };
   onInviteButtonClick = () => {
     const { selectedGroup } = this.props.groups;
-    // selectedGroup is not ready yet, return early
+    // selectedGroup is not ready yet, return early (toggle is temp disabled)
     if (!selectedGroup) return;
     // it is ready
     this.navigateToPage("UserSearch", {
@@ -166,15 +180,33 @@ class SelectedGroup extends Component {
       onPress: this.props.inviteUserToGroup
     });
   };
-  onEditGroup = () => {
+  onGroupEdit = () => {
     const { selectedGroup } = this.props.groups;
-    // selectedGroup is not ready yet, return early
+    // selectedGroup is not ready yet, return early (toggle is temp disabled)
     if (!selectedGroup) return;
     // it is ready
     this.navigateToPage("GroupsForm", {
       isEditMode: true,
       selectedGroup
     });
+  };
+  onGroupLeave = async () => {
+    // show modal loading
+    this.setLoading(true);
+    // get group id
+    const { groupId, origin } = this.props.navigation.state.params;
+    // get current logged-in user id
+    const userId = this.props.user.userData._id;
+
+    // selectedGroup is not ready yet, return early (toggle is temp disabled)
+    if (!groupId) return;
+    // remove user from the group and reload user groups data
+    await this.props.deleteMemberFromGroup(groupId, userId);
+    await this.props.getUserGroups(userId);
+    // close modal loading
+    this.setLoading(false);
+    // redirect user back to where they came from (not necessarily "Groups" page)
+    this.navigateToPage(origin);
   };
   // main navigation function
   navigateToPage = (page, options) => {
@@ -188,7 +220,34 @@ class SelectedGroup extends Component {
   };
 
   showOptions = () => {
-    const { selectedGroup } = this.props.groups;
+    // check if user is the admin of the group
+    return this.isUserAdmin() ? (
+      <OptionButton
+        firstOption={"Edit Group"}
+        secondOption={"Delete Group"}
+        toggleFirstOption={this.onGroupEdit}
+        toggleSecondOption={this.toggleDeleteModal}
+      />
+    ) : (
+      <OptionButton
+        firstOption={"Leave Group"}
+        toggleFirstOption={this.onGroupLeave}
+      />
+    );
+  };
+
+  showInviteButton = () => {
+    // check if user is the admin of the group
+    return this.isUserAdmin() ? (
+      <TouchableOpacity
+        onPress={() => this.onInviteButtonClick()}
+        style={styles.memberButton}
+      >
+        <Text style={styles.buttonText}>Invite</Text>
+      </TouchableOpacity>
+    ) : (
+      <View />
+    );
   };
 
   // components render functions //
@@ -202,7 +261,16 @@ class SelectedGroup extends Component {
         image={{ uri: member.details.profilePic }} 
       />
     ));
-    return groupMembersComponent;
+    const style = this.isUserAdmin()
+      ? styles.groupMemberContainerForAdmin
+      : styles.groupMemberContainerForMember;
+    return (
+      <View style={style}>
+        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+          {groupMembersComponent}
+        </ScrollView>
+      </View>
+    );
   };
 
   // return all group artefacts components
@@ -240,9 +308,10 @@ class SelectedGroup extends Component {
     } = this.props.groups.selectedGroup;
     // extract redux store information
     const { selectedGroupMembers, selectedGroupArtefacts } = this.props.groups;
-
+    this.showOptions();
     return (
       <View style={styles.container}>
+        <ActivityLoaderModal loading={this.state.loading} />
         {/* container to let user scroll within main component */}
         <ScrollView
           showsVerticalScrollIndicator={false}
@@ -269,13 +338,7 @@ class SelectedGroup extends Component {
               {/* title */}
               <Text style={[styles.groupTitle, styles.font]}>{title}</Text>
               {/* option button */}
-              <OptionButton
-                firstOption={"Edit Group"}
-                secondOption={"Delete Group"}
-                thirdOption={"Leave Group"}
-                toggleFirstOption={this.onEditGroup}
-                toggleSecondOption={this.toggleDeleteModal}
-              />
+              {this.showOptions()}
             </View>
             {/* descriptions */}
             <Text style={[styles.groupDescription, styles.subFont]}>
@@ -288,20 +351,10 @@ class SelectedGroup extends Component {
             {/* container for group members and button */}
             <View style={styles.groupMember}>
               {/* show members in scrollable view */}
-              <ScrollView
-                style={{ flex: 0.7 }}
-                horizontal={true}
-                showsHorizontalScrollIndicator={false}
-              >
-                {this.showGroupMembers(selectedGroupMembers)}
-              </ScrollView>
+              {this.showGroupMembers(selectedGroupMembers)}
+
               {/* Add members button */}
-              <TouchableOpacity
-                onPress={() => this.onInviteButtonClick()}
-                style={styles.memberButton}
-              >
-                <Text style={styles.buttonText}>Invite</Text>
-              </TouchableOpacity>
+              {this.showInviteButton()}
             </View>
           </View>
           {/* container for all artefacts */}
@@ -366,16 +419,34 @@ const styles = StyleSheet.create({
   },
 
   groupMember: {
+    width: wd(1),
     height: wd(0.15),
+    flex: 1,
     flexDirection: "row",
-    alignItems: "center"
+    justifyContent: "center"
+  },
+
+  groupMemberContainerForAdmin: {
+    flex: 0.7,
+    height: wd(0.1),
+    justifyContent: "center",
+    alignSelf: "center",
+    paddingLeft: wd(0.07)
+  },
+
+  groupMemberContainerForMember: {
+    height: wd(0.1),
+    alignSelf: "center"
   },
 
   memberButton: {
+    flex: 0.3,
     justifyContent: "center",
     alignItems: "center",
+    alignSelf: "flex-end",
     backgroundColor: "#FF6E6E",
-    margin: wd(0.03),
+    marginVertical: wd(0.03),
+    marginRight: wd(0.07),
     width: wd(0.3),
     height: wd(0.1),
     borderRadius: 40,
@@ -394,6 +465,7 @@ SelectedGroup.propTypes = {
 };
 
 const mapStateToProps = state => ({
+  user: state.user,
   groups: state.groups
 });
 
@@ -408,6 +480,8 @@ export default connect(
     getSelectedGroupAllMembers,
     getSelectedGroupArtefactComments,
     deleteSelectedGroup,
-    inviteUserToGroup
+    inviteUserToGroup,
+    deleteMemberFromGroup,
+    getUserGroups
   }
 )(SelectedGroup);
