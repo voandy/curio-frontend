@@ -152,8 +152,8 @@ class ArtefactsForm extends Component {
   //prettier-ignore
   validateAllFields = () => {
     return new Promise((resolve, reject) => {
-      const { title, imageURI, category, description, dateObtained } = this.state.artefact;
-      const artefactPhoto = this.state.artefact.images[0].URL;
+      const { title, imageURI, category, description, dateObtained, images } = this.state.artefact;
+      const artefactPhoto = images[0].URL;
       // validates against all field at the same time
       Promise.all([
         this.validateField("titleError", { title }),

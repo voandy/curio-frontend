@@ -136,7 +136,7 @@ class GroupsForm extends Component {
   };
 
   // use Promise at setState callback to ensure load sequence
-  validateField(errorField, inputField) {
+  validateField(errorField, inputField, guard = null) {
     // extract field name and value
     let field = Object.keys(inputField)[0];
     let value = Object.values(inputField)[0];
@@ -146,7 +146,7 @@ class GroupsForm extends Component {
         return {
           errors: {
             ...state.errors,
-            [errorField]: validator(field, value)
+            [errorField]: validator(field, value, guard)
           }
         };
       },
@@ -157,13 +157,13 @@ class GroupsForm extends Component {
   // validate inputs make sure no fields are empty
   validateAllFields = () => {
     return new Promise((resolve, reject) => {
-      const { title, imageURI, description } = this.state.group;
+      const { title, imageURI, description, coverPhoto } = this.state.group;
 
       // validates against all field at the same time
       Promise.all([
-        this.validateField("imageError", { title }),
-        this.validateField("titleError", { imageURI }),
-        this.validateField("descriptionError", { description })
+        this.validateField("titleError", { title }),
+        this.validateField("descriptionError", { description }),
+        this.validateField("imageError", { imageURI }, coverPhoto)
       ]).then(() => {
         // done, can check the state now
         const { imageError, titleError, descriptionError } = this.state.errors;
