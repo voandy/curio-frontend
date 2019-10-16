@@ -159,6 +159,15 @@ class SelectedArtefact extends Component {
     });
   };
 
+  // check if user is the owner of the artefact
+  isUserArtefactOwner = () => {
+    // get required redux data
+    const ownerId = this.props.artefacts.selectedArtefact.userId;
+    const userId = this.props.user.userData._id;
+    // return true if user is owner, otherwise false
+    return userId === ownerId;
+  };
+
   // setter function for handling new changes in local comment state
   onChangeNewComment = newComment => {
     this.setState({
@@ -314,6 +323,19 @@ class SelectedArtefact extends Component {
     );
   };
 
+  showOptions = () => {
+    return this.isUserArtefactOwner() ? (
+      <OptionButton
+        firstOption={"Edit Artefact"}
+        secondOption={"Delete Artefact"}
+        toggleFirstOption={this.onEditArtefact}
+        toggleSecondOption={this.toggleDeleteModal}
+      />
+    ) : (
+      <View />
+    );
+  };
+
   // show all comments
   showComments = function(comments) {
     var commentViews = [];
@@ -408,12 +430,8 @@ class SelectedArtefact extends Component {
                 <View style={{ flexDirection: "row" }}>
                   {/* title */}
                   <Text style={styles.title}>{selectedArtefact.title}</Text>
-                  <OptionButton
-                    firstOption={"Edit Artefact"}
-                    secondOption={"Delete Artefact"}
-                    toggleFirstOption={this.onEditArtefact}
-                    toggleSecondOption={this.toggleDeleteModal}
-                  />
+                  {/* option */}
+                  {this.showOptions()}
                 </View>
 
                 {/* description */}
