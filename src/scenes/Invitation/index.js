@@ -103,7 +103,7 @@ class Invitation extends Component {
     const userId = this.props.user.userData._id;
     const { replace } = this.props.navigation;
 
-    // // show user the loading modal
+    // show user the loading modal
     this.setLoading(true);
     // do bunch of api requests and data loading
     await this.props.addMemberToGroup(groupId, userId);
@@ -114,7 +114,7 @@ class Invitation extends Component {
     this.setLoading(false);
     // pop current screen and navigate to selectedGroup
     // so user cannot "back" into this invitation screen
-    replace("SelectedGroup", { groupId });
+    replace("SelectedGroup", { origin: "Notification", groupId });
   };
 
   onDeclineInvite = async () => {

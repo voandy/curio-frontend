@@ -18,6 +18,7 @@ import {
   unpinGroupAPIRequest,
   deleteGroupAPIRequest,
   addMemberToGroupAPIRequest,
+  deleteMemberFromGroupAPIRequest,
   addArtefactToGroupAPIRequest,
   deleteArtefactFromGroupAPIRequest,
   inviteUserToGroupAPIRequest,
