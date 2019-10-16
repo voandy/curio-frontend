@@ -77,17 +77,6 @@ class AccountSetting extends Component {
         );
     };
 
-    // cancel setting a ccount
-    handleCancel = () => {
-        this.setState({ deleteModal: false });
-    };
-
-    // delete account
-    handleDelete = () => {
-        // TODO add logic
-        this.setState({ deleteModal: false });
-    };
-
     render() {
         return (
             <View style={styles.container}>
