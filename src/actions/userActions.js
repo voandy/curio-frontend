@@ -2,7 +2,11 @@
 import { SET_CURRENT_USER_DATA } from "../types/userTypes";
 
 // API helper
-import { getUserAPIRequest, updateUserDataAPIRequest, deleteUserDataAPIRequest } from "../utils/APIHelpers/userAPIHelpers";
+import {
+  getUserAPIRequest,
+  updateUserDataAPIRequest,
+  deleteUserDataAPIRequest
+} from "../utils/APIHelpers/userAPIHelpers";
 import { getUserArtefactsAPIRequest } from "../utils/APIHelpers/artefactAPIHelpers";
 import { uploadImageToGCS } from "../utils/imageUpload";
 
@@ -69,7 +73,7 @@ export const editUserData = user => dispatch => {
       // will upload to GCS, otherwise retain old URL link
       return !user.imageURI
         ? Promise.resolve(user.profilePic)
-        : uploadImageToGCS(user.imageURI)
+        : uploadImageToGCS(user.imageURI);
     })()
       .then(imageURL => {
         const userData = {
@@ -91,7 +95,7 @@ export const editUserData = user => dispatch => {
         reject(err);
       });
   });
-}
+};
 
 // Redux actions //
 // Set logged in user

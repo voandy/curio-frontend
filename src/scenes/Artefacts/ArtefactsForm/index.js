@@ -52,15 +52,13 @@ const newArtefact = {
 class ArtefactsForm extends Component {
   constructor(props) {
     super(props);
-    // extract artefact details if selectedArtefact is passed in
-    const selectedArtefact = this.props.navigation.getParam("selectedArtefact");
     // setup initial state
     this.state = {
       artefact: {
         ...newArtefact,
-        // add & replace artefact details if selectedArtefact is passed in
+        // add & replace artefact details if artefact data is passed in
         // otherwise, it will not replace anything
-        ...selectedArtefact,
+        ...this.props.navigation.getParam("artefact"),
         userId: this.props.auth.user.id
       },
       loading: false,
@@ -104,9 +102,7 @@ class ArtefactsForm extends Component {
 
   // setter function for "loading" to show user that something is loading
   setLoading = loading => {
-    this.setState({
-      loading
-    });
+    this.setState({ loading });
   };
 
   // Setters for all the local state for newArtefacts
@@ -193,7 +189,14 @@ class ArtefactsForm extends Component {
   onSubmit = async () => {
     const { navigate } = this.props.navigation;
     // extract required parameters
-    const { origin, isEditMode, addToGroup, groupId } = this.props.navigation.state.params;
+    const { 
+      origin, 
+      isEditMode, 
+      addToGroup, 
+      groupId, 
+      reloadDataAtOrigin,
+      reloadDataAtSource 
+    } = this.props.navigation.state.params;
     // wait for it to complete validating all fields
     // if validateAllField return false (gt errors), return early
     if (! await this.validateAllFields()) {
@@ -218,6 +221,9 @@ class ArtefactsForm extends Component {
         this.setLoading(false);
         // reset new artefacts details
         this.resetArtefact();
+        // reload data at artefact
+        // reload data on origin/source page if required (it is not null)
+        if (reloadDataAtOrigin) reloadDataAtOrigin();
         // navigate back to origin
         navigate(origin);
 
@@ -251,18 +257,18 @@ class ArtefactsForm extends Component {
 
   render() {
     // extract selected artefact detail from parameter passed in
-    const selectedArtefact = this.props.navigation.getParam("selectedArtefact");
+    const { artefact } = this.state;
     // decide which image source to use
     // if there no imageURI in state (no new changes or null)
-    var imageSource = !this.state.artefact.imageURI
+    var imageSource = !artefact.imageURI
       ? // then check if there's a URL to selected Artefact image
-        !selectedArtefact || !selectedArtefact.images[0].URL
+        !artefact || !artefact.images
         ? // if no, then use default pic
           require("../../../../assets/images/icons/addPicture.png")
         : // there's URL to image, so use it
-          { uri: selectedArtefact.images[0].URL }
+          { uri: artefact.images[0].URL }
       : // User picks a new image to be uploaded
-        { uri: this.state.artefact.imageURI };
+        { uri: artefact.imageURI };
 
     // error messages
     const { errors } = this.state;
@@ -318,7 +324,7 @@ class ArtefactsForm extends Component {
                       placeholderTextColor="#868686"
                       style={styles.inputFont}
                       onChangeText={value => this.setTitle(value)}
-                      value={this.state.artefact.title}
+                      value={artefact.title}
                     />
                   </View>
                 </View>
@@ -343,7 +349,7 @@ class ArtefactsForm extends Component {
                       placeholderTextColor="#868686"
                       style={styles.inputFont}
                       onChangeText={value => this.setDescription(value)}
-                      value={this.state.artefact.description}
+                      value={artefact.description}
                     />
                   </View>
                 </View>
@@ -365,7 +371,7 @@ class ArtefactsForm extends Component {
                     <Text style={styles.font}>Category</Text>
                     <Picker
                       style={styles.pickerLong}
-                      selectedValue={this.state.artefact.category}
+                      selectedValue={artefact.category}
                       onValueChange={this.setCategory.bind(this)}
                     >
                       <Picker.Item label="Art" value="Art" />
@@ -415,7 +421,7 @@ class ArtefactsForm extends Component {
                       <Text style={styles.font}>Date</Text>
                       <DatePicker
                         mode="date"
-                        date={this.state.artefact.dateObtained}
+                        date={artefact.dateObtained}
                         style={styles.date}
                         placeholder="select date             ▾"
                         format="YYYY-MM-DD"
@@ -429,7 +435,7 @@ class ArtefactsForm extends Component {
                             alignItems: "flex-start"
                           }
                         }}
-                        selectedValue={this.state.artefact.dateObtained}
+                        selectedValue={artefact.dateObtained}
                         onDateChange={date => this.setDateObtained(date)}
                       />
                     </View>
@@ -445,7 +451,7 @@ class ArtefactsForm extends Component {
                       <Text style={styles.font}>Privacy</Text>
                       <Picker
                         style={styles.pickerShort}
-                        selectedValue={this.state.artefact.privacy}
+                        selectedValue={artefact.privacy}
                         onValueChange={value => this.setPrivacy(value)}
                       >
                         <Picker.Item label="Private" value={1} />

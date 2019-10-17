@@ -37,7 +37,14 @@ class SearchFeed extends Component {
   // show invite button only in group -> invite member search page
   showButton = () => {
     // extracts props passed in
-    const { isGroupMember, hasInvited, toInvite, groupId, userId } = this.props;
+    const {
+      isGroupMember,
+      hasInvited,
+      toInvite,
+      groupId,
+      userId,
+      reloadDataAtOrigin
+    } = this.props;
     // only enable button if user hasn't joined or been invited
     const buttonCondition =
       hasInvited || isGroupMember || this.state.inviteButtonPressed
@@ -52,7 +59,10 @@ class SearchFeed extends Component {
           disabled={hasInvited || isGroupMember || this.state.inviteButtonPressed}
           onPress={() => {
             this.setState({ inviteButtonPressed: true })
-            this.props.onPress(groupId, userId)
+            this.props.onPress(groupId, userId).then(() => {
+              // reload data on origin page if required (it is not null)
+              if (reloadDataAtOrigin) reloadDataAtOrigin();
+            })
           }}
         >
           <Text style={styles.text}>Invite</Text>

@@ -56,8 +56,6 @@ import {
 class SelectedArtefact extends Component {
   constructor(props) {
     super(props);
-    // clear redux state in case user force quits the app and reopen it
-    this.props.clearSelectedArtefact();
     // setup initial local state values
     this.state = {
       // local page settings state
@@ -65,14 +63,17 @@ class SelectedArtefact extends Component {
       isUpdateModalVisible: false,
       loading: false,
       refreshing: false,
-      // artefact state
+      // artefact details state
       newComment: "",
       liked: 0,
       likesCount: 0,
       commentsCount: 0,
       likingEnabled: true,
       // artefact owner
-      owner: {}
+      owner: {},
+      // selected artefact data
+      artefact: {},
+      comments: []
     };
     // get artefact id passed in from the navigation parameter
     artefactId = this.props.navigation.getParam("artefactId");
@@ -89,19 +90,32 @@ class SelectedArtefact extends Component {
       this.props.getSelectedArtefact(artefactId),
       this.props.getArtefactComments(artefactId)
     ])
-      .then(() => {
-        (() => {
+      .then(data => {
+        const artefact = data[0];
+        const comments = data[1];
+        // set artefact data into local state
+        this.setState({ artefact, comments }, () => {
+          // in the callback of the setState
+          // set artefact details into state
+          this.setState({
+            liked: artefact.likes.includes(this.props.user.userData._id),
+            likesCount: artefact.likes.length,
+            commentsCount: comments.length
+          })
           // extract owner id
-          const { userId } = this.props.artefacts.selectedArtefact;
+          const { userId } = this.state.artefact;
           // get owner data and store in local state
-          return this.props.getSpecificUser(userId)
-            .then(owner => this.setState({ owner }))
+          this.props.getSpecificUser(userId)
+            .then(owner => {
+              this.setState({ owner }, () => Promise.resolve())
+            })
             .catch(err => Promise.reject(err));
-        })();
+        });
       })
       .catch(err => {
-        console.log(err);
-        alert("Error loading artefact data");
+        console.log(JSON.stringify(err.response));
+        alert("Please try again later");
+        Promise.reject(err);
       });
   }
 
@@ -113,59 +127,15 @@ class SelectedArtefact extends Component {
     }
   };
 
-  async componentDidUpdate(prevProps) {
-    // extract prev & selected artefact details
-    const prevArtefact = prevProps.artefacts.selectedArtefact;
-    const currentArtefact = this.props.artefacts.selectedArtefact;
-    // assign selectedArtefact along with likes when selectedArtefact data
-    // has been retrieved from api call for the first time
-    if (
-      Object.keys(prevArtefact).length === 0 &&
-      Object.keys(currentArtefact).length !== 0
-    ) {
-      this.setState({
-        selectedArtefact: {
-          ...currentArtefact,
-          imageURI: currentArtefact.images[0].URL
-        },
-        liked: currentArtefact.likes.includes(this.props.user.userData._id),
-        likesCount: currentArtefact.likes.length
-      });
-    }
-    // extract prev & selected artefact comments details
-    const prevComments = prevProps.artefacts.artefactComments;
-    const currentComments = this.props.artefacts.artefactComments;
-    // assign selectedArtefact along with likes when selectedArtefact data
-    // has been retrieved from api call for the first time
-    if (prevComments.length !== currentComments.length) {
-      this.setState({
-        commentsCount: currentComments.length
-      });
-    }
-    // re-generate comments when a new artefact comment has been made
-    if (prevComments.length + 1 === currentComments.length) {
-      const artefactId = currentArtefact._id;
-      await this.props.getArtefactComments(artefactId);
-    }
-  }
-
-  // clear redux state when component is unmounting
-  componentWillUnmount() {
-    this.props.clearSelectedArtefact();
-  }
-
   // setter function for "loading" to show user that something is loading
   setLoading = loading => {
-    this.setState({
-      ...this.state,
-      loading
-    });
+    this.setState({ loading });
   };
 
   // check if user is the owner of the artefact
   isUserArtefactOwner = () => {
-    // get required redux data
-    const ownerId = this.props.artefacts.selectedArtefact.userId;
+    // get required state data
+    const ownerId = this.state.artefact.userId;
     const userId = this.props.user.userData._id;
     // return true if user is owner, otherwise false
     return userId === ownerId;
@@ -173,27 +143,23 @@ class SelectedArtefact extends Component {
 
   // setter function for handling new changes in local comment state
   onChangeNewComment = newComment => {
-    this.setState({
-      newComment
-    });
+    this.setState({ newComment });
   };
 
   // refresh page
-  refreshSelectedArtefactPage = async () => {
+  reloadData = async () => {
+    const { reloadDataAtOrigin } = this.props.navigation.state.params;
+    // load refresh animation
     this.setState({ refreshing: true });
     // get data from backend
     artefactId = this.props.navigation.getParam("artefactId");
     // reload everything at once, only refresh once everything is done loading
-    Promise.all([
-      this.props.getSelectedArtefact(artefactId),
-      this.props.getArtefactComments(artefactId)
-    ])
-      // resets refreshing state
-      .then(() => this.setState({ refreshing: false }))
-      .catch(() => {
-        this.setState({ refreshing: false });
-        alert("Please try again later");
-      });
+    await this.getSelectedArtefactData(artefactId);
+    // reload group data //
+    // reload data on origin/source page if required (it is not null)
+    if (reloadDataAtOrigin) reloadDataAtOrigin();
+    // resets refreshing state
+    this.setState({ refreshing: false });
   };
 
   // toggle the modal for artefact deletion
@@ -216,18 +182,13 @@ class SelectedArtefact extends Component {
     );
   };
 
-  // navigation functions //
-  // when user presses "edit artefact"
-  onArtefactEdit = () => {
-    this.navigateToPage("ArtefactsForm", {
-      isEditMode: true,
-      selectedArtefact: this.props.artefacts.selectedArtefact
-    });
-  };
   // when user presses "delete artefact"
   onDeleteSelectedArtefact = async () => {
-    const { origin, artefactId, groupId } = this.props.navigation.state.params;
-    console.log(origin, artefactId, groupId);
+    const {
+      origin,
+      artefactId,
+      reloadDataAtOrigin
+    } = this.props.navigation.state.params;
     // show user the loading modal
     this.setLoading(true);
     // remove selected artefact from redux states
@@ -236,10 +197,9 @@ class SelectedArtefact extends Component {
       .then(() => {
         // stop showing user the loading modal
         this.setLoading(false);
-        // reload group data here
-        if (origin === 'SelectedGroup' && groupId) {
-          this.props.getSelectedGroupAllArtefacts(groupId);
-        }
+        // reload group data
+        // reload data on origin page if required (it is not null)
+        if (reloadDataAtOrigin) reloadDataAtOrigin();
         // redirect back to previous page
         this.navigateToPage(origin);
       })
@@ -250,6 +210,18 @@ class SelectedArtefact extends Component {
         console.log(JSON.stringify(err.response));
       });
   };
+
+  // navigation functions //
+  // when user presses "edit artefact"
+  onArtefactEdit = () => {
+    const { artefact } = this.state;
+    this.navigateToPage("ArtefactsForm", {
+      artefact,
+      isEditMode: true,
+      reloadDataAtOrigin: this.reloadData.bind(this)
+    });
+  };
+
   // main navigation function
   navigateToPage = (page, options) => {
     const { navigate } = this.props.navigation;
@@ -269,13 +241,9 @@ class SelectedArtefact extends Component {
         likesCount: this.state.likesCount + 1,
         likingEnabled: false
       });
-
       // make an api call to the backend to like artefact
       this.props
-        .likeArtefact(
-          this.props.artefacts.selectedArtefact._id,
-          this.props.user.userData._id
-        )
+        .likeArtefact(this.state.artefact._id, this.props.user.userData._id)
         .then(
           function() {
             this.setState({ likingEnabled: true });
@@ -298,13 +266,9 @@ class SelectedArtefact extends Component {
         likesCount: this.state.likesCount - 1,
         likingEnabled: false
       });
-
       // make an api call to the backend to unlike artefact
       this.props
-        .unlikeArtefact(
-          this.props.artefacts.selectedArtefact._id,
-          this.props.user.userData._id
-        )
+        .unlikeArtefact(this.state.artefact._id, this.props.user.userData._id)
         .then(
           function() {
             this.setState({ likingEnabled: true });
@@ -325,12 +289,14 @@ class SelectedArtefact extends Component {
   };
 
   // post new comment
-  postComment = function(commentContent) {
-    this.props.commentOnArtefact(
-      this.props.artefacts.selectedArtefact._id,
+  postComment = async function(commentContent) {
+    artefactId = this.props.navigation.getParam("artefactId");
+    await this.props.commentOnArtefact(
+      this.state.artefact._id,
       this.props.user.userData._id,
       commentContent
     );
+    this.reloadData(artefactId);
   };
 
   showOptions = () => {
@@ -347,44 +313,38 @@ class SelectedArtefact extends Component {
   };
 
   // show all comments
-  showComments = function(comments) {
-    var commentViews = [];
-
+  showComments = function() {
     // sort comments by date
-    comments.sort(function(a, b) {
+    const comments = this.state.comments.sort(function(a, b) {
       return new Date(a.datePosted) - new Date(b.datePosted);
     });
-
-    // create a view for each comment
-    for (var i = 0; i < comments.length; i++) {
-      commentViews.push(
-        <Comments
-          key={i}
-          userProfilePic={comments[i].posterPic}
-          userName={comments[i].posterName}
-          datePosted={comments[i].datePosted}
-          comment={comments[i].content}
-        />
-      );
-    }
-
-    return commentViews;
+    // transform each artefact to a Comments component
+    const commentComponents = comments.map(comment => (
+      <Comments
+        key={comment._id}
+        userProfilePic={comment.posterPic}
+        userName={comment.posterName}
+        datePosted={comment.datePosted}
+        comment={comment.content}
+      />
+    ));
+    return commentComponents;
   };
 
   render() {
     // date format
     Moment.locale("en");
     // extract selectedArtefact from redux state
-    const { selectedArtefact } = this.props.artefacts;
+    const { artefact } = this.state;
     // does not render when selectedArtefact is empty
-    if (Object.keys(selectedArtefact).length === 0) {
+    if (Object.keys(artefact).length === 0) {
       return null;
     }
     // prepare artefact image
     const artefactImage = [
       {
         source: {
-          uri: selectedArtefact.images[0].URL
+          uri: artefact.images[0].URL
         }
       }
     ];
@@ -406,7 +366,7 @@ class SelectedArtefact extends Component {
               maxHeight={hp(0.5)}
               minHeight={hp(0)}
               // use this to dynamically get image data
-              headerImage={{ uri: selectedArtefact.images[0].URL }}
+              headerImage={{ uri: artefact.images[0].URL }}
               renderForeground={() => (
                 // change this to open the image in full screen
                 <TouchableOpacity
@@ -422,7 +382,7 @@ class SelectedArtefact extends Component {
               refreshControl={
                 <RefreshControl
                   refreshing={this.state.refreshing}
-                  onRefresh={this.refreshSelectedArtefactPage}
+                  onRefresh={this.reloadData}
                 />
               }
             >
@@ -439,22 +399,20 @@ class SelectedArtefact extends Component {
               <View style={styles.descriptionPlaceholder}>
                 <View style={{ flexDirection: "row" }}>
                   {/* title */}
-                  <Text style={styles.title}>{selectedArtefact.title}</Text>
+                  <Text style={styles.title}>{artefact.title}</Text>
                   {/* option */}
                   {this.showOptions()}
                 </View>
 
                 {/* description */}
-                <Text style={styles.description}>
-                  {selectedArtefact.description}
-                </Text>
+                <Text style={styles.description}>{artefact.description}</Text>
               </View>
 
               {/* user detail */}
               <UserDetail
                 image={{ uri: owner.profilePic }}
                 userName={owner.name}
-                dateAdded={selectedArtefact.datePosted}
+                dateAdded={artefact.datePosted}
               />
               {/* likes/comments counters */}
               <View style={styles.likesIndicatorPlaceholder}>
@@ -478,7 +436,7 @@ class SelectedArtefact extends Component {
               <View style={styles.comments}>
                 <Text style={styles.commentsTitle}>Comments</Text>
                 {/* comments */}
-                {this.showComments(this.props.artefacts.artefactComments)}
+                {this.showComments()}
                 <CommentForm
                   newComment={this.state.newComment}
                   onChangeNewComment={this.onChangeNewComment}
