@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
-import { getSpecificUser } from "../../actions/userActions";
+import { getSelectedUser } from "../../actions/userActions";
 import {
   getSelectedGroup,
   addMemberToGroup,
@@ -52,7 +52,7 @@ class Invitation extends Component {
     const adminId = data.otherUser;
     // reload everything at once
     return Promise.all([
-      this.props.getSpecificUser(adminId),
+      this.props.getSelectedUser(adminId),
       this.props.getSelectedGroup(refId)
     ])
       .then(values => {
@@ -247,7 +247,7 @@ const mapStateToProps = state => ({
 export default connect(
   mapStateToProps,
   {
-    getSpecificUser,
+    getSelectedUser,
     getSelectedGroup,
     addMemberToGroup,
     removeInviteFromGroup,

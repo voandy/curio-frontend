@@ -42,7 +42,7 @@ import {
 
 import { getSelectedGroupAllArtefacts } from "../../../actions/groupsActions";
 
-import { getSpecificUser } from "../../../actions/userActions";
+import { getSelectedUser } from "../../../actions/userActions";
 
 // import the loader modal to help show loading process
 import ActivityLoaderModal from "../../../component/ActivityLoaderModal";
@@ -105,7 +105,7 @@ class SelectedArtefact extends Component {
           // extract owner id
           const { userId } = this.state.artefact;
           // get owner data and store in local state
-          this.props.getSpecificUser(userId)
+          this.props.getSelectedUser(userId)
             .then(owner => {
               this.setState({ owner }, () => Promise.resolve())
             })
@@ -296,6 +296,7 @@ class SelectedArtefact extends Component {
       this.props.user.userData._id,
       commentContent
     );
+    // reload page
     this.reloadData(artefactId);
   };
 
@@ -538,6 +539,6 @@ export default connect(
     commentOnArtefact,
     clearSelectedArtefact,
     getSelectedGroupAllArtefacts,
-    getSpecificUser
+    getSelectedUser
   }
 )(SelectedArtefact);

@@ -13,8 +13,8 @@ import {
 
 // redux actions
 import {
-  getSpecificUser,
-  getSpecificUserArtefacts
+  getSelectedUser,
+  getSelectedUserArtefacts
 } from "../../actions/userActions";
 
 // date converter
@@ -63,7 +63,7 @@ class PublicProfile extends Component {
     return Promise.all([
       (() => {
         // get selected user data and store in local state
-        return this.props.getSpecificUser(userId)
+        return this.props.getSelectedUser(userId)
           .then(user => {
             // set local state and callback to return promise
             // in case load sequence is required (like in refreshPage function)
@@ -73,7 +73,7 @@ class PublicProfile extends Component {
       })(),
       (() => {
         // get selected user data and store in local state
-        return this.props.getSpecificUserArtefacts(userId)
+        return this.props.getSelectedUserArtefacts(userId)
           .then(artefacts => {
             // retains only public artefacts
             artefacts = this.extractPublicArtefacts(artefacts);
@@ -263,8 +263,8 @@ const styles = StyleSheet.create({
 });
 
 PublicProfile.propTypes = {
-  getSpecificUser: PropTypes.func.isRequired,
-  getSpecificUserArtefacts: PropTypes.func.isRequired,
+  getSelectedUser: PropTypes.func.isRequired,
+  getSelectedUserArtefacts: PropTypes.func.isRequired,
   user: PropTypes.object.isRequired
 };
 
@@ -276,5 +276,5 @@ const mapStateToProps = state => ({
 // export
 export default connect(
   mapStateToProps,
-  { getSpecificUser, getSpecificUserArtefacts }
+  { getSelectedUser, getSelectedUserArtefacts }
 )(PublicProfile);
