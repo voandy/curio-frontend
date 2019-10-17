@@ -5,10 +5,10 @@ import {
   View,
   StyleSheet,
   ScrollView,
-  Dimensions,
   Text,
   StatusBar,
-  RefreshControl
+  RefreshControl,
+  Animated
 } from "react-native";
 
 // import redux actions for groups
@@ -26,9 +26,6 @@ import {
   deviceHeigthDimension as hp,
   deviceWidthDimension as wd
 } from "../../utils/responsiveDesign";
-
-// default gray colour
-const gray = "#F7F7F7";
 
 class Groups extends Component {
   constructor(props) {
@@ -111,7 +108,6 @@ class Groups extends Component {
     // prep a temporary array for row-by-row grouping logic
     //prettier-ignore
     var tempMapArray = [...Array(groupComponent.length).keys()].filter(n => !(n % 2))
-    console.log(tempMapArray);
 
     // fill up left and right columns in the page
     var arrayLeft = [];
@@ -165,8 +161,59 @@ class Groups extends Component {
       : pinnedGroupComponent;
   };
 
+
+  numItems = this.props.groups.userGroups.filter(group => group.pinned).length
+  itemWidth = (280 / this.numItems) - ((this.numItems - 1) * 10)
+  animVal = new Animated.Value(0)
+
+
+
   render() {
+    // navigate between pages
     const { navigate } = this.props.navigation;
+
+
+    // --- TESTTING PHASE BELOW --- //
+
+    const barrrGroup = this.props.groups.userGroups
+
+    // scroll bar animator
+    let barArray = []
+    barrrGroup.forEach((group, i) => {
+
+      const scrollBarVal = this.animVal.interpolate({
+        inputRange: [wd(1) * (i - 1), wd(1) * (i + 1)],
+        outputRange: [-this.itemWidth, this.itemWidth],
+        extrapolate: 'clamp',
+      })
+
+      const thisBar = (
+        <View
+          key={`bar${i}`}
+          style={[
+            styles.track,
+            {
+              width: this.itemWidth,
+              marginLeft: i === 0 ? 0 : 10,
+            },
+          ]}
+        >
+          <Animated.View
+
+            style={[
+              styles.bar,
+              {
+                width: this.itemWidth,
+                transform: [
+                  { translateX: scrollBarVal },
+                ],
+              },
+            ]}
+          />
+        </View>
+      )
+      barArray.push(thisBar)
+    })
 
     return (
       <KeyboardShift>
@@ -204,15 +251,29 @@ class Groups extends Component {
 
               {/* carousel pinned groups */}
               <View style={{ height: wd(0.52), backgroundColor: "white" }}>
+
                 <ScrollView
                   horizontal={true}
                   showsHorizontalScrollIndicator={false}
                   decelerationRate={0.8}
-                  snapToAlignment={"center"}
-                  snapToInterval={Dimensions.get("window").width}
+                  // snapToAlignment={"center"}
+                  // snapToInterval={Dimensions.get("window").width}
+                  pagingEnabled
+                  onScroll={
+                    Animated.event(
+                      [{ nativeEvent: { contentOffset: { x: this.animVal } } }]
+                    )
+                  }
                 >
+                  {/* pinned groups in carousel */}
                   {this.showPinnedGroups()}
+
+
                 </ScrollView>
+                {/* indicator for the scroll */}
+                <View style={styles.barContainer}>
+                  {barArray}
+                </View>
               </View>
 
               {/* unpinned groups */}
@@ -261,7 +322,31 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 16,
     fontFamily: "HindSiliguri-Regular"
-  }
+  },
+
+
+
+
+
+
+  barContainer: {
+    position: 'absolute',
+    zIndex: 2,
+    top: 40,
+    flexDirection: 'row',
+  },
+  track: {
+    backgroundColor: '#ccc',
+    overflow: 'hidden',
+    height: 2,
+  },
+  bar: {
+    backgroundColor: '#5294d6',
+    height: 2,
+    position: 'absolute',
+    left: 0,
+    top: 0,
+  },
 });
 
 Groups.propTypes = {
