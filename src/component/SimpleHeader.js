@@ -10,7 +10,10 @@ import {
 } from "react-native";
 
 // Custom respondsive design component
-import { deviceWidthDimension as wd } from "../utils/responsiveDesign";
+import {
+  deviceWidthDimension as wd,
+  deviceHeigthDimension as hp
+} from "../utils/responsiveDesign";
 
 /**Simpler header design from Header
  * used in Notifications, Artefacts, profile page
@@ -25,7 +28,6 @@ class SimpleHeader extends Component {
     }
   };
 
-  // TODO add more logic
   // highlight the active tab when pressed
   clickTab = tab => {
     if (tab === this.state.tab1) {
@@ -82,7 +84,6 @@ class SimpleHeader extends Component {
       return null;
     } else {
       return (
-        // <View style={{ flexDirection: "row", marginLeft:30 }}>
         <View style={{ flexDirection: "row", justifyContent: "center" }}>
           <TouchableOpacity
             onPress={() => this.clickTab(this.state.tab1)}
@@ -115,7 +116,10 @@ class SimpleHeader extends Component {
   // show search bar
   showSearch = () => {
     if (this.props.showSearch === false) {
-      return null;
+      // add margin to the top of page without a search bar
+      return (
+        <View style={{height:hp(0.02)}}/>
+      );
     } else {
       return (
         <View style={styles.search}>
@@ -183,8 +187,10 @@ const styles = StyleSheet.create({
 
   headerText: {
     width: wd(0.7),
-    fontSize: 22,
+    // fontSize: 22,
+    fontSize: hp(0.033),
     marginTop: 8,
+    marginBottom: 4,
     marginLeft: 25,
     fontFamily: "HindSiliguri-Bold"
   },

@@ -75,7 +75,7 @@ class Profile extends Component {
         >
           <SimpleHeader
             title="My Profile"
-            showSearch={true}
+            showSearch={false}
             searchInput={this.state.searchInput}
             onChangeSearchInput={this.onChangeSearchInput}
             pressClear={() => this.onChangeSearchInput("")}
