@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Notifications } from "expo";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import {
@@ -9,6 +10,8 @@ import {
 } from "react-navigation";
 import { white } from "ansi-colors";
 import { Image } from "react-native";
+
+import NotificationTabBarIcon from "../component/notificationTabBarIcon";
 
 import StartScreen from "./Start";
 import RegisterScreen from "./Register";
@@ -41,6 +44,9 @@ class Scenes extends Component {
   // for scenarios: there's an user stayed logged in on app launch
   // or there's no user logged in on app launch
   async componentDidMount() {
+    // let scenes actively listen to new received notif
+    this.listener = Notifications.addListener(this.listen);
+    // load all the required user data if user is logged-in
     if (this.props.auth.isAuthenticated) {
       // retrieve and setup data
       this.setupUserAppData();
@@ -73,6 +79,24 @@ class Scenes extends Component {
     this.props.getUserNotifications(user.id);
     // post user's expo-push-token to backend if haven't already
     registerForPushNotificationsAsync(user.id);
+  };
+
+  componentWillUnmount() {
+    // let scenes stop listening to new received notif
+    this.listener = Notifications.removeListener(this.listen);
+  }
+
+  // notification listener function
+  listen = () => {
+    // on new notification received:
+    // reload user notifications
+    this.props.getUserNotifications(this.props.auth.user.id);
+  };
+
+  onChangeSearchInput = searchInput => {
+    this.setState({
+      searchInput
+    });
   };
 
   render() {
@@ -153,10 +177,7 @@ const AppStack = createBottomTabNavigator(
       screen: NotificationStack,
       navigationOptions: {
         tabBarIcon: ({ tintColor }) => (
-          <Image
-            source={require("../../assets/images/icons/notification.png")}
-            style={{ height: 27, width: 27, tintColor: tintColor }}
-          />
+          <NotificationTabBarIcon tintColor={tintColor} />
         )
       }
     },
