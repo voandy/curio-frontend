@@ -267,7 +267,6 @@ class SelectedGroup extends Component {
 
   // display a row of group members
   showGroupMembers = () => {
-    console.log(this.state.groupMembers);
     // transform each member to an UserIcon component
     //prettier-ignore
     const groupMembersComponent = this.state.groupMembers.map(member => (
@@ -296,7 +295,6 @@ class SelectedGroup extends Component {
     const groupArtefacts = this.state.groupArtefacts.sort(function(a, b) {
       return new Date(b.dateAdded) - new Date(a.dateAdded);
     });
-    console.log(groupArtefacts);
     // transform each artefact to a PostFeed component
     // prettier-ignore
     const groupArtefactsComponent = groupArtefacts.map(a => (
