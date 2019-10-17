@@ -50,7 +50,7 @@ class NotificationFeed extends Component {
                 style={styles.photo}
                 source={{ uri: thumbnailURL }}
                 resizeMethod="resize"
-                resizeMode="contain"
+                resizeMode="cover"
               />
             </View>
             {/* Message */}
@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
   },
 
   notificationPlaceholder: {
-    width: wd(0.75),
+    width: wd(0.75)
   },
 
   notification: {

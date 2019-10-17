@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
     height: wd(0.04),
     marginVertical: wd(0.05),
     marginHorizontal: wd(0.02),
-    resizeMode: "contain"
+    resizeMode: "cover"
   }
 });
 
