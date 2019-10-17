@@ -158,7 +158,7 @@ class GroupsForm extends Component {
   validateAllFields = () => {
     return new Promise((resolve, reject) => {
       const { title, imageURI, description, coverPhoto } = this.state.group;
-
+      const imageGuard = coverPhoto ? coverPhoto : null;
       // validates against all field at the same time
       Promise.all([
         this.validateField("titleError", { title }),
