@@ -15,7 +15,10 @@ class UserIcon extends Component {
     return (
       // TODO link to user profile
       // <TouchableOpacity onPress={} style={styles.container}>
-      <TouchableOpacity style={styles.container}>
+      <TouchableOpacity
+        style={styles.container}
+        onPress={() => this.props.onPress(this.props.userId)}
+      >
         <Image
           style={styles.photo}
           source={this.props.image}

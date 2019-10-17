@@ -14,7 +14,7 @@ import {
   deviceWidthDimension as wd
 } from "../utils/responsiveDesign";
 
-import { timeSince } from './componentHelpers/timeSince';
+import { timeSince } from "./componentHelpers/timeSince";
 
 /**user who posted the artefact
  * used in Selected Artefact and Groups
@@ -28,8 +28,7 @@ class UserDetail extends Component {
     return (
       <View style={styles.container}>
         {/* user profile pic */}
-        <TouchableOpacity>
-          {/* TODO: LINK TO PROFILE */}
+        <TouchableOpacity onPress={() => this.props.onPress(this.props.userId)}>
           <Image
             style={styles.userProfilePic}
             source={{ uri: this.props.userProfilePic }}
@@ -43,9 +42,7 @@ class UserDetail extends Component {
               {/* TODO: LINK TO PROFILE */}
               <Text style={styles.userName}>{this.props.userName}</Text>
             </TouchableOpacity>
-            <Text style={styles.time}>
-              {timeSince(this.props.datePosted)}
-            </Text>
+            <Text style={styles.time}>{timeSince(this.props.datePosted)}</Text>
           </View>
 
           <Text style={styles.comment}>{this.props.comment}</Text>
@@ -59,7 +56,7 @@ const styles = StyleSheet.create({
   container: {
     marginVertical: wd(0.03),
     flexDirection: "row",
-    width: wd(1),
+    width: wd(1)
   },
 
   userProfilePic: {
@@ -91,7 +88,7 @@ const styles = StyleSheet.create({
   time: {
     fontFamily: "HindSiliguri-Regular",
     flex: 1,
-    textAlign: 'right',
+    textAlign: "right",
     marginRight: wd(0.06)
   },
 

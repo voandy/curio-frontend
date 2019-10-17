@@ -41,6 +41,8 @@ class PostFeed extends Component {
             userName={this.props.userName}
             image={this.props.profileImage}
             dateAdded={this.props.dateAdded}
+            userId={this.props.userId}
+            onPress={this.props.onUserProfilePress}
           />
           {/* post title */}
           <Text style={[styles.font, styles.title]}>{this.props.title}</Text>
