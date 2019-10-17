@@ -164,6 +164,10 @@ class SelectedGroup extends Component {
   };
 
   // navigation functions //
+  onUserProfilePress = userId => {
+    this.navigateToPage("PublicProfile", { userId });
+  };
+
   onArtefactClick = artefactId => {
     this.navigateToPage("SelectedArtefact", { artefactId });
   };
@@ -217,9 +221,9 @@ class SelectedGroup extends Component {
 
   // main navigation function
   navigateToPage = (page, options) => {
-    const { navigate } = this.props.navigation;
+    const { push } = this.props.navigation;
     const groupId = this.props.navigation.getParam("groupId");
-    navigate(page, {
+    push(page, {
       origin: "SelectedGroup",
       groupId,
       ...options,
@@ -263,12 +267,15 @@ class SelectedGroup extends Component {
 
   // display a row of group members
   showGroupMembers = () => {
+    console.log(this.state.groupMembers);
     // transform each member to an UserIcon component
     //prettier-ignore
     const groupMembersComponent = this.state.groupMembers.map(member => (
       <UserIcon 
-        key={ member._id } 
+        key={member._id} 
+        userId={member.memberId}
         image={{ uri: member.details.profilePic }} 
+        onPress={this.onUserProfilePress.bind(this)}
       />
     ));
     const style = this.isUserAdmin()
@@ -289,6 +296,7 @@ class SelectedGroup extends Component {
     const groupArtefacts = this.state.groupArtefacts.sort(function(a, b) {
       return new Date(b.dateAdded) - new Date(a.dateAdded);
     });
+    console.log(groupArtefacts);
     // transform each artefact to a PostFeed component
     // prettier-ignore
     const groupArtefactsComponent = groupArtefacts.map(a => (
@@ -303,6 +311,8 @@ class SelectedGroup extends Component {
         dateAdded={a.dateAdded}
         commentsCount={a.commentCount ? a.commentCount : 0}
         onPress={this.onArtefactClick.bind(this)}
+        userId={a.details.userId}
+        onUserProfilePress={this.onUserProfilePress.bind(this)}
       />
     ));
     return groupArtefactsComponent;

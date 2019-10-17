@@ -93,7 +93,7 @@ class Groups extends Component {
   showGroups = () => {
     var groups = this.props.groups.userGroups;
     // sort array based on date obtained (from earliest to oldest)
-    groups.sort(function (a, b) {
+    groups.sort(function(a, b) {
       return new Date(b.dateCreated) - new Date(a.dateCreated);
     });
     // tranform each group element into a component
@@ -111,31 +111,24 @@ class Groups extends Component {
     // prep a temporary array for row-by-row grouping logic
     //prettier-ignore
     var tempMapArray = [...Array(groupComponent.length).keys()].filter(n => !(n % 2))
-    console.log(tempMapArray);
-
     // fill up left and right columns in the page
     var arrayLeft = [];
     var arrayRight = [];
     for (index of tempMapArray) {
-      arrayLeft.push(groupComponent[index])
-      arrayRight.push(groupComponent[index + 1])
+      arrayLeft.push(groupComponent[index]);
+      arrayRight.push(groupComponent[index + 1]);
     }
-
     // groups cards feed
     return (
       <View style={styles.feed}>
         {/* left column */}
-        <View style={{ width: wd(0.43) }}>
-          {arrayLeft}
-        </View>
+        <View style={{ width: wd(0.43) }}>{arrayLeft}</View>
         {/* middle spacing */}
         <View style={{ width: wd(0.05) }} />
         {/* right column */}
-        <View style={{ width: wd(0.43) }}>
-          {arrayRight}
-        </View>
+        <View style={{ width: wd(0.43) }}>{arrayRight}</View>
       </View>
-    )
+    );
   };
 
   // show all the pinned groups in carousel
@@ -144,7 +137,7 @@ class Groups extends Component {
     // retain only pinned groups
     groups = groups.filter(group => group.pinned);
     // sort array based on date obtained (from earliest to oldest)
-    groups.sort(function (a, b) {
+    groups.sort(function(a, b) {
       return new Date(b.dateCreated) - new Date(a.dateCreated);
     });
     const pinnedGroupComponent = groups.map(group => (
@@ -219,13 +212,13 @@ class Groups extends Component {
               {this.props.groups.userGroups.length !== 0 ? (
                 <View>{this.showGroups()}</View>
               ) : (
-                  <View style={styles.emptyFeed}>
-                    <Text style={styles.warning}>
-                      Looks like you're not part of any groups yet {"\n"}Click the
-                      "+" button to create a group
+                <View style={styles.emptyFeed}>
+                  <Text style={styles.warning}>
+                    Looks like you're not part of any groups yet {"\n"}Click the
+                    "+" button to create a group
                   </Text>
-                  </View>
-                )}
+                </View>
+              )}
             </ScrollView>
 
             {/* create new Group */}
@@ -246,7 +239,7 @@ const styles = StyleSheet.create({
   feed: {
     flexDirection: "row",
     paddingHorizontal: wd(0.05),
-    backgroundColor: "#FAFAFA",
+    backgroundColor: "#FAFAFA"
   },
 
   emptyFeed: {
@@ -254,7 +247,7 @@ const styles = StyleSheet.create({
     height: hp(0.6),
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#FAFAFA",
+    backgroundColor: "#FAFAFA"
   },
 
   warning: {

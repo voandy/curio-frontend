@@ -212,6 +212,10 @@ class SelectedArtefact extends Component {
   };
 
   // navigation functions //
+  onUserProfilePress = userId => {
+    this.navigateToPage("PublicProfile", { userId });
+  };
+
   // when user presses "edit artefact"
   onArtefactEdit = () => {
     const { artefact } = this.state;
@@ -224,9 +228,9 @@ class SelectedArtefact extends Component {
 
   // main navigation function
   navigateToPage = (page, options) => {
-    const { navigate } = this.props.navigation;
+    const { push } = this.props.navigation;
     const artefactId = this.props.navigation.getParam("artefactId");
-    navigate(page, {
+    push(page, {
       origin: "SelectedArtefact",
       artefactId,
       ...options
@@ -324,9 +328,11 @@ class SelectedArtefact extends Component {
       <Comments
         key={comment._id}
         userProfilePic={comment.posterPic}
+        userId={comment.posterId}
         userName={comment.posterName}
         datePosted={comment.datePosted}
         comment={comment.content}
+        onPress={this.onUserProfilePress.bind(this)}
       />
     ));
     return commentComponents;

@@ -106,9 +106,9 @@ class PublicProfile extends Component {
   // artefact feed functions //
   // for each individual artefact clicked by user
   onArtefactClick = async artefactId => {
-    const { navigate } = this.props.navigation;
+    const { push } = this.props.navigation;
     // redirect user
-    navigate("SelectedArtefact", { origin: "PublicProfile", artefactId });
+    push("SelectedArtefact", { origin: "PublicProfile", artefactId });
   };
 
   // show artefacts by privacy settings
