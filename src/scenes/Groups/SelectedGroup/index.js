@@ -18,10 +18,8 @@ import {
 import {
   getSelectedGroup,
   editSelectedGroup,
-  clearSelectedGroup,
   getSelectedGroupAllArtefacts,
   getSelectedGroupAllMembers,
-  getSelectedGroupArtefactComments,
   deleteSelectedGroup,
   inviteUserToGroup,
   deleteMemberFromGroup,
@@ -45,13 +43,16 @@ import {
 class SelectedGroup extends Component {
   constructor(props) {
     super(props);
-    // clear redux state in case user force quits the app and reopen it
-    this.props.clearSelectedGroup();
     // Setup initial state
     this.state = {
+      // page settings
       isUpdateModalVisible: false,
       loading: false,
-      refreshing: false
+      refreshing: false,
+      // selected group data
+      group: {},
+      groupMembers: [],
+      groupArtefacts: []
     };
     // get group id passed in from the navigation parameter
     groupId = this.props.navigation.getParam("groupId");
@@ -62,14 +63,22 @@ class SelectedGroup extends Component {
   }
 
   // get selected group data asynchronously
+  //prettier-ignore
   getSelectedGroupData = async groupId => {
-    // reload everything at once
+    // retrieve all data from backend at once
     return Promise.all([
       this.props.getSelectedGroup(groupId),
       this.props.getSelectedGroupAllMembers(groupId),
       this.props.getSelectedGroupAllArtefacts(groupId)
     ])
-      .then(() => Promise.resolve())
+      .then(data => {
+        // set all data to local state
+        this.setState({
+          group: data[0],
+          groupMembers: data[1],
+          groupArtefacts: data[2]
+        }, () => Promise.resolve());
+      })
       .catch(err => {
         console.log(JSON.stringify(err.response));
         alert("Please try again later");
@@ -85,13 +94,6 @@ class SelectedGroup extends Component {
     }
   };
 
-  // clear redux state on unmount (usual case of clearing state)
-  // this is needed to improve app responsiveness compared to having clearSelectedGroup
-  // in constructor alone
-  componentWillUnmount() {
-    this.props.clearSelectedGroup();
-  }
-
   // setter function for "loading" to show user that something is loading
   setLoading = loading => {
     this.setState({
@@ -101,15 +103,15 @@ class SelectedGroup extends Component {
 
   // check if user is the admin of the group
   isUserAdmin = () => {
-    // get required redux data
-    const { adminId } = this.props.groups.selectedGroup;
+    // get required local state data
+    const { adminId } = this.state.group;
     const userId = this.props.user.userData._id;
     // return true if user is admin, otherwise false
     return adminId === userId;
   };
 
   // refresh page
-  refreshSelectedGroupPage = async () => {
+  reloadData = async () => {
     this.setState({ refreshing: true });
     // get data from backend
     groupId = this.props.navigation.getParam("groupId");
@@ -141,24 +143,23 @@ class SelectedGroup extends Component {
 
   // delete the current selected group
   onDeleteSelectedGroup = async () => {
-    const { navigate } = this.props.navigation;
     const { origin } = this.props.navigation.state.params;
     // show user the loading modal
     this.setLoading(true);
     // remove selected artefact from redux states
     //prettier-ignore
-    await this.props.deleteSelectedGroup(this.props.groups.selectedGroup._id)
+    await this.props.deleteSelectedGroup(this.state.group._id)
       .then(() => {
         // stop showing user the loading modal
         this.setLoading(false);
-        // navigate to groups
-        navigate(origin);
+        // navigate to origin
+        this.navigateToPage(origin);
       })
       .catch(err => {
         // stop showing user the loading modal
         this.setLoading(false);
         // show error
-        console.log(err.response.data);
+        console.log(JSON.stringify(err.response));
       });
   };
 
@@ -166,30 +167,35 @@ class SelectedGroup extends Component {
   onArtefactClick = artefactId => {
     this.navigateToPage("SelectedArtefact", { artefactId });
   };
+
   onAddNewArtefact = () => {
-    this.navigateToPage("ArtefactsForm", { addToGroup: true });
+    this.navigateToPage("ArtefactsForm", {
+      addToGroup: true
+    });
   };
+
   onInviteButtonClick = () => {
-    const { selectedGroup } = this.props.groups;
+    const { group } = this.state;
     // selectedGroup is not ready yet, return early (toggle is temp disabled)
-    if (!selectedGroup) return;
+    if (!group) return;
     // it is ready
     this.navigateToPage("UserSearch", {
-      selectedGroup,
       toInvite: true,
       onPress: this.props.inviteUserToGroup
     });
   };
+
   onGroupEdit = () => {
-    const { selectedGroup } = this.props.groups;
+    const { group } = this.state;
     // selectedGroup is not ready yet, return early (toggle is temp disabled)
-    if (!selectedGroup) return;
-    // it is ready
+    if (!group) return;
+    // redirect user
     this.navigateToPage("GroupsForm", {
-      isEditMode: true,
-      selectedGroup
+      group,
+      isEditMode: true
     });
   };
+
   onGroupLeave = async () => {
     // show modal loading
     this.setLoading(true);
@@ -208,6 +214,7 @@ class SelectedGroup extends Component {
     // redirect user back to where they came from (not necessarily "Groups" page)
     this.navigateToPage(origin);
   };
+
   // main navigation function
   navigateToPage = (page, options) => {
     const { navigate } = this.props.navigation;
@@ -215,10 +222,13 @@ class SelectedGroup extends Component {
     navigate(page, {
       origin: "SelectedGroup",
       groupId,
-      ...options
+      ...options,
+      reloadDataAtOrigin: this.reloadData.bind(this)
     });
   };
 
+  // all the component render functions //
+  // show options depends on user's role to the group
   showOptions = () => {
     // check if user is the admin of the group
     return this.isUserAdmin() ? (
@@ -236,6 +246,7 @@ class SelectedGroup extends Component {
     );
   };
 
+  // show button only if user is the admin of the group
   showInviteButton = () => {
     // check if user is the admin of the group
     return this.isUserAdmin() ? (
@@ -250,12 +261,11 @@ class SelectedGroup extends Component {
     );
   };
 
-  // components render functions //
-  // return a row of group members
-  showGroupMembers = groupMembers => {
+  // display a row of group members
+  showGroupMembers = () => {
     // transform each member to an UserIcon component
     //prettier-ignore
-    const groupMembersComponent = groupMembers.map(member => (
+    const groupMembersComponent = this.state.groupMembers.map(member => (
       <UserIcon 
         key={ member._id } 
         image={{ uri: member.details.profilePic }} 
@@ -274,24 +284,24 @@ class SelectedGroup extends Component {
   };
 
   // return all group artefacts components
-  showGroupArtefacts = groupArtefacts => {
+  showGroupArtefacts = () => {
     // sort array based on date obtained (from earliest to oldest)
-    groupArtefacts.sort(function(a, b) {
+    const groupArtefacts = this.state.groupArtefacts.sort(function(a, b) {
       return new Date(b.dateAdded) - new Date(a.dateAdded);
     });
     // transform each artefact to a PostFeed component
     // prettier-ignore
-    const groupArtefactsComponent = groupArtefacts.map(artefact => (
+    const groupArtefactsComponent = groupArtefacts.map(a => (
       <PostFeed
-        key={artefact.artefactId}
-        artefactId={artefact.artefactId}
-        userName={artefact.user.name}
-        title={artefact.details.title}
-        profileImage={{ uri: artefact.user.profilePic }}
-        image={{ uri: artefact.details.images[0].URL }}
-        likesCount={artefact.details.likes.length}
-        dateAdded={artefact.dateAdded}
-        commentsCount={artefact.commentCount ? artefact.commentCount : 0}
+        key={a.artefactId}
+        artefactId={a.artefactId}
+        userName={a.user.name}
+        title={a.details.title}
+        profileImage={{ uri: a.user.profilePic }}
+        image={{ uri: a.details.images[0].URL }}
+        likesCount={a.details.likes.length}
+        dateAdded={a.dateAdded}
+        commentsCount={a.commentCount ? a.commentCount : 0}
         onPress={this.onArtefactClick.bind(this)}
       />
     ));
@@ -300,14 +310,9 @@ class SelectedGroup extends Component {
 
   render() {
     // extract selected group information
-    const {
-      coverPhoto,
-      dateCreated,
-      description,
-      title
-    } = this.props.groups.selectedGroup;
-    // extract redux store information
-    const { selectedGroupMembers, selectedGroupArtefacts } = this.props.groups;
+    const { coverPhoto, description, title } = this.state.group;
+    // extract local state data
+    const { groupMembers } = this.state;
     this.showOptions();
     return (
       <View style={styles.container}>
@@ -318,13 +323,18 @@ class SelectedGroup extends Component {
           refreshControl={
             <RefreshControl
               refreshing={this.state.refreshing}
-              onRefresh={this.refreshSelectedGroupPage}
+              onRefresh={this.reloadData}
             />
           }
         >
           {/* group cover photo */}
           <View style={styles.coverPhoto}>
-            <Image style={styles.cover} source={{ uri: coverPhoto }} />
+            <Image
+              style={styles.cover}
+              source={{ uri: coverPhoto }}
+              resizeMethod="resize"
+              resizeMode="cover"
+            />
           </View>
           {/* group description */}
           <View style={styles.groupInfo}>
@@ -346,12 +356,12 @@ class SelectedGroup extends Component {
             </Text>
             {/* show group members count */}
             <Text style={[styles.groupCount, styles.subFont]}>
-              {selectedGroupMembers.length} Members
+              {groupMembers.length} Members
             </Text>
             {/* container for group members and button */}
             <View style={styles.groupMember}>
               {/* show members in scrollable view */}
-              {this.showGroupMembers(selectedGroupMembers)}
+              {this.showGroupMembers()}
 
               {/* Add members button */}
               {this.showInviteButton()}
@@ -360,7 +370,7 @@ class SelectedGroup extends Component {
           {/* container for all artefacts */}
           <View>
             {/* Show all artefacts in group */}
-            {this.showGroupArtefacts(selectedGroupArtefacts)}
+            {this.showGroupArtefacts()}
           </View>
         </ScrollView>
         {/* toggle modal to add artefacts into groups */}
@@ -461,12 +471,11 @@ const styles = StyleSheet.create({
 });
 
 SelectedGroup.propTypes = {
-  groups: PropTypes.object.isRequired
+  user: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => ({
-  user: state.user,
-  groups: state.groups
+  user: state.user
 });
 
 //  connect to redux and export
@@ -474,11 +483,9 @@ export default connect(
   mapStateToProps,
   {
     getSelectedGroup,
-    editSelectedGroup,
-    clearSelectedGroup,
-    getSelectedGroupAllArtefacts,
     getSelectedGroupAllMembers,
-    getSelectedGroupArtefactComments,
+    getSelectedGroupAllArtefacts,
+    editSelectedGroup,
     deleteSelectedGroup,
     inviteUserToGroup,
     deleteMemberFromGroup,

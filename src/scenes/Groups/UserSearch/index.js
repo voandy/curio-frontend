@@ -40,8 +40,16 @@ class UserSearch extends Component {
       searchPerformed: false,
       refreshing: false,
       // set selected group on start up (for invite user search)
-      selectedGroup: this.props.navigation.getParam("selectedGroup")
+      group: {},
+      groupId: this.props.navigation.getParam("groupId")
     };
+
+    // populate group data
+    if (this.state.groupId) {
+      this.props
+        .getSelectedGroup(this.state.groupId)
+        .then(group => this.setState({ group }));
+    }
   }
 
   // TODO change this when results fill in after search
@@ -58,14 +66,14 @@ class UserSearch extends Component {
   refreshPage = async () => {
     this.setState({ refreshing: true });
     // extract group id
-    groupId = this.props.navigation.getParam("groupId");
+    const { groupId } = this.state;
 
     // reload group data first
     // only reload if this is for invite user search
     if (groupId) {
       await this.props
         .getSelectedGroup(groupId)
-        .then(res => this.setState({ selectedGroup: res.data }));
+        .then(group => this.setState({ group }));
     }
     // clear results
     await this.props.clearSearchResults();
@@ -76,9 +84,7 @@ class UserSearch extends Component {
   };
 
   onChangeSearchInput = searchInput => {
-    this.setState({
-      searchInput
-    });
+    this.setState({ searchInput });
   };
 
   doUserSearch = async searchInput => {
@@ -86,9 +92,7 @@ class UserSearch extends Component {
       alert("Please enter some search terms.");
     } else {
       await this.props.searchUsers({ searchTerms: searchInput }).then(() => {
-        this.setState({
-          searchPerformed: true
-        });
+        this.setState({ searchPerformed: true });
       });
     }
   };
@@ -96,11 +100,18 @@ class UserSearch extends Component {
   // generate feed for user search results
   showUserResults = function(userSearchResults) {
     // extract all the required information
-    const { toInvite, onPress, groupId } = this.props.navigation.state.params;
-    const { selectedGroup } = this.state;
+    const {
+      toInvite,
+      onPress,
+      groupId,
+      reloadDataAtOrigin
+    } = this.props.navigation.state.params;
+    const { group } = this.state;
+    console.log(group);
+    if (!group) return;
     // preprocess data
-    const memberIds = selectedGroup.members.map(x => x.memberId);
-    const pendingInvites = selectedGroup.pendingInvitations;
+    const memberIds = group.members.map(x => x.memberId);
+    const pendingInvites = group.pendingInvitations;
 
     // create result feed
     if (userSearchResults.length === 0 && !this.state.refreshing) {
@@ -127,6 +138,7 @@ class UserSearch extends Component {
             userId={userId}
             groupId={groupId}
             onPress={onPress}
+            reloadDataAtOrigin={reloadDataAtOrigin}
           />
         );
       }

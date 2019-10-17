@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 
 import { getSpecificUser } from "../../actions/userActions";
 import {
-  getSpecificGroup,
+  getSelectedGroup,
   addMemberToGroup,
   removeInviteFromGroup,
   getUserGroups
@@ -32,7 +32,6 @@ import {
   deviceWidthDimension as wd
 } from "../../utils/responsiveDesign";
 
-
 class Invitation extends Component {
   constructor(props) {
     super(props);
@@ -54,7 +53,7 @@ class Invitation extends Component {
     // reload everything at once
     return Promise.all([
       this.props.getSpecificUser(adminId),
-      this.props.getSpecificGroup(refId)
+      this.props.getSelectedGroup(refId)
     ])
       .then(values => {
         const admin = values[0];
@@ -164,7 +163,10 @@ class Invitation extends Component {
         {/* invitation fields */}
         <View style={styles.buttons}>
           {/* accept */}
-          <MySmallerButton text="Accept" onPress={() => this.onAcceptInvite()} />
+          <MySmallerButton
+            text="Accept"
+            onPress={() => this.onAcceptInvite()}
+          />
 
           {/* decline */}
           <TouchableOpacity
@@ -217,7 +219,7 @@ const styles = StyleSheet.create({
     paddingTop: hp(0.05),
     width: wd(0.8),
     alignContent: "center",
-    alignItems: "center",
+    alignItems: "center"
   },
 
   accept: {
@@ -246,7 +248,7 @@ export default connect(
   mapStateToProps,
   {
     getSpecificUser,
-    getSpecificGroup,
+    getSelectedGroup,
     addMemberToGroup,
     removeInviteFromGroup,
     getUserNotifications,

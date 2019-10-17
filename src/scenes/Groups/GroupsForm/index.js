@@ -49,9 +49,9 @@ class GroupsForm extends Component {
     this.state = {
       group: {
         ...newGroup,
-        // add & replace group details if selectedGroup is passed in
+        // add & replace group details if group data is passed in
         // otherwise, it will not replace anything
-        ...this.props.navigation.getParam("selectedGroup"),
+        ...this.props.navigation.getParam("group"),
         adminId: this.props.auth.user.id
       },
       loading: false,
@@ -92,25 +92,6 @@ class GroupsForm extends Component {
     });
   };
 
-  // access camera roll
-  pickImage = async () => {
-    // obtain image
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true
-    });
-
-    // set imageURI in local state
-    if (!result.cancelled) {
-      const manipResult = await ImageManipulator.manipulateAsync(
-        result.uri,
-        [{ resize: { width: 1024 } }],
-        { format: "jpeg", compress: 0.5 }
-      );
-      this.setImageURI(manipResult.uri);
-    }
-  };
-
   // setter function for "loading" to show user that something is loading
   setLoading = loading => {
     this.setState({
@@ -131,7 +112,7 @@ class GroupsForm extends Component {
   setImageURI = ImageURI => {
     this.setGroup("imageURI", ImageURI);
     // set this value to show it in the image component in the form
-    // because in edit mode, selected group only has coverPhoto, not imageURL
+    // because in edit mode, group only has coverPhoto, not imageURL
     this.setGroup("coverPhoto", ImageURI);
   };
 
@@ -184,7 +165,11 @@ class GroupsForm extends Component {
   onSubmit = async () => {
     const { navigate } = this.props.navigation;
     // get required parameters
-    const { origin, isEditMode } = this.props.navigation.state.params;
+    const {
+      origin,
+      isEditMode,
+      reloadDataAtOrigin
+    } = this.props.navigation.state.params;
     // set adminId as a reference
     await this.setGroup("adminId", this.props.auth.user.id);
     // wait for it to complete validating all fields
@@ -206,6 +191,9 @@ class GroupsForm extends Component {
         this.setLoading(false);
         // reset new group details
         this.resetGroup();
+        // reload group data
+        // reload data on origin page if required (it is not null)
+        if (reloadDataAtOrigin) reloadDataAtOrigin();
         // navigate back
         navigate(origin);
       })
@@ -217,9 +205,32 @@ class GroupsForm extends Component {
       });
   };
 
+  // access camera roll
+  pickImage = async () => {
+    // obtain image
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true
+    });
+
+    // set imageURI in local state
+    if (!result.cancelled) {
+      const manipResult = await ImageManipulator.manipulateAsync(
+        result.uri,
+        [{ resize: { width: 1024 } }],
+        { format: "jpeg", compress: 0.5 }
+      );
+      this.setImageURI(manipResult.uri);
+    }
+  };
+
   render() {
     // error messages
-    const { errors } = this.state;
+    const { errors, group } = this.state;
+
+    var imageSource = !group.coverPhoto
+      ? require("../../../../assets/images/icons/addPicture.png")
+      : { uri: this.state.group.coverPhoto };
 
     return (
       <KeyboardShift>
@@ -241,17 +252,7 @@ class GroupsForm extends Component {
                     activeOpacity={0.5}
                     onPress={this.pickImage}
                   >
-                    {!this.state.group.coverPhoto ? (
-                      <Image
-                        style={styles.imageSelected}
-                        source={require("../../../../assets/images/icons/addPicture.png")}
-                      />
-                    ) : (
-                      <Image
-                        style={styles.imageSelected}
-                        source={{ uri: this.state.group.coverPhoto }}
-                      />
-                    )}
+                    <Image style={styles.imageSelected} source={imageSource} />
                   </TouchableOpacity>
 
                   {/* error messages if there's any */}

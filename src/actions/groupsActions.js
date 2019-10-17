@@ -33,9 +33,10 @@ import { uploadImageToGCS } from "../utils/imageUpload";
 export const getUserGroups = userId => dispatch => {
   return new Promise((resolve, reject) => {
     getUserGroupsAPIRequest(userId)
+      // success
       .then(res => {
         dispatch(setUserGroups(res.data));
-        resolve(res);
+        resolve(res.data);
       })
       // failure
       .catch(err => {
@@ -86,9 +87,10 @@ export const createNewGroup = groupData => dispatch => {
 export const getSelectedGroup = groupId => dispatch => {
   return new Promise((resolve, reject) => {
     getGroupDetailsAPIRequest(groupId)
+      // success
       .then(res => {
-        dispatch(setSelectedGroup(res.data));
-        resolve(res);
+        // return group data instead of request response
+        resolve(res.data);
       })
       // failure
       .catch(err => {
@@ -98,33 +100,35 @@ export const getSelectedGroup = groupId => dispatch => {
   });
 };
 
-// get all artefacts of a group
-export const getSelectedGroupAllArtefacts = groupId => dispatch => {
+// get all members of a group
+export const getSelectedGroupAllMembers = groupId => dispatch => {
   return new Promise((resolve, reject) => {
-    getGroupAllArtefactsAPIRequest(groupId)
+    getGroupAllMembersAPIRequest(groupId)
+      // success
       .then(res => {
-        dispatch(setSelectedGroupArtefacts(res.data));
-        resolve(res);
+        // return group data instead of request response
+        resolve(res.data);
       })
       // failure
       .catch(err => {
-        console.log("Failed to get all artefacts of a selected group: " + err);
+        console.log("Failed to get all members of a selected group: " + err);
         reject(err);
       });
   });
 };
 
-// get all members of a group
-export const getSelectedGroupAllMembers = groupId => dispatch => {
+// get all artefacts of a group
+export const getSelectedGroupAllArtefacts = groupId => dispatch => {
   return new Promise((resolve, reject) => {
-    getGroupAllMembersAPIRequest(groupId)
+    getGroupAllArtefactsAPIRequest(groupId)
+      // success
       .then(res => {
-        dispatch(setSelectedGroupMembers(res.data));
-        resolve(res);
+        // return group data instead of request response
+        resolve(res.data);
       })
       // failure
       .catch(err => {
-        console.log("Failed to get all members of a selected group: " + err);
+        console.log("Failed to get all artefacts of a selected group: " + err);
         reject(err);
       });
   });
@@ -149,10 +153,6 @@ export const editSelectedGroup = group => (dispatch, getState) => {
         // send edit API request to backend
         editGroupAPIRequest(group._id, groupData)
           .then(res => {
-            // reload the selected group
-            dispatch(getSelectedGroup(group._id));
-            dispatch(getSelectedGroupAllMembers(group._id));
-            dispatch(getSelectedGroupAllArtefacts(group._id));
             // reload all user groups data
             dispatch(getUserGroups(getState().auth.user.id));
             resolve(res);
@@ -170,27 +170,12 @@ export const editSelectedGroup = group => (dispatch, getState) => {
   });
 };
 
-// get artefact comments of selected group based on groupId
-export const getSelectedGroupArtefactComments = groupId => dispatch => {
-  return new Promise((resolve, reject) => {
-    getArtefactCommentsAPIRequest(groupId)
-      .then(res => {
-        dispatch(addSelectedGroupArtefactComments(res.data));
-        resolve(res);
-      })
-      // failure
-      .catch(err => {
-        console.log("Failed to get selected group's artefact comments: " + err);
-        reject(err);
-      });
-  });
-};
-
 // delete selected group based on groupId
 export const deleteSelectedGroup = groupId => (dispatch, getState) => {
   return new Promise((resolve, reject) => {
     deleteGroupAPIRequest(groupId)
       .then(res => {
+        // reload user's groups
         dispatch(getUserGroups(getState().user.userData._id));
         resolve(res);
       })
@@ -201,19 +186,12 @@ export const deleteSelectedGroup = groupId => (dispatch, getState) => {
   });
 };
 
-// action to clear out selected group
-// formatted in this way to make it consistent
-export const clearSelectedGroup = () => dispatch => {
-  dispatch(setSelectedGroup({}));
-  dispatch(setSelectedGroupArtefacts([]));
-  dispatch(setSelectedGroupMembers([]));
-};
-
 // pin group of groupId in user of userId
 export const pinGroup = (userId, groupId) => dispatch => {
   return new Promise((resolve, reject) => {
     pinGroupAPIRequest(userId, groupId)
       .then(res => {
+        // reload user's groups
         dispatch(getUserGroups(userId));
         resolve(res);
       })
@@ -229,6 +207,7 @@ export const unpinGroup = (userId, groupId) => dispatch => {
   return new Promise((resolve, reject) => {
     unpinGroupAPIRequest(userId, groupId)
       .then(res => {
+        // reload user's groups
         dispatch(getUserGroups(userId));
         resolve(res);
       })
@@ -239,6 +218,7 @@ export const unpinGroup = (userId, groupId) => dispatch => {
   });
 };
 
+// admin adds users to group
 export const addMemberToGroup = (groupId, userId) => dispatch => {
   return new Promise((resolve, reject) => {
     addMemberToGroupAPIRequest(groupId, userId)
@@ -252,6 +232,7 @@ export const addMemberToGroup = (groupId, userId) => dispatch => {
   });
 };
 
+// users leave a group
 export const deleteMemberFromGroup = (groupId, userId) => dispatch => {
   return new Promise((resolve, reject) => {
     deleteMemberFromGroupAPIRequest(groupId, userId)
@@ -265,12 +246,12 @@ export const deleteMemberFromGroup = (groupId, userId) => dispatch => {
   });
 };
 
+// group members add an artefact to group
 export const addArtefactToGroup = (groupId, artefactId) => dispatch => {
   return new Promise((resolve, reject) => {
     addArtefactToGroupAPIRequest(groupId, artefactId)
       .then(res => {
-        dispatch(getSelectedGroupAllArtefacts(groupId));
-        resolve(res);
+        resolve(res.data);
       })
       .catch(err => {
         console.log("Failed to add artefact: " + err);
@@ -279,12 +260,12 @@ export const addArtefactToGroup = (groupId, artefactId) => dispatch => {
   });
 };
 
+// an artefact is deleted from group
 export const deleteArtefactFromGroup = (groupId, artefactId) => dispatch => {
   return new Promise((resolve, reject) => {
     deleteArtefactFromGroupAPIRequest(groupId, artefactId)
       .then(res => {
-        dispatch(getSelectedGroupAllArtefacts(groupId));
-        resolve(res);
+        resolve(res.data);
       })
       .catch(err => {
         console.log("Failed to delete artefact: " + err);
@@ -298,8 +279,7 @@ export const inviteUserToGroup = (groupId, userId) => dispatch => {
   return new Promise((resolve, reject) => {
     inviteUserToGroupAPIRequest(groupId, userId)
       .then(res => {
-        dispatch(getSelectedGroup(groupId));
-        resolve(res);
+        resolve(res.data);
       })
       .catch(err => {
         console.log("Failed to invite user: " + err);
@@ -308,31 +288,15 @@ export const inviteUserToGroup = (groupId, userId) => dispatch => {
   });
 };
 
+// remove invite from invited users (called after a user accepts or declines invite)
 export const removeInviteFromGroup = (groupId, userId) => dispatch => {
   return new Promise((resolve, reject) => {
     removeInviteFromGroupAPIRequest(groupId, userId)
       .then(res => {
-        dispatch(getSelectedGroup(groupId));
-        resolve(res);
+        resolve(res.data);
       })
       .catch(err => {
         console.log("Failed to invite user: " + err);
-        reject(err);
-      });
-  });
-};
-
-// when user clicks on (selects) a specific group
-export const getSpecificGroup = groupId => dispatch => {
-  return new Promise((resolve, reject) => {
-    getGroupDetailsAPIRequest(groupId)
-      .then(res => {
-        // return user data instead of request response
-        resolve(res.data);
-      })
-      // failure
-      .catch(err => {
-        console.log("Failed to get specific group: " + err);
         reject(err);
       });
   });
@@ -341,34 +305,6 @@ export const getSpecificGroup = groupId => dispatch => {
 export const setUserGroups = decoded => {
   return {
     type: SET_USER_GROUPS,
-    payload: decoded
-  };
-};
-
-export const setSelectedGroup = decoded => {
-  return {
-    type: SET_SELECTED_GROUP,
-    payload: decoded
-  };
-};
-
-export const setSelectedGroupArtefacts = decoded => {
-  return {
-    type: SET_SELECTED_GROUP_ARTEFACTS,
-    payload: decoded
-  };
-};
-
-export const setSelectedGroupMembers = decoded => {
-  return {
-    type: SET_SELECTED_GROUP_MEMBERS,
-    payload: decoded
-  };
-};
-
-export const addSelectedGroupArtefactComments = decoded => {
-  return {
-    type: ADD_SELECTED_GROUP_ARTEFACTS_COMMENTS,
     payload: decoded
   };
 };
