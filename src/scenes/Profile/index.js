@@ -65,6 +65,10 @@ class Profile extends Component {
     const dt = this.props.user.userData.dateJoined;
 
     const { navigate } = this.props.navigation;
+    const profilePic = this.props.user.userData.profilePic;
+    const imageSource = profilePic
+      ? { uri: profilePic }
+      : require("../../../assets/images/default-profile-pic.png");
 
     return (
       <View style={styles.container}>
@@ -92,17 +96,7 @@ class Profile extends Component {
           />
 
           {/* user profile picture */}
-          {this.props.user.userData.profilePic != null ? (
-            <Image
-              style={styles.profilePic}
-              source={{ uri: this.props.user.userData.profilePic }}
-            />
-          ) : (
-            <Image
-              style={styles.profilePic}
-              source={require("../../../assets/images/default-profile-pic.png")}
-            />
-          )}
+          <Image style={styles.profilePic} source={imageSource} />
 
           {/* user heading */}
           <Text style={styles.userName}>{this.props.user.userData.name}</Text>
@@ -120,7 +114,7 @@ class Profile extends Component {
           <ProfileSetting
             text="Account Settings"
             iconType="gear"
-            onPress={() => navigate("AccountSetting", {origin:"Profile"})}
+            onPress={() => navigate("AccountSetting", { origin: "Profile" })}
           />
 
           {/* line separator */}
