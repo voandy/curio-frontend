@@ -16,6 +16,8 @@ import { getUserData, editUserData } from "../../../actions/userActions";
 // custom component
 import SettingField from "../../../component/SettingField";
 import ActivityLoaderModal from "../../../component/ActivityLoaderModal";
+import MySmallerButton from "../../../component/MySmallerButton";
+import MyButton from "../../../component/MyButton";
 import * as ImagePicker from "expo-image-picker";
 import * as ImageManipulator from "expo-image-manipulator";
 
@@ -158,8 +160,10 @@ class AccountSetting extends Component {
 
   render() {
 
+    var userData = this.state.userData;
+
     // image source for profile pic
-    var imageSource = !this.state.userData.imageURI
+    var imageSource = !userData.imageURI
       ? // check for any uploaded profilePic
       !this.props.user.userData.profilePic
         ? // No image uploaded, use default pic
@@ -168,7 +172,15 @@ class AccountSetting extends Component {
         { uri: this.props.user.userData.profilePic }
       :
       // use newly Uploaded profilePic
-      { uri: this.state.userData.imageURI }
+      { uri: userData.imageURI }
+
+    // make edit button pressable when changes are made
+    const buttonCondition =
+      userData.name || userData.imageURI
+        // enable button (changes made)
+        ? styles.buttonEnabled
+        // disable button (no changes made)
+        : styles.buttonDisabled;
 
     return (
       <View style={styles.container}>
@@ -185,27 +197,40 @@ class AccountSetting extends Component {
 
         {/* setting fields */}
         <View style={styles.settings} >
+
+          <SettingField editable={false} field="Username" isPassword={false} input={this.props.user.userData.username} />
+          <SettingField editable={false} field="Email" isPassword={false} input={this.props.user.userData.email} />
           <SettingField
             editable={true}
             field="Name"
             isPassword={false}
             input={this.props.user.userData.name}
             onChangeText={value => this.setName(value)} />
-          <SettingField editable={false} field="Username" isPassword={false} input={this.props.user.userData.username} />
-          <SettingField editable={false} field="Email" isPassword={false} input={this.props.user.userData.email} />
-          <SettingField editable={true} field="Password" isPassword={true} input="********" />
+          <SettingField
+            editable={true}
+            field="Password"
+            isPassword={true}
+            input="********" />
+          <Text style={styles.warning}>username and email cannot be edited</Text>
 
-          <Text style={styles.warning}>* cannot be edited</Text>
+          <View style={{ alignItems: "center", marginTop: hp(0.05) }}>
 
-          {/* make edit changes */}
-          <TouchableOpacity style={{ marginVertical: wd(0.05), alignItems: "center" }}>
-            <Text style={styles.edit} onPress={this.toggleEditModal}>Edit changes</Text>
-          </TouchableOpacity>
+            {/* edit button */}
+            <TouchableOpacity
+              style={[styles.button, buttonCondition]}
+              disabled={!userData.name && !userData.imageURI}
+              onPress={() => this.toggleEditModal()}>
+              <Text style={styles.edit} >Edit Changes</Text>
+            </TouchableOpacity>
 
-          {/* delete account */}
-          <TouchableOpacity style={{ marginVertical: wd(0.05), alignItems: "center" }}>
-            <Text style={styles.delete} onPress={this.toggleDeleteModal}>Delete Account</Text>
-          </TouchableOpacity>
+            {/* delete account */}
+            <TouchableOpacity
+              style={{ marginVertical: wd(0.05), alignItems: "center" }}
+              onPress={() => this.toggleDeleteModal()}>
+              <Text style={styles.delete} >Delete Account</Text>
+            </TouchableOpacity>
+
+          </View>
         </View>
       </View>
     );
@@ -248,17 +273,35 @@ const styles = StyleSheet.create({
     width: wd(0.8),
   },
 
-  edit: {
-    fontFamily: "HindSiliguri-Bold",
-    color: "#1183ca",
-    fontSize: 16,
-  },
-
   delete: {
     fontFamily: "HindSiliguri-Bold",
     color: "red",
-    fontSize: 16,
-  }
+    fontSize: 14,
+    textDecorationLine: "underline"
+  },
+
+  edit: {
+    fontSize: wd(0.037),
+    color: "white",
+    fontFamily: "HindSiliguri-Bold"
+  },
+
+  button: {
+    justifyContent: "center",
+    alignItems: "center",
+    width: wd(0.3),
+    height: 50,
+    borderRadius: 40,
+    elevation: 4
+  },
+
+  buttonDisabled: {
+    backgroundColor: "#e0e0e0"
+  },
+
+  buttonEnabled: {
+    backgroundColor: "#FF6E6E",
+  },
 });
 
 AccountSetting.propTypes = {

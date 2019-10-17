@@ -39,11 +39,11 @@ class SettingField extends Component {
       <View style={styles.container}>
 
         <View style={{ flex: 0.35 }}>
-          {/* show non editable items with "*" */}
+          {/* gray out non editable items */}
           {this.props.editable != false ? (
             <Text style={styles.fieldName}>{this.props.field}</Text>
           ) : (
-              <Text style={styles.fieldName}>{this.props.field} *</Text>
+              <Text style={[styles.fieldName, { color: this.editableColour() }]}>{this.props.field}</Text>
             )}
         </View>
 

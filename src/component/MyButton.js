@@ -17,9 +17,21 @@ class MyButton extends Component {
     super(props);
   }
 
+  enableButton(){
+    console.log("hue")
+    if (this.props.isEnabled === false){
+      return({
+        backgroundColor:"e0e0e0"  // make it gray
+      })
+    }
+    else{
+      return null
+    }
+  }
+
   render() {
     return (
-      <TouchableOpacity onPress={this.props.onPress} style={styles.button}>
+      <TouchableOpacity onPress={this.props.onPress} style={[styles.button, this.enableButton()]}>
         <Text style={styles.buttonText}>{this.props.text}</Text>
       </TouchableOpacity>
     );
