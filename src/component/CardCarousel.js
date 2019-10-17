@@ -38,8 +38,8 @@ class CardCarousel extends Component {
     return (
       <View style={styles.card}>
         {/* favouraite icon */}
-        <View style={{ position: "absolute", top: 5, right: 5, elevation: 2 }}>
-          <Image source={require("../../assets/images/icons/favourite.png")} />
+        <View style={{ position: "absolute", top: 10, right: 10, elevation: 1 }}>
+          <Image resizeMode="contain" style={styles.favourite} source={require("../../assets/images/icons/favourite.png")} />
         </View>
 
         {/* group card */}
@@ -78,6 +78,11 @@ const styles = StyleSheet.create({
     width: wd(0.9),
     height: wd(0.45),
     borderRadius: 15
+  },
+
+  favourite: {
+    width: 25,
+    height: 25,
   }
 });
 

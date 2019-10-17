@@ -362,7 +362,7 @@ class ArtefactsForm extends Component {
                     source={require("../../../../assets/images/icons/category.png")}
                   />
                   <View style={styles.inputField}>
-                    <Text style={styles.font}>category</Text>
+                    <Text style={styles.font}>Category</Text>
                     <Picker
                       style={styles.pickerLong}
                       selectedValue={this.state.artefact.category}
