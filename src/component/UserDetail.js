@@ -32,7 +32,7 @@ class UserDetail extends Component {
           style={styles.photo}
           source={this.props.image}
           resizeMethod="resize"
-          resizeMode="contain"
+          resizeMode="cover"
         />
 
         {/* user name */}

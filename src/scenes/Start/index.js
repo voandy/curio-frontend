@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     width: wd(0.85),
     height: wd(0.85),
-    resizeMode: "contain",
+    resizeMode: "cover",
     marginTop: hp(0.02),
     marginBottom: hp(0.01)
   },
