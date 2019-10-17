@@ -137,7 +137,6 @@ class Artefacts extends Component {
               })
             }
           />
-          <View style={{borderTopColor:"black" ,borderTopWidth:1, width:wd(1)}}/>
           {/* all artefacts posted by the user based on the their privacy settings */}
           {Object.keys(this.props.artefacts.userArtefacts).length !== 0 ? (
             this.showArtefacts()

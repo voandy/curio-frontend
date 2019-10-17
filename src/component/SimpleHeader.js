@@ -190,7 +190,7 @@ const styles = StyleSheet.create({
     // fontSize: 22,
     fontSize: hp(0.033),
     marginTop: 8,
-    marginBottom: 4,
+    marginBottom: 2,
     marginLeft: 25,
     fontFamily: "HindSiliguri-Bold"
   },

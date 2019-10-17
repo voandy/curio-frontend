@@ -13,11 +13,18 @@ import { connect } from "react-redux";
 import { pinGroup, unpinGroup } from "../actions/groupsActions";
 
 // custom responsive design component
-import { deviceWidthDimension as wd } from "../utils/responsiveDesign";
+import {
+  deviceWidthDimension as wd,
+  deviceHeigthDimension as hp
+} from "../utils/responsiveDesign";
 
 /**groups shown in a card form in groups page */
 class CardGroup extends Component {
-  
+
+  constructor(props) {
+    super(props);
+  }
+
   // alert prompt to pin or unpin groups
   showAlert = () => {
     const userId = this.props.userId;
@@ -46,32 +53,39 @@ class CardGroup extends Component {
   render() {
     return (
       <View style={styles.card}>
-        <View style={{ position: "absolute", top: 5, right: 5, elevation: 2 }}>
-          {this.props.pinned === true ? 
-            (<Image source={require("../../assets/images/icons/favourite.png")}/>) :
-            (<Image source={require("../../assets/images/icons/unfavourite.png")}/>)}
+        {/* favourite icon */}
+        <View style={{ position: "absolute", top: 10, right: 10, elevation: 2 }}>
+          {this.props.pinned === true ?
+            (<Image resizeMode="contain" style={styles.favourite} source={require("../../assets/images/icons/favourite.png")} />) :
+            (<Image resizeMode="contain" style={styles.favourite} source={require("../../assets/images/icons/unfavourite.png")} />)}
         </View>
 
-        {/* <TouchableOpacity onPress={this.props.onPress(this.props.groupId)}> */}
         <TouchableOpacity
           onLongPress={() => this.showAlert()}
           onPress={() => this.props.onPress(this.props.groupId)}
         >
           {/* big image */}
           <View style={styles.picPlaceholder}>
-            <Image 
-              style={[styles.photo]} 
+            <Image
+              style={[styles.photo]}
               source={this.props.image}
             />
           </View>
           {/* title */}
           <View style={styles.textPlaceholder}>
-            <Text style={[styles.title, styles.font]}>
-              {this.props.title}
-            </Text>
+            {/* Group name */}
+            <View style={styles.groupNamePlaceholder}>
+              <Text style={[{ fontSize: wd(0.0375) }, styles.font]}>{this.props.title}</Text>
+            </View>
+            {/* admin of the group and number of members */}
+            <View style={styles.groupDetailsPlaceholder}>
+              <Image style={styles.userProfilePic} source={require("../../assets/images/default-profile-pic.png")}/>
+              <Text style={styles.userName}>John Doe</Text>
+            </View>
+
           </View>
         </TouchableOpacity>
-      </View>
+      </View >
     );
   }
 }
@@ -80,59 +94,60 @@ const styles = StyleSheet.create({
   card: {
     width: wd(0.425),
     marginTop: 10,
-    marginLeft: wd(0.048),
-    height: wd(0.5),
+    marginBottom: 20,
+    elevation:3,
+    backgroundColor: "white",
     borderRadius: 15,
-    borderWidth: 1,
+    borderWidth: 0.4,
     borderColor: "#E2E2E2",
-    alignContent: "center",
-    alignItems: "center"
   },
 
   font: {
-    fontFamily: "HindSiliguri-Regular"
+    fontFamily: "HindSiliguri-Regular",
   },
 
   picPlaceholder: {
-    flex: 0.7,
-    alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "flex-start",
   },
 
   photo: {
     width: wd(0.425),
-    height: wd(0.37),
-    marginTop: 5,
-    borderTopLeftRadius: 15,
-    borderTopRightRadius: 15
+    height: wd(0.425),
+    borderTopRightRadius: 12,
+    borderTopLeftRadius: 12
   },
 
   textPlaceholder: {
-    flex: 0.3,
-    justifyContent: "center"
+    marginHorizontal: 8,
+    marginVertical:4,
   },
 
-  title: {
-    // flex: 0.4,
-    marginHorizontal: 12,
-    marginTop: 5,
-    fontSize: wd(0.035)
+  groupNamePlaceholder: {
+    marginBottom: 2,
+    justifyContent: "center",
   },
 
-  userProfile: {
-    flex: 0.6,
+  groupDetailsPlaceholder: {
     flexDirection: "row",
-    alignItems: "center"
+    alignItems:"center",
+    marginBottom:6
   },
 
   userProfilePic: {
-    width: wd(0.07),
-    height: wd(0.07),
-    marginHorizontal: 5
+    width: wd(0.055),
+    height: wd(0.055),
   },
 
   userName: {
-    color: "#939090"
+    color: "#939090",
+    fontSize: wd(0.03),
+    marginLeft: 8,
+    fontFamily: "HindSiliguri-Light",
+  },
+
+  favourite: {
+    width: 25,
+    height: 25,
   }
 });
 
