@@ -7,6 +7,7 @@ import {
   StatusBar,
   View,
   Text,
+  Animated,
   RefreshControl
 } from "react-native";
 
@@ -40,6 +41,15 @@ class Artefacts extends Component {
       searchInput: ""
     };
   }
+
+  // animation trigger
+  startShowing = () => {
+    Animated.timing(this.fadeAnimation, {
+      toValue: 1,
+      duration: 500,
+      useNativeDriver: true
+    }).start();
+  };
 
   // Nav bar details
   static navigationOptions = {
@@ -84,19 +94,46 @@ class Artefacts extends Component {
 
   // show artefacts by privacy settings
   showArtefacts = () => {
+    // reset animation value
+    this.fadeAnimation = new Animated.Value(0);
     // extract required data
     artefacts = this.props.artefacts.userArtefacts;
     privacy = this.state.isPublicTab ? 0 : 1;
     // filter artefacts by their privacy settings
     artefacts = artefacts.filter(x => x.privacy == privacy);
+
     // return modularized feed component
-    return (
-      <ArtefactFeed
-        artefacts={artefacts}
-        onPress={this.onArtefactClick.bind(this)}
-      />
-    );
-  };
+    if (artefacts.length !== 0) {
+      return (
+        <ArtefactFeed
+          artefacts={artefacts}
+          onPress={this.onArtefactClick.bind(this)}
+        />
+      )
+    }
+    // return no artefact message 
+    else {
+      this.startShowing()
+      // message displayed in public or private tab
+      let type = !privacy ? "public" : "private"
+      let message = !privacy ?
+        "Public artefacts can be viewed by everyone" :
+        "Private artefacts can only be seen by yourself"
+      return (
+        <Animated.View style={[styles.emptyFeed, { opacity: this.fadeAnimation }]}>
+          <Text style={styles.emptyfeedText}>
+            Looks like you haven't posted any {type} artefacts
+          </Text>
+          <Text style={styles.emptyfeedText}>
+            Click the "+" button to add some
+          </Text>
+          <Text style={styles.emptyfeedText}>
+            {"\n"}{message}
+          </Text>
+        </Animated.View>
+      )
+    }
+  }
 
   render() {
     const { navigate } = this.props.navigation;
@@ -138,19 +175,7 @@ class Artefacts extends Component {
             }
           />
           {/* all artefacts posted by the user based on the their privacy settings */}
-          {Object.keys(this.props.artefacts.userArtefacts).length !== 0 ? (
-            this.showArtefacts()
-          ) : (
-            // if user has no artefacts
-            <View style={styles.emptyFeed}>
-              <Text style={styles.emptyfeedText}>
-                Looks like you haven't posted any artefacts
-              </Text>
-              <Text style={styles.emptyfeedText}>
-                Click the "+" button to add some
-              </Text>
-            </View>
-          )}
+          {this.showArtefacts()}
         </ScrollView>
 
         {/* create new Group */}
@@ -163,12 +188,13 @@ class Artefacts extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: StatusBar.currentHeight
+    marginTop: StatusBar.currentHeight,
+    backgroundColor:"#FAFAFA"
   },
 
   emptyFeed: {
     flex: 1,
-    height: hp(0.7),
+    height: hp(0.709),
     alignItems: "center",
     justifyContent: "center"
   },

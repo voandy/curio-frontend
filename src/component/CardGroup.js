@@ -18,11 +18,17 @@ import {
   deviceHeigthDimension as hp
 } from "../utils/responsiveDesign";
 
+
 /**groups shown in a card form in groups page */
 class CardGroup extends Component {
 
+  // default card height
+  cardHeight = wd(0.425);
+
   constructor(props) {
     super(props);
+    // get random card height to make it more aesthetically pleasing
+    this.cardHeight = this.props.cardHeight
   }
 
   // alert prompt to pin or unpin groups
@@ -67,7 +73,7 @@ class CardGroup extends Component {
           {/* big image */}
           <View style={styles.picPlaceholder}>
             <Image
-              style={[styles.photo]}
+              style={[styles.photo, { height: this.cardHeight }]}
               source={this.props.image}
             />
           </View>
@@ -79,7 +85,7 @@ class CardGroup extends Component {
             </View>
             {/* admin of the group and number of members */}
             <View style={styles.groupDetailsPlaceholder}>
-              <Image style={styles.userProfilePic} source={require("../../assets/images/default-profile-pic.png")}/>
+              <Image style={styles.userProfilePic} source={require("../../assets/images/default-profile-pic.png")} />
               <Text style={styles.userName}>John Doe</Text>
             </View>
 
@@ -95,7 +101,7 @@ const styles = StyleSheet.create({
     width: wd(0.425),
     marginTop: 10,
     marginBottom: 20,
-    elevation:3,
+    elevation: 3,
     backgroundColor: "white",
     borderRadius: 15,
     borderWidth: 0.4,
@@ -112,14 +118,13 @@ const styles = StyleSheet.create({
 
   photo: {
     width: wd(0.425),
-    height: wd(0.425),
     borderTopRightRadius: 12,
     borderTopLeftRadius: 12
   },
 
   textPlaceholder: {
     marginHorizontal: 8,
-    marginVertical:4,
+    marginVertical: 4,
   },
 
   groupNamePlaceholder: {
@@ -129,8 +134,8 @@ const styles = StyleSheet.create({
 
   groupDetailsPlaceholder: {
     flexDirection: "row",
-    alignItems:"center",
-    marginBottom:6
+    alignItems: "center",
+    marginBottom: 6
   },
 
   userProfilePic: {

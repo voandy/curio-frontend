@@ -5,10 +5,10 @@ import {
   View,
   StyleSheet,
   ScrollView,
-  Dimensions,
   Text,
   StatusBar,
-  RefreshControl
+  RefreshControl,
+  Animated
 } from "react-native";
 
 // import redux actions for groups
@@ -27,8 +27,16 @@ import {
   deviceWidthDimension as wd
 } from "../../utils/responsiveDesign";
 
-// default gray colour
-const gray = "#F7F7F7";
+// randomly* generated height for the cards
+function* randomHeight() {
+  while (true) {
+    yield wd(0.4);
+    yield wd(0.25);
+    yield wd(0.47);
+    yield wd(0.35);
+    yield wd(0.3);
+  }
+}
 
 class Groups extends Component {
   constructor(props) {
@@ -96,6 +104,9 @@ class Groups extends Component {
     groups.sort(function(a, b) {
       return new Date(b.dateCreated) - new Date(a.dateCreated);
     });
+    // random height for cards to make things look spicier :)
+    var cardHeight = randomHeight()
+
     // tranform each group element into a component
     const groupComponent = groups.map(group => (
       <CardGroup
@@ -106,6 +117,7 @@ class Groups extends Component {
         title={group.details.title}
         onPress={this.clickGroup.bind(this)}
         pinned={group.pinned}
+        cardHeight={cardHeight.next().value}
       />
     ));
     // prep a temporary array for row-by-row grouping logic
@@ -126,7 +138,9 @@ class Groups extends Component {
         {/* middle spacing */}
         <View style={{ width: wd(0.05) }} />
         {/* right column */}
-        <View style={{ width: wd(0.43) }}>{arrayRight}</View>
+        <View style={{ width: wd(0.43), marginRight: wd(0.05) }}>
+          {arrayRight}
+        </View>
       </View>
     );
   };
@@ -158,8 +172,56 @@ class Groups extends Component {
       : pinnedGroupComponent;
   };
 
+  // TEMPORARY HERE, NICK THE MASTER CLEANER CLEAN THIS
+  BAR_WIDTH = 10    // this.BAR_WIDTH aint working lol idk why
+  SPACE_WIDTH = 15
+  numItems = this.props.groups.userGroups.filter(group => group.pinned).length
+  itemWidth = (10 / this.numItems) - ((this.numItems - 1) * 15)
+  animVal = new Animated.Value(0)
+
+  // display scroll indicator for pinned groups
+  showScrollIndicator = () => {
+
+    // pinned groups
+    const group = this.props.groups.userGroups.filter(group => group.pinned);
+    var indicatorArray = [];
+
+    // create an indicator for each group present
+    group.forEach((group, i) => {
+      // scroll animation properties
+      const scrollBarVal = this.animVal.interpolate({
+        inputRange: [wd(1) * (i - 1), wd(1) * (i + 1)],
+        outputRange: [-this.itemWidth, this.itemWidth],
+        extrapolate: 'clamp',
+      })
+
+      // View -> inactive indicator (outer shell)
+      // Animated.View -> active indicator
+      const thisScrollIndicator = (
+        <View
+          key={`bar${i}`}
+          style={[styles.inactiveScroll, { marginLeft: i === 0 ? 0 : 10 }]}
+        >
+          <Animated.View
+            style={[styles.activeScroll, {
+              transform: [{ translateX: scrollBarVal }],
+            }
+            ]}
+          />
+        </View>
+      )
+      // add into array
+      indicatorArray.push(thisScrollIndicator)
+    })
+    return indicatorArray;
+  }
+
+
   render() {
+    // navigate between pages
     const { navigate } = this.props.navigation;
+    // scroll indicator
+    let scrollIndicator = this.showScrollIndicator()
 
     return (
       <KeyboardShift>
@@ -169,7 +231,7 @@ class Groups extends Component {
             <ScrollView
               showsVerticalScrollIndicator={false}
               scrollEventThrottle={16}
-              style={{ backgroundColor: "white" }}
+              // style={{ backgroundColor: "#FAFAFA" }}
               refreshControl={
                 <RefreshControl
                   refreshing={this.state.refreshing}
@@ -196,16 +258,31 @@ class Groups extends Component {
               />
 
               {/* carousel pinned groups */}
-              <View style={{ height: wd(0.52), backgroundColor: "white" }}>
+              <View style={{ height: wd(0.55), backgroundColor: "white" }}>
+
                 <ScrollView
                   horizontal={true}
                   showsHorizontalScrollIndicator={false}
                   decelerationRate={0.8}
-                  snapToAlignment={"center"}
-                  snapToInterval={Dimensions.get("window").width}
+                  style={{ backgroundColor: "white" }}
+                  // snapToAlignment={"center"}
+                  // snapToInterval={Dimensions.get("window").width}
+                  pagingEnabled
+                  onScroll={
+                    Animated.event(
+                      [{ nativeEvent: { contentOffset: { x: this.animVal } } }]
+                    )
+                  }
                 >
+                  {/* pinned groups in carousel */}
                   {this.showPinnedGroups()}
+
+
                 </ScrollView>
+                {/* indicator for the scroll */}
+                <View style={styles.indicatorContainer}>
+                  {scrollIndicator}
+                </View>
               </View>
 
               {/* unpinned groups */}
@@ -233,13 +310,13 @@ class Groups extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: StatusBar.currentHeight
+    marginTop: StatusBar.currentHeight,
+    backgroundColor: "#FAFAFA"
   },
 
   feed: {
     flexDirection: "row",
     paddingHorizontal: wd(0.05),
-    backgroundColor: "#FAFAFA"
   },
 
   emptyFeed: {
@@ -247,14 +324,36 @@ const styles = StyleSheet.create({
     height: hp(0.6),
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#FAFAFA"
   },
 
   warning: {
     textAlign: "center",
     fontSize: 16,
     fontFamily: "HindSiliguri-Regular"
-  }
+  },
+
+  // scroll indicator
+  indicatorContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    height: wd(0.05),
+  },
+  inactiveScroll: {
+    backgroundColor: "#adadad",
+    overflow: "hidden",
+    height: 10,
+    width: 10,
+    borderRadius: 5
+  },
+  activeScroll: {
+    backgroundColor: "#FF6E6E",// current carousel
+    height: 10,
+    width: 10,
+    borderRadius: 5,
+    position: "absolute",
+    left: 0,
+    top: 0,
+  },
 });
 
 Groups.propTypes = {
