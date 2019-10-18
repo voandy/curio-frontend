@@ -27,6 +27,17 @@ import {
   deviceWidthDimension as wd
 } from "../../utils/responsiveDesign";
 
+// randomly* generated height for the cards
+function* randomHeight() {
+  while(true){
+    yield wd(0.4);
+    yield wd(0.35);
+    yield wd(0.47);
+    yield wd(0.425);
+    yield wd(0.33);
+  }
+}
+
 class Groups extends Component {
   constructor(props) {
     super(props);
@@ -93,6 +104,9 @@ class Groups extends Component {
     groups.sort(function (a, b) {
       return new Date(b.dateCreated) - new Date(a.dateCreated);
     });
+    // random height for cards to make things look spicier :)
+    var cardHeight = randomHeight()
+
     // tranform each group element into a component
     const groupComponent = groups.map(group => (
       <CardGroup
@@ -103,6 +117,7 @@ class Groups extends Component {
         title={group.details.title}
         onPress={this.clickGroup.bind(this)}
         pinned={group.pinned}
+        cardHeight={cardHeight.next().value}
       />
     ));
     // prep a temporary array for row-by-row grouping logic
@@ -175,45 +190,45 @@ class Groups extends Component {
 
     // --- TESTTING PHASE BELOW --- //
 
-    const barrrGroup = this.props.groups.userGroups
+    // const barrrGroup = this.props.groups.userGroups
 
-    // scroll bar animator
-    let barArray = []
-    barrrGroup.forEach((group, i) => {
+    // // scroll bar animator
+    // let barArray = []
+    // barrrGroup.forEach((group, i) => {
 
-      const scrollBarVal = this.animVal.interpolate({
-        inputRange: [wd(1) * (i - 1), wd(1) * (i + 1)],
-        outputRange: [-this.itemWidth, this.itemWidth],
-        extrapolate: 'clamp',
-      })
+    //   const scrollBarVal = this.animVal.interpolate({
+    //     inputRange: [wd(1) * (i - 1), wd(1) * (i + 1)],
+    //     outputRange: [-this.itemWidth, this.itemWidth],
+    //     extrapolate: 'clamp',
+    //   })
 
-      const thisBar = (
-        <View
-          key={`bar${i}`}
-          style={[
-            styles.track,
-            {
-              width: this.itemWidth,
-              marginLeft: i === 0 ? 0 : 10,
-            },
-          ]}
-        >
-          <Animated.View
+    //   const thisBar = (
+    //     <View
+    //       key={`bar${i}`}
+    //       style={[
+    //         styles.track,
+    //         {
+    //           width: this.itemWidth,
+    //           marginLeft: i === 0 ? 0 : 10,
+    //         },
+    //       ]}
+    //     >
+    //       <Animated.View
 
-            style={[
-              styles.bar,
-              {
-                width: this.itemWidth,
-                transform: [
-                  { translateX: scrollBarVal },
-                ],
-              },
-            ]}
-          />
-        </View>
-      )
-      barArray.push(thisBar)
-    })
+    //         style={[
+    //           styles.bar,
+    //           {
+    //             width: this.itemWidth,
+    //             transform: [
+    //               { translateX: scrollBarVal },
+    //             ],
+    //           },
+    //         ]}
+    //       />
+    //     </View>
+    //   )
+    //   barArray.push(thisBar)
+    // })
 
     return (
       <KeyboardShift>
@@ -272,9 +287,9 @@ class Groups extends Component {
 
                 </ScrollView>
                 {/* indicator for the scroll */}
-                <View style={styles.barContainer}>
+                {/* <View style={styles.barContainer}>
                   {barArray}
-                </View>
+                </View> */}
               </View>
 
               {/* unpinned groups */}
@@ -303,7 +318,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: StatusBar.currentHeight,
-    backgroundColor:"#FAFAFA"
+    backgroundColor: "#FAFAFA"
   },
 
   feed: {
