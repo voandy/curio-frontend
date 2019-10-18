@@ -31,10 +31,10 @@ import {
 function* randomHeight() {
   while(true){
     yield wd(0.4);
-    yield wd(0.35);
+    yield wd(0.25);
     yield wd(0.47);
-    yield wd(0.425);
-    yield wd(0.33);
+    yield wd(0.35);
+    yield wd(0.3);
   }
 }
 

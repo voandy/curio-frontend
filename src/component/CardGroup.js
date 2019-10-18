@@ -118,8 +118,6 @@ const styles = StyleSheet.create({
 
   photo: {
     width: wd(0.425),
-    // height: cardHeight, // get random height, if non supplied use default
-    // height: cardHeight? cardHeight:wd(0.425), // get random height, if non supplied use default
     borderTopRightRadius: 12,
     borderTopLeftRadius: 12
   },
