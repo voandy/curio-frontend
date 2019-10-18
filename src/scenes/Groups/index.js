@@ -47,6 +47,8 @@ class Groups extends Component {
       refreshing: false,
       searchInput: ""
     };
+
+    this.animVal = new Animated.Value(0);
   }
   // Nav bar details
   static navigationOptions = {
@@ -105,7 +107,7 @@ class Groups extends Component {
       return new Date(b.dateCreated) - new Date(a.dateCreated);
     });
     // random height for cards to make things look spicier :)
-    var cardHeight = randomHeight()
+    var cardHeight = randomHeight();
 
     // tranform each group element into a component
     const groupComponent = groups.map(group => (
@@ -172,56 +174,60 @@ class Groups extends Component {
       : pinnedGroupComponent;
   };
 
-  // TEMPORARY HERE, NICK THE MASTER CLEANER CLEAN THIS
-  BAR_WIDTH = 10    // this.BAR_WIDTH aint working lol idk why
-  SPACE_WIDTH = 15
-  numItems = this.props.groups.userGroups.filter(group => group.pinned).length
-  itemWidth = (10 / this.numItems) - ((this.numItems - 1) * 15)
-  animVal = new Animated.Value(0)
-
   // display scroll indicator for pinned groups
   showScrollIndicator = () => {
+    // extract pinned groups
+    let groups = this.props.groups.userGroups;
 
-    // pinned groups
-    const group = this.props.groups.userGroups.filter(group => group.pinned);
+    // TEMPORARY HERE, NICK THE MASTER CLEANER CLEAN THIS
+    // BAR_WIDTH = 10; // this.BAR_WIDTH aint working lol idk why
+    // SPACE_WIDTH = 15;
+    numItems = groups.filter(group => group.pinned).length;
+    itemWidth = 10 / numItems - (numItems - 1) * 15;
+
+    groups = groups.filter(group => group.pinned);
+
     var indicatorArray = [];
 
     // create an indicator for each group present
-    group.forEach((group, i) => {
+    groups.forEach((group, i) => {
       // scroll animation properties
       const scrollBarVal = this.animVal.interpolate({
         inputRange: [wd(1) * (i - 1), wd(1) * (i + 1)],
-        outputRange: [-this.itemWidth, this.itemWidth],
-        extrapolate: 'clamp',
-      })
+        outputRange: [itemWidth, -itemWidth],
+        extrapolate: "clamp"
+      });
+
+      console.log(scrollBarVal);
 
       // View -> inactive indicator (outer shell)
       // Animated.View -> active indicator
       const thisScrollIndicator = (
         <View
           key={`bar${i}`}
-          style={[styles.inactiveScroll, { marginLeft: i === 0 ? 0 : 10 }]}
+          style={[styles.inactiveScroll, { marginLeft: i === 0 ? 0 : 9 }]}
         >
           <Animated.View
-            style={[styles.activeScroll, {
-              transform: [{ translateX: scrollBarVal }],
-            }
+            style={[
+              styles.activeScroll,
+              {
+                transform: [{ translateX: scrollBarVal }]
+              }
             ]}
           />
         </View>
-      )
+      );
       // add into array
-      indicatorArray.push(thisScrollIndicator)
-    })
+      indicatorArray.push(thisScrollIndicator);
+    });
     return indicatorArray;
-  }
-
+  };
 
   render() {
     // navigate between pages
     const { navigate } = this.props.navigation;
     // scroll indicator
-    let scrollIndicator = this.showScrollIndicator()
+    let scrollIndicator = this.showScrollIndicator();
 
     return (
       <KeyboardShift>
@@ -259,7 +265,6 @@ class Groups extends Component {
 
               {/* carousel pinned groups */}
               <View style={{ height: wd(0.55), backgroundColor: "white" }}>
-
                 <ScrollView
                   horizontal={true}
                   showsHorizontalScrollIndicator={false}
@@ -268,21 +273,15 @@ class Groups extends Component {
                   // snapToAlignment={"center"}
                   // snapToInterval={Dimensions.get("window").width}
                   pagingEnabled
-                  onScroll={
-                    Animated.event(
-                      [{ nativeEvent: { contentOffset: { x: this.animVal } } }]
-                    )
-                  }
+                  onScroll={Animated.event([
+                    { nativeEvent: { contentOffset: { x: this.animVal } } }
+                  ])}
                 >
                   {/* pinned groups in carousel */}
                   {this.showPinnedGroups()}
-
-
                 </ScrollView>
                 {/* indicator for the scroll */}
-                <View style={styles.indicatorContainer}>
-                  {scrollIndicator}
-                </View>
+                <View style={styles.indicatorContainer}>{scrollIndicator}</View>
               </View>
 
               {/* unpinned groups */}
@@ -316,14 +315,14 @@ const styles = StyleSheet.create({
 
   feed: {
     flexDirection: "row",
-    paddingHorizontal: wd(0.05),
+    paddingHorizontal: wd(0.05)
   },
 
   emptyFeed: {
     flex: 1,
     height: hp(0.6),
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "center"
   },
 
   warning: {
@@ -336,7 +335,7 @@ const styles = StyleSheet.create({
   indicatorContainer: {
     flexDirection: "row",
     justifyContent: "center",
-    height: wd(0.05),
+    height: wd(0.05)
   },
   inactiveScroll: {
     backgroundColor: "#adadad",
@@ -346,14 +345,14 @@ const styles = StyleSheet.create({
     borderRadius: 5
   },
   activeScroll: {
-    backgroundColor: "#FF6E6E",// current carousel
+    backgroundColor: "#FF6E6E", // current carousel
     height: 10,
     width: 10,
     borderRadius: 5,
     position: "absolute",
     left: 0,
-    top: 0,
-  },
+    top: 0
+  }
 });
 
 Groups.propTypes = {
