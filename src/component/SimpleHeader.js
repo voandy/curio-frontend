@@ -84,7 +84,7 @@ class SimpleHeader extends Component {
       return null;
     } else {
       return (
-        <View style={{ flexDirection: "row", justifyContent: "center" }}>
+        <View style={{ flexDirection: "row", justifyContent: "center", backgroundColor:"white" }}>
           <TouchableOpacity
             onPress={() => this.clickTab(this.state.tab1)}
             style={styles.headerButton}
@@ -177,6 +177,7 @@ class SimpleHeader extends Component {
 const styles = StyleSheet.create({
   header: {
     borderBottomColor: "black",
+    backgroundColor:"white",
     borderRadius: 1,
     marginBottom: 10
   },

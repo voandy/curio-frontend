@@ -127,7 +127,7 @@ class Groups extends Component {
         {/* middle spacing */}
         <View style={{ width: wd(0.05) }} />
         {/* right column */}
-        <View style={{ width: wd(0.43) }}>
+        <View style={{ width: wd(0.43), marginRight: wd(0.05) }}>
           {arrayRight}
         </View>
       </View>
@@ -223,7 +223,7 @@ class Groups extends Component {
             <ScrollView
               showsVerticalScrollIndicator={false}
               scrollEventThrottle={16}
-              style={{ backgroundColor: "white" }}
+              // style={{ backgroundColor: "#FAFAFA" }}
               refreshControl={
                 <RefreshControl
                   refreshing={this.state.refreshing}
@@ -250,12 +250,13 @@ class Groups extends Component {
               />
 
               {/* carousel pinned groups */}
-              <View style={{ height: wd(0.52), backgroundColor: "white" }}>
+              <View style={{ height: wd(0.52) }}>
 
                 <ScrollView
                   horizontal={true}
                   showsHorizontalScrollIndicator={false}
                   decelerationRate={0.8}
+                  style={{ backgroundColor: "white" }}
                   // snapToAlignment={"center"}
                   // snapToInterval={Dimensions.get("window").width}
                   pagingEnabled
@@ -301,13 +302,13 @@ class Groups extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: StatusBar.currentHeight
+    marginTop: StatusBar.currentHeight,
+    backgroundColor:"#FAFAFA"
   },
 
   feed: {
     flexDirection: "row",
     paddingHorizontal: wd(0.05),
-    backgroundColor: "#FAFAFA",
   },
 
   emptyFeed: {
@@ -315,7 +316,6 @@ const styles = StyleSheet.create({
     height: hp(0.6),
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#FAFAFA",
   },
 
   warning: {
