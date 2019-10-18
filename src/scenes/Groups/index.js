@@ -29,7 +29,7 @@ import {
 
 // randomly* generated height for the cards
 function* randomHeight() {
-  while(true){
+  while (true) {
     yield wd(0.4);
     yield wd(0.25);
     yield wd(0.47);
@@ -176,59 +176,56 @@ class Groups extends Component {
       : pinnedGroupComponent;
   };
 
-
+  // TEMPORARY HERE, NICK THE MASTER CLEANER CLEAN THIS
+  BAR_WIDTH = 10    // this.BAR_WIDTH aint working lol idk why
+  SPACE_WIDTH = 15
   numItems = this.props.groups.userGroups.filter(group => group.pinned).length
-  itemWidth = (280 / this.numItems) - ((this.numItems - 1) * 10)
+  itemWidth = (10 / this.numItems) - ((this.numItems - 1) * 15)
   animVal = new Animated.Value(0)
 
+  // display scroll indicator for pinned groups
+  showScrollIndicator = () => {
+
+    // pinned groups
+    const group = this.props.groups.userGroups.filter(group => group.pinned);
+    var indicatorArray = [];
+
+    // create an indicator for each group present
+    group.forEach((group, i) => {
+      // scroll animation properties
+      const scrollBarVal = this.animVal.interpolate({
+        inputRange: [wd(1) * (i - 1), wd(1) * (i + 1)],
+        outputRange: [-this.itemWidth, this.itemWidth],
+        extrapolate: 'clamp',
+      })
+
+      // View -> inactive indicator (outer shell)
+      // Animated.View -> active indicator
+      const thisScrollIndicator = (
+        <View
+          key={`bar${i}`}
+          style={[styles.inactiveScroll, { marginLeft: i === 0 ? 0 : 10 }]}
+        >
+          <Animated.View
+            style={[styles.activeScroll, {
+              transform: [{ translateX: scrollBarVal }],
+            }
+            ]}
+          />
+        </View>
+      )
+      // add into array
+      indicatorArray.push(thisScrollIndicator)
+    })
+    return indicatorArray;
+  }
 
 
   render() {
     // navigate between pages
     const { navigate } = this.props.navigation;
-
-
-    // --- TESTTING PHASE BELOW --- //
-
-    // const barrrGroup = this.props.groups.userGroups
-
-    // // scroll bar animator
-    // let barArray = []
-    // barrrGroup.forEach((group, i) => {
-
-    //   const scrollBarVal = this.animVal.interpolate({
-    //     inputRange: [wd(1) * (i - 1), wd(1) * (i + 1)],
-    //     outputRange: [-this.itemWidth, this.itemWidth],
-    //     extrapolate: 'clamp',
-    //   })
-
-    //   const thisBar = (
-    //     <View
-    //       key={`bar${i}`}
-    //       style={[
-    //         styles.track,
-    //         {
-    //           width: this.itemWidth,
-    //           marginLeft: i === 0 ? 0 : 10,
-    //         },
-    //       ]}
-    //     >
-    //       <Animated.View
-
-    //         style={[
-    //           styles.bar,
-    //           {
-    //             width: this.itemWidth,
-    //             transform: [
-    //               { translateX: scrollBarVal },
-    //             ],
-    //           },
-    //         ]}
-    //       />
-    //     </View>
-    //   )
-    //   barArray.push(thisBar)
-    // })
+    // scroll indicator
+    let scrollIndicator = this.showScrollIndicator()
 
     return (
       <KeyboardShift>
@@ -265,7 +262,7 @@ class Groups extends Component {
               />
 
               {/* carousel pinned groups */}
-              <View style={{ height: wd(0.52) }}>
+              <View style={{ height: wd(0.55), backgroundColor: "white" }}>
 
                 <ScrollView
                   horizontal={true}
@@ -287,9 +284,9 @@ class Groups extends Component {
 
                 </ScrollView>
                 {/* indicator for the scroll */}
-                {/* <View style={styles.barContainer}>
-                  {barArray}
-                </View> */}
+                <View style={styles.indicatorContainer}>
+                  {scrollIndicator}
+                </View>
               </View>
 
               {/* unpinned groups */}
@@ -339,26 +336,25 @@ const styles = StyleSheet.create({
     fontFamily: "HindSiliguri-Regular"
   },
 
-
-
-
-
-
-  barContainer: {
-    position: 'absolute',
-    zIndex: 2,
-    top: 40,
-    flexDirection: 'row',
+  // scroll indicator
+  indicatorContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    height: wd(0.05),
   },
-  track: {
-    backgroundColor: '#ccc',
-    overflow: 'hidden',
-    height: 2,
+  inactiveScroll: {
+    backgroundColor: "#adadad",
+    overflow: "hidden",
+    height: 10,
+    width: 10,
+    borderRadius: 5
   },
-  bar: {
-    backgroundColor: '#5294d6',
-    height: 2,
-    position: 'absolute',
+  activeScroll: {
+    backgroundColor: "#FF6E6E",// current carousel
+    height: 10,
+    width: 10,
+    borderRadius: 5,
+    position: "absolute",
     left: 0,
     top: 0,
   },
