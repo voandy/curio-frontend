@@ -103,7 +103,7 @@ class Groups extends Component {
   showGroups = () => {
     var groups = this.props.groups.userGroups;
     // sort array based on date obtained (from earliest to oldest)
-    groups.sort(function(a, b) {
+    groups.sort(function (a, b) {
       return new Date(b.dateCreated) - new Date(a.dateCreated);
     });
     // random height for cards to make things look spicier :)
@@ -153,7 +153,7 @@ class Groups extends Component {
     // retain only pinned groups
     groups = groups.filter(group => group.pinned);
     // sort array based on date obtained (from earliest to oldest)
-    groups.sort(function(a, b) {
+    groups.sort(function (a, b) {
       return new Date(b.dateCreated) - new Date(a.dateCreated);
     });
     const pinnedGroupComponent = groups.map(group => (
@@ -168,7 +168,7 @@ class Groups extends Component {
     // if no groups are pinned
     //prettier-ignore
     return (!pinnedGroupComponent || !pinnedGroupComponent.length)
-      ? (<View style={{ justifyContent: "center", alignItems: "center", width: wd(1) }}>
+      ? (<View style={styles.emptyCard}>
         <Text style={styles.warning}>Press and hold on a group to pin them</Text>
       </View>)
       : pinnedGroupComponent;
@@ -288,13 +288,13 @@ class Groups extends Component {
               {this.props.groups.userGroups.length !== 0 ? (
                 <View>{this.showGroups()}</View>
               ) : (
-                <View style={styles.emptyFeed}>
-                  <Text style={styles.warning}>
-                    Looks like you're not part of any groups yet {"\n"}Click the
-                    "+" button to create a group
+                  <View style={styles.emptyFeed}>
+                    <Text style={styles.warning}>
+                      Looks like you're not part of any groups yet {"\n"}Click the
+                      "+" button to create a group
                   </Text>
-                </View>
-              )}
+                  </View>
+                )}
             </ScrollView>
 
             {/* create new Group */}
@@ -322,6 +322,18 @@ const styles = StyleSheet.create({
     flex: 1,
     height: hp(0.6),
     alignItems: "center",
+    justifyContent: "center"
+  },
+
+  emptyCard: {
+    width: wd(0.9),
+    marginHorizontal: wd(0.05),
+    height: wd(0.45),
+    borderRadius: 15,
+    borderWidth: 1,
+    borderStyle: "dashed",
+    borderColor: "#E2E2E2",
+    alignContent: "center",
     justifyContent: "center"
   },
 
