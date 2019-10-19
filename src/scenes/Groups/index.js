@@ -198,8 +198,6 @@ class Groups extends Component {
         extrapolate: "clamp"
       });
 
-      console.log(scrollBarVal);
-
       // View -> inactive indicator (outer shell)
       // Animated.View -> active indicator
       const thisScrollIndicator = (
@@ -223,6 +221,18 @@ class Groups extends Component {
     return indicatorArray;
   };
 
+  // determine scroll direction
+  // offset = 0
+  // scrollDir = "down"
+  // onScroll = (event) => {
+  //   var currentOffset = event.nativeEvent.contentOffset.y;
+  //   var direction = currentOffset > this.offset ? 'down' : 'up';
+  //   this.offset = currentOffset;
+  //   this.scrollDir = direction
+
+  //   console.log(direction)
+  // }
+
   render() {
     // navigate between pages
     const { navigate } = this.props.navigation;
@@ -237,7 +247,7 @@ class Groups extends Component {
             <ScrollView
               showsVerticalScrollIndicator={false}
               scrollEventThrottle={16}
-              // style={{ backgroundColor: "#FAFAFA" }}
+              // onScroll={this.onScroll}
               refreshControl={
                 <RefreshControl
                   refreshing={this.state.refreshing}
@@ -270,8 +280,6 @@ class Groups extends Component {
                   showsHorizontalScrollIndicator={false}
                   decelerationRate={0.8}
                   style={{ backgroundColor: "white" }}
-                  // snapToAlignment={"center"}
-                  // snapToInterval={Dimensions.get("window").width}
                   pagingEnabled
                   onScroll={Animated.event([
                     { nativeEvent: { contentOffset: { x: this.animVal } } }
@@ -298,6 +306,7 @@ class Groups extends Component {
             </ScrollView>
 
             {/* create new Group */}
+            {/* <AddButton onPress={this.onCreateNewGroup.bind(this)} scrollUp={this.scrollDir} /> */}
             <AddButton onPress={this.onCreateNewGroup.bind(this)} />
           </View>
         )}
@@ -350,7 +359,9 @@ const styles = StyleSheet.create({
     height: wd(0.05)
   },
   inactiveScroll: {
-    backgroundColor: "#adadad",
+    backgroundColor: "white",
+    borderWidth: 0.5,
+    borderColor: "#FF6E6E",
     overflow: "hidden",
     height: 10,
     width: 10,
