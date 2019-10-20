@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { TouchableOpacity } from "react-native-gesture-handler";
+
 import {
   StyleSheet,
   Alert,
@@ -16,8 +17,6 @@ import { getUserData, editUserData } from "../../../actions/userActions";
 // custom component
 import SettingField from "../../../component/SettingField";
 import ActivityLoaderModal from "../../../component/ActivityLoaderModal";
-import MySmallerButton from "../../../component/MySmallerButton";
-import MyButton from "../../../component/MyButton";
 import * as ImagePicker from "expo-image-picker";
 import * as ImageManipulator from "expo-image-manipulator";
 
@@ -26,6 +25,7 @@ import {
   deviceHeigthDimension as hp,
   deviceWidthDimension as wd
 } from "../../../utils/responsiveDesign";
+import { tsConstructorType } from "@babel/types";
 
 class AccountSetting extends Component {
   constructor(props) {
@@ -35,6 +35,7 @@ class AccountSetting extends Component {
       userData: {
         name: "",
         imageURI: "",
+        password: "",
         id: this.props.user.userData._id
       }
     }
@@ -128,6 +129,24 @@ class AccountSetting extends Component {
       this.setUserData("name", this.props.user.userData.name)
     }
 
+    // check for password validity (min 8 char long)
+    if (!(this.state.userData.password !== "" &&
+      this.state.userData.password.length >= 8)) {
+      // password not changed, set to undefined
+      this.setPassword(undefined)
+      // prompt user new password is invalid
+      this.setLoading(false);
+      Alert.alert(
+        'Invalid Password',
+        'Passwords must be at least 8 characters long',
+        [
+          {text: 'OK'},
+        ],
+        {cancelable: false},
+      );
+      return
+    }
+
     await this.props.editUserData(this.state.userData)
       .then(() => {
         // stop showing user the loading modal
@@ -158,6 +177,11 @@ class AccountSetting extends Component {
     this.setUserData("name", name)
   }
 
+  // change text in each Field
+  setPassword = password => {
+    this.setUserData("password", password)
+  }
+
   render() {
 
     var userData = this.state.userData;
@@ -176,7 +200,7 @@ class AccountSetting extends Component {
 
     // make edit button pressable when changes are made
     const buttonCondition =
-      userData.name || userData.imageURI
+      userData.name || userData.imageURI || userData.password
         // enable button (changes made)
         ? styles.buttonEnabled
         // disable button (no changes made)
@@ -210,7 +234,8 @@ class AccountSetting extends Component {
             editable={true}
             field="Password"
             isPassword={true}
-            input="********" />
+            input="********"
+            onChangeText={value => this.setPassword(value)} />
           <Text style={styles.warning}>username and email cannot be edited</Text>
 
           <View style={{ alignItems: "center", marginTop: hp(0.05) }}>
@@ -218,7 +243,7 @@ class AccountSetting extends Component {
             {/* edit button */}
             <TouchableOpacity
               style={[styles.button, buttonCondition]}
-              disabled={!userData.name && !userData.imageURI}
+              disabled={!userData.name && !userData.imageURI && !userData.password}
               onPress={() => this.toggleEditModal()}>
               <Text style={styles.edit} >Edit Changes</Text>
             </TouchableOpacity>
