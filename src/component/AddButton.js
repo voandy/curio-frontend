@@ -31,6 +31,10 @@ class AddButton extends Component {
     this.startAnimation()
   }
 
+  componentDidUpdate=()=>{
+    
+  }
+
   // setAnimationCompleted = () => {
   //   this.setState({ animationCompleted: !this.state.animationCompleted })
   // }
@@ -51,6 +55,7 @@ class AddButton extends Component {
     }).start();
     // }).start(() => this.setAnimationCompleted());
   }
+  
 
   // reverse back animation
   // reverseAnimation = () => {
@@ -72,7 +77,9 @@ class AddButton extends Component {
 
     // (this.state.animationCompleted) ? this.reverseAnimation() : this.startAnimation()
     // (this.props.scrollDir === "down" && this.state.animationCompleted && this.prevAnimation !== this.props.scrollDir)
-      // ? this.reverseAnimation() : this.startAnimation()
+    // ? this.reverseAnimation() : this.startAnimation()
+
+    this.props.scrollDir === 1 ? console.log('up') : console.log("down")
 
     return (
       <View style={styles.container}>

@@ -180,7 +180,7 @@ class Groups extends Component {
     let groups = this.props.groups.userGroups;
 
     // TEMPORARY HERE, NICK THE MASTER CLEANER CLEAN THIS
-    // BAR_WIDTH = 10; // this.BAR_WIDTH aint working lol idk why
+    // BAR_WIDTH = 10; 
     // SPACE_WIDTH = 15;
     numItems = groups.filter(group => group.pinned).length;
     itemWidth = 10 / numItems - (numItems - 1) * 15;
@@ -221,17 +221,15 @@ class Groups extends Component {
     return indicatorArray;
   };
 
+  offset = 0      // offset from previous position
+  scrollDir = 0   // 0 means down, 1 means up
   // determine scroll direction
-  // offset = 0
-  // scrollDir = "down"
-  // onScroll = (event) => {
-  //   var currentOffset = event.nativeEvent.contentOffset.y;
-  //   var direction = currentOffset > this.offset ? 'down' : 'up';
-  //   this.offset = currentOffset;
-  //   this.scrollDir = direction
-
-  //   console.log(direction)
-  // }
+  onScroll = (event) => {
+    var currentOffset = event.nativeEvent.contentOffset.y;
+    var direction = currentOffset > this.offset ? 0 : 1;
+    this.offset = currentOffset;
+    this.scrollDir = direction;
+  }
 
   render() {
     // navigate between pages
@@ -247,7 +245,7 @@ class Groups extends Component {
             <ScrollView
               showsVerticalScrollIndicator={false}
               scrollEventThrottle={16}
-              // onScroll={this.onScroll}
+              onScroll={this.onScroll}
               refreshControl={
                 <RefreshControl
                   refreshing={this.state.refreshing}
@@ -306,8 +304,8 @@ class Groups extends Component {
             </ScrollView>
 
             {/* create new Group */}
-            {/* <AddButton onPress={this.onCreateNewGroup.bind(this)} scrollUp={this.scrollDir} /> */}
-            <AddButton onPress={this.onCreateNewGroup.bind(this)} />
+            <AddButton onPress={this.onCreateNewGroup.bind(this)} scrollUp={this.scrollDir} />
+            {/* <AddButton onPress={this.onCreateNewGroup.bind(this)} /> */}
           </View>
         )}
       </KeyboardShift>
@@ -329,7 +327,7 @@ const styles = StyleSheet.create({
 
   emptyFeed: {
     flex: 1,
-    height: hp(0.6),
+    height: hp(0.3),
     alignItems: "center",
     justifyContent: "center"
   },
