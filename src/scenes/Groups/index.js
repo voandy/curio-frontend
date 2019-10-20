@@ -103,7 +103,7 @@ class Groups extends Component {
   showGroups = () => {
     var groups = this.props.groups.userGroups;
     // sort array based on date obtained (from earliest to oldest)
-    groups.sort(function (a, b) {
+    groups.sort(function(a, b) {
       return new Date(b.dateCreated) - new Date(a.dateCreated);
     });
     // random height for cards to make things look spicier :)
@@ -153,7 +153,7 @@ class Groups extends Component {
     // retain only pinned groups
     groups = groups.filter(group => group.pinned);
     // sort array based on date obtained (from earliest to oldest)
-    groups.sort(function (a, b) {
+    groups.sort(function(a, b) {
       return new Date(b.dateCreated) - new Date(a.dateCreated);
     });
     const pinnedGroupComponent = groups.map(group => (
@@ -178,26 +178,19 @@ class Groups extends Component {
   showScrollIndicator = () => {
     // extract pinned groups
     let groups = this.props.groups.userGroups;
-
-    // TEMPORARY HERE, NICK THE MASTER CLEANER CLEAN THIS
-    // BAR_WIDTH = 10; 
-    // SPACE_WIDTH = 15;
-    numItems = groups.filter(group => group.pinned).length;
-    itemWidth = 10 / numItems - (numItems - 1) * 15;
-
+    // only retains pinned groups
     groups = groups.filter(group => group.pinned);
-
-    var indicatorArray = [];
-
-    // create an indicator for each group present
-    groups.forEach((group, i) => {
-      // scroll animation properties
+    // prepare scroll indicator values
+    numItems = groups.length;
+    itemWidth = 10 / numItems - (numItems - 1) * 15;
+    // generate dots based on pinned groups
+    const indicatorComponents = groups.map((group, i) => {
+      //scroll animation properties
       const scrollBarVal = this.animVal.interpolate({
         inputRange: [wd(1) * (i - 1), wd(1) * (i + 1)],
         outputRange: [itemWidth, -itemWidth],
         extrapolate: "clamp"
       });
-
       // View -> inactive indicator (outer shell)
       // Animated.View -> active indicator
       const thisScrollIndicator = (
@@ -215,21 +208,20 @@ class Groups extends Component {
           />
         </View>
       );
-      // add into array
-      indicatorArray.push(thisScrollIndicator);
+      return thisScrollIndicator;
     });
-    return indicatorArray;
+    return indicatorComponents;
   };
 
-  offset = 0      // offset from previous position
-  scrollDir = 0   // 0 means down, 1 means up
+  offset = 0; // offset from previous position
+  scrollDir = 0; // 0 means down, 1 means up
   // determine scroll direction
-  onScroll = (event) => {
+  onScroll = event => {
     var currentOffset = event.nativeEvent.contentOffset.y;
     var direction = currentOffset > this.offset ? 0 : 1;
     this.offset = currentOffset;
     this.scrollDir = direction;
-  }
+  };
 
   render() {
     // navigate between pages
@@ -294,17 +286,20 @@ class Groups extends Component {
               {this.props.groups.userGroups.length !== 0 ? (
                 <View>{this.showGroups()}</View>
               ) : (
-                  <View style={styles.emptyFeed}>
-                    <Text style={styles.warning}>
-                      Looks like you're not part of any groups yet {"\n"}Click the
-                      "+" button to create a group
+                <View style={styles.emptyFeed}>
+                  <Text style={styles.warning}>
+                    Looks like you're not part of any groups yet {"\n"}Click the
+                    "+" button to create a group
                   </Text>
-                  </View>
-                )}
+                </View>
+              )}
             </ScrollView>
 
             {/* create new Group */}
-            <AddButton onPress={this.onCreateNewGroup.bind(this)} scrollUp={this.scrollDir} />
+            <AddButton
+              onPress={this.onCreateNewGroup.bind(this)}
+              scrollUp={this.scrollDir}
+            />
             {/* <AddButton onPress={this.onCreateNewGroup.bind(this)} /> */}
           </View>
         )}

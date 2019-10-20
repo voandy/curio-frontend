@@ -107,7 +107,7 @@ class UserSearch extends Component {
       reloadDataAtOrigin
     } = this.props.navigation.state.params;
     const { group } = this.state;
-    console.log(group);
+    // return early if there's no group
     if (!group) return;
     // preprocess data
     const memberIds = group.members.map(x => x.memberId);
