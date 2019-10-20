@@ -126,23 +126,26 @@ class AccountSetting extends Component {
 
     // fill in unchanged values (name)
     if (this.state.userData.name === "") {
-      this.setUserData("name", this.props.user.userData.name)
+      this.setUserData("name", undefined)
     }
 
-    // check for password validity (min 8 char long)
-    if (!(this.state.userData.password !== "" &&
-      this.state.userData.password.length >= 8)) {
-      // password not changed, set to undefined
+    // check for password validity
+    // no change in (password)
+    if (this.state.userData.password === "") {
       this.setPassword(undefined)
-      // prompt user new password is invalid
+    }
+    // check for password validity (min 8 char long)
+    else if (this.state.userData.password.length < 8) {
+      this.setPassword(undefined)
       this.setLoading(false);
+      // prompt user new password is invalid
       Alert.alert(
         'Invalid Password',
         'Passwords must be at least 8 characters long',
         [
-          {text: 'OK'},
+          { text: 'OK' },
         ],
-        {cancelable: false},
+        { cancelable: false },
       );
       return
     }
