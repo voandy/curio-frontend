@@ -18,17 +18,13 @@ import {
   deviceHeigthDimension as hp
 } from "../utils/responsiveDesign";
 
-
 /**groups shown in a card form in groups page */
 class CardGroup extends Component {
-
-  // default card height
-  cardHeight = wd(0.425);
-
   constructor(props) {
     super(props);
     // get random card height to make it more aesthetically pleasing
-    this.cardHeight = this.props.cardHeight
+    // if no height value is provided, then use default card height
+    this.cardHeight = this.props.cardHeight ? this.props.cardHeight : wd(0.425);
   }
 
   // alert prompt to pin or unpin groups
@@ -100,20 +96,20 @@ const styles = StyleSheet.create({
   card: {
     width: wd(0.425),
     marginTop: 10,
-    marginBottom: 20,
+    marginBottom: 10,
     elevation: 3,
     backgroundColor: "white",
     borderRadius: 15,
     borderWidth: 0.4,
-    borderColor: "#E2E2E2",
+    borderColor: "#E2E2E2"
   },
 
   font: {
-    fontFamily: "HindSiliguri-Regular",
+    fontFamily: "HindSiliguri-Regular"
   },
 
   picPlaceholder: {
-    justifyContent: "flex-start",
+    justifyContent: "flex-start"
   },
 
   photo: {
@@ -124,12 +120,12 @@ const styles = StyleSheet.create({
 
   textPlaceholder: {
     marginHorizontal: 8,
-    marginVertical: 4,
+    marginVertical: 4
   },
 
   groupNamePlaceholder: {
     marginBottom: 2,
-    justifyContent: "center",
+    justifyContent: "center"
   },
 
   groupDetailsPlaceholder: {
@@ -140,19 +136,19 @@ const styles = StyleSheet.create({
 
   userProfilePic: {
     width: wd(0.055),
-    height: wd(0.055),
+    height: wd(0.055)
   },
 
   userName: {
     color: "#939090",
     fontSize: wd(0.03),
     marginLeft: 8,
-    fontFamily: "HindSiliguri-Light",
+    fontFamily: "HindSiliguri-Light"
   },
 
   favourite: {
     width: 25,
-    height: 25,
+    height: 25
   }
 });
 

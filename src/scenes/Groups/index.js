@@ -27,42 +27,31 @@ import {
   deviceWidthDimension as wd
 } from "../../utils/responsiveDesign";
 
-// randomly* generated height for the cards
-function* randomHeight() {
-  while (true) {
-    yield wd(0.4);
-    yield wd(0.25);
-    yield wd(0.47);
-    yield wd(0.35);
-    yield wd(0.3);
-  }
-}
-
 class Groups extends Component {
   constructor(props) {
     super(props);
-
+    // setup initial state
     this.state = {
       isModalVisible: false,
       refreshing: false,
       searchInput: ""
     };
-
+    // animation for pinned groups scroll indicators
     this.animVal = new Animated.Value(0);
   }
-  // Nav bar details
+
+  // nav bar details
   static navigationOptions = {
     header: null
   };
 
+  // setter for search bar input
   onChangeSearchInput = searchInput => {
-    this.setState({
-      searchInput
-    });
+    this.setState({ searchInput });
   };
 
-  // refresh page
-  refreshGroupPage = async () => {
+  // re-retrieve all required data - also used in page refresh
+  reloadData = async () => {
     this.setState({ refreshing: true });
     // get data from backend
     await this.props.getUserGroups(this.props.auth.user.id);
@@ -70,35 +59,37 @@ class Groups extends Component {
     this.setState({ refreshing: false });
   };
 
-  // revert newGroup to initial state
-  resetNewGroup = () => {
-    this.setState({
-      newGroup
-    });
+  // navigation functions //
+  // user selects a specific group in the Groups scene
+  onGroupPress = groupId => {
+    // redirect user to selected group
+    this.navigateToPage("SelectedGroup", { groupId });
   };
 
-  // new group's attribute change
-  onNewGroupChange = (key, value) => {
-    this.setState({
-      newGroup: {
-        ...this.state.newGroup,
-        [key]: value
-      }
-    });
-  };
-
-  // click a specific group on the Groups scene
-  clickGroup = async groupId => {
-    const { navigate } = this.props.navigation;
-    navigate("SelectedGroup", { origin: "Groups", groupId });
-  };
-
+  // user wants to create a group
   onCreateNewGroup = () => {
-    const { navigate } = this.props.navigation;
     // navigate to group form
-    navigate("GroupsForm", { origin: "Groups" });
+    this.navigateToPage("GroupsForm");
   };
 
+  // user typed and enters search inputs
+  onSearchInputSubmit = () => {
+    // navigate to general search page
+    this.navigateToPage("GeneralSearch", {
+      searchTerms: this.state.searchInput
+    });
+  };
+
+  // main navigation function
+  navigateToPage = (page, options) => {
+    const { push } = this.props.navigation;
+    push(page, {
+      origin: "Groups",
+      ...options
+    });
+  };
+
+  // component render functions //
   // show and renders groups components row-by-row
   showGroups = () => {
     var groups = this.props.groups.userGroups;
@@ -108,7 +99,6 @@ class Groups extends Component {
     });
     // random height for cards to make things look spicier :)
     var cardHeight = randomHeight();
-
     // tranform each group element into a component
     const groupComponent = groups.map(group => (
       <CardGroup
@@ -117,7 +107,7 @@ class Groups extends Component {
         groupId={group.groupId}
         image={{ uri: group.details.coverPhoto }}
         title={group.details.title}
-        onPress={this.clickGroup.bind(this)}
+        onPress={this.onGroupPress.bind(this)}
         pinned={group.pinned}
         cardHeight={cardHeight.next().value}
       />
@@ -149,7 +139,7 @@ class Groups extends Component {
 
   // show all the pinned groups in carousel
   showPinnedGroups = () => {
-    var groups = this.props.groups.userGroups;
+    let groups = this.props.groups.userGroups;
     // retain only pinned groups
     groups = groups.filter(group => group.pinned);
     // sort array based on date obtained (from earliest to oldest)
@@ -162,7 +152,7 @@ class Groups extends Component {
         image={group.details.coverPhoto}
         groupId={group.groupId}
         userId={this.props.auth.user.id}
-        onPress={this.clickGroup.bind(this)}
+        onPress={this.onGroupPress.bind(this)}
       />
     ));
     // if no groups are pinned
@@ -175,6 +165,7 @@ class Groups extends Component {
   };
 
   // display scroll indicator for pinned groups
+  //prettier-ignore
   showScrollIndicator = () => {
     // extract pinned groups
     let groups = this.props.groups.userGroups;
@@ -193,22 +184,17 @@ class Groups extends Component {
       });
       // View -> inactive indicator (outer shell)
       // Animated.View -> active indicator
-      const thisScrollIndicator = (
+      const dotIndicator = (
         <View
           key={`bar${i}`}
           style={[styles.inactiveScroll, { marginLeft: i === 0 ? 0 : 9 }]}
         >
           <Animated.View
-            style={[
-              styles.activeScroll,
-              {
-                transform: [{ translateX: scrollBarVal }]
-              }
-            ]}
+            style={[ styles.activeScroll, { transform: [{ translateX: scrollBarVal }] } ]}
           />
         </View>
       );
-      return thisScrollIndicator;
+      return dotIndicator;
     });
     return indicatorComponents;
   };
@@ -224,11 +210,6 @@ class Groups extends Component {
   };
 
   render() {
-    // navigate between pages
-    const { navigate } = this.props.navigation;
-    // scroll indicator
-    let scrollIndicator = this.showScrollIndicator();
-
     return (
       <KeyboardShift>
         {() => (
@@ -241,7 +222,7 @@ class Groups extends Component {
               refreshControl={
                 <RefreshControl
                   refreshing={this.state.refreshing}
-                  onRefresh={this.refreshGroupPage}
+                  onRefresh={this.reloadData}
                 />
               }
             >
@@ -251,16 +232,8 @@ class Groups extends Component {
                 searchInput={this.state.searchInput}
                 onChangeSearchInput={this.onChangeSearchInput}
                 pressClear={() => this.onChangeSearchInput("")}
-                onSubmitEditing={() =>
-                  navigate("GeneralSearch", {
-                    searchTerms: this.state.searchInput
-                  })
-                }
-                pressSearch={() =>
-                  navigate("GeneralSearch", {
-                    searchTerms: this.state.searchInput
-                  })
-                }
+                onSubmitEditing={() => this.onSearchInputSubmit()}
+                pressSearch={() => this.onSearchInputSubmit()}
               />
 
               {/* carousel pinned groups */}
@@ -279,7 +252,9 @@ class Groups extends Component {
                   {this.showPinnedGroups()}
                 </ScrollView>
                 {/* indicator for the scroll */}
-                <View style={styles.indicatorContainer}>{scrollIndicator}</View>
+                <View style={styles.indicatorContainer}>
+                  {this.showScrollIndicator()}
+                </View>
               </View>
 
               {/* unpinned groups */}
@@ -308,6 +283,17 @@ class Groups extends Component {
   }
 }
 
+// randomly generate a height value for group cards
+function* randomHeight() {
+  while (true) {
+    yield wd(0.4);
+    yield wd(0.25);
+    yield wd(0.47);
+    yield wd(0.35);
+    yield wd(0.3);
+  }
+}
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -317,7 +303,8 @@ const styles = StyleSheet.create({
 
   feed: {
     flexDirection: "row",
-    paddingHorizontal: wd(0.05)
+    paddingHorizontal: wd(0.05),
+    paddingBottom: wd(0.025)
   },
 
   emptyFeed: {
