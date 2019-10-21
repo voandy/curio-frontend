@@ -110,22 +110,14 @@ class SelectedGroup extends Component {
     return adminId === userId;
   };
 
-  isUserPartOfGroup = () => {
+  // check if user is a member of the group
+  isUserMember = () => {
     // get required local state data
     const userId = this.props.user.userData._id;
-    const members = this.state.groupMembers;
-    // check if user is part of the group, returns add button if they are
-    if (members.length !== 0) {
-      for(let i=0; i< members.length; i++){
-        // user in group
-        if(members[i].memberId === userId){
-          return true
-        }
-      }
-    }
-    // not in group 
-    return false;
-  }
+    const memberIds = this.state.groupMembers.map(x => x.memberId);
+    // check if user id is in member ids array
+    return memberIds.includes(userId);
+  };
 
   // refresh page
   reloadData = async () => {
@@ -251,28 +243,31 @@ class SelectedGroup extends Component {
   // all the component render functions //
   // show options depends on user's role to the group
   showOptions = () => {
+    //prettier-ignore
     // check if user is the admin of the group
-    return this.isUserAdmin() ? (
-      <OptionButton
-        firstOption={"Edit Group"}
-        secondOption={"Delete Group"}
-        toggleFirstOption={this.onGroupEdit}
-        toggleSecondOption={this.toggleDeleteModal}
-      />
-    ) : (
-        <OptionButton
-          firstOption={"Leave Group"}
-          toggleFirstOption={this.onGroupLeave}
-        />
-      );
+    return this.isUserAdmin() 
+      ? (<OptionButton
+          firstOption={"Edit Group"}
+          secondOption={"Delete Group"}
+          toggleFirstOption={this.onGroupEdit}
+          toggleSecondOption={this.toggleDeleteModal}
+        />) 
+      : // then check if user is a member
+        this.isUserMember() 
+        ? (<OptionButton
+            firstOption={"Leave Group"}
+            toggleFirstOption={this.onGroupLeave}
+          />) 
+        : // user is not a member, hide option button
+          (<View />);
   };
 
   // show Add artefact button for members of the group only
   showAddButton = () => {
-    return this.isUserPartOfGroup() ? (
+    return this.isUserMember() ? (
       <AddButton onPress={this.onAddNewArtefact.bind(this)} />
-    ) : (null)
-  }
+    ) : null;
+  };
 
   // show button only if user is the admin of the group
   showInviteButton = () => {
@@ -285,8 +280,8 @@ class SelectedGroup extends Component {
         <Text style={styles.buttonText}>Invite</Text>
       </TouchableOpacity>
     ) : (
-        <View />
-      );
+      <View />
+    );
   };
 
   // display a row of group members
@@ -316,7 +311,7 @@ class SelectedGroup extends Component {
   // return all group artefacts components
   showGroupArtefacts = () => {
     // sort array based on date obtained (from earliest to oldest)
-    const groupArtefacts = this.state.groupArtefacts.sort(function (a, b) {
+    const groupArtefacts = this.state.groupArtefacts.sort(function(a, b) {
       return new Date(b.dateAdded) - new Date(a.dateAdded);
     });
     // transform each artefact to a PostFeed component
