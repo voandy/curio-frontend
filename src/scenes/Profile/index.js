@@ -104,7 +104,7 @@ class Profile extends Component {
             @{this.props.user.userData.username}
           </Text>
           <Text style={[styles.userDetails, { marginBottom: 25 }]}>
-            member since {Moment(dt).format("Do MMMM YYYY")}
+            Joined Curio on {Moment(dt).format("Do MMMM YYYY")}
           </Text>
 
           {/* line separator */}
