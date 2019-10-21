@@ -79,7 +79,7 @@ class AddButton extends Component {
     // (this.props.scrollDir === "down" && this.state.animationCompleted && this.prevAnimation !== this.props.scrollDir)
     // ? this.reverseAnimation() : this.startAnimation()
 
-    this.props.scrollDir === 1 ? console.log('up') : console.log("down")
+    // this.props.scrollDir === 1 ? console.log('up') : console.log("down")
 
     return (
       <View style={styles.container}>

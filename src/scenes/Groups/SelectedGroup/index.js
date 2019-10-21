@@ -110,6 +110,23 @@ class SelectedGroup extends Component {
     return adminId === userId;
   };
 
+  isUserPartOfGroup = () => {
+    // get required local state data
+    const userId = this.props.user.userData._id;
+    const members = this.state.groupMembers;
+    // check if user is part of the group, returns add button if they are
+    if (members.length !== 0) {
+      for(let i=0; i< members.length; i++){
+        // user in group
+        if(members[i].memberId === userId){
+          return true
+        }
+      }
+    }
+    // not in group 
+    return false;
+  }
+
   // refresh page
   reloadData = async () => {
     this.setState({ refreshing: true });
@@ -243,12 +260,19 @@ class SelectedGroup extends Component {
         toggleSecondOption={this.toggleDeleteModal}
       />
     ) : (
-      <OptionButton
-        firstOption={"Leave Group"}
-        toggleFirstOption={this.onGroupLeave}
-      />
-    );
+        <OptionButton
+          firstOption={"Leave Group"}
+          toggleFirstOption={this.onGroupLeave}
+        />
+      );
   };
+
+  // show Add artefact button for members of the group only
+  showAddButton = () => {
+    return this.isUserPartOfGroup() ? (
+      <AddButton onPress={this.onAddNewArtefact.bind(this)} />
+    ) : (null)
+  }
 
   // show button only if user is the admin of the group
   showInviteButton = () => {
@@ -261,8 +285,8 @@ class SelectedGroup extends Component {
         <Text style={styles.buttonText}>Invite</Text>
       </TouchableOpacity>
     ) : (
-      <View />
-    );
+        <View />
+      );
   };
 
   // display a row of group members
@@ -270,10 +294,10 @@ class SelectedGroup extends Component {
     // transform each member to an UserIcon component
     //prettier-ignore
     const groupMembersComponent = this.state.groupMembers.map(member => (
-      <UserIcon 
-        key={member._id} 
+      <UserIcon
+        key={member._id}
         userId={member.memberId}
-        image={{ uri: member.details.profilePic }} 
+        image={{ uri: member.details.profilePic }}
         onPress={this.onUserProfilePress.bind(this)}
       />
     ));
@@ -292,7 +316,7 @@ class SelectedGroup extends Component {
   // return all group artefacts components
   showGroupArtefacts = () => {
     // sort array based on date obtained (from earliest to oldest)
-    const groupArtefacts = this.state.groupArtefacts.sort(function(a, b) {
+    const groupArtefacts = this.state.groupArtefacts.sort(function (a, b) {
       return new Date(b.dateAdded) - new Date(a.dateAdded);
     });
     // transform each artefact to a PostFeed component
@@ -321,7 +345,7 @@ class SelectedGroup extends Component {
     const { coverPhoto, description, title } = this.state.group;
     // extract local state data
     const { groupMembers } = this.state;
-    this.showOptions();
+
     return (
       <View style={styles.container}>
         <ActivityLoaderModal loading={this.state.loading} />
@@ -382,7 +406,8 @@ class SelectedGroup extends Component {
           </View>
         </ScrollView>
         {/* toggle modal to add artefacts into groups */}
-        <AddButton onPress={this.onAddNewArtefact.bind(this)} />
+        {/* <AddButton onPress={this.onAddNewArtefact.bind(this)} /> */}
+        {this.showAddButton()}
       </View>
     );
   }
