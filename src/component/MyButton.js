@@ -18,7 +18,6 @@ class MyButton extends Component {
   }
 
   enableButton(){
-    console.log("hue")
     if (this.props.isEnabled === false){
       return({
         backgroundColor:"e0e0e0"  // make it gray

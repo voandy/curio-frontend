@@ -128,6 +128,7 @@ class PublicProfile extends Component {
     // extract data from local states
     const { user, artefacts } = this.state;
     const { name, username, profilePic, dateJoined } = user;
+    const { navigate } = this.props.navigation;
     // make sure groups is not undefined
     const groups = !user.groups ? [] : user.groups;
     // decide which image source to use
@@ -168,7 +169,7 @@ class PublicProfile extends Component {
               @{username}
             </Text>
             <Text style={styles.userDetails}>
-              joined since {Moment(dateJoined).format("Do MMMM YYYY")}
+              joined Curio: {Moment(dateJoined).format("Do MMMM YYYY")}
             </Text>
             {/* number of artefacts and groups of the user */}
             <View
@@ -179,27 +180,33 @@ class PublicProfile extends Component {
               }}
             >
               {/* artefacts numbers */}
-              <View style={{ alignItems: "center" }}>
+              <TouchableOpacity
+                style={{ alignItems: "center" }}
+              // onPress={() => navigate("PublicUserArtefacts", { origin: "PublicProfile" })}
+              >
                 <Text style={styles.font}>{artefacts.length}</Text>
                 <Text style={(styles.subFont, { color: "#939090" })}>
                   Artefacts
                 </Text>
-              </View>
+              </TouchableOpacity>
 
               {/* groups number */}
-              <View style={{ alignItems: "center" }}>
+              <TouchableOpacity
+                style={{ alignItems: "center" }}
+              // onPress={() => navigate("PublicUserGroups", { origin: "PublicProfile" })}
+              >
                 <Text style={styles.font}>{groups.length}</Text>
                 <Text style={(styles.subFont, { color: "#939090" })}>
                   Groups
                 </Text>
-              </View>
+              </TouchableOpacity>
             </View>
           </View>
 
           {/* user artefacts posts */}
           <View style={{ marginTop: wd(0.01) }}>{this.showArtefacts()}</View>
         </ScrollView>
-      </View>
+      </View >
     );
   }
 }
