@@ -2,10 +2,8 @@
 
 const { Notifications } = require("expo");
 const Permissions = require("expo-permissions");
-const axios = require("axios");
 
-//prettier-ignore
-const { setUserPushTokenAPIRequest } = require('../../utils/APIHelpers/userAPIHelpers');
+const { sendUserPushToken } = require("../../actions/userActions");
 
 export async function registerForPushNotificationsAsync(userId) {
   const { status: existingStatus } = await Permissions.getAsync(
@@ -32,5 +30,5 @@ export async function registerForPushNotificationsAsync(userId) {
   console.log("Expo-Push-Token: " + token);
 
   // POST the token to your backend server from where you can retrieve it to send push notifications.
-  setUserPushTokenAPIRequest(userId, token).catch(err => console.log(err));
+  sendUserPushToken(userId, token);
 }

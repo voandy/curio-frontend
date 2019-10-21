@@ -12,7 +12,6 @@ import {
 
 /** carousel for saved groups in groups page */
 class CardCarousel extends Component {
-
   // alert prompt to pin or unpin groups
   showAlert = () => {
     //prettier-ignore
@@ -38,8 +37,15 @@ class CardCarousel extends Component {
     return (
       <View style={styles.card}>
         {/* favouraite icon */}
-        <View style={{ position: "absolute", top: 10, right: 10, elevation: 1 }}>
-          <Image resizeMode="contain" style={styles.favourite} source={require("../../assets/images/icons/favourite.png")} />
+        <View
+          style={{ position: "absolute", top: 10, right: 10, elevation: 1 }}
+        >
+          <Image
+            style={styles.favourite}
+            source={require("../../assets/images/icons/favourite.png")}
+            resizeMethod="resize"
+            resizeMode="contain"
+          />
         </View>
 
         {/* group card */}
@@ -82,7 +88,7 @@ const styles = StyleSheet.create({
 
   favourite: {
     width: 25,
-    height: 25,
+    height: 25
   }
 });
 
