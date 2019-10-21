@@ -78,7 +78,7 @@ class Search extends Component {
   // search for both users and groups on backend
   doGeneralSearch = searchInput => {
     // return early if search terms are empty
-    if (!searchInput) return alert("Please enter some search terms.");
+    if (!searchInput) return;
     // do both types of search at the same time
     return new Promise((resolve, reject) => {
       Promise.all([

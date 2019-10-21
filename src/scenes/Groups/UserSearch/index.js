@@ -7,17 +7,11 @@ import {
   ScrollView,
   View,
   StatusBar,
-  TextInput,
-  Image,
   Text,
   RefreshControl
 } from "react-native";
 
-import {
-  searchUsers,
-  clearSearchResults
-} from "../../../actions/searchActions";
-
+import { searchUsers } from "../../../actions/searchActions";
 import { getSelectedGroup } from "../../../actions/groupsActions";
 
 // Custom component
@@ -31,74 +25,100 @@ import { deviceWidthDimension as wd } from "../../../utils/responsiveDesign";
 class UserSearch extends Component {
   constructor(props) {
     super(props);
-    // clear redux state in case user force quits the app and reopen it
-    this.props.clearSearchResults();
+    // extract navigation parameters
+    const { groupId } = this.props.navigation.state.params;
     // set up initial state
     this.state = {
-      searchInput: "",
-      // has first search been done?
-      searchPerformed: false,
+      // page parameters
       refreshing: false,
+      // search parameters
+      searchInput: "",
+      searchPerformed: false, // has first search been done?
+      // search results
+      searchResults: [],
       // set selected group on start up (for invite user search)
       group: {},
-      groupId: this.props.navigation.getParam("groupId")
+      groupId
     };
-
     // populate group data
-    if (this.state.groupId) {
-      this.props
-        .getSelectedGroup(this.state.groupId)
-        .then(group => this.setState({ group }));
+    if (groupId) {
+      this.getGroupData();
+    } else {
+      alert("Something went wrong");
     }
   }
-
-  // TODO change this when results fill in after search
-  state = {
-    searchResults: 0
-  };
 
   // Nav bar details
   static navigationOptions = {
     header: null
   };
 
-  // refresh page
-  refreshPage = async () => {
-    this.setState({ refreshing: true });
-    // extract group id
-    const { groupId } = this.state;
+  // user types new search terms
+  onChangeSearchInput = searchInput => {
+    this.setState({ searchInput });
+  };
 
-    // reload group data first
-    // only reload if this is for invite user search
-    if (groupId) {
-      await this.props
-        .getSelectedGroup(groupId)
-        .then(group => this.setState({ group }));
-    }
-    // clear results
-    await this.props.clearSearchResults();
+  //prettier-ignore
+  getGroupData = () => {
+    return new Promise((resolve, reject) => {
+      // extract navigation parameters
+      const { groupId } = this.props.navigation.state.params;
+      // populate group data
+      this.props.getSelectedGroup(groupId)
+        .then(group => this.setState({ group }, () => resolve()))
+        .catch(err => {
+          alert("Please try again later");
+          reject(err);
+        });
+    });
+  };
+
+  // re-retrieve all required data - also used in page refresh
+  reloadData = async () => {
+    this.setState({ refreshing: true });
     // redo user search
     await this.doUserSearch(this.state.searchInput);
     // resets refreshing state
     this.setState({ refreshing: false });
   };
 
-  onChangeSearchInput = searchInput => {
-    this.setState({ searchInput });
-  };
-
+  // search for users on backend
   doUserSearch = async searchInput => {
-    if (searchInput == "") {
-      alert("Please enter some search terms.");
-    } else {
-      await this.props.searchUsers({ searchTerms: searchInput }).then(() => {
-        this.setState({ searchPerformed: true });
-      });
-    }
+    // return early if search terms are empty
+    if (!searchInput) return;
+    // reload group data first to update search results components
+    if (this.state.groupId) await this.getGroupData();
+    // do both types of search at the same time
+    return new Promise((resolve, reject) => {
+      this.props
+        .searchUsers({ searchTerms: searchInput })
+        .then(searchResults => {
+          // store new results into local states
+          this.setState(
+            {
+              searchPerformed: true,
+              searchResults
+            },
+            // setState callback, success
+            () => resolve()
+          );
+        })
+        // failure in getting new search result
+        .catch(err => {
+          alert("Please try again later");
+          reject(err);
+        });
+    });
   };
 
   // generate feed for user search results
-  showUserResults = function(userSearchResults) {
+  showSearchResults = () => {
+    // extract data from local state
+    const { searchResults, group } = this.state;
+    // return early if there is no search result
+    if (!searchResults.length && !this.state.refreshing) {
+      return <Text style={styles.emptySearch}>No users found</Text>;
+    }
     // extract all the required information
     const {
       toInvite,
@@ -106,47 +126,41 @@ class UserSearch extends Component {
       groupId,
       reloadDataAtOrigin
     } = this.props.navigation.state.params;
-    const { group } = this.state;
-    // return early if there's no group
-    if (!group) return;
     // preprocess data
     const memberIds = group.members.map(x => x.memberId);
     const pendingInvites = group.pendingInvitations;
-
-    // create result feed
-    if (userSearchResults.length === 0 && !this.state.refreshing) {
-      return <Text style={styles.emptySearch}>No users found</Text>;
-    } else {
-      var userResultsFeed = [];
-      // create a view for each user result
-      for (var i = 0; i < userSearchResults.length; i++) {
-        // extract user id
-        const userId = userSearchResults[i]._id;
-        // check for conditions
-        isGroupMember = memberIds.includes(userId);
-        hasInvited = pendingInvites.includes(userId);
-        // generate feed component based on conditions
-        userResultsFeed.push(
-          <SearchFeed
-            key={i}
-            heading={userSearchResults[i].name}
-            subHeading={userSearchResults[i].username}
-            searchImage={userSearchResults[i].profilePic}
-            toInvite={toInvite}
-            hasInvited={hasInvited}
-            isGroupMember={isGroupMember}
-            userId={userId}
-            groupId={groupId}
-            onPress={onPress}
-            reloadDataAtOrigin={reloadDataAtOrigin}
-          />
-        );
-      }
-      return userResultsFeed;
-    }
+    // transform each search result into a search feed component
+    const searchResultsFeed = searchResults.map(searchResult => {
+      // get user's id
+      const userId = searchResult._id;
+      // check for conditions
+      const isGroupMember = memberIds.includes(userId);
+      const hasInvited = pendingInvites.includes(userId);
+      // return a search feed component
+      return (
+        <SearchFeed
+          key={userId}
+          heading={searchResult.name}
+          subHeading={searchResult.username}
+          searchImage={searchResult.profilePic}
+          toInvite={toInvite}
+          hasInvited={hasInvited}
+          isGroupMember={isGroupMember}
+          userId={userId}
+          groupId={groupId}
+          onPress={onPress}
+          reloadDataAtOrigin={reloadDataAtOrigin}
+        />
+      );
+    });
+    return searchResultsFeed;
   };
 
   render() {
+    // groupId is not passed in, return early because this would not work
+    // without it
+    if (!this.state.groupId) return <View></View>;
+    // normal renders
     return (
       <View style={styles.container}>
         {/* search header */}
@@ -165,13 +179,13 @@ class UserSearch extends Component {
           refreshControl={
             <RefreshControl
               refreshing={this.state.refreshing}
-              onRefresh={this.refreshPage}
+              onRefresh={this.reloadData}
             />
           }
         >
-          {this.state.searchPerformed === true ? (
+          {this.state.searchPerformed ? (
             // user search results
-            this.showUserResults(this.props.search.userSearchResults)
+            this.showSearchResults()
           ) : (
             // group search results
             <Text style={styles.emptySearch}>
@@ -227,15 +241,10 @@ const styles = StyleSheet.create({
 });
 
 UserSearch.propTypes = {
-  searchUsers: PropTypes.func.isRequired,
-  clearSearchResults: PropTypes.func.isRequired
+  searchUsers: PropTypes.func.isRequired
 };
 
-const mapStateToProps = state => ({
-  search: state.search
-});
-
 export default connect(
-  mapStateToProps,
-  { searchUsers, clearSearchResults, getSelectedGroup }
+  null,
+  { searchUsers, getSelectedGroup }
 )(UserSearch);
