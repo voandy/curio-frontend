@@ -43,6 +43,8 @@ import {
 class SelectedGroup extends Component {
   constructor(props) {
     super(props);
+    // extract navigation parameters
+    const { groupId } = this.props.navigation.state.params;
     // Setup initial state
     this.state = {
       // page settings
@@ -52,10 +54,9 @@ class SelectedGroup extends Component {
       // selected group data
       group: {},
       groupMembers: [],
-      groupArtefacts: []
+      groupArtefacts: [],
+      groupId
     };
-    // get group id passed in from the navigation parameter
-    groupId = this.props.navigation.getParam("groupId");
     // make sure it exists
     groupId
       ? this.getSelectedGroupData(groupId)
@@ -122,10 +123,8 @@ class SelectedGroup extends Component {
   // refresh page
   reloadData = async () => {
     this.setState({ refreshing: true });
-    // get data from backend
-    groupId = this.props.navigation.getParam("groupId");
     // reload everything at once, only refresh once everything is done loading
-    await this.getSelectedGroupData(groupId);
+    await this.getSelectedGroupData(this.state.groupId);
     // resets refreshing state
     this.setState({ refreshing: false });
   };
@@ -231,7 +230,7 @@ class SelectedGroup extends Component {
   // main navigation function
   navigateToPage = (page, options) => {
     const { push } = this.props.navigation;
-    const groupId = this.props.navigation.getParam("groupId");
+    const { groupId } = this.state;
     push(page, {
       origin: "SelectedGroup",
       groupId,
