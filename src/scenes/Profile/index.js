@@ -43,13 +43,15 @@ class Profile extends Component {
   //prettier-ignore
   // logs user out and navigate to authentication page
   onLogoutClick = () => {
+    const { navigate } = this.props.navigation;
     const userId = this.props.user.userData._id;
     this.props.logoutUser()
       .then(() => {
         // set user's push token to null so that the backend won't set
         // a notification to an unlogged in device
         sendUserPushToken(userId, null);
-        navigateToPage("Auth");
+        // use navigate instead of push cause we want to reset the stack
+        navigate("Auth");
       })
       .catch(err => console.log(err));
   };
