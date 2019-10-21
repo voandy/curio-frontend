@@ -168,7 +168,7 @@ class PublicProfile extends Component {
               @{username}
             </Text>
             <Text style={styles.userDetails}>
-              Joined Curio since {Moment(dateJoined).format("Do MMMM YYYY")}
+              Joined Curio on {Moment(dateJoined).format("Do MMMM YYYY")}
             </Text>
             {/* number of artefacts and groups of the user */}
             <View
