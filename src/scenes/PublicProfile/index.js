@@ -32,17 +32,17 @@ import {
 class PublicProfile extends Component {
   constructor(props) {
     super(props);
+    // extract navigation parameters
+    const { userId } = this.props.navigation.state.params;
+    // setup initial state
     this.state = {
-      user: {},
-      artefacts: [],
+      // page settings
       refreshing: false,
-      // get group id passed in from the navigation parameter
-      userId: this.props.navigation.getParam("userId")
+      // user data
+      userId,
+      user: {},
+      artefacts: []
     };
-  }
-
-  componentDidMount() {
-    const { userId } = this.state;
     // make sure it exists
     userId
       ? this.getSelectedUserData(userId)
@@ -58,36 +58,30 @@ class PublicProfile extends Component {
 
   // get selected group data asynchronously
   getSelectedUserData = async userId => {
-    // reload everything at once
-    //prettier-ignore
+    // retrieve all data from backend at once
     return Promise.all([
-      (() => {
-        // get selected user data and store in local state
-        return this.props.getSelectedUser(userId)
-          .then(user => {
-            // set local state and callback to return promise
-            // in case load sequence is required (like in refreshPage function)
-            this.setState({ user }, () => Promise.resolve());
-          })
-          .catch(err => Promise.reject(err));
-      })(),
-      (() => {
-        // get selected user data and store in local state
-        return this.props.getSelectedUserArtefacts(userId)
-          .then(artefacts => {
-            // retains only public artefacts
-            artefacts = this.extractPublicArtefacts(artefacts);
-            // set local state and callback to return promise
-            // in case load sequence is required
-            this.setState({ artefacts }, () => Promise.resolve());
-          })
-          .catch(err => Promise.reject(err));
-      })()
-    ]).catch(() => alert("Please try again later."));
+      this.props.getSelectedUser(userId),
+      this.props.getSelectedUserArtefacts(userId)
+    ])
+      .then(data => {
+        // set all data to local state
+        this.setState(
+          {
+            user: data[0],
+            artefacts: data[1]
+          },
+          () => Promise.resolve()
+        );
+      })
+      .catch(err => {
+        console.log(JSON.stringify(err.response));
+        alert("Please try again later");
+        Promise.reject(err);
+      });
   };
 
-  // refresh page
-  refreshPage = async () => {
+  // re-retrieve all required data - also used in page refresh
+  reloadData = async () => {
     this.setState({ refreshing: true });
     // get data from backend
     await this.getSelectedUserData(this.state.userId);
@@ -103,14 +97,26 @@ class PublicProfile extends Component {
     return artefacts.filter(x => x.privacy == privacy);
   };
 
-  // artefact feed functions //
+  // navigation functions //
   // for each individual artefact clicked by user
   onArtefactClick = async artefactId => {
-    const { push } = this.props.navigation;
     // redirect user
-    push("SelectedArtefact", { origin: "PublicProfile", artefactId });
+    this.navigateToPage("SelectedArtefact", {
+      origin: "PublicProfile",
+      artefactId
+    });
   };
 
+  // main navigation function
+  navigateToPage = (page, options) => {
+    const { push } = this.props.navigation;
+    push(page, {
+      origin: "PublicProfile",
+      ...options
+    });
+  };
+
+  // artefact feed functions //
   // show artefacts by privacy settings
   showArtefacts = () => {
     // return modularized feed component
@@ -144,7 +150,7 @@ class PublicProfile extends Component {
           refreshControl={
             <RefreshControl
               refreshing={this.state.refreshing}
-              onRefresh={this.refreshPage}
+              onRefresh={this.reloadData}
             />
           }
         >

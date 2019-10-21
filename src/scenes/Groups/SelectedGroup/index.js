@@ -45,7 +45,7 @@ class SelectedGroup extends Component {
     super(props);
     // extract navigation parameters
     const { groupId } = this.props.navigation.state.params;
-    // Setup initial state
+    // setup initial state
     this.state = {
       // page settings
       isUpdateModalVisible: false,
@@ -62,6 +62,14 @@ class SelectedGroup extends Component {
       ? this.getSelectedGroupData(groupId)
       : alert("Error loading group data");
   }
+
+  // nav details
+  static navigationOptions = {
+    header: null,
+    headerStyle: {
+      elevation: 0 // remove shadow on Android
+    }
+  };
 
   // get selected group data asynchronously
   //prettier-ignore
@@ -87,19 +95,9 @@ class SelectedGroup extends Component {
       });
   };
 
-  // nav details
-  static navigationOptions = {
-    header: null,
-    headerStyle: {
-      elevation: 0 // remove shadow on Android
-    }
-  };
-
   // setter function for "loading" to show user that something is loading
   setLoading = loading => {
-    this.setState({
-      loading
-    });
+    this.setState({ loading });
   };
 
   // check if user is the admin of the group
