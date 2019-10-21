@@ -14,6 +14,7 @@ import {
 // redux actions
 import {
   getSelectedUser,
+  getSelectedUserGroups,
   getSelectedUserArtefacts
 } from "../../actions/userActions";
 
@@ -22,6 +23,7 @@ import Moment from "moment";
 
 // components
 import ArtefactFeed from "../../component/ArtefactFeed";
+import GroupList from "../../component/GroupList";
 
 // responsive design component
 import {
@@ -38,9 +40,11 @@ class PublicProfile extends Component {
     this.state = {
       // page settings
       refreshing: false,
+      isArtefactsTab: true,
       // user data
       userId,
       user: {},
+      groups: [],
       artefacts: []
     };
     // make sure it exists
@@ -61,6 +65,7 @@ class PublicProfile extends Component {
     // retrieve all data from backend at once
     return Promise.all([
       this.props.getSelectedUser(userId),
+      this.props.getSelectedUserGroups(userId),
       this.props.getSelectedUserArtefacts(userId)
     ])
       .then(data => {
@@ -68,7 +73,8 @@ class PublicProfile extends Component {
         this.setState(
           {
             user: data[0],
-            artefacts: data[1]
+            groups: this.extractPublicGroups(data[1]),
+            artefacts: this.extractPublicArtefacts(data[2])
           },
           () => Promise.resolve()
         );
@@ -89,22 +95,43 @@ class PublicProfile extends Component {
     this.setState({ refreshing: false });
   };
 
-  // retains only artefacts with privacy = public
+  // retains only public artefacts
   extractPublicArtefacts = artefacts => {
     // show only public artefacts
     const privacy = 0;
     // filter artefacts by their privacy settings
-    return artefacts.filter(x => x.privacy == privacy);
+    return artefacts.filter(x => x.privacy === privacy);
+  };
+
+  // retains only public groups
+  extractPublicGroups = groups => {
+    // show only public groups
+    const privacy = 0;
+    // filter artefacts by their privacy settings
+    return groups.filter(x => x.details.privacy === privacy);
+  };
+
+  // user wants to see artefacts
+  switchToArtefactTab = () => {
+    this.setState({ isArtefactsTab: true });
+  };
+
+  // user wants to see groups
+  switchToGroupTab = () => {
+    this.setState({ isArtefactsTab: false });
   };
 
   // navigation functions //
   // for each individual artefact clicked by user
-  onArtefactClick = async artefactId => {
+  onArtefactPress = artefactId => {
     // redirect user
-    this.navigateToPage("SelectedArtefact", {
-      origin: "PublicProfile",
-      artefactId
-    });
+    this.navigateToPage("SelectedArtefact", { artefactId });
+  };
+
+  // user selects a group to see
+  onGroupPress = groupId => {
+    // redirect user
+    this.navigateToPage("SelectedGroup", { groupId });
   };
 
   // main navigation function
@@ -116,26 +143,41 @@ class PublicProfile extends Component {
     });
   };
 
-  // artefact feed functions //
-  // show artefacts by privacy settings
+  // show either artefacts or groups based on current tab settings
+  showTabContent = () => {
+    return this.state.isArtefactsTab ? this.showArtefacts() : this.showGroups();
+  };
+
+  // show artefact feed
   showArtefacts = () => {
     // return modularized feed component
     return (
       <ArtefactFeed
         artefacts={this.state.artefacts}
-        onPress={this.onArtefactClick.bind(this)}
+        onPress={this.onArtefactPress.bind(this)}
       />
     );
+  };
+
+  // show group list
+  showGroups = () => {
+    // return modularized feed component
+    const groupsListComponent = this.state.groups.map(group => (
+      <GroupList
+        key={group._id}
+        group={group}
+        onPress={this.onGroupPress.bind(this)}
+      />
+    ));
+    return groupsListComponent;
   };
 
   render() {
     // date format
     Moment.locale("en");
     // extract data from local states
-    const { user, artefacts } = this.state;
+    const { user, groups, artefacts } = this.state;
     const { name, username, profilePic, dateJoined } = user;
-    // make sure groups is not undefined
-    const groups = !user.groups ? [] : user.groups;
     // decide which image source to use
     const imageSource = !this.state.user
       ? require("../../../assets/images/default-profile-pic.png")
@@ -185,25 +227,31 @@ class PublicProfile extends Component {
               }}
             >
               {/* artefacts numbers */}
-              <View style={{ alignItems: "center" }}>
+              <TouchableOpacity
+                style={{ alignItems: "center" }}
+                onPress={() => this.switchToArtefactTab()}
+              >
                 <Text style={styles.font}>{artefacts.length}</Text>
                 <Text style={(styles.subFont, { color: "#939090" })}>
                   Artefacts
                 </Text>
-              </View>
+              </TouchableOpacity>
 
               {/* groups number */}
-              <View style={{ alignItems: "center" }}>
+              <TouchableOpacity
+                style={{ alignItems: "center" }}
+                onPress={() => this.switchToGroupTab()}
+              >
                 <Text style={styles.font}>{groups.length}</Text>
                 <Text style={(styles.subFont, { color: "#939090" })}>
                   Groups
                 </Text>
-              </View>
+              </TouchableOpacity>
             </View>
           </View>
 
           {/* user artefacts posts */}
-          <View style={{ marginTop: wd(0.01) }}>{this.showArtefacts()}</View>
+          <View style={{ marginTop: wd(0.01) }}>{this.showTabContent()}</View>
         </ScrollView>
       </View>
     );
@@ -282,5 +330,5 @@ const mapStateToProps = state => ({
 // export
 export default connect(
   mapStateToProps,
-  { getSelectedUser, getSelectedUserArtefacts }
+  { getSelectedUser, getSelectedUserGroups, getSelectedUserArtefacts }
 )(PublicProfile);

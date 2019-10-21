@@ -11,6 +11,8 @@ import {
 
 import { getUserArtefactsAPIRequest } from "../utils/APIHelpers/artefactAPIHelpers";
 
+import { getUserGroupsAPIRequest } from "../utils/APIHelpers/groupAPIHelper";
+
 import { uploadImageToGCS } from "../utils/imageUpload";
 
 // Async Redux actions //
@@ -55,6 +57,24 @@ export const getSelectedUserArtefacts = userId => dispatch => {
   return new Promise((resolve, reject) => {
     // get all artefacts posted by user
     getUserArtefactsAPIRequest(userId)
+      // success
+      .then(res => {
+        // return user data instead of request response
+        resolve(res.data);
+      })
+      // failure
+      .catch(err => {
+        console.log("Failed to get selected user artefact: " + err);
+        reject(err);
+      });
+  });
+};
+
+// get user data belonging to userId
+export const getSelectedUserGroups = userId => dispatch => {
+  return new Promise((resolve, reject) => {
+    // get all artefacts posted by user
+    getUserGroupsAPIRequest(userId)
       // success
       .then(res => {
         // return user data instead of request response
