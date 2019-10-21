@@ -3,9 +3,11 @@ import {
   SET_SEARCH_RESULTS_GROUP
 } from "../types/searchTypes";
 
+// !!! this redux state is not used at the moment !!! //
+
 const initialState = {
-	userSearchResults: [],
-	groupSearchResults: []
+  userSearchResults: [],
+  groupSearchResults: []
 };
 
 export default function(state = initialState, action) {
