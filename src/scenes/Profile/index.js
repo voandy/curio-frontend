@@ -17,7 +17,7 @@ import Moment from "moment";
 
 // redux actions
 import { logoutUser } from "../../actions/authActions";
-import { getUserData } from "../../actions/userActions";
+import { getUserData, sendUserPushToken } from "../../actions/userActions";
 
 import {
   deviceWidthDimension as wd,
@@ -27,7 +27,6 @@ import {
 // custom component
 import SimpleHeader from "../../component/SimpleHeader";
 import MyButton from "../../component/MyButton";
-import { setUserPushTokenAPIRequest } from "../../utils/APIHelpers/userAPIHelpers";
 
 class Profile extends Component {
   constructor(props) {
@@ -49,7 +48,7 @@ class Profile extends Component {
       .then(() => {
         // set user's push token to null so that the backend won't set
         // a notification to an unlogged in device
-        setUserPushTokenAPIRequest(userId, null).catch(err => console.log(err));
+        sendUserPushToken(userId, null);
         navigateToPage("Auth");
       })
       .catch(err => console.log(err));
