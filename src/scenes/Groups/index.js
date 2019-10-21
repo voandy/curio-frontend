@@ -103,13 +103,10 @@ class Groups extends Component {
     const groupComponent = groups.map(group => (
       <CardGroup
         key={group.groupId}
+        group={group}
         userId={this.props.auth.user.id}
-        groupId={group.groupId}
-        image={{ uri: group.details.coverPhoto }}
-        title={group.details.title}
-        onPress={this.onGroupPress.bind(this)}
-        pinned={group.pinned}
         cardHeight={cardHeight.next().value}
+        onPress={this.onGroupPress.bind(this)}
       />
     ));
     // prep a temporary array for row-by-row grouping logic
