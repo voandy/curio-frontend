@@ -63,15 +63,13 @@ class CardGroup extends Component {
     return (
       <View style={styles.card}>
         {/* favourite icon */}
-        <View
-          style={{ position: "absolute", top: 10, right: 10, elevation: 2 }}
-        >
+        <View style={styles.favouriteContainer}>
           {/* pin image */}
           <Image
             style={styles.favourite}
             source={pinImageSource}
             resizeMethod="resize"
-            resizeMode="cover"
+            resizeMode="contain"
           />
         </View>
 
@@ -166,6 +164,13 @@ const styles = StyleSheet.create({
     fontSize: wd(0.03),
     marginLeft: 8,
     fontFamily: "HindSiliguri-Light"
+  },
+
+  favouriteContainer: {
+    position: "absolute",
+    top: 10,
+    right: 10,
+    elevation: 2
   },
 
   favourite: {
