@@ -242,21 +242,21 @@ class SelectedGroup extends Component {
   showOptions = () => {
     //prettier-ignore
     // check if user is the admin of the group
-    return this.isUserAdmin() 
+    return this.isUserAdmin()
       ? (<OptionButton
-          firstOption={"Edit Group"}
-          secondOption={"Delete Group"}
-          toggleFirstOption={this.onGroupEdit}
-          toggleSecondOption={this.toggleDeleteModal}
-        />) 
+        firstOption={"Edit Group"}
+        secondOption={"Delete Group"}
+        toggleFirstOption={this.onGroupEdit}
+        toggleSecondOption={this.toggleDeleteModal}
+      />)
       : // then check if user is a member
-        this.isUserMember() 
+      this.isUserMember()
         ? (<OptionButton
-            firstOption={"Leave Group"}
-            toggleFirstOption={this.onGroupLeave}
-          />) 
+          firstOption={"Leave Group"}
+          toggleFirstOption={this.onGroupLeave}
+        />)
         : // user is not a member, hide option button
-          (<View />);
+        (<View style={{ width: wd(0.08) }} />);
   };
 
   // show Add artefact button for members of the group only
@@ -277,8 +277,8 @@ class SelectedGroup extends Component {
         <Text style={styles.buttonText}>Invite</Text>
       </TouchableOpacity>
     ) : (
-      <View />
-    );
+        <View />
+      );
   };
 
   // display a row of group members
@@ -308,7 +308,7 @@ class SelectedGroup extends Component {
   // return all group artefacts components
   showGroupArtefacts = () => {
     // sort array based on date obtained (from earliest to oldest)
-    const groupArtefacts = this.state.groupArtefacts.sort(function(a, b) {
+    const groupArtefacts = this.state.groupArtefacts.sort(function (a, b) {
       return new Date(b.dateAdded) - new Date(a.dateAdded);
     });
     // transform each artefact to a PostFeed component
@@ -365,14 +365,17 @@ class SelectedGroup extends Component {
             <View
               style={{
                 flexDirection: "row",
-                paddingLeft: wd(0.05),
-                justifyContent: "center"
+                justifyContent: "center",
               }}
             >
               {/* title */}
-              <Text style={[styles.groupTitle, styles.font]}>{title}</Text>
+              <View style={{ paddingLeft: wd(0.04), width: wd(0.82) }}>
+                <Text style={[styles.groupTitle, styles.font]}>{title}</Text>
+              </View>
               {/* option button */}
-              {this.showOptions()}
+              <View style={{ width: wd(0.08) }}>
+                {this.showOptions()}
+              </View>
             </View>
             {/* descriptions */}
             <Text style={[styles.groupDescription, styles.subFont]}>
@@ -431,7 +434,7 @@ const styles = StyleSheet.create({
   groupInfo: {
     alignItems: "center",
     paddingHorizontal: wd(0.05),
-    backgroundColor: "white"
+    backgroundColor: "white",
   },
 
   groupTitle: {
