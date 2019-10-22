@@ -170,6 +170,10 @@ class UserSearch extends Component {
           onSubmitEditing={event => {
             this.doUserSearch(event.nativeEvent.text);
           }}
+          pressClear={() => this.onChangeSearchInput("")}
+          pressSearch={() => {
+            this.doUserSearch(this.state.searchInput);
+          }}
         />
 
         {/* scrollable area for CONTENT */}
