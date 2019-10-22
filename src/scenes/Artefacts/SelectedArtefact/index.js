@@ -418,8 +418,10 @@ class SelectedArtefact extends Component {
               {/* user detail */}
               <UserDetail
                 image={{ uri: owner.profilePic }}
+                userId={owner._id}
                 userName={owner.name}
                 dateAdded={artefact.datePosted}
+                onPress={this.onUserProfilePress.bind()}
               />
               {/* likes/comments counters */}
               <View style={styles.likesIndicatorPlaceholder}>
