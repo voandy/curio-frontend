@@ -33,7 +33,7 @@ class PostFeed extends Component {
     return (
       //   main container
       <View style={styles.container}>
-          
+
         {/* artefact post description */}
         <View>
           {/* show user details */}
@@ -50,11 +50,11 @@ class PostFeed extends Component {
 
         {/* post image */}
         <TouchableOpacity onPress={() => this.props.onPress(this.props.artefactId)}>
-          <Image 
-            source={this.props.image} 
-            style={styles.image} 
-            resizeMethod="resize"      
-            resizeMode="cover" 
+          <Image
+            source={this.props.image}
+            style={styles.image}
+            resizeMethod="resize"
+            resizeMode="cover"
           />
         </TouchableOpacity>
 

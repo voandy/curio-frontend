@@ -19,19 +19,25 @@ import { timeSince } from "./componentHelpers/timeSince";
 /**user who posted the artefact
  * used in Selected Artefact and Groups
  */
-class UserDetail extends Component {
+class Comments extends Component {
   constructor(props) {
     super(props);
   }
 
   render() {
+
+    // show default profile pic if there isnt
+    const imageSource = !this.props.profilePic
+      ? require("../../assets/images/default-profile-pic.png")
+      : { uri: this.props.profilePic };
+
     return (
       <View style={styles.container}>
         {/* user profile pic */}
         <TouchableOpacity onPress={() => this.props.onPress(this.props.userId)}>
           <Image
             style={styles.userProfilePic}
-            source={{ uri: this.props.userProfilePic }}
+            source={imageSource}
           />
         </TouchableOpacity>
 
@@ -101,4 +107,4 @@ const styles = StyleSheet.create({
 });
 
 // export
-export default UserDetail;
+export default Comments;

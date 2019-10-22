@@ -3,7 +3,6 @@ import {
   View,
   StyleSheet,
   Text,
-  Dimensions,
   Image,
   TouchableOpacity
 } from "react-native";
@@ -22,10 +21,12 @@ class UserDetail extends Component {
 
   render() {
     const readableDateAdded = moment(new Date(this.props.dateAdded)).fromNow();
+    // show default profile pic if there isnt
+    const imageSource = !this.props.image
+      ? require("../../assets/images/default-profile-pic.png")
+      : { uri: this.props.image };
 
     return (
-      // TODO link to user profile
-      // <TouchableOpacity onPress={} style={styles.container}>
       // show user profile picture
       <TouchableOpacity
         style={styles.container}
@@ -33,7 +34,7 @@ class UserDetail extends Component {
       >
         <Image
           style={styles.photo}
-          source={this.props.image}
+          source={imageSource}
           resizeMethod="resize"
           resizeMode="cover"
         />

@@ -155,7 +155,6 @@ class Search extends Component {
     // transform each search result into a search feed component
     const userResultsFeed = userSearchResults.map(searchResult => {
       const userId = searchResult._id;
-      console.log(searchResult.profilePic)
       // show user profile pic
       const imageSource = !searchResult.profilePic
         ? require("../../../assets/images/default-profile-pic.png")

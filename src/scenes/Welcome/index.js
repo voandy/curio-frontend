@@ -47,7 +47,6 @@ class Welcome extends Component {
             style={styles.profilePic}
             source={imageSource}
           />
-          {/* <Image style={styles.profilePic} source={require("../../../assets/images/default-profile-pic.png")} /> */}
           {/* button to collection/group page */}
           {setToBottom(
             <View style={styles.bottom}>

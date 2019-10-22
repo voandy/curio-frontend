@@ -22,12 +22,17 @@ class CommentForm extends Component {
   }
 
   render() {
+    // show default profile pic if there isnt
+    const imageSource = !this.props.profilePic
+      ? require("../../assets/images/default-profile-pic.png")
+      : { uri: this.props.profilePic };
+
     return (
       <View style={styles.commentInput}>
         {/* user profile pic */}
         <Image
           style={styles.userProfilePic}
-          source={{uri: this.props.profilePic}}
+          source={imageSource}
         />
 
         {/* comment input field */}
@@ -47,7 +52,7 @@ class CommentForm extends Component {
 
 const styles = StyleSheet.create({
   userProfilePic: {
-    borderRadius: wd(0.1)/ 2,
+    borderRadius: wd(0.1) / 2,
     width: wd(0.1),
     height: wd(0.1),
     marginLeft: wd(0.06),
