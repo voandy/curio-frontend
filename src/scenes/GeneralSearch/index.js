@@ -155,13 +155,17 @@ class Search extends Component {
     // transform each search result into a search feed component
     const userResultsFeed = userSearchResults.map(searchResult => {
       const userId = searchResult._id;
+      // show user profile pic
+      const imageSource = !searchResult.profilePic
+        ? require("../../../assets/images/default-profile-pic.png")
+        : { uri: searchResult.profilePic }
       return (
         <SearchFeed
           key={userId}
           heading={searchResult.name}
           subHeading={searchResult.username}
           isGroup={false}
-          searchImage={searchResult.profilePic}
+          searchImage={imageSource}
           onPress={() => this.gotoUserProfile(userId)}
         />
       );
@@ -227,8 +231,8 @@ class Search extends Component {
                 Users
               </Text>
             ) : (
-              <Text style={[styles.headerButtonText, styles.font]}>Users</Text>
-            )}
+                <Text style={[styles.headerButtonText, styles.font]}>Users</Text>
+              )}
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -241,8 +245,8 @@ class Search extends Component {
                 Groups
               </Text>
             ) : (
-              <Text style={[styles.headerButtonText, styles.font]}>Groups</Text>
-            )}
+                <Text style={[styles.headerButtonText, styles.font]}>Groups</Text>
+              )}
           </TouchableOpacity>
         </View>
 
@@ -261,11 +265,11 @@ class Search extends Component {
             // user search results
             this.showSearchResults()
           ) : (
-            // group search results
-            <Text style={styles.emptySearch}>
-              Please enter search query above.
+              // group search results
+              <Text style={styles.emptySearch}>
+                Please enter search query above.
             </Text>
-          )}
+            )}
         </ScrollView>
       </View>
     );

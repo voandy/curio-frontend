@@ -15,32 +15,71 @@ export const registerUser = () => (dispatch, getState) => {
   return new Promise((resolve, reject) => {
     // retrieve user register details
     const { register } = getState();
-    // upload image
-    uploadImageToGCS(register.photoURI)
+    var newUser = {
+      name: register.name,
+      email: register.email,
+      username: register.username,
+      password: register.password,
+      passwordCfm: register.passwordCfm,
+    };
+    (() => {
+      // if a new image is selected, the imageURI would not be empty
+      // so upload to GCS is required, otherwise just retain the old URL link
+      return !register.photoURI
+        ? Promise.resolve("")
+        : uploadImageToGCS(register.photoURI);
+    })()
       .then(imageURL => {
         // prepare the body data base on new user details
-        const newUser = {
-          name: register.name,
-          email: register.email,
-          username: register.username,
-          password: register.password,
-          passwordCfm: register.passwordCfm,
-          profilePic: imageURL
-        };
-        // send a post API request to backend to register user
-        registerUserAPIRequest(newUser)
-          .then(res => resolve(res))
-          .catch(err => {
-            console.log("Failed to register user: " + err);
-            reject(err);
-          });
+        // newUser.profilePic = imageURL
+        newUser["profilePic"] = imageURL
+        this.register(newUser)
+          .then(() => resolve())
+          .catch(() => reject());
       })
       .catch(err => {
         console.log("Failed to upload image at user registration: " + err);
         reject(err);
+      })
+  })
+}
+
+
+
+//   // upload profile picture if present
+//   if (register.photoURI) {
+//     uploadImageToGCS(register.photoURI)
+//       .then(imageURL => {
+//         // prepare the body data base on new user details
+//         // newUser.profilePic = imageURL
+//         newUser["profilePic"] = imageURL
+//         this.register(newUser);
+//       })
+//       .catch(err => {
+//         console.log("Failed to upload image at user registration: " + err);
+//         reject(err);
+//       })
+//   } else {
+//     this.register(newUser).then(
+//       resolve()
+//     )
+//       .catch(
+//         reject()
+//       );
+//   }
+// })
+
+register = async (newUser) => {
+  return new Promise((resolve, reject) => {
+    // send a post API request to backend to register user
+    registerUserAPIRequest(newUser)
+      .then(res => resolve(res))
+      .catch(err => {
+        console.log("Failed to register user: " + err);
+        reject(err)
       });
-  });
-};
+  })
+}
 
 // login user based on user details
 export const loginUser = user => dispatch => {

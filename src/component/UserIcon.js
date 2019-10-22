@@ -12,6 +12,12 @@ class UserIcon extends Component {
   }
 
   render() {
+
+    // show default profile pic if there isnt
+    const imageSource = !this.props.image
+      ? require("../../assets/images/default-profile-pic.png")
+      : { uri: this.props.image };
+
     return (
       // TODO link to user profile
       // <TouchableOpacity onPress={} style={styles.container}>
@@ -21,7 +27,7 @@ class UserIcon extends Component {
       >
         <Image
           style={styles.photo}
-          source={this.props.image}
+          source={imageSource}
           resizeMethod="resize"
           resizeMode="cover"
         />

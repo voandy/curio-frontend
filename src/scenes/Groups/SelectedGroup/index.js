@@ -289,7 +289,7 @@ class SelectedGroup extends Component {
       <UserIcon
         key={member._id}
         userId={member.memberId}
-        image={{ uri: member.details.profilePic }}
+        image={member.details.profilePic}
         onPress={this.onUserProfilePress.bind(this)}
       />
     ));
@@ -319,7 +319,7 @@ class SelectedGroup extends Component {
         artefactId={a.artefactId}
         userName={a.user.name}
         title={a.details.title}
-        profileImage={{ uri: a.user.profilePic }}
+        profileImage={a.user.profilePic}
         image={{ uri: a.details.images[0].URL }}
         likesCount={a.details.likes.length}
         dateAdded={a.dateAdded}

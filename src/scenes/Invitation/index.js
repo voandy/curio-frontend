@@ -131,7 +131,10 @@ class Invitation extends Component {
   render() {
     // get required data
     const { notif } = this.props.navigation.state.params;
-    const { thumbnailURL } = notif;
+
+    const imageSource = !notif.thumbnailURL
+      ? require("../../../assets/images/default-profile-pic.png")
+      : { uri: notif.thumbnailURL };
 
     return (
       <Animated.View
@@ -149,7 +152,7 @@ class Invitation extends Component {
         >
           <Image
             style={styles.profilePic}
-            source={{ uri: thumbnailURL }}
+            source={imageSource}
             resizeMethod="resize"
             resizeMode="cover"
           />
