@@ -84,6 +84,14 @@ export class RegisterPasswordField extends Component {
             this.props.setPasswordCfm(val);
           }}
           value={this.state.passwordCfm}
+          onSubmitEditing={() => {
+            this.props.setPassword(this.state.password);
+            this.props.setPasswordCfm(this.state.passwordCfm);
+            this.props.checkPasswordForError(
+              this.state.password,
+              this.state.passwordCfm
+            )
+          }}
         />
         {/* error messages if there's any */}
         {this.props.passwordErrorMessage !== "" && (

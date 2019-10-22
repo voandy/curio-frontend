@@ -29,6 +29,9 @@ class Welcome extends Component {
   // guard to make sure userData is loaded properly, otherwise renders a loading screen
   rendersWithUserDataGuard() {
     const { navigate } = this.props.navigation;
+    const imageSource = !this.props.user.userData.profilePic
+      ? require("../../../assets/images/default-profile-pic.png")
+      : { uri: this.props.user.userData.profilePic };
 
     if (this.props.user.userData) {
       return (
@@ -39,11 +42,10 @@ class Welcome extends Component {
             {" "}
             Welcome {this.props.user.userData.name}.{" "}
           </Text>
-          {/* <Text style={styles.subTitleText}> Welcome hue. </Text> */}
 
           <Image
             style={styles.profilePic}
-            source={{ uri: this.props.user.userData.profilePic }}
+            source={imageSource}
           />
           {/* <Image style={styles.profilePic} source={require("../../../assets/images/default-profile-pic.png")} /> */}
           {/* button to collection/group page */}

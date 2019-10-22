@@ -179,7 +179,8 @@ class PublicProfile extends Component {
     const { user, groups, artefacts } = this.state;
     const { name, username, profilePic, dateJoined } = user;
     // decide which image source to use
-    const imageSource = !this.state.user
+    console.log(this.state.user.profilePic)
+    const imageSource = !this.state.user.profilePic
       ? require("../../../assets/images/default-profile-pic.png")
       : { uri: profilePic };
 

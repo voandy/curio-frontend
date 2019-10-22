@@ -136,13 +136,17 @@ class UserSearch extends Component {
       // check for conditions
       const isGroupMember = memberIds.includes(userId);
       const hasInvited = pendingInvites.includes(userId);
+      // check for profile pic
+      const imageSource = !searchResult.profilePic
+        ? require("../../../../assets/images/default-profile-pic.png")
+        : { uri: searchResult.profilePic };
       // return a search feed component
       return (
         <SearchFeed
           key={userId}
           heading={searchResult.name}
           subHeading={searchResult.username}
-          searchImage={searchResult.profilePic}
+          searchImage={imageSource}
           toInvite={toInvite}
           hasInvited={hasInvited}
           isGroupMember={isGroupMember}
@@ -187,11 +191,11 @@ class UserSearch extends Component {
             // user search results
             this.showSearchResults()
           ) : (
-            // group search results
-            <Text style={styles.emptySearch}>
-              Please enter search query above.
+              // group search results
+              <Text style={styles.emptySearch}>
+                Please enter search query above.
             </Text>
-          )}
+            )}
         </ScrollView>
       </View>
     );

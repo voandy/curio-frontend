@@ -69,16 +69,16 @@ class SearchFeed extends Component {
         </TouchableOpacity>
       </View>
     ) : (
-      <View />
-    );
+        <View />
+      );
   };
 
   //prettier-ignore
   render() {
     return (
       <View>
-        <TouchableOpacity 
-          style={styles.card} 
+        <TouchableOpacity
+          style={styles.card}
           onPress={() => this.props.onPress()}
           disabled={this.props.toInvite}
         >
@@ -88,7 +88,7 @@ class SearchFeed extends Component {
             <View style={styles.picPlaceholder}>
               <Image
                 style={styles.image}
-                source={{ uri: this.props.searchImage }}
+                source={ this.props.searchImage }
                 resizeMethod="resize"
                 resizeMode="cover"
               />
@@ -104,9 +104,6 @@ class SearchFeed extends Component {
           {/* invite button */}
           {this.showButton()}
         </TouchableOpacity>
-
-        {/* line separator */}
-        {/* <View style={styles.line} /> */}
       </View>
     );
   }
