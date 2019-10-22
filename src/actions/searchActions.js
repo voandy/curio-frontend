@@ -8,8 +8,7 @@ import {
   searchUsersAPIRequest
 } from "../utils/APIHelpers/searchAPIHelper";
 
-// Async Redux actions //
-
+// Async Redux Thunk actions //
 // get matching users given search terms
 export const searchUsers = searchTerms => dispatch => {
   return new Promise((resolve, reject) => {
@@ -17,8 +16,8 @@ export const searchUsers = searchTerms => dispatch => {
     searchUsersAPIRequest(searchTerms)
       // success
       .then(res => {
-        dispatch(setUserSearchResults(res.data));
-        resolve(res);
+        // dispatch(setUserSearchResults(res.data));
+        resolve(res.data);
       })
       // failure
       .catch(err => {
@@ -30,13 +29,13 @@ export const searchUsers = searchTerms => dispatch => {
 
 // get matching groups given search terms
 export const searchGroups = searchTerms => dispatch => {
-   return new Promise((resolve, reject) => {
+  return new Promise((resolve, reject) => {
     // get all artefacts posted by user
     searchGroupsAPIRequest(searchTerms)
       // success
       .then(res => {
-        dispatch(setGroupSearchResults(res.data));
-        resolve(res);
+        // dispatch(setGroupSearchResults(res.data));
+        resolve(res.data);
       })
       // failure
       .catch(err => {
@@ -46,14 +45,14 @@ export const searchGroups = searchTerms => dispatch => {
   });
 };
 
-// clear selectedArtefact 
 export const clearSearchResults = () => dispatch => {
   dispatch(setUserSearchResults([]));
   dispatch(setGroupSearchResults([]));
-}
+};
+
+// !!! this redux state is not used at the moment !!! //
 
 // Redux actions //
-
 // store users search results into redux state
 export const setUserSearchResults = decoded => {
   return {
@@ -61,9 +60,8 @@ export const setUserSearchResults = decoded => {
     payload: decoded
   };
 };
-  
 
-  // store groups search results into redux state
+// store groups search results into redux state
 export const setGroupSearchResults = decoded => {
   return {
     type: SET_SEARCH_RESULTS_GROUP,

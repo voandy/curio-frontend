@@ -40,7 +40,14 @@ class Artefacts extends Component {
       isPublicTab: true,
       searchInput: ""
     };
+    // set up initial animation value
+    this.fadeAnimation = new Animated.Value(0);
   }
+
+  // Nav bar details
+  static navigationOptions = {
+    header: null
+  };
 
   // animation trigger
   startShowing = () => {
@@ -51,15 +58,9 @@ class Artefacts extends Component {
     }).start();
   };
 
-  // Nav bar details
-  static navigationOptions = {
-    header: null
-  };
-
+  // user types in new search terms
   onChangeSearchInput = searchInput => {
-    this.setState({
-      searchInput
-    });
+    this.setState({ searchInput });
   };
 
   // setter functions //
@@ -68,8 +69,8 @@ class Artefacts extends Component {
     this.setState({ isPublicTab: !this.state.isPublicTab });
   };
 
-  // refresh page
-  refreshArtefacts = async () => {
+  // re-retrieve all required data - also used in page refresh
+  reloadData = async () => {
     this.setState({ refreshing: true });
     // get data from backend
     await this.props.getUserArtefacts(this.props.auth.user.id);
@@ -77,25 +78,61 @@ class Artefacts extends Component {
     this.setState({ refreshing: false });
   };
 
+  // navigation functions //
   // user press + button to create a new artefact
   onNewArtefactCreate = () => {
-    const { navigate } = this.props.navigation;
     // redirect user
-    navigate("ArtefactsForm", { origin: "Artefacts" });
+    this.navigateToPage("ArtefactsForm");
   };
 
   // artefact feed functions //
   // for each individual artefact clicked by user
   onArtefactClick = async artefactId => {
-    const { navigate } = this.props.navigation;
     // redirect user
-    navigate("SelectedArtefact", { origin: "Artefacts", artefactId });
+    this.navigateToPage("SelectedArtefact", { artefactId });
+  };
+
+  // main navigation function
+  navigateToPage = (page, options) => {
+    const { push } = this.props.navigation;
+    push(page, {
+      origin: "Artefacts",
+      ...options
+    });
+  };
+
+  // component render functions //
+  // tell users that they don't have an artefact posted under current privacy tab
+  showNoArtefactsMessage = () => {
+    // show fade-in animation for this message
+    this.startShowing();
+    // get current tab setting
+    privacy = this.state.isPublicTab ? 0 : 1;
+    // message displayed in public or private tab (public = 0, private = 1)
+    let type = !privacy ? "public" : "private";
+    let message = !privacy
+      ? "Public artefacts can be viewed by everyone"
+      : "Private artefacts can only be seen by yourself";
+    return (
+      <Animated.View
+        style={[styles.emptyFeed, { opacity: this.fadeAnimation }]}
+      >
+        <Text style={styles.emptyfeedText}>
+          Looks like you haven't posted any {type} artefacts
+        </Text>
+        <Text style={styles.emptyfeedText}>
+          Click the "+" button to add some
+        </Text>
+        <Text style={styles.emptyfeedText}>
+          {"\n"}
+          {message}
+        </Text>
+      </Animated.View>
+    );
   };
 
   // show artefacts by privacy settings
   showArtefacts = () => {
-    // reset animation value
-    this.fadeAnimation = new Animated.Value(0);
     // extract required data
     artefacts = this.props.artefacts.userArtefacts;
     privacy = this.state.isPublicTab ? 0 : 1;
@@ -103,37 +140,16 @@ class Artefacts extends Component {
     artefacts = artefacts.filter(x => x.privacy == privacy);
 
     // return modularized feed component
-    if (artefacts.length !== 0) {
-      return (
-        <ArtefactFeed
-          artefacts={artefacts}
-          onPress={this.onArtefactClick.bind(this)}
-        />
-      )
-    }
-    // return no artefact message 
-    else {
-      this.startShowing()
-      // message displayed in public or private tab
-      let type = !privacy ? "public" : "private"
-      let message = !privacy ?
-        "Public artefacts can be viewed by everyone" :
-        "Private artefacts can only be seen by yourself"
-      return (
-        <Animated.View style={[styles.emptyFeed, { opacity: this.fadeAnimation }]}>
-          <Text style={styles.emptyfeedText}>
-            Looks like you haven't posted any {type} artefacts
-          </Text>
-          <Text style={styles.emptyfeedText}>
-            Click the "+" button to add some
-          </Text>
-          <Text style={styles.emptyfeedText}>
-            {"\n"}{message}
-          </Text>
-        </Animated.View>
-      )
-    }
-  }
+    return artefacts.length ? (
+      <ArtefactFeed
+        artefacts={artefacts}
+        onPress={this.onArtefactClick.bind(this)}
+      />
+    ) : (
+      // no artefacts on current tab
+      this.showNoArtefactsMessage()
+    );
+  };
 
   render() {
     const { navigate } = this.props.navigation;
@@ -146,7 +162,7 @@ class Artefacts extends Component {
           refreshControl={
             <RefreshControl
               refreshing={this.state.refreshing}
-              onRefresh={this.refreshArtefacts}
+              onRefresh={this.reloadData}
             />
           }
         >
@@ -159,7 +175,6 @@ class Artefacts extends Component {
             tab1="Public"
             tab2="Private"
             showSearch={true}
-
             searchInput={this.state.searchInput}
             onChangeSearchInput={this.onChangeSearchInput}
             pressClear={() => this.onChangeSearchInput("")}
@@ -189,7 +204,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: StatusBar.currentHeight,
-    backgroundColor:"#FAFAFA"
+    backgroundColor: "#FAFAFA"
   },
 
   emptyFeed: {

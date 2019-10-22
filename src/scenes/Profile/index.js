@@ -8,7 +8,8 @@ import {
   StatusBar,
   View,
   Image,
-  Text
+  Text,
+  TouchableOpacity
 } from "react-native";
 
 // date converter
@@ -16,21 +17,22 @@ import Moment from "moment";
 
 // redux actions
 import { logoutUser } from "../../actions/authActions";
-import { getUserData } from "../../actions/userActions";
+import { getUserData, sendUserPushToken } from "../../actions/userActions";
+
+import {
+  deviceWidthDimension as wd,
+  deviceHeigthDimension as hp
+} from "../../utils/responsiveDesign";
 
 // custom component
 import SimpleHeader from "../../component/SimpleHeader";
 import MyButton from "../../component/MyButton";
-import ProfileSetting from "../../component/ProfileSetting";
-import Line from "../../component/Line";
-import { setUserPushTokenAPIRequest } from "../../utils/APIHelpers/userAPIHelpers";
 
 class Profile extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      searchInput: ""
-    };
+    // date format
+    Moment.locale("en");
   }
 
   // Nav bar details
@@ -38,34 +40,43 @@ class Profile extends Component {
     header: null
   };
 
-  onChangeSearchInput = searchInput => {
-    this.setState({
-      searchInput
-    });
-  };
-
+  //prettier-ignore
   // logs user out and navigate to authentication page
   onLogoutClick = () => {
     const { navigate } = this.props.navigation;
     const userId = this.props.user.userData._id;
-    this.props
-      .logoutUser()
+    this.props.logoutUser()
       .then(() => {
         // set user's push token to null so that the backend won't set
         // a notification to an unlogged in device
-        setUserPushTokenAPIRequest(userId, null).catch(err => console.log(err));
+        sendUserPushToken(userId, null);
+        // use navigate instead of push cause we want to reset the stack
         navigate("Auth");
       })
       .catch(err => console.log(err));
   };
 
-  render() {
-    // date format
-    Moment.locale("en");
-    const dt = this.props.user.userData.dateJoined;
+  // user typed and enters search inputs
+  onAccountSettingPress = () => {
+    // navigate to general search page
+    this.navigateToPage("AccountSetting");
+  };
 
-    const { navigate } = this.props.navigation;
-    const profilePic = this.props.user.userData.profilePic;
+  // main navigation function
+  navigateToPage = (page, options) => {
+    const { push } = this.props.navigation;
+    push(page, {
+      origin: "Profile",
+      ...options
+    });
+  };
+
+  render() {
+    const groups = this.props.groups.userGroups;
+    const artefacts = this.props.artefacts.userArtefacts;
+
+    // extract data from redux
+    const { dateJoined, profilePic, username, name } = this.props.user.userData;
     const imageSource = profilePic
       ? { uri: profilePic }
       : require("../../../assets/images/default-profile-pic.png");
@@ -77,48 +88,53 @@ class Profile extends Component {
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={16}
         >
-          <SimpleHeader
-            title="My Profile"
-            showSearch={false}
-            searchInput={this.state.searchInput}
-            onChangeSearchInput={this.onChangeSearchInput}
-            pressClear={() => this.onChangeSearchInput("")}
-            onSubmitEditing={() =>
-              navigate("GeneralSearch", {
-                searchTerms: this.state.searchInput
-              })
-            }
-            pressSearch={() =>
-              navigate("GeneralSearch", {
-                searchTerms: this.state.searchInput
-              })
-            }
-          />
+          <SimpleHeader title="My Profile" showSearch={false} />
 
           {/* user profile picture */}
-          <Image style={styles.profilePic} source={imageSource} />
-
-          {/* user heading */}
-          <Text style={styles.userName}>{this.props.user.userData.name}</Text>
-          <Text style={styles.userDetails}>
-            @{this.props.user.userData.username}
-          </Text>
-          <Text style={[styles.userDetails, { marginBottom: 25 }]}>
-            member since {Moment(dt).format("Do MMMM YYYY")}
-          </Text>
-
-          {/* line separator */}
-          <Line />
-
-          <ProfileSetting text="Artefacts" iconType="artefact" />
-          <ProfileSetting
-            text="Account Settings"
-            iconType="gear"
-            onPress={() => navigate("AccountSetting", { origin: "Profile" })}
+          <Image
+            style={styles.profilePic}
+            source={imageSource}
+            resizeMethod="resize"
+            resizeMode="cover"
           />
 
-          {/* line separator */}
-          <Line />
+          {/* user heading */}
+          <Text style={styles.userName}>{name}</Text>
+          <Text style={styles.userDetails}>@{username}</Text>
+          <Text style={[styles.userDetails, { marginBottom: 25 }]}>
+            Joined Curio on {Moment(dateJoined).format("Do MMMM YYYY")}
+          </Text>
+
+          {/* profile tabs */}
+          <View style={styles.profileTabsContainer}>
+            {/* artefact tab */}
+            <View style={styles.profileTab}>
+              <Text style={styles.font}>{artefacts.length}</Text>
+              <Text style={styles.subFont}>Artefacts</Text>
+            </View>
+
+            {/* group tab */}
+            <View style={styles.profileTab}>
+              <Text style={styles.font}>{groups.length}</Text>
+              <Text style={styles.subFont}>Groups</Text>
+            </View>
+
+            {/* edit profile */}
+            <TouchableOpacity
+              style={styles.profileTab}
+              onPress={() => this.onAccountSettingPress()}
+            >
+              <View style={styles.iconContainer}>
+                <Image
+                  style={styles.icon}
+                  source={require("../../../assets/images/icons/edit-profile.png")}
+                  resizeMethod="resize"
+                  resizeMode="cover"
+                />
+              </View>
+              <Text style={styles.subFont}>Edit Profile</Text>
+            </TouchableOpacity>
+          </View>
 
           {/* logout button */}
           <View style={styles.button}>
@@ -161,6 +177,48 @@ const styles = StyleSheet.create({
   button: {
     alignItems: "center",
     marginVertical: 25
+  },
+
+  profileTabsContainer: {
+    width: wd(0.9),
+    height: wd(0.15),
+    flex: 1,
+    alignSelf: "center",
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    marginVertical: 10,
+    marginBottom: hp(0.1)
+  },
+
+  profileTab: {
+    flex: 0.33,
+    flexDirection: "column",
+    alignItems: "center"
+  },
+
+  iconContainer: {
+    flex: 0.6,
+    alignContent: "center",
+    justifyContent: "center"
+  },
+
+  icon: {
+    width: 20,
+    height: 20,
+    tintColor: "black"
+  },
+
+  font: {
+    flex: 0.6,
+    fontSize: 23,
+    fontFamily: "HindSiliguri-Bold"
+  },
+
+  subFont: {
+    flex: 0.4,
+    fontSize: 15,
+    fontFamily: "HindSiliguri-Regular",
+    color: "#939090"
   }
 });
 
@@ -171,7 +229,9 @@ Profile.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  user: state.user
+  user: state.user,
+  groups: state.groups,
+  artefacts: state.artefacts
 });
 
 export default connect(

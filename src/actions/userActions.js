@@ -1,13 +1,18 @@
 // import constants
 import { SET_CURRENT_USER_DATA } from "../types/userTypes";
 
-// API helper
+// API helpers
 import {
   getUserAPIRequest,
   updateUserDataAPIRequest,
+  setUserPushTokenAPIRequest,
   deleteUserDataAPIRequest
 } from "../utils/APIHelpers/userAPIHelpers";
+
 import { getUserArtefactsAPIRequest } from "../utils/APIHelpers/artefactAPIHelpers";
+
+import { getUserGroupsAPIRequest } from "../utils/APIHelpers/groupAPIHelper";
+
 import { uploadImageToGCS } from "../utils/imageUpload";
 
 // Async Redux actions //
@@ -23,7 +28,7 @@ export const getUserData = userId => dispatch => {
       })
       // failure
       .catch(err => {
-        console.log("Failed to get user data : " + err);
+        console.log("Failed to get user data: " + err);
         reject(err);
       });
   });
@@ -41,7 +46,7 @@ export const getSelectedUser = userId => dispatch => {
       })
       // failure
       .catch(err => {
-        console.log("Failed to get user data : " + err);
+        console.log("Failed to get selected user data : " + err);
         reject(err);
       });
   });
@@ -59,7 +64,25 @@ export const getSelectedUserArtefacts = userId => dispatch => {
       })
       // failure
       .catch(err => {
-        console.log("Failed to get user data : " + err);
+        console.log("Failed to get selected user artefact: " + err);
+        reject(err);
+      });
+  });
+};
+
+// get user data belonging to userId
+export const getSelectedUserGroups = userId => dispatch => {
+  return new Promise((resolve, reject) => {
+    // get all artefacts posted by user
+    getUserGroupsAPIRequest(userId)
+      // success
+      .then(res => {
+        // return user data instead of request response
+        resolve(res.data);
+      })
+      // failure
+      .catch(err => {
+        console.log("Failed to get selected user artefact: " + err);
         reject(err);
       });
   });
@@ -92,6 +115,21 @@ export const editUserData = user => dispatch => {
       })
       .catch(err => {
         console.log("Failed to update user data" + err);
+        reject(err);
+      });
+  });
+};
+
+// get user data belonging to userId
+export const sendUserPushToken = (userId, token) => dispatch => {
+  return new Promise((resolve, reject) => {
+    // set push token at the backend
+    setUserPushTokenAPIRequest(userId, token)
+      // success
+      .then(() => resolve())
+      // failure
+      .catch(err => {
+        console.log("Failed to set user push token: " + err);
         reject(err);
       });
   });

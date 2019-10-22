@@ -18,25 +18,21 @@ import {
   deviceHeigthDimension as hp
 } from "../utils/responsiveDesign";
 
-
 /**groups shown in a card form in groups page */
 class CardGroup extends Component {
-
-  // default card height
-  cardHeight = wd(0.425);
-
   constructor(props) {
     super(props);
     // get random card height to make it more aesthetically pleasing
-    this.cardHeight = this.props.cardHeight
+    // if no height value is provided, then use default card height
+    this.cardHeight = this.props.cardHeight ? this.props.cardHeight : wd(0.425);
   }
 
   // alert prompt to pin or unpin groups
   showAlert = () => {
     const userId = this.props.userId;
-    const groupId = this.props.groupId;
+    const { groupId, pinned } = this.props.group;
     //prettier-ignore
-    const message = `Do you want to ${(!this.props.pinned) ? "pin" : "unpin"} this group?`
+    const message = `Do you want to ${(!pinned) ? "pin" : "unpin"} this group?`
     // show alert
     Alert.alert(
       message,
@@ -46,7 +42,7 @@ class CardGroup extends Component {
         {
           text: "Yes",
           onPress: () =>
-            !this.props.pinned
+            !pinned
               ? this.props.pinGroup(userId, groupId)
               : this.props.unpinGroup(userId, groupId)
         }
@@ -55,43 +51,62 @@ class CardGroup extends Component {
     );
   };
 
-  //prettier-ignore
   render() {
+    const { details, groupId, pinned, admin } = this.props.group;
+    const { coverPhoto, title } = details;
+    const { profilePic, name } = admin;
+
+    const pinImageSource = pinned
+      ? require("../../assets/images/icons/favourite.png")
+      : require("../../assets/images/icons/unfavourite.png");
+
     return (
       <View style={styles.card}>
         {/* favourite icon */}
-        <View style={{ position: "absolute", top: 10, right: 10, elevation: 2 }}>
-          {this.props.pinned === true ?
-            (<Image resizeMode="contain" style={styles.favourite} source={require("../../assets/images/icons/favourite.png")} />) :
-            (<Image resizeMode="contain" style={styles.favourite} source={require("../../assets/images/icons/unfavourite.png")} />)}
+        <View style={styles.favouriteContainer}>
+          {/* pin image */}
+          <Image
+            style={styles.favourite}
+            source={pinImageSource}
+            resizeMethod="resize"
+            resizeMode="contain"
+          />
         </View>
 
         <TouchableOpacity
           onLongPress={() => this.showAlert()}
-          onPress={() => this.props.onPress(this.props.groupId)}
+          onPress={() => this.props.onPress(groupId)}
         >
-          {/* big image */}
+          {/* group image */}
           <View style={styles.picPlaceholder}>
             <Image
               style={[styles.photo, { height: this.cardHeight }]}
-              source={this.props.image}
+              source={{ uri: coverPhoto }}
+              resizeMethod="resize"
+              resizeMode="cover"
             />
           </View>
           {/* title */}
           <View style={styles.textPlaceholder}>
             {/* Group name */}
             <View style={styles.groupNamePlaceholder}>
-              <Text style={[{ fontSize: wd(0.0375) }, styles.font]}>{this.props.title}</Text>
+              <Text style={[{ fontSize: wd(0.0375) }, styles.font]}>
+                {title}
+              </Text>
             </View>
             {/* admin of the group and number of members */}
             <View style={styles.groupDetailsPlaceholder}>
-              <Image style={styles.userProfilePic} source={require("../../assets/images/default-profile-pic.png")} />
-              <Text style={styles.userName}>John Doe</Text>
+              <Image
+                style={styles.userProfilePic}
+                source={{ uri: profilePic }}
+                resizeMethod="resize"
+                resizeMode="cover"
+              />
+              <Text style={styles.userName}>{name}</Text>
             </View>
-
           </View>
         </TouchableOpacity>
-      </View >
+      </View>
     );
   }
 }
@@ -100,20 +115,20 @@ const styles = StyleSheet.create({
   card: {
     width: wd(0.425),
     marginTop: 10,
-    marginBottom: 20,
+    marginBottom: 10,
     elevation: 3,
     backgroundColor: "white",
     borderRadius: 15,
     borderWidth: 0.4,
-    borderColor: "#E2E2E2",
+    borderColor: "#E2E2E2"
   },
 
   font: {
-    fontFamily: "HindSiliguri-Regular",
+    fontFamily: "HindSiliguri-Regular"
   },
 
   picPlaceholder: {
-    justifyContent: "flex-start",
+    justifyContent: "flex-start"
   },
 
   photo: {
@@ -124,12 +139,12 @@ const styles = StyleSheet.create({
 
   textPlaceholder: {
     marginHorizontal: 8,
-    marginVertical: 4,
+    marginVertical: 4
   },
 
   groupNamePlaceholder: {
     marginBottom: 2,
-    justifyContent: "center",
+    justifyContent: "center"
   },
 
   groupDetailsPlaceholder: {
@@ -141,18 +156,26 @@ const styles = StyleSheet.create({
   userProfilePic: {
     width: wd(0.055),
     height: wd(0.055),
+    borderRadius: wd(0.055)
   },
 
   userName: {
     color: "#939090",
     fontSize: wd(0.03),
     marginLeft: 8,
-    fontFamily: "HindSiliguri-Light",
+    fontFamily: "HindSiliguri-Light"
+  },
+
+  favouriteContainer: {
+    position: "absolute",
+    top: 10,
+    right: 10,
+    elevation: 2
   },
 
   favourite: {
     width: 25,
-    height: 25,
+    height: 25
   }
 });
 

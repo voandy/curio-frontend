@@ -14,6 +14,7 @@ import {
 // redux actions
 import {
   getSelectedUser,
+  getSelectedUserGroups,
   getSelectedUserArtefacts
 } from "../../actions/userActions";
 
@@ -22,6 +23,7 @@ import Moment from "moment";
 
 // components
 import ArtefactFeed from "../../component/ArtefactFeed";
+import GroupList from "../../component/GroupList";
 
 // responsive design component
 import {
@@ -32,17 +34,19 @@ import {
 class PublicProfile extends Component {
   constructor(props) {
     super(props);
+    // extract navigation parameters
+    const { userId } = this.props.navigation.state.params;
+    // setup initial state
     this.state = {
-      user: {},
-      artefacts: [],
+      // page settings
       refreshing: false,
-      // get group id passed in from the navigation parameter
-      userId: this.props.navigation.getParam("userId")
+      isArtefactsTab: true,
+      // user data
+      userId,
+      user: {},
+      groups: [],
+      artefacts: []
     };
-  }
-
-  componentDidMount() {
-    const { userId } = this.state;
     // make sure it exists
     userId
       ? this.getSelectedUserData(userId)
@@ -58,36 +62,32 @@ class PublicProfile extends Component {
 
   // get selected group data asynchronously
   getSelectedUserData = async userId => {
-    // reload everything at once
-    //prettier-ignore
+    // retrieve all data from backend at once
     return Promise.all([
-      (() => {
-        // get selected user data and store in local state
-        return this.props.getSelectedUser(userId)
-          .then(user => {
-            // set local state and callback to return promise
-            // in case load sequence is required (like in refreshPage function)
-            this.setState({ user }, () => Promise.resolve());
-          })
-          .catch(err => Promise.reject(err));
-      })(),
-      (() => {
-        // get selected user data and store in local state
-        return this.props.getSelectedUserArtefacts(userId)
-          .then(artefacts => {
-            // retains only public artefacts
-            artefacts = this.extractPublicArtefacts(artefacts);
-            // set local state and callback to return promise
-            // in case load sequence is required
-            this.setState({ artefacts }, () => Promise.resolve());
-          })
-          .catch(err => Promise.reject(err));
-      })()
-    ]).catch(() => alert("Please try again later."));
+      this.props.getSelectedUser(userId),
+      this.props.getSelectedUserGroups(userId),
+      this.props.getSelectedUserArtefacts(userId)
+    ])
+      .then(data => {
+        // set all data to local state
+        this.setState(
+          {
+            user: data[0],
+            groups: this.extractPublicGroups(data[1]),
+            artefacts: this.extractPublicArtefacts(data[2])
+          },
+          () => Promise.resolve()
+        );
+      })
+      .catch(err => {
+        console.log(JSON.stringify(err.response));
+        alert("Please try again later");
+        Promise.reject(err);
+      });
   };
 
-  // refresh page
-  refreshPage = async () => {
+  // re-retrieve all required data - also used in page refresh
+  reloadData = async () => {
     this.setState({ refreshing: true });
     // get data from backend
     await this.getSelectedUserData(this.state.userId);
@@ -95,42 +95,89 @@ class PublicProfile extends Component {
     this.setState({ refreshing: false });
   };
 
-  // retains only artefacts with privacy = public
+  // retains only public artefacts
   extractPublicArtefacts = artefacts => {
     // show only public artefacts
     const privacy = 0;
     // filter artefacts by their privacy settings
-    return artefacts.filter(x => x.privacy == privacy);
+    return artefacts.filter(x => x.privacy === privacy);
   };
 
-  // artefact feed functions //
+  // retains only public groups
+  extractPublicGroups = groups => {
+    // show only public groups
+    const privacy = 0;
+    // filter artefacts by their privacy settings
+    return groups.filter(x => x.details.privacy === privacy);
+  };
+
+  // user wants to see artefacts
+  switchToArtefactTab = () => {
+    this.setState({ isArtefactsTab: true });
+  };
+
+  // user wants to see groups
+  switchToGroupTab = () => {
+    this.setState({ isArtefactsTab: false });
+  };
+
+  // navigation functions //
   // for each individual artefact clicked by user
-  onArtefactClick = async artefactId => {
-    const { push } = this.props.navigation;
+  onArtefactPress = artefactId => {
     // redirect user
-    push("SelectedArtefact", { origin: "PublicProfile", artefactId });
+    this.navigateToPage("SelectedArtefact", { artefactId });
   };
 
-  // show artefacts by privacy settings
+  // user selects a group to see
+  onGroupPress = groupId => {
+    // redirect user
+    this.navigateToPage("SelectedGroup", { groupId });
+  };
+
+  // main navigation function
+  navigateToPage = (page, options) => {
+    const { push } = this.props.navigation;
+    push(page, {
+      origin: "PublicProfile",
+      ...options
+    });
+  };
+
+  // show either artefacts or groups based on current tab settings
+  showTabContent = () => {
+    return this.state.isArtefactsTab ? this.showArtefacts() : this.showGroups();
+  };
+
+  // show artefact feed
   showArtefacts = () => {
     // return modularized feed component
     return (
       <ArtefactFeed
         artefacts={this.state.artefacts}
-        onPress={this.onArtefactClick.bind(this)}
+        onPress={this.onArtefactPress.bind(this)}
       />
     );
+  };
+
+  // show group list
+  showGroups = () => {
+    // return modularized feed component
+    const groupsListComponent = this.state.groups.map(group => (
+      <GroupList
+        key={group._id}
+        group={group}
+        onPress={this.onGroupPress.bind(this)}
+      />
+    ));
+    return groupsListComponent;
   };
 
   render() {
     // date format
     Moment.locale("en");
     // extract data from local states
-    const { user, artefacts } = this.state;
+    const { user, groups, artefacts } = this.state;
     const { name, username, profilePic, dateJoined } = user;
-    const { navigate } = this.props.navigation;
-    // make sure groups is not undefined
-    const groups = !user.groups ? [] : user.groups;
     // decide which image source to use
     const imageSource = !this.state.user
       ? require("../../../assets/images/default-profile-pic.png")
@@ -145,7 +192,7 @@ class PublicProfile extends Component {
           refreshControl={
             <RefreshControl
               refreshing={this.state.refreshing}
-              onRefresh={this.refreshPage}
+              onRefresh={this.reloadData}
             />
           }
         >
@@ -169,7 +216,7 @@ class PublicProfile extends Component {
               @{username}
             </Text>
             <Text style={styles.userDetails}>
-              joined Curio: {Moment(dateJoined).format("Do MMMM YYYY")}
+              Joined Curio on {Moment(dateJoined).format("Do MMMM YYYY")}
             </Text>
             {/* number of artefacts and groups of the user */}
             <View
@@ -182,7 +229,7 @@ class PublicProfile extends Component {
               {/* artefacts numbers */}
               <TouchableOpacity
                 style={{ alignItems: "center" }}
-              // onPress={() => navigate("PublicUserArtefacts", { origin: "PublicProfile" })}
+                onPress={() => this.switchToArtefactTab()}
               >
                 <Text style={styles.font}>{artefacts.length}</Text>
                 <Text style={(styles.subFont, { color: "#939090" })}>
@@ -193,7 +240,7 @@ class PublicProfile extends Component {
               {/* groups number */}
               <TouchableOpacity
                 style={{ alignItems: "center" }}
-              // onPress={() => navigate("PublicUserGroups", { origin: "PublicProfile" })}
+                onPress={() => this.switchToGroupTab()}
               >
                 <Text style={styles.font}>{groups.length}</Text>
                 <Text style={(styles.subFont, { color: "#939090" })}>
@@ -204,9 +251,9 @@ class PublicProfile extends Component {
           </View>
 
           {/* user artefacts posts */}
-          <View style={{ marginTop: wd(0.01) }}>{this.showArtefacts()}</View>
+          <View style={{ marginTop: wd(0.01) }}>{this.showTabContent()}</View>
         </ScrollView>
-      </View >
+      </View>
     );
   }
 }
@@ -283,5 +330,5 @@ const mapStateToProps = state => ({
 // export
 export default connect(
   mapStateToProps,
-  { getSelectedUser, getSelectedUserArtefacts }
+  { getSelectedUser, getSelectedUserGroups, getSelectedUserArtefacts }
 )(PublicProfile);

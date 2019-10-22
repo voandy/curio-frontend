@@ -12,11 +12,7 @@ import {
   TouchableOpacity
 } from "react-native";
 
-import {
-  searchUsers,
-  searchGroups,
-  clearSearchResults
-} from "../../actions/searchActions";
+import { searchUsers, searchGroups } from "../../actions/searchActions";
 
 // Custom component
 import SearchFeed from "../../component/SearchFeed";
@@ -31,163 +27,171 @@ import {
 class Search extends Component {
   constructor(props) {
     super(props);
-
-    // clear redux state in case user force quits the app and reopen it
-    this.props.clearSearchResults();
-
+    // extract navigation parameters
+    const { searchTerms } = this.props.navigation.state.params;
+    // setup initial state
     this.state = {
-      searchInput: "",
-      //search type: 0: user search, 1: group search
-      searchType: 0,
-      // has first search been done?
-      searchPerformed: false,
-      refreshing: false
+      // page parameters
+      refreshing: false,
+      // search parameters
+      searchInput: searchTerms ? searchTerms : "",
+      searchType: 0, //search type: 0: user search, 1: group search
+      searchPerformed: false, // has first search been done?
+      // search results
+      userSearchResults: [],
+      groupSearchResults: []
     };
-
-    // perform seach immedietly if search terms passed
-    if (this.props.navigation.state.params.searchTerms) {
-      this.state.searchInput = this.props.navigation.state.params.searchTerms;
-      this.doGeneralSearch(this.state.searchInput);
-    }
+    // perform search immediately if search terms are passed to this page
+    if (searchTerms) this.doGeneralSearch(this.state.searchInput);
   }
 
-  // Nav bar details
+  // nav bar details
   static navigationOptions = {
     header: null
   };
 
-  componentDidUpdate(prevProps) {
-    // refresh search results
-    if (prevProps.search !== this.props.search) {
-      this.setState({
-        search: prevProps.search
-      });
-    }
-  }
+  // user wants to see user results
+  switchToUserResults = () => {
+    this.setState({ searchType: 0 });
+  };
 
+  // user wants to see group results
+  switchToGroupResults = () => {
+    this.setState({ searchType: 1 });
+  };
+
+  // user types new search terms
+  onChangeSearchInput = searchInput => {
+    this.setState({ searchInput });
+  };
+
+  // re-retrieve all required data - also used in page refresh
+  reloadData = async () => {
+    // show refreshing animation
+    this.setState({ refreshing: true });
+    // get search results from backend
+    await this.doGeneralSearch(this.state.searchInput);
+    // resets refreshing state
+    this.setState({ refreshing: false });
+  };
+
+  // search for both users and groups on backend
+  doGeneralSearch = searchInput => {
+    // return early if search terms are empty
+    if (!searchInput) return;
+    // do both types of search at the same time
+    return new Promise((resolve, reject) => {
+      Promise.all([
+        this.props.searchUsers({ searchTerms: searchInput }),
+        this.props.searchGroups({ searchTerms: searchInput })
+      ])
+        .then(data => {
+          // extract data
+          let userSearchResults = data[0];
+          let groupSearchResults = data[1];
+          // store new results into local states
+          this.setState(
+            {
+              searchPerformed: true,
+              userSearchResults,
+              groupSearchResults
+            },
+            // setState callback, success
+            () => resolve()
+          );
+        })
+        // failure in getting new search result
+        .catch(err => {
+          alert("Please try again later");
+          reject(err);
+        });
+    });
+  };
+
+  // navigation functions //
   // navigate to user's profile
   gotoUserProfile = userId => {
-    const { navigate } = this.props.navigation;
     // navigate to selected user profile
-    navigate("PublicProfile", { origin: "GeneralSearch", userId });
+    this.navigateToPage("PublicProfile", { userId });
   };
 
   // navigate to group page
   gotoGroupPage = groupId => {
-    const { navigate } = this.props.navigation;
     // navigate to selected group
-    navigate("SelectedGroup", { origin: "GeneralSearch", groupId });
+    this.navigateToPage("SelectedGroup", { groupId });
   };
 
-  // generate both user and group search feeds
-  showSearchResults = function(userSearchResults, groupSearchResults) {
+  // main navigation function
+  navigateToPage = (page, options) => {
+    const { push } = this.props.navigation;
+    push(page, {
+      origin: "GeneralSearch",
+      ...options
+    });
+  };
+
+  // component render functions //
+  // decided what search results to show (user or group type)
+  showSearchResults = () => {
+    // show results based on current search type
     switch (this.state.searchType) {
       case 0:
-        return this.showUserResults(userSearchResults);
+        return this.showUserResults();
       case 1:
-        return this.showGroupResults(groupSearchResults);
+        return this.showGroupResults();
       default:
         return <Text style={styles.emptySearch}>Invalid search type.</Text>;
     }
   };
 
   // generate feed for user search results
-  showUserResults = function(userSearchResults) {
-    if (userSearchResults.length === 0) {
+  showUserResults = () => {
+    // extract search results from local state
+    const { userSearchResults } = this.state;
+    // return early if there is no search result
+    if (!userSearchResults.length) {
       return <Text style={styles.emptySearch}>No users found</Text>;
-    } else {
-      var userResultsFeed = [];
-
-      // create a view for each user result
-      for (var i = 0; i < userSearchResults.length; i++) {
-        const userId = userSearchResults[i]._id;
-        userResultsFeed.push(
-          <SearchFeed
-            key={i}
-            heading={userSearchResults[i].name}
-            subHeading={userSearchResults[i].username}
-            isGroup={false}
-            searchImage={userSearchResults[i].profilePic}
-            onPress={() => this.gotoUserProfile(userId)}
-          />
-        );
-      }
-
-      return userResultsFeed;
     }
+    // transform each search result into a search feed component
+    const userResultsFeed = userSearchResults.map(searchResult => {
+      const userId = searchResult._id;
+      return (
+        <SearchFeed
+          key={userId}
+          heading={searchResult.name}
+          subHeading={searchResult.username}
+          isGroup={false}
+          searchImage={searchResult.profilePic}
+          onPress={() => this.gotoUserProfile(userId)}
+        />
+      );
+    });
+    return userResultsFeed;
   };
 
   // generate feed for group search results
-  showGroupResults = function(groupSearchResults) {
-    if (groupSearchResults.length === 0) {
+  showGroupResults = () => {
+    // extract search results from local state
+    const { groupSearchResults } = this.state;
+    // return early if there is no search result
+    if (!groupSearchResults.length) {
       return <Text style={styles.emptySearch}>No groups found</Text>;
-    } else {
-      var groupResultsFeed = [];
-
-      // create a view for each group result
-      for (var i = 0; i < groupSearchResults.length; i++) {
-        const groupId = groupSearchResults[i]._id;
-        groupResultsFeed.push(
-          <SearchFeed
-            key={i}
-            heading={groupSearchResults[i].title}
-            subHeading={groupSearchResults[i].artefacts.length}
-            isGroup={true}
-            searchImage={groupSearchResults[i].coverPhoto}
-            onPress={() => this.gotoGroupPage(groupId)}
-          />
-        );
-      }
-
-      return groupResultsFeed;
     }
-  };
-
-  switchUserResults = () => {
-    this.setState({
-      searchType: 0
+    // transform each search result into a search feed component
+    const groupResultsFeed = groupSearchResults.map(searchResult => {
+      const groupId = searchResult._id;
+      return (
+        <SearchFeed
+          key={groupId}
+          heading={searchResult.title}
+          subHeading={searchResult.artefacts.length}
+          isGroup={true}
+          searchImage={searchResult.coverPhoto}
+          onPress={() => this.gotoGroupPage(groupId)}
+        />
+      );
     });
-  };
-
-  switchGroupResults = () => {
-    this.setState({
-      searchType: 1
-    });
-  };
-
-  onChangeSearchInput = searchInput => {
-    this.setState({
-      searchInput
-    });
-  };
-
-  // refresh page
-  refreshSearchPage = async () => {
-    this.setState({ refreshing: true });
-    const searchInput = this.state.searchInput;
-    // get data from backend
-    await Promise.all([
-      this.props.searchUsers({ searchTerms: searchInput }),
-      this.props.searchGroups({ searchTerms: searchInput })
-    ]).then(() => {
-      this.setState({ refreshing: false });
-    });
-    // resets refreshing state
-    this.setState({ refreshing: false });
-  };
-
-  // search for both users and groups on backend
-  doGeneralSearch = async searchInput => {
-    if (searchInput == "") {
-      alert("Please enter some search terms.");
-    } else {
-      await Promise.all([
-        this.props.searchUsers({ searchTerms: searchInput }),
-        this.props.searchGroups({ searchTerms: searchInput })
-      ]).then(() => {
-        this.setState({ searchPerformed: true });
-      });
-    }
+    return groupResultsFeed;
   };
 
   render() {
@@ -214,7 +218,7 @@ class Search extends Component {
           }}
         >
           <TouchableOpacity
-            onPress={this.switchUserResults}
+            onPress={this.switchToUserResults}
             style={styles.headerButton}
             activeOpacity={0.5}
           >
@@ -228,7 +232,7 @@ class Search extends Component {
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={this.switchGroupResults}
+            onPress={this.switchToGroupResults}
             style={styles.headerButton}
             activeOpacity={0.5}
           >
@@ -249,16 +253,13 @@ class Search extends Component {
           refreshControl={
             <RefreshControl
               refreshing={this.state.refreshing}
-              onRefresh={this.refreshSearchPage}
+              onRefresh={this.reloadData}
             />
           }
         >
-          {this.state.searchPerformed === true ? (
+          {this.state.searchPerformed ? (
             // user search results
-            this.showSearchResults(
-              this.props.search.userSearchResults,
-              this.props.search.groupSearchResults
-            )
+            this.showSearchResults()
           ) : (
             // group search results
             <Text style={styles.emptySearch}>
@@ -309,8 +310,7 @@ const styles = StyleSheet.create({
 
 Search.propTypes = {
   searchUsers: PropTypes.func.isRequired,
-  searchGroups: PropTypes.func.isRequired,
-  clearSearchResults: PropTypes.func.isRequired
+  searchGroups: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -319,5 +319,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { searchUsers, searchGroups, clearSearchResults }
+  { searchUsers, searchGroups }
 )(Search);
