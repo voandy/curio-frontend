@@ -1,9 +1,8 @@
 import {
   SET_USER_GROUPS,
-  SET_SELECTED_GROUP,
-  SET_SELECTED_GROUP_ARTEFACTS,
-  SET_SELECTED_GROUP_MEMBERS,
-  ADD_SELECTED_GROUP_ARTEFACTS_COMMENTS
+  SET_GROUP_IN_CACHE,
+  GROUP_DATA,
+  GROUP_MEMBERS
 } from "../types/groupsTypes";
 
 import {
@@ -24,8 +23,6 @@ import {
   inviteUserToGroupAPIRequest,
   removeInviteFromGroupAPIRequest
 } from "../utils/APIHelpers/groupAPIHelper";
-
-import { getArtefactCommentsAPIRequest } from "../utils/APIHelpers/artefactAPIHelpers";
 
 import { uploadImageToGCS } from "../utils/imageUpload";
 
@@ -85,51 +82,51 @@ export const createNewGroup = groupData => dispatch => {
 
 // when user clicks on (selects) a specific group
 export const getSelectedGroup = groupId => dispatch => {
+  // update group details
+  dispatch(updateSelectedGroupData(groupId));
+  dispatch(updateSelectedGroupAllMembers(groupId));
+};
+
+// when user clicks on (selects) a specific group
+export const updateSelectedGroupData = groupId => (dispatch, getState) => {
   return new Promise((resolve, reject) => {
+    // update data
     getGroupDetailsAPIRequest(groupId)
       // success
       .then(res => {
+        // save to redux
+        dispatch(setGroupDataInCache(res.data));
         // return group data instead of request response
-        resolve(res.data);
+        resolve(true);
       })
       // failure
       .catch(err => {
         console.log("Failed to get selected group: " + err);
-        reject(err);
+        reject(false);
       });
   });
 };
 
 // get all members of a group
-export const getSelectedGroupAllMembers = groupId => dispatch => {
+export const updateSelectedGroupAllMembers = groupId => dispatch => {
   return new Promise((resolve, reject) => {
     getGroupAllMembersAPIRequest(groupId)
       // success
       .then(res => {
-        // return group data instead of request response
-        resolve(res.data);
+        // extract and set required body info
+        const data = {
+          _id: groupId,
+          data: res.data
+        };
+        // save to redux
+        dispatch(setGroupMemberDataInCache(data));
+        // return true to show the data is loaded
+        resolve(true);
       })
       // failure
       .catch(err => {
         console.log("Failed to get all members of a selected group: " + err);
-        reject(err);
-      });
-  });
-};
-
-// get all artefacts of a group
-export const getSelectedGroupAllArtefacts = groupId => dispatch => {
-  return new Promise((resolve, reject) => {
-    getGroupAllArtefactsAPIRequest(groupId)
-      // success
-      .then(res => {
-        // return group data instead of request response
-        resolve(res.data);
-      })
-      // failure
-      .catch(err => {
-        console.log("Failed to get all artefacts of a selected group: " + err);
-        reject(err);
+        reject(false);
       });
   });
 };
@@ -306,5 +303,21 @@ export const setUserGroups = decoded => {
   return {
     type: SET_USER_GROUPS,
     payload: decoded
+  };
+};
+
+export const setGroupDataInCache = decoded => {
+  return {
+    type: SET_GROUP_IN_CACHE,
+    payload: decoded,
+    cache_type: GROUP_DATA
+  };
+};
+
+export const setGroupMemberDataInCache = decoded => {
+  return {
+    type: SET_GROUP_IN_CACHE,
+    payload: decoded,
+    cache_type: GROUP_MEMBERS
   };
 };

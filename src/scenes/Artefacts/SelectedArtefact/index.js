@@ -40,6 +40,11 @@ import {
   clearSelectedArtefact
 } from "../../../actions/artefactsActions";
 
+import {
+  ARTEFACT_COMMENTS,
+  ARTEFACT_DATA
+} from "../../../types/artefactsTypes";
+
 import { getSelectedGroupAllArtefacts } from "../../../actions/groupsActions";
 
 import { getSelectedUser } from "../../../actions/userActions";
@@ -56,6 +61,8 @@ import {
 class SelectedArtefact extends Component {
   constructor(props) {
     super(props);
+    // get artefact id passed in from the navigation parameter
+    const { artefactId } = this.props.navigation.state.params;
     // setup initial local state values
     this.state = {
       // local page settings state
@@ -71,12 +78,10 @@ class SelectedArtefact extends Component {
       likingEnabled: true,
       // artefact owner
       owner: {},
+      artefactId,
       // selected artefact data
-      artefact: {},
       comments: []
     };
-    // get artefact id passed in from the navigation parameter
-    artefactId = this.props.navigation.getParam("artefactId");
     // make sure it exists
     artefactId
       ? this.getSelectedArtefactData(artefactId)
@@ -135,7 +140,7 @@ class SelectedArtefact extends Component {
   // check if user is the owner of the artefact
   isUserArtefactOwner = () => {
     // get required state data
-    const ownerId = this.state.artefact.userId;
+    const ownerId = this.props.artefacts.cache[this.state.artefactId].userId;
     const userId = this.props.user.userData._id;
     // return true if user is owner, otherwise false
     return userId === ownerId;
@@ -218,7 +223,11 @@ class SelectedArtefact extends Component {
 
   // when user presses "edit artefact"
   onArtefactEdit = () => {
-    const { artefact } = this.state;
+    // extract artefact data
+    const { artefact } = this.props.artefacts.cache[
+      this.state.artefactId
+    ].ARTEFACT_DATA;
+    // pass it along
     this.navigateToPage("ArtefactsForm", {
       artefact,
       isEditMode: true,
@@ -229,7 +238,7 @@ class SelectedArtefact extends Component {
   // main navigation function
   navigateToPage = (page, options) => {
     const { push } = this.props.navigation;
-    const artefactId = this.props.navigation.getParam("artefactId");
+    const { artefactId } = this.state;
     push(page, {
       origin: "SelectedArtefact",
       artefactId,
@@ -237,8 +246,19 @@ class SelectedArtefact extends Component {
     });
   };
 
+  getArtefactFromCache = () => {
+    // extract artefact data
+    const { artefactId } = this.state;
+    const { cached } = this.props.artefacts.cache[artefactId];
+    // return early
+    if (!cached) return null;
+    // return artefact
+    return cached.ARTEFACT_DATA;
+  };
+
   // like an artefact
   like = function() {
+    // logic
     if (this.state.likingEnabled) {
       this.setState({
         liked: true,
@@ -247,7 +267,7 @@ class SelectedArtefact extends Component {
       });
       // make an api call to the backend to like artefact
       this.props
-        .likeArtefact(this.state.artefact._id, this.props.user.userData._id)
+        .likeArtefact(artefact._id, this.props.user.userData._id)
         .then(
           function() {
             this.setState({ likingEnabled: true });
@@ -264,6 +284,11 @@ class SelectedArtefact extends Component {
 
   // unlike an artefact
   unlike = function() {
+    // extract artefact data
+    const { artefact } = this.props.artefacts.cache[
+      this.state.artefactId
+    ].ARTEFACT_DATA;
+    // logic
     if (this.state.likingEnabled) {
       this.setState({
         liked: false,
@@ -272,7 +297,7 @@ class SelectedArtefact extends Component {
       });
       // make an api call to the backend to unlike artefact
       this.props
-        .unlikeArtefact(this.state.artefact._id, this.props.user.userData._id)
+        .unlikeArtefact(artefact._id, this.props.user.userData._id)
         .then(
           function() {
             this.setState({ likingEnabled: true });
@@ -294,9 +319,12 @@ class SelectedArtefact extends Component {
 
   // post new comment
   postComment = async function(commentContent) {
-    artefactId = this.props.navigation.getParam("artefactId");
+    // extract artefact data
+    const { artefactId } = this.state;
+    const { artefact } = this.props.artefacts.cache[artefactId].ARTEFACT_DATA;
+    // logic
     await this.props.commentOnArtefact(
-      this.state.artefact._id,
+      artefact._id,
       this.props.user.userData._id,
       commentContent
     );
@@ -341,20 +369,17 @@ class SelectedArtefact extends Component {
   render() {
     // date format
     Moment.locale("en");
-    // extract selectedArtefact from redux state
-    const { artefact } = this.state;
-    // does not render when selectedArtefact is empty
-    if (Object.keys(artefact).length === 0) {
-      return null;
-    }
+    // extract artefact data
+    const { artefactId } = this.state;
+    const cached = this.props.artefacts.cache[artefactId];
+    // early return
+    if (!cached) return null;
+    const artefact = cached.ARTEFACT_DATA;
+    // // does not render when selectedArtefact is empty
+    // if (!Object.keys(artefact).length) return null;
+    //prettier-ignore
     // prepare artefact image
-    const artefactImage = [
-      {
-        source: {
-          uri: artefact.images[0].URL
-        }
-      }
-    ];
+    const artefactImage = [{ source: { uri: artefact.images[0].URL }}];
     // extract owner details
     const { owner } = this.state;
 

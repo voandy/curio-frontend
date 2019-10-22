@@ -1,4 +1,10 @@
-import { SET_USER_ARTEFACTS } from "../types/artefactsTypes";
+import {
+  SET_USER_ARTEFACTS,
+  SET_ARTEFACT_IN_CACHE,
+  ARTEFACT_DATA,
+  ARTEFACT_COMMENTS
+} from "../types/artefactsTypes";
+
 import {
   createArtefactAPIRequest,
   getUserArtefactsAPIRequest,
@@ -66,12 +72,14 @@ export const createNewArtefacts = artefact => dispatch => {
 };
 
 // select artefact of artefactId
-export const getSelectedArtefact = artefactId => dispatch => {
+export const getSelectedArtefact = artefactId => (dispatch, getState) => {
   return new Promise((resolve, reject) => {
-    // get artefact based on artefactId
+    // continue updating the artefact in the background
     getSelectedArtefactAPIRequest(artefactId)
       .then(res => {
-        // return artefact data
+        // save artefact in cache
+        dispatch(setArtefactDataInCache(res.data));
+        // return artefact data if it hasn't already
         resolve(res.data);
       })
       .catch(err => {
@@ -212,5 +220,21 @@ export const setUserArtefacts = decoded => {
   return {
     type: SET_USER_ARTEFACTS,
     payload: decoded
+  };
+};
+
+export const setArtefactDataInCache = decoded => {
+  return {
+    type: SET_ARTEFACT_IN_CACHE,
+    payload: decoded,
+    cache_type: ARTEFACT_DATA
+  };
+};
+
+export const setArtefactCommentsInCache = decoded => {
+  return {
+    type: SET_ARTEFACT_IN_CACHE,
+    payload: decoded,
+    cache_type: ARTEFACT_COMMENTS
   };
 };
