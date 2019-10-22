@@ -69,8 +69,8 @@ const styles = StyleSheet.create({
   },
 
   feed: {
-    width: wd(0.918),
-    flexDirection: "row"
+    width: wd(0.936),
+    flexDirection: "row", 
   },
 
   feedContainer: {

@@ -70,6 +70,7 @@ const styles = StyleSheet.create({
     marginVertical: wd(0.05),
     marginHorizontal: wd(0.02),
     resizeMode: "contain",
+    tintColor:"#737373"
   }
 });
 
