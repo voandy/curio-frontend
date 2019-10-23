@@ -56,6 +56,11 @@ class CardGroup extends Component {
     const { coverPhoto, title } = details;
     const { profilePic, name } = admin;
 
+    // show default profile pic if there isnt
+    const imageSource = !profilePic
+      ? require("../../assets/images/default-profile-pic.png")
+      : { uri: profilePic };
+
     const pinImageSource = pinned
       ? require("../../assets/images/icons/favourite.png")
       : require("../../assets/images/icons/unfavourite.png");
@@ -98,7 +103,7 @@ class CardGroup extends Component {
             <View style={styles.groupDetailsPlaceholder}>
               <Image
                 style={styles.userProfilePic}
-                source={{ uri: profilePic }}
+                source={imageSource}
                 resizeMethod="resize"
                 resizeMode="cover"
               />
