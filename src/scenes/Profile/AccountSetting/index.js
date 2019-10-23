@@ -303,7 +303,7 @@ const styles = StyleSheet.create({
 
   delete: {
     fontFamily: "HindSiliguri-Bold",
-    color: "red",
+    color: "#FF6E6E",
     fontSize: 14,
     textDecorationLine: "underline"
   },

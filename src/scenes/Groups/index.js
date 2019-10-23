@@ -196,16 +196,6 @@ class Groups extends Component {
     return indicatorComponents;
   };
 
-  offset = 0; // offset from previous position
-  scrollDir = 0; // 0 means down, 1 means up
-  // determine scroll direction
-  onScroll = event => {
-    var currentOffset = event.nativeEvent.contentOffset.y;
-    var direction = currentOffset > this.offset ? 0 : 1;
-    this.offset = currentOffset;
-    this.scrollDir = direction;
-  };
-
   render() {
     return (
       <KeyboardShift>
@@ -215,7 +205,6 @@ class Groups extends Component {
             <ScrollView
               showsVerticalScrollIndicator={false}
               scrollEventThrottle={16}
-              onScroll={this.onScroll}
               refreshControl={
                 <RefreshControl
                   refreshing={this.state.refreshing}
@@ -268,11 +257,7 @@ class Groups extends Component {
             </ScrollView>
 
             {/* create new Group */}
-            <AddButton
-              onPress={this.onCreateNewGroup.bind(this)}
-              scrollUp={this.scrollDir}
-            />
-            {/* <AddButton onPress={this.onCreateNewGroup.bind(this)} /> */}
+            <AddButton onPress={this.onCreateNewGroup.bind(this)} />
           </View>
         )}
       </KeyboardShift>
