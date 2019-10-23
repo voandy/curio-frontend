@@ -31,55 +31,19 @@ class AddButton extends Component {
     this.startAnimation()
   }
 
-  componentDidUpdate=()=>{
-    
-  }
-
-  // setAnimationCompleted = () => {
-  //   this.setState({ animationCompleted: !this.state.animationCompleted })
-  // }
-
-  // setPrevAnimation = (input) => {
-  //   this.setState(input => ({ prevAnimation: input }))
-  // }
-
   // animation
   startAnimation = () => {
-
-    // this.setAnimationCompleted()
-    // this.PrevAnimation = (this.props.scrollDir)
 
     Animated.spring(this.slideAnimation, {
       toValue: { x: 0, y: 0 },
       friction: 7
     }).start();
-    // }).start(() => this.setAnimationCompleted());
   }
   
 
-  // reverse back animation
-  // reverseAnimation = () => {
-
-  //   // set animation in progress 
-  //   this.setAnimationCompleted()
-  //   this.PrevAnimation = (this.props.scrollDir)
-
-  //   // activate animation, reset animation completed state 
-  //   Animated.spring(this.slideAnimation, {
-  //     toValue: { x: 100, y: 0 },
-  //     friction: 7
-  //   }).start(() => this.setAnimationCompleted());
-  // }
-
-  // prevAnimation = "up"
+  
 
   render() {
-
-    // (this.state.animationCompleted) ? this.reverseAnimation() : this.startAnimation()
-    // (this.props.scrollDir === "down" && this.state.animationCompleted && this.prevAnimation !== this.props.scrollDir)
-    // ? this.reverseAnimation() : this.startAnimation()
-
-    // this.props.scrollDir === 1 ? console.log('up') : console.log("down")
 
     return (
       <View style={styles.container}>

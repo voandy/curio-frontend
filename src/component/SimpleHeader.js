@@ -188,7 +188,6 @@ const styles = StyleSheet.create({
 
   headerText: {
     width: wd(0.7),
-    // fontSize: 22,
     fontSize: hp(0.033),
     marginTop: 8,
     marginBottom: 2,

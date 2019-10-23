@@ -45,7 +45,6 @@ class Comments extends Component {
         <View style={styles.bubble}>
           <View style={styles.user}>
             <TouchableOpacity style={{ flex: 0.65 }}>
-              {/* TODO: LINK TO PROFILE */}
               <Text style={styles.userName}>{this.props.userName}</Text>
             </TouchableOpacity>
             <Text style={styles.time}>{timeSince(this.props.datePosted)}</Text>

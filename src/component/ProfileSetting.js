@@ -58,7 +58,6 @@ const styles = StyleSheet.create({
   icon: {
     width: 30,
     height: 30,
-    // alignSelf: "center",
     marginLeft: 10,
     tintColor: "#707070"
   },

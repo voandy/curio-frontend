@@ -5,7 +5,6 @@ import {
 import OptionsMenu from "react-native-options-menu";
 
 import {
-  deviceHeigthDimension as hp,
   deviceWidthDimension as wd
 } from "../utils/responsiveDesign";
 
