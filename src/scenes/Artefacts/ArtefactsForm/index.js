@@ -396,7 +396,6 @@ class ArtefactsForm extends Component {
                       />
                       <Picker.Item label="Music" value="Music" />
                       <Picker.Item label="Technology" value="Technology" />
-                      <Picker.Item label="Pepe" value="Pepe" />
                       <Picker.Item label="Others" value="Others" />
                     </Picker>
                   </View>

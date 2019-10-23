@@ -36,6 +36,11 @@ class NotificationFeed extends Component {
     } = this.props.notification;
     // convert datePosted to a human readable datettme
     const readableDatePosted = moment(new Date(datePosted)).fromNow();
+    // show default profile pic if there isnt
+    const imageSource = !thumbnailURL
+      ? require("../../assets/images/default-profile-pic.png")
+      : { uri: thumbnailURL };
+
 
     return (
       <View style={styles.card}>
@@ -48,7 +53,7 @@ class NotificationFeed extends Component {
             <View style={styles.picPlaceholder}>
               <Image
                 style={styles.photo}
-                source={{ uri: thumbnailURL }}
+                source={imageSource}
                 resizeMethod="resize"
                 resizeMode="cover"
               />
