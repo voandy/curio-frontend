@@ -45,7 +45,7 @@ xcuserdata
 .settings
 
 # Android
-*.apk
+# *.apk
 *.hprof
 /android/**/build
 /android/**/local.properties
