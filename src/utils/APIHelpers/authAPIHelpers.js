@@ -1,10 +1,11 @@
+const config = require("../../../config.json");
 import axios from "axios";
 
 // register user based on user details
 export const registerUserAPIRequest = userData => {
   return new Promise((resolve, reject) => {
     axios
-      .post("http://curioapp.herokuapp.com/api/register", userData)
+      .post(config.SERVER_URL + "api/register", userData)
       .then(res => resolve(res))
       .catch(err => reject(err));
   });
@@ -14,7 +15,7 @@ export const registerUserAPIRequest = userData => {
 export const loginUserAPIRequest = user => {
   return new Promise((resolve, reject) => {
     axios
-      .post("http://curioapp.herokuapp.com/api/login", user)
+      .post(config.SERVER_URL + "api/login", user)
       .then(res => resolve(res))
       .catch(err => reject(err));
   });

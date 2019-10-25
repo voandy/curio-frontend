@@ -13,9 +13,11 @@ Curio was developed by Christian, Nick, Andy and Shaun for the capstone subject 
 
 Curio is a social platform for users to catalogue and share family heirlooms, collectibles and other artefacts in a fun an intuitive way.
 
-[Watch our presentation on Curio!](https://youtu.be/p0j0LxsMiic)
+The is the repository for Curio's frontend. You can find the repository for Curio's backend server [here](https://github.com/voandy/curio-backend).
 
 ## Features
+
+[Watch our presentation on Curio!](https://youtu.be/p0j0LxsMiic)
 
 ### Quick Demo
 
@@ -55,4 +57,4 @@ Scan the QR code produced by the Metro Bundler
 
 ### Or download the .apk
 
-Alternatively you can downloand and install the pre-built apk [here]().
+Alternatively you can downloand and install the pre-built apk [here](/curio.apk).

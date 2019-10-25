@@ -1,10 +1,11 @@
+const config = require("../../../config.json");
 import axios from "axios";
 
 // get all details of a group by groupId
 export const getGroupDetailsAPIRequest = groupId => {
   return new Promise((resolve, reject) => {
     axios
-      .get("http://curioapp.herokuapp.com/api/group/id/" + groupId)
+      .get(config.SERVER_URL + "api/group/id/" + groupId)
       .then(res => resolve(res))
       .catch(err => reject(err));
   });
@@ -14,7 +15,7 @@ export const getGroupDetailsAPIRequest = groupId => {
 export const getUserGroupsAPIRequest = userId => {
   return new Promise((resolve, reject) => {
     axios
-      .get("http://curioapp.herokuapp.com/api/user/id/" + userId + "/groups")
+      .get(config.SERVER_URL + "api/user/id/" + userId + "/groups")
       .then(res => resolve(res))
       .catch(err => reject(err));
   });
@@ -24,7 +25,7 @@ export const getUserGroupsAPIRequest = userId => {
 export const createGroupAPIRequest = groupData => {
   return new Promise((resolve, reject) => {
     axios
-      .post("http://curioapp.herokuapp.com/api/group", groupData)
+      .post(config.SERVER_URL + "api/group", groupData)
       .then(res => resolve(res))
       .catch(err => reject(err));
   });
@@ -35,10 +36,7 @@ export const putGroupAdminAPIRequest = (groupId, userId) => {
   return new Promise((resolve, reject) => {
     axios
       .put(
-        "http://curioapp.herokuapp.com/api/group/id/" +
-          groupId +
-          "/add/userId/" +
-          userId
+        config.SERVER_URL + "api/group/id/" + groupId + "/add/userId/" + userId
       )
       .then(res => resolve(res))
       .catch(err => reject(err));
@@ -49,9 +47,7 @@ export const putGroupAdminAPIRequest = (groupId, userId) => {
 export const getGroupAllArtefactsAPIRequest = groupId => {
   return new Promise((resolve, reject) => {
     axios
-      .get(
-        "http://curioapp.herokuapp.com/api/group/id/" + groupId + "/artefacts"
-      )
+      .get(config.SERVER_URL + "api/group/id/" + groupId + "/artefacts")
       .then(res => resolve(res))
       .catch(err => reject(err));
   });
@@ -61,7 +57,7 @@ export const getGroupAllArtefactsAPIRequest = groupId => {
 export const getGroupAllMembersAPIRequest = groupId => {
   return new Promise((resolve, reject) => {
     axios
-      .get("http://curioapp.herokuapp.com/api/group/id/" + groupId + "/members")
+      .get(config.SERVER_URL + "api/group/id/" + groupId + "/members")
       .then(res => resolve(res))
       .catch(err => reject(err));
   });
@@ -71,7 +67,7 @@ export const getGroupAllMembersAPIRequest = groupId => {
 export const editGroupAPIRequest = (groupId, groupData) => {
   return new Promise((resolve, reject) => {
     axios
-      .put("http://curioapp.herokuapp.com/api/group/id/" + groupId, groupData)
+      .put(config.SERVER_URL + "api/group/id/" + groupId, groupData)
       .then(res => resolve(res))
       .catch(err => reject(err));
   });
@@ -81,10 +77,7 @@ export const pinGroupAPIRequest = (userId, groupId) => {
   return new Promise((resolve, reject) => {
     axios
       .post(
-        "http://curioapp.herokuapp.com/api/user/id/" +
-          userId +
-          "/pin/groupId/" +
-          groupId
+        config.SERVER_URL + "api/user/id/" + userId + "/pin/groupId/" + groupId
       )
       .then(res => resolve(res))
       .catch(err => reject(err));
@@ -95,7 +88,8 @@ export const unpinGroupAPIRequest = (userId, groupId) => {
   return new Promise((resolve, reject) => {
     axios
       .post(
-        "http://curioapp.herokuapp.com/api/user/id/" +
+        config.SERVER_URL +
+          "api/user/id/" +
           userId +
           "/unpin/groupId/" +
           groupId
@@ -109,7 +103,7 @@ export const unpinGroupAPIRequest = (userId, groupId) => {
 export const deleteGroupAPIRequest = groupId => {
   return new Promise((resolve, reject) => {
     axios
-      .delete("http://curioapp.herokuapp.com/api/group/id/" + groupId)
+      .delete(config.SERVER_URL + "api/group/id/" + groupId)
       .then(res => resolve(res))
       .catch(err => reject(err));
   });
@@ -119,10 +113,7 @@ export const addMemberToGroupAPIRequest = (groupId, userId) => {
   return new Promise((resolve, reject) => {
     axios
       .put(
-        "http://curioapp.herokuapp.com/api/group/id/" +
-          groupId +
-          "/add/userId/" +
-          userId
+        config.SERVER_URL + "api/group/id/" + groupId + "/add/userId/" + userId
       )
       .then(res => resolve(res))
       .catch(err => reject(err));
@@ -133,7 +124,8 @@ export const deleteMemberFromGroupAPIRequest = (groupId, userId) => {
   return new Promise((resolve, reject) => {
     axios
       .put(
-        "http://curioapp.herokuapp.com/api/group/id/" +
+        config.SERVER_URL +
+          "api/group/id/" +
           groupId +
           "/remove/userId/" +
           userId
@@ -147,7 +139,8 @@ export const addArtefactToGroupAPIRequest = (groupId, artefactId) => {
   return new Promise((resolve, reject) => {
     axios
       .put(
-        "http://curioapp.herokuapp.com/api/group/id/" +
+        config.SERVER_URL +
+          "api/group/id/" +
           groupId +
           "/add/artefactId/" +
           artefactId
@@ -161,7 +154,8 @@ export const deleteArtefactFromGroupAPIRequest = (groupId, artefactId) => {
   return new Promise((resolve, reject) => {
     axios
       .put(
-        "http://curioapp.herokuapp.com/api/group/id/" +
+        config.SERVER_URL +
+          "api/group/id/" +
           groupId +
           "/remove/artefactId/" +
           artefactId
@@ -175,7 +169,8 @@ export const inviteUserToGroupAPIRequest = (groupId, userId) => {
   return new Promise((resolve, reject) => {
     axios
       .put(
-        "http://curioapp.herokuapp.com/api/group/id/" +
+        config.SERVER_URL +
+          "api/group/id/" +
           groupId +
           "/userId/" +
           userId +
@@ -190,7 +185,8 @@ export const removeInviteFromGroupAPIRequest = (groupId, userId) => {
   return new Promise((resolve, reject) => {
     axios
       .put(
-        "http://curioapp.herokuapp.com/api/group/id/" +
+        config.SERVER_URL +
+          "api/group/id/" +
           groupId +
           "/userId/" +
           userId +

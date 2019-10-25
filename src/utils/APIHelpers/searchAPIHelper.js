@@ -1,10 +1,11 @@
+const config = require("../../../config.json");
 import axios from "axios";
 
 // group search
 export const searchGroupsAPIRequest = searchTerms => {
   return new Promise((resolve, reject) => {
     axios
-      .put("http://curioapp.herokuapp.com/api/group/search", searchTerms)
+      .put(config.SERVER_URL + "api/group/search", searchTerms)
       .then(res => resolve(res))
       .catch(err => reject(err));
   });
@@ -14,7 +15,7 @@ export const searchGroupsAPIRequest = searchTerms => {
 export const searchUsersAPIRequest = searchTerms => {
   return new Promise((resolve, reject) => {
     axios
-      .put("http://curioapp.herokuapp.com/api/user/search", searchTerms)
+      .put(config.SERVER_URL + "api/user/search", searchTerms)
       .then(res => resolve(res))
       .catch(err => reject(err));
   });

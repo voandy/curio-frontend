@@ -1,3 +1,4 @@
+const config = require("../../../config.json");
 const Validator = require("validator");
 
 // check if name passes all the validations
@@ -78,7 +79,7 @@ export const validatePassword = (password, passwordCfm) => {
 // check with the backend to see if email has already exists
 const isEmailUnique = email => {
   return new Promise((resolve, reject) => {
-    const url = "http://curioapp.herokuapp.com/api/user/email/" + email;
+    const url = config.SERVER_URL + "api/user/email/" + email;
     fetch(url, {
       method: "GET"
     })
@@ -97,7 +98,7 @@ const isEmailUnique = email => {
 // check with the backend to see if username has already exists
 const isUsernameUnique = username => {
   return new Promise((resolve, reject) => {
-    const url = "http://curioapp.herokuapp.com/api/user/username/" + username;
+    const url = config.SERVER_URL + "api/user/username/" + username;
     fetch(url, {
       method: "GET"
     })

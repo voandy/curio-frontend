@@ -1,6 +1,7 @@
+const config = require("../../../config.json");
 import axios from "axios";
 
-const PUSH_ENDPOINT = "http://curioapp.herokuapp.com/api/user/id/";
+const PUSH_ENDPOINT = config.SERVER_URL + "api/user/id/";
 
 // register user based on user details
 export const setUserPushTokenAPIRequest = (userId, pushToken = null) => {

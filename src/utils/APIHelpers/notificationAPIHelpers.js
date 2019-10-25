@@ -1,10 +1,11 @@
+const config = require("../../../config.json");
 import axios from "axios";
 
 // get user by id
 export const getUserNotificationsAPIRequest = userId => {
   return new Promise((resolve, reject) => {
     axios
-      .get("http://curioapp.herokuapp.com/api/notification/userId/" + userId)
+      .get(config.SERVER_URL + "api/notification/userId/" + userId)
       .then(res => resolve(res))
       .catch(err => reject(err));
   });
@@ -16,7 +17,7 @@ export const updateNotificationToReadAPIRequest = notifId => {
   };
   return new Promise((resolve, reject) => {
     axios
-      .put("http://curioapp.herokuapp.com/api/notification/id/" + notifId, body)
+      .put(config.SERVER_URL + "api/notification/id/" + notifId, body)
       .then(res => resolve(res))
       .catch(err => reject(err));
   });
