@@ -158,7 +158,7 @@ class Search extends Component {
       // show user profile pic
       const imageSource = !searchResult.profilePic
         ? require("../../../assets/images/default-profile-pic.png")
-        : { uri: searchResult.profilePic }
+        : { uri: searchResult.profilePic };
       return (
         <SearchFeed
           key={userId}
@@ -184,13 +184,15 @@ class Search extends Component {
     // transform each search result into a search feed component
     const groupResultsFeed = groupSearchResults.map(searchResult => {
       const groupId = searchResult._id;
+      // show user profile pic
+      const imageSource = { uri: searchResult.coverPhoto };
       return (
         <SearchFeed
           key={groupId}
           heading={searchResult.title}
           subHeading={searchResult.artefacts.length}
           isGroup={true}
-          searchImage={searchResult.coverPhoto}
+          searchImage={imageSource}
           onPress={() => this.gotoGroupPage(groupId)}
         />
       );
@@ -231,8 +233,8 @@ class Search extends Component {
                 Users
               </Text>
             ) : (
-                <Text style={[styles.headerButtonText, styles.font]}>Users</Text>
-              )}
+              <Text style={[styles.headerButtonText, styles.font]}>Users</Text>
+            )}
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -245,8 +247,8 @@ class Search extends Component {
                 Groups
               </Text>
             ) : (
-                <Text style={[styles.headerButtonText, styles.font]}>Groups</Text>
-              )}
+              <Text style={[styles.headerButtonText, styles.font]}>Groups</Text>
+            )}
           </TouchableOpacity>
         </View>
 
@@ -265,11 +267,11 @@ class Search extends Component {
             // user search results
             this.showSearchResults()
           ) : (
-              // group search results
-              <Text style={styles.emptySearch}>
-                Please enter search query above.
+            // group search results
+            <Text style={styles.emptySearch}>
+              Please enter search query above.
             </Text>
-            )}
+          )}
         </ScrollView>
       </View>
     );
