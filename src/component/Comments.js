@@ -27,9 +27,9 @@ class Comments extends Component {
   render() {
 
     // show default profile pic if there isnt
-    const imageSource = !this.props.profilePic
+    const imageSource = !this.props.userProfilePic
       ? require("../../assets/images/default-profile-pic.png")
-      : { uri: this.props.profilePic };
+      : { uri: this.props.userProfilePic };
 
     return (
       <View style={styles.container}>
